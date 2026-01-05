@@ -1,0 +1,104 @@
+<?php
+class Secteur
+{
+    private $conn;
+    private $table = 't_secteurs';
+
+    public $id;
+    public $code;
+    public $name;
+    public $organisme;
+    public $domaine;
+    public $source;
+    public $description;
+    public $parent_id;
+    public $add_by;
+
+    public function __construct($db)
+    {
+        $this->conn = $db;
+    }
+
+    public function create()
+    {
+        $query = "INSERT INTO " . $this->table . " (code, name, organisme, domaine, source, description, parent_id, add_by) VALUES (:code, :name, :organisme, :domaine, :source, :description, :parent_id, :add_by)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':code', $this->code);
+        $stmt->bindParam(':name', $this->name);
+        $stmt->bindParam(':organisme', $this->organisme);
+        $stmt->bindParam(':domaine', $this->domaine);
+        $stmt->bindParam(':source', $this->source);
+        $stmt->bindParam(':description', $this->description);
+        $stmt->bindParam(':parent_id', $this->parent_id);
+        $stmt->bindParam(':add_by', $this->add_by);
+
+        if ($stmt->execute()) {
+            return true;
+        }
+        return false;
+    }
+
+    public function read()
+    {
+        $query = "SELECT * FROM " . $this->table . " ORDER BY id DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $row;
+    }
+
+    public function readById()
+    {
+        $query = "SELECT * FROM " . $this->table . " WHERE id=:id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $this->id);
+        $stmt->execute();
+        $row = $stmt->fetch();
+        return $row;
+    }
+
+
+    public function update()
+    {
+        $query = "UPDATE " . $this->table . " SET code=:code, name=:name, organisme=:organisme, domaine=:domaine, source=:source, description=:description, parent_id=:parent_id, add_by=:add_by WHERE id=:id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $this->id);
+        $stmt->bindParam(':code', $this->code);
+        $stmt->bindParam(':name', $this->name);
+        $stmt->bindParam(':organisme', $this->organisme);
+        $stmt->bindParam(':domaine', $this->domaine);
+        $stmt->bindParam(':source', $this->source);
+        $stmt->bindParam(':description', $this->description);
+        $stmt->bindParam(':parent_id', $this->parent_id);
+        $stmt->bindParam(':add_by', $this->add_by);
+
+        if ($stmt->execute()) {
+            return true;
+        }
+        return false;
+    }
+
+    public function updateState($state) {
+        $query = "UPDATE " . $this->table . " SET state = :state WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':state', $state);
+        $stmt->bindParam(':id', $this->id);
+
+        if ($stmt->execute()) {
+            return true;
+        }
+        return false;
+    }
+
+    public function delete()
+    {
+        $query = "DELETE FROM " . $this->table . " WHERE id=:id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $this->id);
+
+        if ($stmt->execute()) {
+            return true;
+        }
+        return false;
+    }
+}

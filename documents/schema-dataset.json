@@ -1,0 +1,308 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Données Sectorielles sur le Changement Climatique",
+  "description": "Schéma pour les données d'inventaire GES, actions d'atténuation, adaptation, renforcement des capacités et financements par secteur",
+  "type": "object",
+  "properties": {
+    "metadonnees": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "Version du schéma de données"
+        },
+        "date_mise_a_jour": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date de dernière mise à jour des données"
+        },
+        "organisme_responsable": {
+          "type": "string",
+          "description": "Organisme ayant fourni les données"
+        }
+      },
+      "required": ["version", "date_mise_a_jour", "organisme_responsable"]
+    },
+    "secteurs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "nom_secteur": {
+            "type": "string",
+            "enum": ["Énergie", "AFAT", "Déchets"],
+            "description": "Nom du secteur concerné"
+          },
+          
+          "organisme_responsable": {
+            "type": "string",
+            "description": "Organisme responsable du secteur (ex: SNIE, SIFOR, DNACPN)"
+          },
+
+          "inventaire_ges": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "structure": {
+                  "type": "string",
+                  "description": "Entreprise emmettrice d'émissions"
+                },
+                "annee": {
+                  "type": "integer",
+                  "description": "Année de référence des données"
+                },
+                "categorie": {
+                  "type": "string",
+                  "description": "Catégorie d'émissions (ex: combustion, procédés industriels)"
+                },
+                "gaz": {
+                  "type": "string",
+                  "description": "Type de gaz à effet de serre (CO2, CH4, N2O, etc.)"
+                },
+                "quantite_emise": {
+                  "type": "number",
+                  "description": "Quantité émise en tonnes équivalent CO2"
+                },
+                "methodologie_calcul": {
+                  "type": "string",
+                  "description": "Méthodologie utilisée pour le calcul"
+                },
+                "facteur_emission": {
+                  "type": "number",
+                  "description": "Facteur d'émission utilisé"
+                }
+              },
+              "required": ["structure", "annee", "categorie", "gaz", "quantite_emise"]
+            }
+          },
+
+          "actions_attenuation": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id_action": {
+                  "type": "string",
+                  "description": "Identifiant unique de l'action"
+                },
+                "nom_action": {
+                  "type": "string",
+                  "description": "Nom de l'action d'atténuation"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Description détaillée de l'action"
+                },
+                "type_technologie": {
+                  "type": "string",
+                  "description": "Type de technologie ou mesure mise en œuvre"
+                },
+                "statut": {
+                  "type": "string",
+                  "enum": ["planifié", "en cours", "terminé", "abandonné"],
+                  "description": "Statut de l'action"
+                },
+                "date_debut": {
+                  "type": "string",
+                  "format": "date",
+                  "description": "Date de début de l'action"
+                },
+                "date_fin_prevue": {
+                  "type": "string",
+                  "format": "date",
+                  "description": "Date de fin prévue de l'action"
+                },
+                "reduction_ges_estimee": {
+                  "type": "number",
+                  "description": "Réduction d'émissions GES estimée (tCO2éq)"
+                },
+                "cout_estime": {
+                  "type": "number",
+                  "description": "Coût estimé de l'action"
+                },
+                "devise": {
+                  "type": "string",
+                  "description": "Devise utilisée pour le coût"
+                }
+              },
+              "required": ["id_action", "nom_action", "statut"]
+            }
+          },
+
+          "actions_adaptation": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id_action": {
+                  "type": "string",
+                  "description": "Identifiant unique de l'action"
+                },
+                "nom_action": {
+                  "type": "string",
+                  "description": "Nom de l'action d'adaptation"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Description détaillée de l'action"
+                },
+                "type_mesure": {
+                  "type": "string",
+                  "description": "Type de mesure d'adaptation"
+                },
+                "zone_geographique": {
+                  "type": "string",
+                  "description": "Zone géographique concernée par l'action"
+                },
+                "vulnerabilite_cible": {
+                  "type": "string",
+                  "description": "Vulnérabilité climatique ciblée"
+                },
+                "statut": {
+                  "type": "string",
+                  "enum": ["planifié", "en cours", "terminé", "abandonné"],
+                  "description": "Statut de l'action"
+                },
+                "date_debut": {
+                  "type": "string",
+                  "format": "date",
+                  "description": "Date de début de l'action"
+                },
+                "date_fin_prevue": {
+                  "type": "string",
+                  "format": "date",
+                  "description": "Date de fin prévue de l'action"
+                },
+                "benefices_estimes": {
+                  "type": "string",
+                  "description": "Bénéfices estimés de l'action d'adaptation"
+                },
+                "cout_estime": {
+                  "type": "number",
+                  "description": "Coût estimé de l'action"
+                },
+                "devise": {
+                  "type": "string",
+                  "description": "Devise utilisée pour le coût"
+                }
+              },
+              "required": ["id_action", "nom_action", "statut"]
+            }
+          },
+
+          "renforcement_capacites": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id_initiative": {
+                  "type": "string",
+                  "description": "Identifiant unique de l'initiative"
+                },
+                "nom_initiative": {
+                  "type": "string",
+                  "description": "Nom de l'initiative de renforcement des capacités"
+                },
+                "type_initiative": {
+                  "type": "string",
+                  "enum": ["formation", "atelier", "séminaire", "équipement", "étude", "autre"],
+                  "description": "Type d'initiative"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Description détaillée de l'initiative"
+                },
+                "public_cible": {
+                  "type": "string",
+                  "description": "Public cible de l'initiative"
+                },
+                "date_debut": {
+                  "type": "string",
+                  "format": "date",
+                  "description": "Date de début de l'initiative"
+                },
+                "date_fin": {
+                  "type": "string",
+                  "format": "date",
+                  "description": "Date de fin de l'initiative"
+                },
+                "nombre_participants": {
+                  "type": "integer",
+                  "description": "Nombre de participants bénéficiaires"
+                },
+                "resultats_attendus": {
+                  "type": "string",
+                  "description": "Résultats attendus de l'initiative"
+                },
+                "cout_total": {
+                  "type": "number",
+                  "description": "Coût total de l'initiative"
+                },
+                "devise": {
+                  "type": "string",
+                  "description": "Devise utilisée pour le coût"
+                }
+              },
+              "required": ["id_initiative", "nom_initiative", "type_initiative"]
+            }
+          },
+
+          "financements": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id_financement": {
+                  "type": "string",
+                  "description": "Identifiant unique du financement"
+                },
+                "source": {
+                  "type": "string",
+                  "description": "Source du financement"
+                },
+                "type_financement": {
+                  "type": "string",
+                  "enum": ["public", "privé", "don", "prêt", "mixte"],
+                  "description": "Type de financement"
+                },
+                "montant": {
+                  "type": "number",
+                  "description": "Montant du financement"
+                },
+                "devise": {
+                  "type": "string",
+                  "description": "Devise du financement"
+                },
+                "annee": {
+                  "type": "integer",
+                  "description": "Année d'attribution du financement"
+                },
+                "destination": {
+                  "type": "string",
+                  "description": "Destination du financement (atténuation, adaptation, renforcement capacités)"
+                },
+                "id_action_associee": {
+                  "type": "string",
+                  "description": "Identifiant de l'action associée le cas échéant"
+                },
+                "statut_decaissement": {
+                  "type": "string",
+                  "enum": ["engagement", "partiellement décaissé", "totalement décaissé"],
+                  "description": "Statut de décaissement du financement"
+                },
+                "conditions": {
+                  "type": "string",
+                  "description": "Conditions associées au financement"
+                }
+              },
+              "required": ["id_financement", "source", "type_financement", "montant", "devise"]
+            }
+          }
+        },
+        "required": ["nom_secteur", "organisme_responsable"]
+      }
+    }
+  },
+  "required": ["metadonnees", "secteurs"]
+}
