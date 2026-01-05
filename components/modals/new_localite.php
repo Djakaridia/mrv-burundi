@@ -36,45 +36,21 @@
                             <!-- Selection du parent -->
                             <div class="col-lg-12 mt-1">
                                 <div id="parent_niv_1" class="mb-1 d-none">
-                                    <label class="form-label">Région*</label>
+                                    <label class="form-label">Province*</label>
                                     <select class="form-select form-select-sm" name="parent" id="loc_parent_1">
-                                        <option value="">Sélectionner un région</option>
-                                        <?php if ($regions ?? []) : ?>
-                                            <?php foreach ($regions as $region) : ?>
-                                                <option value="<?php echo $region['code'] ?>"><?php echo $region['name'] ?></option>
+                                        <option value="">Sélectionner une province</option>
+                                        <?php if ($provinces ?? []) : ?>
+                                            <?php foreach ($provinces as $province) : ?>
+                                                <option value="<?php echo $province['code'] ?>"><?php echo $province['name'] ?></option>
                                             <?php endforeach; ?>
                                         <?php endif; ?>
                                     </select>
                                 </div>
 
                                 <div id="parent_niv_2" class="mb-1 d-none">
-                                    <label class="form-label">Département*</label>
-                                    <select class="form-select form-select-sm" name="parent" id="loc_parent_2">
-                                        <option value="">Sélectionner un département</option>
-                                        <?php if ($departements ?? []) : ?>
-                                            <?php foreach ($departements as $departement) : ?>
-                                                <option value="<?php echo $departement['code'] ?>"><?php echo $departement['name'] ?></option>
-                                            <?php endforeach; ?>
-                                        <?php endif; ?>
-                                    </select>
-                                </div>
-
-                                <div id="parent_niv_3" class="mb-1 d-none">
-                                    <label class="form-label">Arrondissement*</label>
-                                    <select class="form-select form-select-sm" name="parent" id="loc_parent_3">
-                                        <option value="">Sélectionner un arrondissement</option>
-                                        <?php if ($arrondissements ?? []) : ?>
-                                            <?php foreach ($arrondissements as $arrondissement) : ?>
-                                                <option value="<?php echo $arrondissement['code'] ?>"><?php echo $arrondissement['name'] ?></option>
-                                            <?php endforeach; ?>
-                                        <?php endif; ?>
-                                    </select>
-                                </div>
-
-                                <div id="parent_niv_4" class="mb-1 d-none">
                                     <label class="form-label">Commune*</label>
-                                    <select class="form-select form-select-sm" name="parent" id="loc_parent_4">
-                                        <option value="">Sélectionner un commune</option>
+                                    <select class="form-select form-select-sm" name="parent" id="loc_parent_2">
+                                        <option value="">Sélectionner une commune</option>
                                         <?php if ($communes ?? []) : ?>
                                             <?php foreach ($communes as $commune) : ?>
                                                 <option value="<?php echo $commune['code'] ?>"><?php echo $commune['name'] ?></option>
@@ -142,20 +118,14 @@
 
 <script>
     const libelle = [{
-        api: 'region',
-        title: "une région"
-    }, {
-        api: 'departement',
-        title: "un département"
-    }, {
-        api: 'arrondissement',
-        title: "un arrondissement"
+        api: 'province',
+        title: "une province"
     }, {
         api: 'commune',
         title: "une commune"
     }, {
-        api: 'village',
-        title: "une localité"
+        api: 'colline',
+        title: "une colline"
     }];
     let formLocID = null;
     let formLocNiveau = null;
@@ -202,16 +172,13 @@
                             form.couleur.value = result.data.couleur;
                         }
                         if (niveau == 1) {
-                            $('#loc_parent_' + niveau).val(result.data.region)
+                            $('#loc_parent_' + niveau).val(result.data.province)
                         }
                         if (niveau == 2) {
-                            $('#loc_parent_' + niveau).val(result.data.departement)
+                            $('#loc_parent_' + niveau).val(result.data.commune)
                         }
                         if (niveau == 3) {
-                            $('#loc_parent_' + niveau).val(result.data.arrondissement)
-                        }
-                        if (niveau == 4) {
-                            $('#loc_parent_' + niveau).val(result.data.commune)
+                            $('#loc_parent_' + niveau).val(result.data.colline)
                             form.latitude.value = result.data.latitude;
                             form.longitude.value = result.data.longitude;
                             form.hommes.value = result.data.hommes;

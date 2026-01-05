@@ -19,37 +19,34 @@
     <?php
     include './components/navbar & footer/head.php';
 
-    $region = new Region($db);
-    $regions = $region->read();
-
-    $departement = new Departement($db);
-    $departements = $departement->read();
-
-    $arrondissement = new Arrondissement($db);
-    $arrondissements = $arrondissement->read();
+    // Initialisation des modèles
+    $province = new Province($db);
+    $provinces = $province->read();
 
     $commune = new Commune($db);
     $communes = $commune->read();
 
-    $village = new Village($db);
-    $villages = $village->read();
+    $colline = new Colline($db);
+    $collines = $colline->read();
 
-    $niveau = 4;
-    if (isset($_GET['niveau']) && is_numeric($_GET['niveau']) && $_GET['niveau'] >= 0 && $_GET['niveau'] <= 4) {
+    // Détermination du niveau (0=Provinces, 1=Communes, 2=Collines)
+    $niveau = 2;
+    if (isset($_GET['niveau']) && is_numeric($_GET['niveau']) && $_GET['niveau'] >= 0 && $_GET['niveau'] <= 2) {
         $niveau = (int)$_GET['niveau'];
     }
 
-    $libelle = ["Régions", "Cercles", "Arrondissements", "Communes", "Localités"];
-    $loc_tab = ["t_regions", "t_departements", "t_arrondissements", "t_communes", "t_villages"];
-    $loc_api = ["region", "departement", "arrondissement", "commune", "village"];
+    // Configuration des niveaux
+    $libelle = ["Provinces", "Communes", "Collines"];
+    $loc_tab = ["t_provinces", "t_communes", "t_collines"];
+    $loc_api = ["province", "commune", "colline"];
 
+    // Mapping des jointures
     $join_map = [
-        "t_departements" => ["fk" => "region", "ref" => "t_regions.code"],
-        "t_arrondissements" => ["fk" => "departement", "ref" => "t_departements.code"],
-        "t_communes" => ["fk" => "arrondissement", "ref" => "t_arrondissements.code"],
-        "t_villages" => ["fk" => "commune", "ref" => "t_communes.code"]
+        "t_communes" => ["fk" => "province", "ref" => "t_provinces.code"],
+        "t_collines" => ["fk" => "commune", "ref" => "t_communes.code"]
     ];
 
+    // Construction des requêtes dynamiques
     $select_fields = [];
     $from_tables = [];
     $join_conditions = [];
@@ -72,7 +69,7 @@
         }
     }
 
-    // Construction des requêtes finales
+    // Construction des clauses SQL
     $select_clause = implode(", ", $select_fields);
     $from_clause = implode(", ", $from_tables);
     $where_clause = $join_conditions ? "WHERE " . implode(" AND ", $join_conditions) : "";
@@ -108,7 +105,7 @@
         $query_count .= " " . implode(" ", $joins);
     }
 
-    // Requête pour la totalité des données
+    // Calcul du total
     try {
         $stmt_count = $db->prepare($query_count);
         $stmt_count->execute();
@@ -137,51 +134,44 @@
                         <h4 class="my-1 fw-black">Liste des <?php echo "$libelle[$niveau]"; ?></h4>
                     </div>
 
+                    <!-- Navigation par niveaux -->
                     <ul class="nav nav-underline" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link <?php echo $libelle[$niveau] == "Localités" ? "active" : ""; ?>" href="./localites.php?niveau=4">
-                                Localités
+                            <a class="nav-link <?php echo $libelle[$niveau] == "Collines" ? "active" : ""; ?>" href="./localites.php?niveau=2">
+                                Collines
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?php echo $libelle[$niveau] == "Communes" ? "active" : ""; ?>" href="./localites.php?niveau=3">
+                            <a class="nav-link <?php echo $libelle[$niveau] == "Communes" ? "active" : ""; ?>" href="./localites.php?niveau=1">
                                 Communes
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?php echo $libelle[$niveau] == "Arrondissements" ? "active" : ""; ?>" href="./localites.php?niveau=2">
-                                Arrondissements
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?php echo $libelle[$niveau] == "Cercles" ? "active" : ""; ?>" href="./localites.php?niveau=1">
-                                Cercles
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link <?php echo $libelle[$niveau] == "Régions" ? "active" : ""; ?>" href="./localites.php?niveau=0">
-                                Régions
+                            <a class="nav-link <?php echo $libelle[$niveau] == "Provinces" ? "active" : ""; ?>" href="./localites.php?niveau=0">
+                                Provinces
                             </a>
                         </li>
                     </ul>
 
+                    <!-- Bouton d'ajout -->
                     <div class="ms-lg-2">
                         <?php if (isset($niveau)) {
-                            $lib = $libelle[$niveau];
                             if ($niveau < count($libelle)) { ?>
                                 <button title="Ajouter un <?= "$libelle[$niveau]"; ?>" class="btn btn-subtle-primary btn-sm" id="addBtn" data-bs-toggle="modal"
                                     data-bs-target="#addLocaliteModal" data-niveau="<?= $niveau ?>" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
-                                    <i class="fas fa-plus"></i> Ajouter un <?php echo strtolower("$libelle[$niveau]"); ?></button>
+                                    <i class="fas fa-plus"></i> Ajouter une <?php echo strtolower("$libelle[$niveau]"); ?></button>
                             <?php } ?>
                         <?php } ?>
                     </div>
                 </div>
             </div>
 
+            <!-- Contenu principal -->
             <div class="row mt-3">
                 <div class="col-12">
                     <div class="mx-n4 p-1 mx-lg-n6 bg-body-emphasis border-y">
-                        <div class="table-responsive mx-n1 px-1 pb-3 scrollbar">
+                        <div class="table-responsive mx-n1 px-1 pb-3 scrollbar" style=" min-height: 400px">
+                            <!-- Pagination -->
                             <?php if ($total_pages > 1) { ?>
                                 <nav class="row w-100 bg-success-subtle rounded-0 mx-0 mb-1 py-1">
                                     <div class="col-lg-6 col-12 d-flex justify-content-start align-items-center fs-9">
@@ -232,17 +222,21 @@
                                 </nav>
                             <?php } ?>
 
-                            <table id="id-datatable" class="table table-bordered fs-9 mb-0 border-top border-translucent" style="width:100%">
+                            <!-- Tableau des données -->
+                            <table id="id-datatable" class="table table-bordered fs-9 mb-0 border-top border-translucent" style="width:100%;">
                                 <?php if (count($libelle) > 0 && $niveau < count($libelle)) { ?>
                                     <thead class="bg-secondary-subtle">
                                         <tr>
                                             <td class="px-2" style="min-width:100px;"><strong>Code</strong></td>
 
+                                            <!-- Colonnes des niveaux supérieurs -->
                                             <?php for ($i = 0; $i <= $niveau; $i++) { ?>
                                                 <td class="px-2"><?php echo ($i == $niveau) ? "<strong>$libelle[$i]</strong>" : $libelle[$i]; ?></td>
                                             <?php } ?>
+                                            
+                                            <!-- Colonnes spécifiques pour les provinces -->
                                             <?php if ($niveau == 0) { ?>
-                                                <td class="px-2"><strong>Abbr&eacute;viation</strong></td>
+                                                <td class="px-2"><strong>Abbréviation</strong></td>
                                                 <td class="px-2"><strong>Couleur</strong></td>
                                             <?php } ?>
 
@@ -264,9 +258,7 @@
                                                     <?php if ($niveau == 0) { ?>
                                                         <td class="px-2"><?php echo $localite["sigle"]; ?></td>
                                                         <td class="px-2">
-                                                            <div class="progress-bar progress-bar-info" style="width: 100%;background-color: <?php echo $localite["couleur"]; ?>;height: 20px;">
-                                                                <?php echo $localite["couleur"]; ?>
-                                                            </div>
+                                                            <div class="progress-bar progress-bar-info" style="width: 100%;background-color: <?php echo $localite["couleur"]; ?>;height: 20px;"></div>
                                                         </td>
                                                     <?php } ?>
 
@@ -289,14 +281,6 @@
                                         <?php }
                                         } ?>
                                     </tbody>
-                                <?php } else { ?>
-                                    <tr>
-                                        <td>
-                                            <div align="center" class="">
-                                                <h2>Aucune localit&eacute;/Site</h2>
-                                            </div>
-                                        </td>
-                                    </tr>
                                 <?php } ?>
                             </table>
                         </div>

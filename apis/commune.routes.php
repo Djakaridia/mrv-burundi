@@ -38,10 +38,10 @@ switch ($requestMethod) {
             // Create
             $commune->name = sanitize_input($_POST['name']);
             $commune->code = sanitize_input($_POST['code']);
-            $commune->arrondissement = sanitize_input($_POST['parent']);
+            $commune->province = sanitize_input($_POST['parent']);
             $commune->add_by = sanitize_input($payload['user_id']);
 
-            if (empty($commune->name) || empty($commune->code) || empty($commune->arrondissement)) {
+            if (empty($commune->name) || empty($commune->code) || empty($commune->province)) {
                 echo json_encode(array('status' => 'danger', 'message' => 'Veuillez remplir tous les champs obligatoires.'));
                 exit();
             }
@@ -56,7 +56,7 @@ switch ($requestMethod) {
             $commune->id = sanitize_input($_GET['id']);
             $commune->name = sanitize_input($_POST['name']);
             $commune->code = sanitize_input($_POST['code']);
-            $commune->arrondissement = sanitize_input($_POST['parent']);
+            $commune->province = sanitize_input($_POST['parent']);
             $commune->add_by = sanitize_input($payload['user_id']);
 
             if ($commune->update()) {

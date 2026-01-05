@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $connexion->create();
 
         // Envoyer un email de connexion
-        // $sendmailer->sendLogin($user_data['email'], $user_data['nom'], date('Y-m-d H:i:s'), $_SERVER['REMOTE_ADDR']);
+        $sendmailer->sendLogin($user_data['email'], $user_data['nom'], date('Y-m-d H:i:s'), $_SERVER['REMOTE_ADDR']);
         exit();
     } else {
         http_response_code(405);
