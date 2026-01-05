@@ -90,7 +90,7 @@
                                         </div>
                                     </div>
                                     <div class="card-body p-1">
-                                        <div class="table-responsive mx-n1 px-1 scrollbar">
+                                        <div class="table-responsive mx-n1 px-1 scrollbar" style="min-height: 432px;">
                                             <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
                                                 <thead class="bg-secondary-subtle">
                                                     <tr>
@@ -144,7 +144,7 @@
                                         </div>
                                     </div>
                                     <div class="card-body p-1">
-                                        <div class="table-responsive mx-n1 px-1 scrollbar">
+                                        <div class="table-responsive mx-n1 px-1 scrollbar" style="min-height: 432px;">
                                             <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable2">
                                                 <thead class="bg-secondary-subtle">
                                                     <tr>
@@ -203,7 +203,7 @@
                                         </div>
                                     </div>
                                     <div class="card-body p-1">
-                                        <div class="table-responsive mx-n1 px-1 scrollbar">
+                                        <div class="table-responsive mx-n1 px-1 scrollbar" style="min-height: 432px;">
                                             <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable3">
                                                 <thead class="bg-secondary-subtle">
                                                     <tr>

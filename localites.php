@@ -170,7 +170,7 @@
             <div class="row mt-3">
                 <div class="col-12">
                     <div class="mx-n4 p-1 mx-lg-n6 bg-body-emphasis border-y">
-                        <div class="table-responsive mx-n1 px-1 pb-3 scrollbar" style=" min-height: 400px">
+                        <div class="table-responsive mx-n1 px-1 pb-3 scrollbar" style="min-height: 432px;">
                             <!-- Pagination -->
                             <?php if ($total_pages > 1) { ?>
                                 <nav class="row w-100 bg-success-subtle rounded-0 mx-0 mb-1 py-1">

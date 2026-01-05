@@ -146,7 +146,7 @@
                             <button title="Ajouter" class="btn btn-subtle-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addDocumentModal"><i class="fas fa-plus align-bottom me-1"></i> Ajouter un fichier</button>
                         </div>
                     </div>
-                    <div class="table-responsive scrollbar">
+                    <div class="table-responsive scrollbar" style="min-height: 432px;">
                         <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
                             <thead class="bg-secondary-subtle">
                                 <tr>
