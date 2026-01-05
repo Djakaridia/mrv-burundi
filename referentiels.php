@@ -25,8 +25,8 @@
   $zone_types = new ZoneType($db);
   $zone_types = $zone_types->read();
 
-  $regions = new Region($db);
-  $regions = $regions->read();
+  $province = new Province($db);
+  $provinces = $province->read();
 
   $structure = new Structure($db);
   $structures = $structure->read();

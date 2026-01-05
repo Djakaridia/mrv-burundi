@@ -47,7 +47,6 @@ switch ($requestMethod) {
             $structure->email = sanitize_input($_POST['email']);
             $structure->phone = sanitize_input($_POST['phone']);
             $structure->address = sanitize_input($_POST['address']??"");
-            $structure->secteur_id = sanitize_input($_POST['secteur_id']??"");
             $structure->description = sanitize_input($_POST['description']??"");
             $structure->type_id = sanitize_input($_POST['type_id']);
             $structure->add_by = sanitize_input($payload['user_id']);
@@ -76,7 +75,6 @@ switch ($requestMethod) {
             $structure->email = sanitize_input($_POST['email']);
             $structure->phone = sanitize_input($_POST['phone']);
             $structure->address = sanitize_input($_POST['address']??"");
-            $structure->secteur_id = sanitize_input($_POST['secteur_id']??"");
             $structure->description = sanitize_input($_POST['description']??"");
             $structure->type_id = sanitize_input($_POST['type_id']);
             $structure->add_by = sanitize_input($payload['user_id']);

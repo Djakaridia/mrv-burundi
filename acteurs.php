@@ -26,12 +26,6 @@
   $type_structure = new StructureType($db);
   $type_structures = $type_structure->read();
 
-  $secteur = new Secteur($db);
-  $data_secteurs = $secteur->read();
-  $secteurs = array_filter(array_reverse($data_secteurs), function ($secteur) {
-    return $secteur['parent_id'] == 0;
-  });
-
   ?>
 </head>
 
@@ -77,7 +71,6 @@
                         <th class="sort align-middle" scope="col" data-sort="rating">Email</th>
                         <th class="sort align-middle" scope="col" data-sort="rating">Contact</th>
                         <th class="sort align-middle" scope="col" data-sort="review">Type</th>
-                        <th class="sort align-middle" scope="col" data-sort="review">Secteur</th>
                         <th class="sort align-middle" scope="col" style="min-width:100px;">Actions</th>
                       </tr>
                     </thead>
@@ -102,13 +95,6 @@
                             <?php foreach ($type_structures as $type_structure) { ?>
                               <?php if ($type_structure['id'] == $structure['type_id']) { ?>
                                 <?php echo $type_structure['name']; ?>
-                              <?php } ?>
-                            <?php } ?>
-                          </td>
-                          <td class="align-middle text-start status">
-                          <?php foreach ($secteurs as $secteur) { ?>
-                              <?php if ($secteur['id'] == $structure['secteur_id']) { ?>
-                                <?php echo $secteur['name']; ?>
                               <?php } ?>
                             <?php } ?>
                           </td>

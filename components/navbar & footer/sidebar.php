@@ -119,18 +119,18 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                                     </a>
                                 </li>
                                 <li class="nav-item overflow-hidden">
-                                    <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'referentiels' ? 'active' : '' ?>" href="referentiels.php">
-                                        <div class="d-flex align-items-center">
-                                            <span class="fas fa-chevron-right fs-11"></span>
-                                            <span class="nav-link-text ms-lg-0 ms-1">Dictionnaire d'indicateurs</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item overflow-hidden">
                                     <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'autres_parametres' ? 'active' : '' ?>" href="autres_parametres.php">
                                         <div class="d-flex align-items-center">
                                             <span class="fas fa-chevron-right fs-11"></span>
                                             <span class="nav-link-text ms-lg-0 ms-1">Autres paramètres</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="nav-item overflow-hidden">
+                                    <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'referentiels' ? 'active' : '' ?>" href="referentiels.php">
+                                        <div class="d-flex align-items-center">
+                                            <span class="fas fa-chevron-right fs-11"></span>
+                                            <span class="nav-link-text ms-lg-0 ms-1">Dictionnaire d'indicateurs</span>
                                         </div>
                                     </a>
                                 </li>

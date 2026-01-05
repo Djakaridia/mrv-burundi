@@ -21,7 +21,7 @@
                 <div id="structureContentContainer" style="display: none;">
                     <form action="" name="FormStructure" id="FormStructure" method="POST" enctype="multipart/form-data">
                         <div class="row g-4">
-                            <div class="col-lg-6 mt-1">
+                            <div class="col-lg-4 mt-1">
                                 <div class="mb-1">
                                     <label class="form-label">Code*</label>
                                     <input oninput="checkColumns('code', 'structure_code', 'structure_codeFeedback', 'structures')" class="form-control" type="text" name="code" id="structure_code" placeholder="Entrer le code"
@@ -29,29 +29,14 @@
                                     <div id="structure_codeFeedback" class="invalid-feedback"></div>
                                 </div>
                             </div>
-                            <div class="col-lg-6 mt-1">
+                            <div class="col-lg-4 mt-1">
                                 <div class="mb-1">
                                     <label class="form-label">Sigle*</label>
                                     <input class="form-control" type="text" name="sigle" placeholder="Entrer le sigle"
                                         required />
                                 </div>
                             </div>
-
-                            <div class="col-lg-6 mt-1">
-                                <div class="mb-1">
-                                    <label class="form-label">Email*</label>
-                                    <input class="form-control" type="email" name="email" placeholder="Entrer l'email"
-                                        required />
-                                </div>
-                            </div>
-                            <div class="col-lg-6 mt-1">
-                                <div class="mb-1">
-                                    <label class="form-label">Contact*</label>
-                                    <input class="form-control" type="text" name="phone" placeholder="Entrer le contact"
-                                        required />
-                                </div>
-                            </div>
-                            <div class="col-lg-6 mt-1">
+                            <div class="col-lg-4 mt-1">
                                 <div class="mb-1">
                                     <label class="form-label">Type*</label>
                                     <select class="form-select" name="type_id" id="structure_type_id" required>
@@ -69,19 +54,19 @@
 
                             <div class="col-lg-6 mt-1">
                                 <div class="mb-1">
-                                    <label class="form-label">Secteur*</label>
-                                    <select class="form-select" name="secteur_id" id="structure_secteur_id" required>
-                                        <option value="">Sélectionner le secteur</option>
-                                        <?php if ($secteurs ?? []) : ?>
-                                            <?php foreach ($secteurs as $secteur) { ?>
-                                                <option value="<?php echo $secteur['id']; ?>">
-                                                    <?php echo $secteur['name']; ?>
-                                                </option>
-                                            <?php } ?>
-                                        <?php endif; ?>
-                                    </select>
+                                    <label class="form-label">Email*</label>
+                                    <input class="form-control" type="email" name="email" placeholder="Entrer l'email"
+                                        required />
                                 </div>
                             </div>
+                            <div class="col-lg-6 mt-1">
+                                <div class="mb-1">
+                                    <label class="form-label">Contact*</label>
+                                    <input class="form-control" type="text" name="phone" placeholder="Entrer le contact"
+                                        required />
+                                </div>
+                            </div>
+                            
 
                             <div class="col-lg-2 mt-1">
                                 <div class="mb-1">
@@ -106,7 +91,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-lg-12 mt-0">
+                            <div class="col-lg-12 mt-n3">
                                 <div class="mb-1">
                                     <label class="form-label">Description</label>
                                     <textarea class="form-control" name="description" id="description_structure"
@@ -159,7 +144,6 @@
                     form.email.value = result.data.email;
                     form.phone.value = result.data.phone;
                     form.address.value = result.data.address;
-                    form.secteur_id.value = result.data.secteur_id;
                     form.description.value = result.data.description;
                     form.type_id.value = result.data.type_id;
 

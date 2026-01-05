@@ -11,7 +11,6 @@ class Structure
     public $email;
     public $phone;
     public $address;
-    public $secteur_id;
     public $description;
     public $type_id;
     public $add_by;
@@ -25,8 +24,8 @@ class Structure
     public function create()
     {
         $query = "INSERT INTO " . $this->table . " 
-                 (code, sigle, logo, email, phone, address, secteur_id, description, type_id, add_by) 
-                 VALUES (:code, :sigle, :logo, :email, :phone, :address, :secteur_id, :description, :type_id, :add_by)";
+                 (code, sigle, logo, email, phone, address, description, type_id, add_by) 
+                 VALUES (:code, :sigle, :logo, :email, :phone, :address, :description, :type_id, :add_by)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':code', $this->code);
         $stmt->bindParam(':sigle', $this->sigle);
@@ -34,7 +33,6 @@ class Structure
         $stmt->bindParam(':email', $this->email);
         $stmt->bindParam(':phone', $this->phone);
         $stmt->bindParam(':address', $this->address);
-        $stmt->bindParam(':secteur_id', $this->secteur_id);
         $stmt->bindParam(':description', $this->description);
         $stmt->bindParam(':type_id', $this->type_id);
         $stmt->bindParam(':add_by', $this->add_by);
@@ -76,7 +74,6 @@ class Structure
                      email = :email, 
                      phone = :phone, 
                      address = :address, 
-                     secteur_id = :secteur_id, 
                      description = :description, 
                      type_id = :type_id,
                      add_by = :add_by,
@@ -91,7 +88,6 @@ class Structure
         $stmt->bindParam(':email', $this->email);
         $stmt->bindParam(':phone', $this->phone);
         $stmt->bindParam(':address', $this->address);
-        $stmt->bindParam(':secteur_id', $this->secteur_id);
         $stmt->bindParam(':description', $this->description);
         $stmt->bindParam(':type_id', $this->type_id);
         $stmt->bindParam(':add_by', $this->add_by);
