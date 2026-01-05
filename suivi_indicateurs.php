@@ -151,9 +151,9 @@
                                         ?>
 
                                             <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                                                <td class="align-middle white-space-nowrap px-2 py-0"> <?php echo $indicateur['code']; ?> </td>
-                                                <td class="align-middle white-space-nowrap px-2"> <?php echo $indicateur['intitule']; ?> </td>
-                                                <td class="align-middle white-space-nowrap px-2 py-0">
+                                                <td class="align-middle px-2 py-0"> <?php echo $indicateur['code']; ?> </td>
+                                                <td class="align-middle px-2"> <?php echo $indicateur['intitule']; ?> </td>
+                                                <td class="align-middle px-2 py-0">
                                                     <?php foreach ($unites as $unite) { ?>
                                                         <?php if ($unite['id'] == $indicateur['unite']) { ?>
                                                             <?php echo $unite['name']; ?>
@@ -161,11 +161,11 @@
                                                     <?php } ?>
                                                 </td>
 
-                                                <td class="align-middle white-space-nowrap px-2 py-0"> <?php echo strtoupper($referentiel_curr['categorie'] ?? '-'); ?> </td>
-                                                <td class="align-middle white-space-nowrap px-2 py-0"> <?php echo listModeCalcul()[$indicateur['mode_calcul'] ?? '-']; ?> </td>
+                                                <td class="align-middle px-2 py-0"> <?php echo strtoupper($referentiel_curr['categorie'] ?? '-'); ?> </td>
+                                                <td class="align-middle px-2 py-0"> <?php echo listModeCalcul()[$indicateur['mode_calcul'] ?? '-']; ?> </td>
 
                                                 <?php for ($year = date('Y', strtotime($project_curr['start_date'])); $year <= date('Y', strtotime($project_curr['end_date'])); $year++): ?>
-                                                    <td class="align-middle bg-light dark__bg-secondary white-space-nowrap px-2 py-0 border text-center">
+                                                    <td class="align-middle bg-light dark__bg-secondary px-2 py-0 border text-center">
                                                         <?= calculSuiviData($suivis_cmr_grouped[$year] ?? [], $indicateur['mode_calcul']) ?>
                                                     </td>
                                                 <?php endfor; ?>

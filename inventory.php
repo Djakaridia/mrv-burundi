@@ -165,7 +165,7 @@
                                             <?php foreach ($current_inventory_data['data'] as $row) { ?>
                                                 <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                                                     <?php foreach ($row as $value) { ?>
-                                                        <td class="align-middle white-space-nowrap px-2"> <?php echo $value; ?> </td>
+                                                        <td class="align-middle px-2"> <?php echo $value; ?> </td>
                                                     <?php } ?>
                                                 </tr>
                                             <?php } ?>

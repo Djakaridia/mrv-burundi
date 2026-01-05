@@ -116,7 +116,7 @@
   let suiviCMRId = null;
   let indicCMRId = null;
   const suiviSecteurs = Object.values(<?php echo json_encode($secteurs_project ?? []); ?>);
-  const suiviRegions = Object.values(<?php echo json_encode($regions ?? []); ?>);
+  const suiviProvinces = Object.values(<?php echo json_encode($provinces ?? []); ?>);
   const suiviZones = Object.values(<?php echo json_encode($zones ?? []); ?>);
   const suiviTypologies = Object.values(<?php echo json_encode($typologies ?? []); ?>);
 
@@ -354,13 +354,13 @@
   function configEchelle(echelle) {
     $('#echelleContainerSuivi').html('');
     switch (echelle) {
-      case 'regionale':
+      case 'provincial':
         $('#echelleContainerSuivi').html(`
           <div class="mb-1">
-              <label class="form-label">Région*</label>
-              <select class="form-select" name="echelle" id="echelle_region_id" required>
-                  <option value="" selected disabled>Selectionner une region</option>
-                  ${suiviRegions.map(region => `<option value="${region.code}">${region.name}</option>`).join('')}
+              <label class="form-label">Province*</label>
+              <select class="form-select" name="echelle" id="echelle_province_id" required>
+                  <option value="" selected disabled>Selectionner une province</option>
+                  ${suiviProvinces.map(province => `<option value="${province.code}">${province.name}</option>`).join('')}
               </select>
           </div>`);
         break;

@@ -16,8 +16,8 @@
             <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable3">
                 <thead class="bg-secondary-subtle">
                     <tr>
-                        <th class="sort white-space-nowrap align-middle">Logo</th>
-                        <th class="sort white-space-nowrap align-middle">Code</th>
+                        <th class="sort align-middle">Logo</th>
+                        <th class="sort align-middle">Code</th>
                         <th class="sort align-middle">Intitulé</th>
                         <th class="sort align-middle">Bailleur</th>
                         <th class="sort align-middle" style="min-width:110px;">Montant (FCFA)</th>
@@ -28,7 +28,7 @@
                 <tbody class="list" id="table-latest-review-body">
                     <?php foreach ($conventions_project as $convention) { ?>
                         <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                            <td class="align-middle product white-space-nowrap py-0">
+                            <td class="align-middle product py-0">
                                 <?php foreach ($structures as $structure) {
                                     $logoStruc = explode("../", $structure['logo'] ?? ''); ?>
                                     <?php if ($structure['id'] == $convention['structure_id']) { ?>
@@ -42,8 +42,8 @@
                                     <?php } ?>
                                 <?php } ?>
                             </td>
-                            <td class="align-middle product white-space-nowrap"><?php echo $convention['code']; ?></td>
-                            <td class="align-middle customer white-space-nowrap"><?php echo $convention['name']; ?></td>
+                            <td class="align-middle product"><?php echo $convention['code']; ?></td>
+                            <td class="align-middle customer"><?php echo $convention['name']; ?></td>
                             <td class="align-middle review">
                                 <?php foreach ($structures as $structure) { ?>
                                     <?php if ($structure['id'] == $convention['structure_id']) { ?>
@@ -51,10 +51,10 @@
                                     <?php } ?>
                                 <?php } ?>
                             </td>
-                            <td class="align-middle rating white-space-nowrap" style="min-width:200px;">
+                            <td class="align-middle rating" style="min-width:200px;">
                                 <span class="badge bg-info-subtle text-info p-2 fs-10"><?php echo number_format($convention['montant'], 0, ',', ' '); ?></span>
                             </td>
-                            <td class="align-middle date white-space-nowrap">
+                            <td class="align-middle date">
                                 <?php echo date('Y-m-d', strtotime($convention['date_accord'])); ?>
                             </td>
                             <td class="align-middle">

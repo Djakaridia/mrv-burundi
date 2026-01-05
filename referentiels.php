@@ -46,7 +46,7 @@
     return $secteur['parent_id'] > 0 && $secteur['state'] == 'actif';
   });
 
-  $modeles_typologie = array('valeur_relative','typo_quantitative','typo_qualitative')
+  $modeles_typologie = array('valeur_relative', 'typo_quantitative', 'typo_qualitative')
   ?>
 </head>
 
@@ -93,13 +93,13 @@
                   </tr>
                 </thead>
                 <tbody class="list" id="table-latest-referentiel-body">
-                  <?php foreach ($referentiels as $referentiel): 
-                     $conventionRio = new ConventionRio($db);
-                     $conventionRio->referentiel_id = $referentiel['id'];
-                     $conventionRioRef = $conventionRio->readByReferentielId();
-                    ?>
+                  <?php foreach ($referentiels as $referentiel):
+                    $conventionRio = new ConventionRio($db);
+                    $conventionRio->referentiel_id = $referentiel['id'];
+                    $conventionRioRef = $conventionRio->readByReferentielId();
+                  ?>
                     <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                      <td class="align-middle white-space-nowrap px-2">
+                      <td class="align-middle px-2">
                         <div class="d-flex align-items-start justify-content-end gap-2">
                           <?php if ($referentiel['in_dashboard'] == 1): ?>
                             <span class="badge bg-light p-1" title="Indicateur affiché sur le tableau de bord"><i class="fas fa-home text-primary"></i></span>
@@ -108,11 +108,11 @@
                         </div>
                       </td>
 
-                      <td class="align-middle white-space-nowrap px-2">
+                      <td class="align-middle px-2">
                         <?php echo $referentiel['intitule']; ?>
                       </td>
 
-                      <td class="align-middle white-space-nowrap px-2">
+                      <td class="align-middle px-2">
                         <?php foreach ($unites as $unite): ?>
                           <?php if ($unite['id'] == $referentiel['unite']): ?>
                             <?php echo $unite['name']; ?>
@@ -120,11 +120,11 @@
                         <?php endforeach; ?>
                       </td>
 
-                      <td class="align-middle white-space-nowrap px-2">
+                      <td class="align-middle px-2">
                         <?php echo listModeAggregation()[$referentiel['fonction_agregation']]; ?>
                       </td>
 
-                      <td class="align-middle white-space-nowrap px-2">
+                      <td class="align-middle px-2">
                         <?php echo strtoupper($referentiel['categorie']); ?>
                         <br>
                         <?php if (in_array($referentiel['modele'], $modeles_typologie)) : ?>
@@ -135,7 +135,7 @@
                         <?php endif; ?>
                       </td>
 
-                      <td class="align-middle white-space-nowrap px-2">
+                      <td class="align-middle px-2">
                         <?php foreach ($structures as $structure): ?>
                           <?php if ($structure['id'] == $referentiel['responsable']): ?>
                             <?php echo $structure['sigle']; ?>
@@ -149,7 +149,7 @@
                       </td>
 
                       <td class="align-middle text-start px-2">
-                        <?php if(!empty($conventionRioRef)) : ?>
+                        <?php if (!empty($conventionRioRef)) : ?>
                           <?php foreach ($conventionRioRef as $conventionRio): ?>
                             <?php foreach ($programmes as $programme): ?>
                               <?php if ($programme['id'] == $conventionRio['programme']): ?>
@@ -157,8 +157,8 @@
                               <?php endif; ?>
                             <?php endforeach; ?>
                           <?php endforeach; ?>
-                        <br>
-                        <?php endif; ?> 
+                          <br>
+                        <?php endif; ?>
 
                         <button title="Modifier" type="button" class="btn btn-sm btn-link text-primary fs-10 p-0 m-0" data-bs-toggle="modal" data-bs-target="#addConventionRioModal"
                           data-referentiel_id="<?php echo $referentiel['id']; ?>">
@@ -166,7 +166,7 @@
                         </button>
                       </td>
 
-                      <td class="align-middle white-space-nowrap px-2">
+                      <td class="align-middle px-2">
                         <button title="Métadonnées" type="button" class="btn btn-sm btn-link text-primary p-0 m-0" data-bs-toggle="modal" data-bs-target="#addMetadataModal"
                           data-referentiel_id="<?php echo $referentiel['id']; ?>">
                           Métadonnées

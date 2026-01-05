@@ -70,7 +70,7 @@
                 <tbody class="list" id="table-latest-review-body">
                   <?php foreach ($users as $user): ?>
                     <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                      <td class="align-middle customer white-space-nowrap px-2">
+                      <td class="align-middle customer px-2">
                         <div class="d-flex align-items-center text-body gap-2">
                           <div class="avatar avatar-l">
                             <img class="rounded-circle border border-light" src="assets/img/team/avatar.webp" alt="" />
@@ -78,23 +78,23 @@
                           <span class="text-body text-capitalize"><?php echo $user['nom'] . ' ' . $user['prenom']; ?></span>
                         </div>
                       </td>
-                      <td class="align-middle product white-space-nowrap px-2"><?php echo $user['email']; ?></td>
-                      <td class="align-middle product white-space-nowrap px-2"><?php echo $user['phone']; ?></td>
-                      <td class="align-middle product white-space-nowrap px-2 py-0">
+                      <td class="align-middle product px-2"><?php echo $user['email']; ?></td>
+                      <td class="align-middle product px-2"><?php echo $user['phone']; ?></td>
+                      <td class="align-middle product px-2 py-0">
                         <?php foreach ($roles as $role): ?>
                           <?php if ($user['role_id'] == $role['id']): ?>
                             <?php echo $role['name']; ?>
                           <?php endif; ?>
                         <?php endforeach; ?>
                       </td>
-                      <td class="align-middle product white-space-nowrap px-2 py-0">
+                      <td class="align-middle product px-2 py-0">
                         <?php foreach ($structures as $structure): ?>
                           <?php if ($user['structure_id'] == $structure['id']): ?>
                             <?php echo $structure['sigle']; ?>
                           <?php endif; ?>
                         <?php endforeach; ?>
                       </td>
-                      <td class="align-middle product white-space-nowrap px-2 py-0">
+                      <td class="align-middle product px-2 py-0">
                         <?php echo $user['fonction'] == 'point_focal' ? 'Point Focal' : 'Simple'; ?>
                       </td>
                       <td class="align-middle text-start status">

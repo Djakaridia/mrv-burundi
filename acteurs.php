@@ -65,8 +65,8 @@
                   <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
                     <thead class="bg-secondary-subtle">
                       <tr>
-                        <th class="sort white-space-nowrap align-middle" scope="col">#</th>
-                        <th class="sort white-space-nowrap align-middle" scope="col" data-sort="product">Code</th>
+                        <th class="sort align-middle" scope="col">#</th>
+                        <th class="sort align-middle" scope="col" data-sort="product">Code</th>
                         <th class="sort align-middle" scope="col" data-sort="rating">Sigle</th>
                         <th class="sort align-middle" scope="col" data-sort="rating">Email</th>
                         <th class="sort align-middle" scope="col" data-sort="rating">Contact</th>
@@ -78,7 +78,7 @@
                       <?php foreach ($structures as $structure) {
                         $logoStruc = explode("../", $structure['logo'] ?? ''); ?>
                         <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                          <td class="align-middle product white-space-nowrap py-1">
+                          <td class="align-middle product py-1">
                             <?php if ($structure['logo']) { ?>
                               <img class="d-block rounded-1 w-100 object-fit-contain" src="<?php echo end($logoStruc) ?>" alt="Logo" height="35" />
                             <?php } else { ?>
@@ -87,10 +87,10 @@
                               </div>
                             <?php } ?>
                           </td>
-                          <td class="align-middle product white-space-nowrap"><?php echo $structure['code']; ?></td>
-                          <td class="align-middle rating white-space-nowrap"><?php echo $structure['sigle']; ?></td>
-                          <td class="align-middle rating white-space-nowrap"><?php echo $structure['email']; ?></td>
-                          <td class="align-middle rating white-space-nowrap"><?php echo $structure['phone']; ?></td>
+                          <td class="align-middle product"><?php echo $structure['code']; ?></td>
+                          <td class="align-middle rating"><?php echo $structure['sigle']; ?></td>
+                          <td class="align-middle rating"><?php echo $structure['email']; ?></td>
+                          <td class="align-middle rating"><?php echo $structure['phone']; ?></td>
                           <td class="align-middle review">
                             <?php foreach ($type_structures as $type_structure) { ?>
                               <?php if ($type_structure['id'] == $structure['type_id']) { ?>
@@ -172,11 +172,11 @@
                     <tbody class="list" id="table-latest-review-body">
                       <?php foreach ($type_structures as $type_structure): ?>
                         <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                          <td class="align-middle customer white-space-nowrap">
+                          <td class="align-middle customer">
                             <?php echo $type_structure['name'] ?>
                           </td>
                           
-                          <td class="align-middle customer white-space-nowrap">
+                          <td class="align-middle customer">
                             <?php echo $type_structure['description'] ?>
                           </td>
 

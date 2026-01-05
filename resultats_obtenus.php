@@ -113,9 +113,9 @@
                                             }
                                         ?>
                                             <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                                                <td class="align-middle white-space-nowrap px-2 py-0"> <?php echo $referentiel['code']; ?> </td>
-                                                <td class="align-middle white-space-nowrap px-2"> <?php echo $referentiel['intitule']; ?> </td>
-                                                <td class="align-middle white-space-nowrap px-2 py-0">
+                                                <td class="align-middle px-2 py-0"> <?php echo $referentiel['code']; ?> </td>
+                                                <td class="align-middle px-2"> <?php echo $referentiel['intitule']; ?> </td>
+                                                <td class="align-middle px-2 py-0">
                                                     <?php foreach ($unites as $unite) { ?>
                                                         <?php if ($unite['id'] == $referentiel['unite']) { ?>
                                                             <?php echo $unite['name']; ?>
@@ -123,8 +123,8 @@
                                                     <?php } ?>
                                                 </td>
 
-                                                <td class="align-middle white-space-nowrap px-2 py-0"> <?php echo strtoupper($referentiel['categorie'] ?? '-'); ?> </td>
-                                                <td class="align-middle white-space-nowrap px-2 py-0">
+                                                <td class="align-middle px-2 py-0"> <?php echo strtoupper($referentiel['categorie'] ?? '-'); ?> </td>
+                                                <td class="align-middle px-2 py-0">
                                                     <?php foreach ($structures as $structure): ?>
                                                         <?php if ($structure['id'] == $referentiel['responsable']): ?>
                                                             <?php echo $structure['sigle']; ?>

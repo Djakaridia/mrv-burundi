@@ -74,9 +74,9 @@
                                 <tbody class="list" id="table-latest-review-body">
                                     <?php foreach ($programmes as $programme) { ?>
                                         <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                                            <td class="align-middle customer white-space-nowrap"><?= $programme['code'] ?></td>
-                                            <td class="align-middle product white-space-nowrap"><?= $programme['name'] ?></td>
-                                            <td class="align-middle product white-space-nowrap"><?= $programme['sigle'] ?></td>
+                                            <td class="align-middle customer"><?= $programme['code'] ?></td>
+                                            <td class="align-middle product"><?= $programme['name'] ?></td>
+                                            <td class="align-middle product"><?= $programme['sigle'] ?></td>
                                             <td class="align-middle review">
                                                 <div class="position-relative">
                                                     <div class="">

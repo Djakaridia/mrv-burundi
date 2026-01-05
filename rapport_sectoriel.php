@@ -144,7 +144,7 @@
                                                     <td class="align-middle"><?= $projet['code'] ?></td>
                                                     <td class="align-middle"><?= $projet['name'] ?></td>
                                                     <td class="align-middle"><?= $projet['action_name'] ?></td>
-                                                    <td class="align-middle rating white-space-nowrap" style="min-width:200px;">
+                                                    <td class="align-middle rating" style="min-width:200px;">
                                                         <span class="badge bg-warning-subtle text-warning p-2 fs-10"><?php echo number_format($projet['budget'], 0, ',', ' '); ?></span>
                                                     </td>
                                                     <td class="align-middle"><?= $projet['structure_sigle'] ?></td>
@@ -185,7 +185,7 @@
                                             <?php foreach ($data_vw as $row) { ?>
                                                 <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                                                     <?php foreach ($row as $value) { ?>
-                                                        <td class="align-middle white-space-nowrap px-2"> <?php echo $value; ?> </td>
+                                                        <td class="align-middle px-2"> <?php echo $value; ?> </td>
                                                     <?php } ?>
                                                 </tr>
                                             <?php } ?>
@@ -217,7 +217,7 @@
                                             <?php foreach ($structures as $structure) {
                                                 $logoStruc = explode("../", $structure['logo'] ?? ''); ?>
                                                 <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                                                    <td class="align-middle product white-space-nowrap py-1">
+                                                    <td class="align-middle product py-1">
                                                         <?php if ($structure['logo']) { ?>
                                                             <img class="d-block rounded-1 w-100 object-fit-contain" src="<?php echo end($logoStruc) ?>" alt="Logo" height="35" />
                                                         <?php } else { ?>
@@ -226,10 +226,10 @@
                                                             </div>
                                                         <?php } ?>
                                                     </td>
-                                                    <td class="align-middle product white-space-nowrap"><?php echo $structure['code']; ?></td>
-                                                    <td class="align-middle rating white-space-nowrap"><?php echo $structure['sigle']; ?></td>
-                                                    <td class="align-middle rating white-space-nowrap"><?php echo $structure['email']; ?></td>
-                                                    <td class="align-middle rating white-space-nowrap"><?php echo $structure['phone']; ?></td>
+                                                    <td class="align-middle product"><?php echo $structure['code']; ?></td>
+                                                    <td class="align-middle rating"><?php echo $structure['sigle']; ?></td>
+                                                    <td class="align-middle rating"><?php echo $structure['email']; ?></td>
+                                                    <td class="align-middle rating"><?php echo $structure['phone']; ?></td>
                                                     <td class="align-middle review">
                                                         <?php foreach ($type_structures as $type_structure) { ?>
                                                             <?php if ($type_structure['id'] == $structure['type_id']) { ?>
@@ -266,7 +266,7 @@
                                         <tbody class="list" id="table-latest-review-body">
                                             <?php foreach ($conventions as $convention) { ?>
                                                 <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                                                    <td class="align-middle product white-space-nowrap py-0">
+                                                    <td class="align-middle product py-0">
                                                         <?php foreach ($structures as $structure) {
                                                             $logoStruc = explode("../", $structure['logo'] ?? ''); ?>
                                                             <?php if ($structure['id'] == $convention['structure_id']) { ?>
@@ -280,8 +280,8 @@
                                                             <?php } ?>
                                                         <?php } ?>
                                                     </td>
-                                                    <td class="align-middle product white-space-nowrap"><?php echo $convention['code']; ?></td>
-                                                    <td class="align-middle customer white-space-nowrap"><?php echo $convention['name']; ?></td>
+                                                    <td class="align-middle product"><?php echo $convention['code']; ?></td>
+                                                    <td class="align-middle customer"><?php echo $convention['name']; ?></td>
                                                     <td class="align-middle review">
                                                         <?php foreach ($structures as $structure) { ?>
                                                             <?php if ($structure['id'] == $convention['structure_id']) { ?>
@@ -289,10 +289,10 @@
                                                             <?php } ?>
                                                         <?php } ?>
                                                     </td>
-                                                    <td class="align-middle rating white-space-nowrap" style="min-width:200px;">
+                                                    <td class="align-middle rating" style="min-width:200px;">
                                                         <span class="badge bg-info-subtle text-info p-2 fs-10"><?php echo number_format($convention['montant'], 0, ',', ' '); ?></span>
                                                     </td>
-                                                    <td class="align-middle date white-space-nowrap">
+                                                    <td class="align-middle date">
                                                         <?php echo date('Y-m-d', strtotime($convention['date_accord'])); ?>
                                                     </td>
                                                 </tr>

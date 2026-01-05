@@ -103,8 +103,8 @@
 
                                                     <?php foreach ($unites as $unite) { ?>
                                                         <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                                                            <td class="align-middle customer white-space-nowrap"><?= $unite['name'] ?></td>
-                                                            <td class="align-middle product white-space-nowrap"><?= $unite['description'] ?></td>
+                                                            <td class="align-middle customer"><?= $unite['name'] ?></td>
+                                                            <td class="align-middle product"><?= $unite['description'] ?></td>
                                                             <td class="align-middle review">
                                                                 <div class="position-relative">
                                                                     <?php if (checkPermis($db, 'update')) : ?>
@@ -158,9 +158,9 @@
 
                                                     <?php foreach ($priorites as $priorite) { ?>
                                                         <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                                                            <td class="align-middle customer white-space-nowrap"><?= $priorite['name'] ?></td>
-                                                            <td class="align-middle product white-space-nowrap"> <input type="color" disabled value="<?= $priorite['couleur'] ?>"></td>
-                                                            <td class="align-middle product white-space-nowrap"><?= $priorite['description'] ?></td>
+                                                            <td class="align-middle customer"><?= $priorite['name'] ?></td>
+                                                            <td class="align-middle product"> <input type="color" disabled value="<?= $priorite['couleur'] ?>"></td>
+                                                            <td class="align-middle product"><?= $priorite['description'] ?></td>
                                                             <td class="align-middle review">
                                                                 <div class="position-relative">
                                                                     <div class="">
@@ -218,10 +218,10 @@
                                                     <?php foreach ($actions as $action) { ?>
                                                         <tr
                                                             class="hover-actions-trigger btn-reveal-trigger position-static">
-                                                            <td class="align-middle customer white-space-nowrap"><?= $action['code'] ?></td>
-                                                            <td class="align-middle product white-space-nowrap"><?= $action['name'] ?></td>
-                                                            <td class="align-middle product white-space-nowrap"><?= $action['objectif'] ?></td>
-                                                            <td class="align-middle product white-space-nowrap py-0">
+                                                            <td class="align-middle customer"><?= $action['code'] ?></td>
+                                                            <td class="align-middle product"><?= $action['name'] ?></td>
+                                                            <td class="align-middle product"><?= $action['objectif'] ?></td>
+                                                            <td class="align-middle product py-0">
                                                                 <?php foreach ($secteurs as $secteur) : ?>
                                                                     <?php if ($action['secteur_id'] == $secteur['id']) : ?>
                                                                         <?php echo $secteur['name']; ?>

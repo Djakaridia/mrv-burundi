@@ -100,7 +100,7 @@
                                     <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable2">
                                         <thead class="bg-secondary-subtle">
                                             <tr>
-                                                <th class="sort white-space-nowrap align-middle" scope="col" data-sort="product">Niveau</th>
+                                                <th class="sort align-middle" scope="col" data-sort="product">Niveau</th>
                                                 <th class="sort align-middle" scope="col" data-sort="customer" style="min-width:300px;">Intitulé</th>
                                                 <th class="sort align-middle" scope="col" data-sort="customer" style="min-width:300px;">Type</th>
                                                 <th class="sort pe-0 align-middle" scope="col" style="width: 100px;">Actions</th>
@@ -109,7 +109,7 @@
                                         <tbody class="list" id="table-latest-review-body">
                                             <?php foreach ($niveaux as $niveau) { ?>
                                                 <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                                                    <td class="align-middle product white-space-nowrap"><?php echo $niveau['level']; ?></td>
+                                                    <td class="align-middle product"><?php echo $niveau['level']; ?></td>
                                                     <td class="align-middle customer"><?php echo $niveau['name']; ?></td>
                                                     <td class="align-middle customer text-capitalize"><?php echo $niveau['type']; ?></td>
                                                     <td class="align-middle pe-0">
@@ -173,7 +173,7 @@
                                     <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
                                         <thead class="bg-secondary-subtle">
                                             <tr>
-                                                <th class="sort white-space-nowrap align-middle" scope="col">Code</th>
+                                                <th class="sort align-middle" scope="col">Code</th>
                                                 <th class="sort align-middle" scope="col" style="min-width:300px;">Objectif de niveau</th>
                                                 <th class="sort align-middle" scope="col" style="min-width:300px;">Niveau de résultat</th>
                                                 <th class="sort align-middle" scope="col" style="width: 100px;">Actions</th>
@@ -182,7 +182,7 @@
                                         <tbody class="list" id="table-latest-review-body">
                                             <?php foreach ($niveau_resultats as $niveau_resultat) { ?>
                                                 <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                                                    <td class="align-middle product white-space-nowrap"><?php echo $niveau_resultat['code']; ?></td>
+                                                    <td class="align-middle product"><?php echo $niveau_resultat['code']; ?></td>
                                                     <td class="align-middle customer"><?php echo $niveau_resultat['name']; ?></td>
                                                     <td class="align-middle customer">
                                                         <?php foreach ($niveaux as $niveau) { ?>

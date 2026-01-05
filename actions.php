@@ -103,10 +103,10 @@
                   <?php foreach ($actions as $action) { ?>
                     <tr
                       class="hover-actions-trigger btn-reveal-trigger position-static">
-                      <td class="align-middle customer white-space-nowrap"><?= $action['code'] ?></td>
-                      <td class="align-middle product white-space-nowrap"><?= $action['name'] ?></td>
-                      <td class="align-middle product white-space-nowrap"><?= $action['objectif'] ?></td>
-                      <td class="align-middle product white-space-nowrap py-0">
+                      <td class="align-middle customer"><?= $action['code'] ?></td>
+                      <td class="align-middle product"><?= $action['name'] ?></td>
+                      <td class="align-middle product"><?= $action['objectif'] ?></td>
+                      <td class="align-middle product py-0">
                         <?php foreach ($secteurs as $secteur) : ?>
                           <?php if ($action['secteur_id'] == $secteur['id']) : ?>
                             <?php echo $secteur['name']; ?>

@@ -109,18 +109,18 @@
                 <tbody class="list" id="table-latest-review-body">
                   <?php foreach ($indicateurs as $indicateur) { ?>
                     <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                      <td class="align-middle white-space-nowrap py-0"><?php echo $indicateur['code']; ?></td>
-                      <td class="align-middle white-space-nowrap"><?php echo $indicateur['intitule']; ?></td>
+                      <td class="align-middle py-0"><?php echo $indicateur['code']; ?></td>
+                      <td class="align-middle"><?php echo $indicateur['intitule']; ?></td>
 
-                      <td class="align-middle white-space-nowrap py-0">
+                      <td class="align-middle py-0">
                         <?php foreach ($unites as $unite) { ?>
                           <?php if ($unite['id'] == $indicateur['unite']) { ?>
                             <?php echo $unite['name']; ?>
                           <?php } ?>
                         <?php } ?>
                       </td>
-                      <td class="align-middle white-space-nowrap"><?php echo listModeCalcul()[$indicateur['mode_calcul']]; ?></td>
-                      <td class="align-middle white-space-nowrap">
+                      <td class="align-middle"><?php echo listModeCalcul()[$indicateur['mode_calcul']]; ?></td>
+                      <td class="align-middle">
                         <?php foreach ($structures as $structure) { ?>
                           <?php if ($structure['id'] == $indicateur['responsable']) { ?>
                             <?php echo $structure['sigle']; ?>
@@ -128,10 +128,10 @@
                         <?php } ?>
                       </td>
 
-                      <td class="align-middle white-space-nowrap py-0"><?php echo $indicateur['valeur_reference']; ?></td>
-                      <td class="align-middle white-space-nowrap py-0"><?php echo $indicateur['valeur_cible']; ?></td>
+                      <td class="align-middle py-0"><?php echo $indicateur['valeur_reference']; ?></td>
+                      <td class="align-middle py-0"><?php echo $indicateur['valeur_cible']; ?></td>
 
-                      <td class="align-middle customer white-space-nowrap">
+                      <td class="align-middle customer">
                         <span class="badge rounded-pill badge-phoenix fs-10 badge-phoenix-<?php echo $indicateur['state'] == 'actif' ? 'success' : 'danger'; ?>">
                           <span class="badge-label"><?php echo $indicateur['state'] == 'actif' ? 'Actif' : 'Inactif'; ?></span>
                         </span>

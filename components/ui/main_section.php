@@ -1,4 +1,4 @@
-<?php if (!empty($sections_dash)) { ?>
+<?php if (isset($sections_dash) && is_array($sections_dash) && count($sections_dash) > 0) { ?>
     <div class="row mx-n6 mb-3">
         <?php foreach ($sections_dash as $section): ?>
             <?php

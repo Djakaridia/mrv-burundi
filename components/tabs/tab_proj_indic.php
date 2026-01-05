@@ -47,19 +47,19 @@
                         }
                     ?>
                         <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                            <td class="align-middle white-space-nowrap px-2 py-0"><?php echo $indic_cmr['code']; ?></td>
-                            <td class="align-middle white-space-nowrap px-2"><?php echo $indic_cmr['intitule']; ?></td>
-                            <td class="align-middle white-space-nowrap px-2 py-0">
+                            <td class="align-middle px-2 py-0"><?php echo $indic_cmr['code']; ?></td>
+                            <td class="align-middle px-2"><?php echo $indic_cmr['intitule']; ?></td>
+                            <td class="align-middle px-2 py-0">
                                 <?php foreach ($unites as $unite) { ?>
                                         <?php if ($unite['id'] == $indic_cmr['unite']) { ?>
                                             <?php echo $unite['name']; ?>
                                         <?php } ?>
                                     <?php } ?>
                             </td>
-                            <td class="align-middle white-space-nowrap px-2 py-0 text-center"><?php echo $indic_cmr['valeur_reference']; ?></td>
+                            <td class="align-middle px-2 py-0 text-center"><?php echo $indic_cmr['valeur_reference']; ?></td>
 
                             <?php for ($year = date('Y', strtotime($project_curr['start_date'])); $year <= date('Y', strtotime($project_curr['end_date'])); $year++) : ?>
-                                <td class="align-middle bg-light dark__bg-secondary white-space-nowrap px-2 py-0 border text-center">
+                                <td class="align-middle bg-light dark__bg-secondary px-2 py-0 border text-center">
                                     <?php if (empty($cibles_cmr)) { ?>
                                         <span class="text-muted">-</span>
                                     <?php } else { ?>
@@ -67,9 +67,9 @@
                                     <?php } ?>
                                 </td>
                             <?php endfor; ?>
-                            <td class="align-middle white-space-nowrap px-2 py-0 text-center"><?php echo $indic_cmr['valeur_cible']; ?></td>
+                            <td class="align-middle px-2 py-0 text-center"><?php echo $indic_cmr['valeur_cible']; ?></td>
 
-                            <td class="align-middle white-space-nowrap px-2 py-0 text-center">
+                            <td class="align-middle px-2 py-0 text-center">
                                 <button title="Modifier" type="button" class="btn btn-subtle-primary rounded-pill btn-sm fw-bold fs-9 px-2 py-1" data-bs-toggle="modal"
                                     data-bs-target="#newIndicateurCibleModal" aria-haspopup="true" aria-expanded="false"
                                     data-id="<?php echo $indic_cmr['id']; ?>">Modifier

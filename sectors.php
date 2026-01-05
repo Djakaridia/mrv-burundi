@@ -160,16 +160,16 @@
                     <?php foreach ($sous_secteurs as $sous_secteur): ?>
                       <?php if ($sous_secteur['parent_id'] == $_GET['id']): ?>
                         <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                          <td class="align-middle customer white-space-nowrap"> <?php echo $sous_secteur['code'] ?> </td>
-                          <td class="align-middle customer white-space-nowrap"> <?php echo $sous_secteur['name'] ?> </td>
-                          <td class="align-middle customer white-space-nowrap">
+                          <td class="align-middle customer"> <?php echo $sous_secteur['code'] ?> </td>
+                          <td class="align-middle customer"> <?php echo $sous_secteur['name'] ?> </td>
+                          <td class="align-middle customer">
                             <?php foreach ($secteurs as $secteur): ?>
                               <?php if ($sous_secteur['parent_id'] == $secteur['id']): ?>
                                 <?php echo $secteur['name']; ?>
                               <?php endif; ?>
                             <?php endforeach; ?>
                           </td>
-                          <td class="align-middle product white-space-nowrap py-0"> <?php echo $sous_secteur['description'] ?> </td>
+                          <td class="align-middle product py-0"> <?php echo $sous_secteur['description'] ?> </td>
                           <td class="align-middle review">
                             <div class="position-relative">
                               <div class="">

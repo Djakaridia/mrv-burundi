@@ -51,12 +51,12 @@ $structures = $structure->read();
                     });
                 ?>
                     <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                        <td class="align-middle white-space-nowrap p-2">
+                        <td class="align-middle p-2">
                             <a class="fw-semibold text-primary" href="group_view.php?id=<?= $group['id']; ?>"><?= $group['name']; ?></a>
                             <div class="fs-10 d-block"><?= $group['description']; ?></div>
                         </td>
 
-                        <td class="align-middle white-space-nowrap text-start fw-bold text-body-tertiary p-2">
+                        <td class="align-middle text-start fw-bold text-body-tertiary p-2">
                             <div class="avatar-group">
                                 <?php if (!empty($members)) : ?>
                                     <?php foreach (array_slice($members, 0, 5) as $user) : ?>
@@ -99,7 +99,7 @@ $structures = $structure->read();
                             </div>
                         </td>
 
-                        <td class="align-middle white-space-nowrap text-start fw-bold text-body-tertiary p-2">
+                        <td class="align-middle text-start fw-bold text-body-tertiary p-2">
                             <?php foreach ($structures as $structure) {
                                 if ($structure['id'] == $group['monitor']) {
                                     echo $structure['sigle'];
@@ -107,7 +107,7 @@ $structures = $structure->read();
                             } ?>
                         </td>
 
-                        <td class="align-middle white-space-nowrap text-body p-2">
+                        <td class="align-middle text-body p-2">
                             <?= date('Y-m-d', strtotime($group['created_at'])); ?>
                         </td>
 

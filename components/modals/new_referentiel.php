@@ -134,7 +134,7 @@
                 <select class="form-select" name="echelle" id="referentielEchelle" required>
                   <option value="" selected disabled>Sélectionner une échelle</option>
                   <option value="nationale">Nationale</option>
-                  <option value="regionale">Régionale</option>
+                  <option value="provincial">Provincial</option>
                   <?php if ($zone_types ?? []) : ?>
                     <?php foreach ($zone_types as $zone_type): ?>
                       <option value="<?= $zone_type['id'] ?>"><?= $zone_type['name'] ?></option>
@@ -256,7 +256,7 @@
           form.seuil_min.value = result.data.seuil_min;
           form.seuil_max.value = result.data.seuil_max;
           form.norme.value = result.data.norme;
-          form.in_dashboard.checked = result.data.in_dashboard ? true : false;
+          form.in_dashboard.checked = result.data.in_dashboard == 1 ? true : false;
 
           $('#MultipleRefResponsable').val(result.data.autre_responsable.split(','));
           $('#MultipleRefResponsable').trigger('change');
@@ -299,6 +299,7 @@
       const url = formReferentielID ? `./apis/referentiels.routes.php?id=${formReferentielID}` : './apis/referentiels.routes.php';
       const submitBtn = $('#referentiel_modbtn');
 
+      formData.set('in_dashboard', $('#referentielInDashboard').is(':checked') ? 1 : 0);
       submitBtn.prop('disabled', true);
       submitBtn.text('Envoi en cours...');
       formData.set('autre_responsable', $('#MultipleRefResponsable').val());

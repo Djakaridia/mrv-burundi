@@ -27,12 +27,12 @@ $user_documents = array_filter($documents, function ($document) use ($userId) {
                 <?php foreach ($user_documents as $document) { ?>
                     <tr
                         class="hover-actions-trigger btn-reveal-trigger position-static">
-                        <td class="align-middle white-space-nowrap px-2">
+                        <td class="align-middle px-2">
                             <div class="d-flex align-items-center text-body">
                                 <i class="fas fa-file fs-8 me-2"></i><?= $document['name'] ?>
                             </div>
                         </td>
-                        <td class="align-middle white-space-nowrap px-2">
+                        <td class="align-middle px-2">
                             <a class="d-flex align-items-center text-body" href="dossier_view.php?id=<?= $document['dossier_id'] ?>">
                                 <i class="fas fa-folder fs-8 me-2"></i>
                                 <div class="mb-0 text-body">
@@ -44,10 +44,10 @@ $user_documents = array_filter($documents, function ($document) use ($userId) {
                                 </div>
                             </a>
                         </td>
-                        <td class="align-middle white-space-nowrap px-2">
+                        <td class="align-middle px-2">
                             <?= date('d/m/Y', strtotime($document['created_at'])) ?>
                         </td>
-                        <td class="align-middle white-space-nowrap px-2">
+                        <td class="align-middle px-2">
                             <?= round($document['file_size'] / 1024 / 1024, 2) ?> MB
                         </td>
                         <td class="align-middle review">

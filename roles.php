@@ -61,13 +61,13 @@
                 <tbody class="list" id="table-latest-review-body">
                   <?php foreach ($row_roles as $role): ?>
                     <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                      <td class="align-middle white-space-nowrap px-2">
+                      <td class="align-middle px-2">
                         <?php echo htmlspecialchars($role['name']); ?>
                       </td>
-                      <td class="align-middle white-space-nowrap px-2">
+                      <td class="align-middle px-2">
                         <?php echo date('d/m/Y', strtotime($role['created_at'])); ?>
                       </td>
-                      <td class="align-middle white-space-nowrap px-2">
+                      <td class="align-middle px-2">
                         <?php
                         if ($role['niveau'] == 1) echo 'Super Admin';
                         elseif ($role['niveau'] == 2) echo 'Admin';
@@ -77,7 +77,7 @@
                         ?>
                       </td>
                       <?php if (checkPermis($db, 'update', 1)) : ?>
-                        <td class="align-middle white-space-nowrap px-2">
+                        <td class="align-middle px-2">
                           <?php if ($role['niveau'] < 4) : ?>
                             <button title="Modifier" type="button" class="btn btn-subtle-primary rounded-pill btn-sm fw-bold fs-9 px-2 py-1" data-bs-toggle="modal"
                               data-bs-target="#newPermisModal" data-id="<?php echo $role['id']; ?>" aria-haspopup="true" aria-expanded="false">Modifier

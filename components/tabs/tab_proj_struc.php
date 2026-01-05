@@ -16,8 +16,8 @@
             <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable2">
                 <thead class="bg-secondary-subtle">
                     <tr>
-                        <th class="sort white-space-nowrap align-middle" scope="col">#</th>
-                        <th class="sort white-space-nowrap align-middle" scope="col" data-sort="product">Code</th>
+                        <th class="sort align-middle" scope="col">#</th>
+                        <th class="sort align-middle" scope="col" data-sort="product">Code</th>
                         <th class="sort align-middle" scope="col" data-sort="customer" style="min-width:200px;">Nom</th>
                         <th class="sort align-middle" scope="col" data-sort="rating" style="min-width:110px;">Sigle</th>
                         <th class="sort align-middle" scope="col" style="max-width:350px;" data-sort="review">Type</th>
@@ -26,7 +26,7 @@
                 <tbody class="list" id="table-latest-review-body">
                     <?php foreach ($structures_project as $structure) { ?>
                         <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                            <td class="align-middle product white-space-nowrap py-0">
+                            <td class="align-middle product py-0">
                                 <a class="d-block rounded-2 border border-translucent text-center my-1"
                                     href="javascript:void(0)">
                                     <?php if ($structure['logo']) { ?>
@@ -36,9 +36,9 @@
                                     <?php } ?>
                                 </a>
                             </td>
-                            <td class="align-middle product white-space-nowrap"><?php echo $structure['code']; ?></td>
-                            <td class="align-middle customer white-space-nowrap"><?php echo $structure['sigle']; ?></td>
-                            <td class="align-middle rating white-space-nowrap"><?php echo $structure['sigle']; ?></td>
+                            <td class="align-middle product"><?php echo $structure['code']; ?></td>
+                            <td class="align-middle customer"><?php echo $structure['sigle']; ?></td>
+                            <td class="align-middle rating"><?php echo $structure['sigle']; ?></td>
                             <td class="align-middle review" style="min-width:350px;">
                                 <?php foreach ($type_structures as $type_structure) { ?>
                                     <?php if ($type_structure['id'] == $structure['type_id']) { ?>

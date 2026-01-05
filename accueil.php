@@ -322,8 +322,9 @@
                   return strtotime($a['end_date']) - strtotime($b['end_date']);
                 });
 
-                foreach (array_slice($projetsWithDeadline, 0, 5) as $projet):
-                  $daysLeft = floor((strtotime($projet['end_date']) - time()) / (60 * 60 * 24));
+                if(count($projetsWithDeadline) > 0){
+                  foreach (array_slice($projetsWithDeadline, 0, 5) as $projet):
+                    $daysLeft = floor((strtotime($projet['end_date']) - time()) / (60 * 60 * 24));
                 ?>
                   <div onclick="window.location.href = 'project_view.php?id=<?= $projet['id'] ?>';" class="list-group-item list-group-item-action cursor-pointer border-bottom shadow-sm mb-1 py-2 px-3">
                     <div class="d-flex justify-content-between align-items-center">
@@ -357,6 +358,9 @@
                     </div>
                   </div>
                 <?php endforeach; ?>
+                <?php }else { ?>
+                  <div class="text-center py-10">Pas de projets trouvés</div>
+                <?php } ?>
               </div>
             </div>
             <div class="card-footer bg-transparent py-2 text-center">
@@ -494,21 +498,21 @@
                     }
                   ?>
                     <tr class="position-static">
-                      <td class="align-middle white-space-nowrap ps-2">
+                      <td class="align-middle ps-2">
                         <p class="mb-0 fs-9 text-body"><?= $projet['code'] ?></p>
                       </td>
-                      <td class="align-middle white-space-nowrap ps-2">
+                      <td class="align-middle ps-2">
                         <a class="mb-0 fs-9 fw-semibold" href="project_view.php?id=<?= $projet['id'] ?>"><?= $projet['name'] ?></a>
                       </td>
-                      <td class="align-middle white-space-nowrap ps-2">
+                      <td class="align-middle ps-2">
                         <p class="mb-0 fs-9 text-body">
                           <?= date('Y-m-d', strtotime($projet['created_at'])) ?>
                         </p>
                       </td>
-                      <td class="align-middle white-space-nowrap ps-2">
+                      <td class="align-middle ps-2">
                         <p class="mb-0 fs-9 text-body"><?= $structureName ?></p>
                       </td>
-                      <td class="align-middle white-space-nowrap ps-2">
+                      <td class="align-middle ps-2">
                         <div class="d-flex align-items-center">
                           <div class="progress progress-thin flex-grow-1 me-2">
                             <div class="progress-bar bg-<?= $progress < 30 ? 'danger' : ($progress < 70 ? 'warning' : 'success') ?>"
@@ -522,11 +526,11 @@
                         </p>
                       </td>
 
-                      <td class="align-middle white-space-nowrap ps-2">
+                      <td class="align-middle ps-2">
                         <span class="badge badge-phoenix fs-10 badge-phoenix-<?= $daysDeadline < 30 ? 'danger' : ($daysDeadline < 90 ? 'warning' : 'success') ?>"><?= $daysDeadline ?> jours</span>
                       </td>
 
-                      <td class="align-middle white-space-nowrap px-2">
+                      <td class="align-middle px-2">
                         <div class="position-relative">
                           <div class="btn-group btn-group-sm" role="group">
                             <button title="Voir" class="btn btn-sm px-2 py-1 btn-phoenix-info" data-bs-toggle="modal" data-bs-target="#projectsCardViewModal" data-id="<?= $projet['id'] ?>">

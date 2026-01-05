@@ -58,13 +58,13 @@ $user_projets = array_filter($projets, function ($projet) use ($user_group_ids) 
                     $progress = $totalTacheCount > 0 ? (round(($finishedTacheCount / $totalTacheCount), 2) * 100) : 0;
                 ?>
                     <tr class="position-static">
-                        <td class="align-middle white-space-nowrap ps-2">
+                        <td class="align-middle ps-2">
                             <p class="mb-0 fs-9 text-body"><?= $projet['code'] ?></p>
                         </td>
-                        <td class="align-middle white-space-nowrap ps-2">
+                        <td class="align-middle ps-2">
                             <a class="mb-0 fs-9 fw-semibold" href="project_view.php?id=<?= $projet['id'] ?>"><?= $projet['name'] ?></a>
                         </td>
-                        <td class="align-middle text-start white-space-nowrap ps-2">
+                        <td class="align-middle text-start ps-2">
                             <p class="text-body-secondary fs-10 mb-0"><?= $progress ?>%</p>
                             <div class="progress bg-primary-subtle" style="height:3px;" role="progressbar">
                                 <div class="progress-bar bg-<?= $progress < 30 ? 'danger' : ($progress < 70 ? 'warning' : 'success') ?>" style="width: <?= $progress ?>%"
@@ -72,11 +72,11 @@ $user_projets = array_filter($projets, function ($projet) use ($user_group_ids) 
                             </div>
                         </td>
 
-                        <td class="align-middle white-space-nowrap ps-2">
+                        <td class="align-middle ps-2">
                             <span class="badge badge-phoenix fs-10 badge-phoenix-<?= $daysDeadline < 30 ? 'danger' : ($daysDeadline < 90 ? 'warning' : 'success') ?>"><?= $daysDeadline ?> jours</span>
                         </td>
 
-                        <td class="align-middle white-space-nowrap px-2">
+                        <td class="align-middle px-2">
                             <div class="position-relative">
                                 <div class="btn-group btn-group-sm" role="group">
                                     <button title="Voir" class="btn btn-sm px-2 py-1 btn-phoenix-info" data-bs-toggle="modal" data-bs-target="#projectsCardViewModal" data-id="<?= $projet['id'] ?>">

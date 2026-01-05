@@ -46,10 +46,10 @@
     $programmes = $programme->read();
 
     $sens_evolutions = array('asc' => 'Ascendant', 'desc' => 'Descendant');
-    $echelles = array('nationale' => 'Nationale', 'regionale' => 'Régionale');
+    $echelles = array('nationale' => 'Nationale', 'provincial' => 'Provincial');
 
-    $region = new Region($db);
-    $regions = $region->read();
+    $province = new Province($db);
+    $provinces = $province->read();
 
     $zone_type = new ZoneType($db);
     $zone_types = $zone_type->read();
@@ -209,7 +209,7 @@
 
                                         <dt class="col-sm-4 text-muted fs-9">Echelle :</dt>
                                         <dd class="col-sm-8 fs-9 text-capitalize">
-                                            <?php if (in_array($ref_curr['echelle'], array('nationale', 'regionale'))) : ?>
+                                            <?php if (in_array($ref_curr['echelle'], array('nationale', 'provincial'))) : ?>
                                                 <?= $echelles[$ref_curr['echelle']] ?>
                                             <?php else : ?>
                                                 <?php foreach ($zone_types as $zone_type): ?>
@@ -336,8 +336,8 @@
                                                                         <tr>
                                                                             <?php if (!empty($ref_curr['echelle']) && $ref_curr['echelle'] !== 'nationale') : ?>
                                                                                 <th scope="col" class="px-2 text-capitalize">
-                                                                                    <?php if ($ref_curr['echelle'] == 'regionale') : ?>
-                                                                                        Région
+                                                                                    <?php if ($ref_curr['echelle'] == 'provincial') : ?>
+                                                                                        Province
                                                                                     <?php elseif (is_numeric($ref_curr['echelle'])) : ?>
                                                                                         <?php foreach ($zone_types as $type) : ?>
                                                                                             <?php if ($type['id'] == $ref_curr['echelle']) : ?>
@@ -359,10 +359,10 @@
                                                                             <tr class="align-middle">
                                                                                 <?php if (!empty($ref_curr['echelle']) && $ref_curr['echelle'] !== 'nationale') : ?>
                                                                                     <td class="px-2 text-capitalize">
-                                                                                        <?php if ($ref_curr['echelle'] == 'regionale') : ?>
-                                                                                            <?php foreach ($regions as $region) : ?>
-                                                                                                <?php if ($region['code'] == $suivi['echelle']) : ?>
-                                                                                                    <?= $region['name'] ?>
+                                                                                        <?php if ($ref_curr['echelle'] == 'provincial') : ?>
+                                                                                            <?php foreach ($provinces as $province) : ?>
+                                                                                                <?php if ($province['code'] == $suivi['echelle']) : ?>
+                                                                                                    <?= $province['name'] ?>
                                                                                                 <?php endif; ?>
                                                                                             <?php endforeach; ?>
                                                                                         <?php elseif (is_numeric($ref_curr['echelle'])) : ?>

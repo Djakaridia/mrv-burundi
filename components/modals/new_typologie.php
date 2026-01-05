@@ -65,7 +65,7 @@
 <script>
     let formTypologieID = null;
     let typologieReferentielId = null;
-    const regionsTypologie = Object.values(<?php echo json_encode($regions ?? []); ?>);
+    const provincesTypologie = Object.values(<?php echo json_encode($provinces ?? []); ?>);
 
     $(document).ready(function() {
         $('#addTypologieModal').on('shown.bs.modal', async function(event) {
@@ -224,13 +224,13 @@
                     <input class="form-control" type="text" name="name" id="typologie_name" placeholder="Entrer le libellé" required />
                 </div>`);
                 break;
-            case 'regionale':
+            case 'provincial':
                 $('#classeContainerTypo').html(`
                 <div class="mb-1">
-                    <label class="form-label">Sélection des régions*</label>
-                    <select class="form-select" name="name" id="typologie_region_id" required>
-                        <option value="" selected disabled>Selectionner une region</option>
-                        ${regionsTypologie.map(region => `<option value="${region.name}">${region.name}</option>`).join('')}
+                    <label class="form-label">Sélection des provinces*</label>
+                    <select class="form-select" name="name" id="typologie_province_id" required>
+                        <option value="" selected disabled>Selectionner une province</option>
+                        ${provincesTypologie.map(province => `<option value="${province.name}">${province.name}</option>`).join('')}
                     </select>
                 </div>`);
                 break;

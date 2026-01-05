@@ -58,8 +58,8 @@
                   <?php foreach ($unites as $unite) { ?>
                     <tr
                       class="hover-actions-trigger btn-reveal-trigger position-static">
-                      <td class="align-middle customer white-space-nowrap"> <?= $unite['name'] ?> </td>
-                      <td class="align-middle product white-space-nowrap"> <?= $unite['description'] ?> </td>
+                      <td class="align-middle customer"> <?= $unite['name'] ?> </td>
+                      <td class="align-middle product"> <?= $unite['description'] ?> </td>
                       <td class="align-middle review">
                         <div class="position-relative">
                           <?php if (checkPermis($db, 'update')) : ?>

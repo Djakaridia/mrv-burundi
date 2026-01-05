@@ -76,17 +76,17 @@
                     <tbody class="list">
                       <?php foreach ($zones as $zone) { ?>
                         <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                          <td class="px-2 align-middle white-space-nowrap"><?php echo $zone['code']; ?></td>
-                          <td class="px-2 align-middle white-space-nowrap"><?php echo $zone['name']; ?></td>
-                          <td class="px-2 align-middle white-space-nowrap">
+                          <td class="px-2 align-middle"><?php echo $zone['code']; ?></td>
+                          <td class="px-2 align-middle"><?php echo $zone['name']; ?></td>
+                          <td class="px-2 align-middle">
                             <?php foreach ($type_zones as $type_zone) { ?>
                               <?php if ($type_zone['id'] == $zone['type_id']) { ?>
                                 <?php echo $type_zone['name']; ?>
                               <?php } ?>
                             <?php } ?>
                           </td>
-                          <td class="px-2 align-middle white-space-nowrap"><?php echo $zone['superficie']; ?></td>
-                          <td class="px-2 align-middle white-space-nowrap">
+                          <td class="px-2 align-middle"><?php echo $zone['superficie']; ?></td>
+                          <td class="px-2 align-middle">
                             <?php if ($zone['couches'] != '') { ?>
                               <button title="Télécharger les couches" class="btn btn-sm btn-phoenix-info fs-10 px-2 py-1 d-flex align-items-center gap-1 rounded-1"
                                 onclick="downloadFiles('Couches', '<?php echo $zone['name']; ?>', '<?php echo $zone['couches']; ?>')">
@@ -96,7 +96,7 @@
                             <?php } ?>
                           </td>
 
-                          <td class="px-2 align-middle white-space-nowrap">
+                          <td class="px-2 align-middle">
                             <div class="position-relative d-flex gap-1">
                               <?php if (checkPermis($db, 'update')) : ?>
                                 <button title="Modifier" class="btn btn-sm btn-phoenix-info fs-10 px-2 py-1" data-bs-toggle="modal"
@@ -156,9 +156,9 @@
                     <tbody class="list">
                       <?php foreach ($type_zones as $type_zone): ?>
                         <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                          <td class="px-2 align-middle white-space-nowrap"> <?php echo $type_zone['name'] ?> </td>
-                          <td class="px-2 align-middle white-space-nowrap"> <?php echo $type_zone['description'] ?> </td>
-                          <td class="px-2 align-middle white-space-nowrap">
+                          <td class="px-2 align-middle"> <?php echo $type_zone['name'] ?> </td>
+                          <td class="px-2 align-middle"> <?php echo $type_zone['description'] ?> </td>
+                          <td class="px-2 align-middle">
                             <div class="position-relative">
                               <div class="">
                                 <?php if (checkPermis($db, 'update')) : ?>

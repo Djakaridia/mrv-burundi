@@ -517,7 +517,7 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
 
     <div class="navbar-vertical-footer p-0">
         <div class="w-100">
-            <button class="btn btn-lg navbar-vertical-toggle border-0 fw-semibold w-100 white-space-nowrap d-flex align-items-center rounded-0">
+            <button class="btn btn-lg navbar-vertical-toggle border-0 fw-semibold w-100 d-flex align-items-center rounded-0">
                 <span class="uil uil-left-arrow-to-left fs-8"></span>
                 <span class="uil uil-arrow-from-right fs-8"></span>
                 <span class="navbar-vertical-footer-text ms-2 fs-9">Vue réduite</span>

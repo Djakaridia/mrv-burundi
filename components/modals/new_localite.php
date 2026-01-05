@@ -60,7 +60,7 @@
                                 </div>
                             </div>
 
-                            <div id="region_detail" class="col-12 mt-1 d-none">
+                            <div id="province_detail" class="col-12 mt-1 d-none">
                                 <div class="row">
                                     <div class="col-lg-6 mt-1">
                                         <label class="form-label">Abbréviation</label>
@@ -140,7 +140,7 @@
             $('#localiteContentContainer').hide();
             $('#FormLocalite')[0].reset();
 
-            if (niveau == 0) $('#region_detail').removeClass('d-none');
+            if (niveau == 0) $('#province_detail').removeClass('d-none');
             if (niveau > 0) $('#parent_niv_' + niveau).removeClass('d-none');
             if (niveau > 0) $('#loc_parent_' + niveau).attr('required', true);
             if (niveau == 4) $('#village_detail').removeClass('d-none');

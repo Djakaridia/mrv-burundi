@@ -174,19 +174,19 @@
                                         <tbody class="list" id="table-latest-review-body">
                                             <?php foreach ($conventions as $convention): ?>
                                                 <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                                                    <td class="align-middle customer white-space-nowrap">
+                                                    <td class="align-middle customer">
                                                         <?php echo $convention['code'] ?>
                                                     </td>
 
-                                                    <td class="align-middle customer white-space-nowrap">
+                                                    <td class="align-middle customer">
                                                         <?php echo $convention['name'] ?>
                                                     </td>
 
-                                                    <td class="align-middle customer white-space-nowrap">
+                                                    <td class="align-middle customer">
                                                         <?php echo $grouped_structure[$convention['structure_id']]['sigle'] ?>
                                                     </td>
 
-                                                    <td class="align-middle customer white-space-nowrap">
+                                                    <td class="align-middle customer">
                                                         <?php if (isset($convention['montant'])) { ?>
                                                             <?php echo number_format($convention['montant'], 0, ',', ' ') ?>
                                                         <?php } else { ?>
@@ -194,11 +194,11 @@
                                                         <?php } ?>
                                                     </td>
 
-                                                    <td class="align-middle customer white-space-nowrap">
+                                                    <td class="align-middle customer">
                                                         -
                                                     </td>
 
-                                                    <td class="align-middle customer white-space-nowrap">
+                                                    <td class="align-middle customer">
                                                         -
                                                     </td>
                                                 </tr>
@@ -229,15 +229,15 @@
                                         <tbody class="list" id="table-latest-review-body">
                                             <?php foreach ($taches as $tache): ?>
                                                 <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                                                    <td class="align-middle customer white-space-nowrap">
+                                                    <td class="align-middle customer">
                                                         <?php echo $tache['code'] ?>
                                                     </td>
 
-                                                    <td class="align-middle customer white-space-nowrap">
+                                                    <td class="align-middle customer">
                                                         <?php echo $tache['name'] ?>
                                                     </td>
 
-                                                    <td class="align-middle customer white-space-nowrap">
+                                                    <td class="align-middle customer">
                                                         <?php if (isset($grouped_tache_couts[$tache['id']])) {
                                                             $montant = array_sum(array_column($grouped_tache_couts[$tache['id']], 'montant'));
                                                             echo number_format($montant, 0, ',', ' ');
@@ -246,11 +246,11 @@
                                                         } ?>
                                                     </td>
 
-                                                    <td class="align-middle customer white-space-nowrap">
+                                                    <td class="align-middle customer">
                                                         -
                                                     </td>
 
-                                                    <td class="align-middle customer white-space-nowrap">
+                                                    <td class="align-middle customer">
                                                         -
                                                     </td>
                                                 </tr>
@@ -281,15 +281,15 @@
                                         <tbody class="list" id="table-latest-review-body">
                                             <?php foreach ($tache_imports as $tache_import): ?>
                                                 <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                                                    <td class="align-middle customer white-space-nowrap">
+                                                    <td class="align-middle customer">
                                                         <?php echo $tache_import['code'] ?>
                                                     </td>
 
-                                                    <td class="align-middle customer white-space-nowrap">
+                                                    <td class="align-middle customer">
                                                         <?php echo $tache_import['name'] ?>
                                                     </td>
 
-                                                    <td class="align-middle customer white-space-nowrap">
+                                                    <td class="align-middle customer">
                                                         <?php if (isset($grouped_tache_couts[$tache_import['id']])) {
                                                             $montant = array_sum(array_column($grouped_tache_couts[$tache_import['id']], 'montant'));
                                                             echo number_format($montant, 0, ',', ' ');
@@ -298,11 +298,11 @@
                                                         } ?>
                                                     </td>
 
-                                                    <td class="align-middle customer white-space-nowrap">
+                                                    <td class="align-middle customer">
                                                         -
                                                     </td>
 
-                                                    <td class="align-middle customer white-space-nowrap">
+                                                    <td class="align-middle customer">
                                                         -
                                                     </td>
                                                 </tr>
