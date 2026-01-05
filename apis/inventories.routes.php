@@ -44,6 +44,10 @@ switch ($requestMethod) {
             $data_inventory = $inventory->readByAnnee();
             $tableName = $data_inventory['viewtable'];
 
+            if (!preg_match('/^[a-zA-Z0-9_]+$/', $tableName)) {
+                throw new Exception("Nom de table invalide");
+            }
+
             if (isset($_FILES['file']) && $_FILES['file']['error'] == 0) {
                 $fileName = $_FILES['file']['name'];
                 $fileTmpName = $_FILES['file']['tmp_name'];
@@ -93,13 +97,13 @@ switch ($requestMethod) {
                         foreach ($headers as $header) {
                             $colHeader = removeAccents($header);
                             $colName = cleanColumnName($colHeader);
-                            $columnsDefs[] = "\"$colName\" TEXT NULL";
-                            $cleanHeaders[] = "\"$colName\"";
+                            $columnsDefs[] = "`$colName` TEXT NULL";
+                            $cleanHeaders[] = "`$colName`";
                         }
 
                         $columnsSql = implode(", ", $columnsDefs);
                         try {
-                            $stmt = $db->prepare("CREATE TABLE IF NOT EXISTS \"$tableName\" ($columnsSql);");
+                            $stmt = $db->prepare("CREATE TABLE IF NOT EXISTS `$tableName` ($columnsSql) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
                             $stmt->execute();
                         } catch (\Throwable $th) {
                             echo json_encode(["status" => "danger", "message" => "Erreur lors de la création de la table: " . $th->getMessage()]);
@@ -107,14 +111,14 @@ switch ($requestMethod) {
                         }
 
                         try {
-                            $stmt = $db->prepare("SELECT * FROM \"$tableName\" LIMIT 1");
+                            $stmt = $db->prepare("SELECT * FROM `$tableName` LIMIT 1");
                             $stmt->execute();
                             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             if (isset($result)) {
-                                $stmt = $db->prepare("DELETE FROM \"$tableName\"");
+                                $stmt = $db->prepare("DELETE FROM `$tableName`");
                                 $stmt->execute();
-                            }else {
-                                echo json_encode(["status" => "danger", "message" => "La table \"$tableName\" n'existe pas."]);
+                            } else {
+                                echo json_encode(["status" => "danger", "message" => "La table `$tableName` n'existe pas."]);
                                 exit();
                             }
                         } catch (\Throwable $th) {
@@ -124,7 +128,7 @@ switch ($requestMethod) {
 
                         $colNames = implode(",", $cleanHeaders);
                         $placeholders = rtrim(str_repeat("?,", count($cleanHeaders)), ",");
-                        $stmt = $db->prepare("INSERT INTO \"$tableName\" ($colNames) VALUES ($placeholders)");
+                        $stmt = $db->prepare("INSERT INTO `$tableName` ($colNames) VALUES ($placeholders)");
 
                         foreach ($data as $row) {
                             $values = [];

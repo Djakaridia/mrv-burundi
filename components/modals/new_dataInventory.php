@@ -83,7 +83,6 @@
                     $('#addDataInventoryModal').modal('hide');
                 }
             } catch (error) {
-                console.log(error);
                 errorAction('Erreur lors de l\'envoi des données.');
             } finally {
                 submitBtn.prop('disabled', false);
