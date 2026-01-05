@@ -37,7 +37,7 @@
         $current_inventory = $inventory->readByAnnee();
         if ($current_inventory) {
             $current_inventory_data = json_decode($inventory->readData($current_inventory['viewtable']), true);
-            
+
             if (!empty($current_inventory_data['data'])) {
 
                 // ##############################################################
@@ -118,7 +118,9 @@
             <div class="mx-n4 mt-n5 px-0 mx-lg-n6 px-lg-0 bg-body-emphasis border border-start-0">
                 <div class="card-body p-2 d-lg-flex flex-row justify-content-between align-items-center g-3">
                     <div class="col-lg-4 mb-2 mb-lg-0">
-                        <h4 class="my-1 fw-black">Registre des inventaires</h4>
+                        <h4 class="my-1 fw-black">
+                            Registre des inventaires (<a href="./documents/Inventaire GES.xlsx" download class="fs-8"> <span class="fa fa-file-excel"></span> Canevas </a>)
+                        </h4>
                     </div>
 
                     <div class="col-lg-3 mb-2 mb-lg-0 text-center">
