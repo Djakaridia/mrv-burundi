@@ -39,16 +39,15 @@ $nav_resultats = count($nav_projets) + count($nav_groupes) + count($nav_rapports
 ?>
 
 
-<nav class="navbar navbar-top fixed-top navbar-expand shadow-sm px-0 dark__bg-dark" id="navbarDefault"
-    style="border-bottom: 1px solid #00b500; box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);">
+<nav class="navbar navbar-top fixed-top navbar-expand shadow-sm px-0" id="navbarDefault">
     <div class="collapse navbar-collapse justify-content-between">
         <!-- <div class="d-flex align-items-center"> -->
-        <div class="navbar-logo border-0 d-flex justify-content-center">
-            <button class="btn navbar-toggler navbar-toggler-humburger-icon hover-bg-transparent" type="button" data-bs-toggle="collapse" data-bs-target="#navbarVerticalCollapse" aria-controls="navbarVerticalCollapse" aria-expanded="false" aria-label="Toggle Navigation">
+        <div class="navbar-logo d-flex justify-content-center px-2 py-lg-2 py-3">
+            <button class="btn navbar-toggler navbar-toggler-humburger-icon hover-bg-transparent ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarVerticalCollapse" aria-controls="navbarVerticalCollapse" aria-expanded="false" aria-label="Toggle Navigation">
                 <span class="navbar-toggle-icon"><span class="toggle-line"></span></span>
             </button>
 
-            <a class="navbar-brand mx-5" href="accueil.php">
+            <a class="navbar-brand mx-5 d-lg-flex d-none" href="accueil.php">
                 <div class="d-flex align-items-center">
                     <div class="d-flex align-items-center">
                         <img src="assets/images/logo-full.png" class="img-fluid d-dark-none" alt="MRV Burundi" style="height: 50px;" />
@@ -60,7 +59,7 @@ $nav_resultats = count($nav_projets) + count($nav_groupes) + count($nav_rapports
 
         <div class="search-box navbar-top-search-box d-none d-lg-block" data-list='{"valueNames":["title"]}' style="width:25rem;">
             <form id="searchForm" class="position-relative" data-bs-toggle="search" data-bs-display="static">
-                <input id="searchInput" class="form-control rounded-pill form-control-sm search-input bg-primary-subtle" type="search" placeholder="Recherche..." aria-label="Recherche" />
+                <input id="searchInput" class="form-control rounded-pill form-control-sm search-input" type="search" placeholder="Recherche..." aria-label="Recherche" />
                 <span class="fas fa-search search-box-icon"></span>
             </form>
             <div onclick="document.getElementById('searchForm').reset();" class="btn-close position-absolute end-0 top-50 translate-middle cursor-pointer shadow-none" data-bs-dismiss="Recherche">
@@ -173,11 +172,11 @@ $nav_resultats = count($nav_projets) + count($nav_groupes) + count($nav_rapports
                     </span>
                 </a>
 
-                <div class="dropdown-menu dropdown-menu-end notification-dropdown-menu py-0 shadow border navbar-dropdown-caret" id="navbarDropdownNotfication" aria-labelledby="navbarDropdownNotfication">
+                <div class="dropdown-menu dropdown-menu-end notification-dropdown-menu py-0 shadow border navbar-dropdown-caret bg-primary" id="navbarDropdownNotfication" aria-labelledby="navbarDropdownNotfication">
                     <div class="card position-relative border-0">
-                        <div class="card-header p-2">
+                        <div class="card-header p-2 bg-primary">
                             <div class="d-flex justify-content-between">
-                                <h5 class="text-body-emphasis mb-0">Notifications</h5>
+                                <h5 class="text-white mb-0">Notifications</h5>
                             </div>
                         </div>
                         <div class="card-body p-0">

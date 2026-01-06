@@ -111,3 +111,105 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
 <link href="vendors/leaflet.markercluster/MarkerCluster.css" rel="stylesheet" />
 <link href="vendors/leaflet.markercluster/MarkerCluster.Default.css" rel="stylesheet" />
 <link href="vendors/dropzone/dropzone.css" rel="stylesheet">
+
+
+<style>
+    :root {
+        --bd-green: #009300;
+        --bd-green-light: #00b500;
+        --bd-green-dark: #006c00;
+        --bd-red: #da0025;
+        --bd-white: #ffffff;
+    }
+
+    
+    @media screen and (min-width: 768px) {
+        #navbarDefault .navbar-logo {
+            background: linear-gradient(0deg, var(--bd-green), var(--bd-green-dark)) !important;
+        }
+    }
+
+    #sidebarDefault {
+        background: linear-gradient(90deg, var(--bd-green), var(--bd-green-dark)) !important;
+        border-right: 5px solid var(--bd-green-light) !important;
+    }
+
+    #sidebarDefault .nav-link {
+        color: var(--bd-white) !important;
+        transition: all 0.25s ease;
+    }
+
+    #sidebarDefault .nav-link .dropdown-indicator-icon {
+        color: var(--bd-white) !important;
+    }
+
+    #sidebarDefault .nav-link:hover {
+        background: rgba(255, 255, 255, 0.15);
+        color: var(--bd-white) !important;
+    }
+
+    #sidebarDefault .nav-link.active {
+        background: var(--bd-green-light) !important;
+        color: var(--bd-white) !important;
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+    }
+
+    #sidebarDefault .nav-link.active .nav-link-icon,
+    #sidebarDefault .nav-link.active .dropdown-indicator-icon {
+        color: var(--bd-white) !important;
+    }
+
+
+    #sidebarDefault .nav.parent .nav-link {
+        color: var(--bd-white) !important;
+    }
+
+    #sidebarDefault .nav.parent .nav-link.active {
+        background: var(--bd-green-light) !important;
+        color: var(--bd-green-dark) !important;
+    }
+
+    #sidebarDefault .navbar-vertical-label {
+        background: var(--bd-green-dark) !important;
+        color: var(--bd-green-light) !important;
+        border-left: 2px solid var(--bd-red);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    #sidebarDefault .navbar-vertical-footer {
+        background: var(--bd-green-dark) !important;
+        border-top: 1px solid var(--bd-green-light);
+        border-right: 5px solid var(--bd-green-light) !important;
+    }
+
+    #sidebarDefault .navbar-vertical-footer button {
+        color: var(--bd-green-light);
+    }
+
+    #sidebarDefault .navbar-vertical-footer button:hover {
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    #sidebarDefault .parent {
+        background: var(--bd-green) !important;
+        overflow: hidden;
+        border: 0px;
+    }
+
+    #sidebarDefault .parent .collapsed-nav-item-title {
+        color: var(--bd-white) !important;
+        background: var(--bd-green-dark);
+    }
+
+    #sidebarDefault .parent .nav-link.active {
+        background: var(--bd-green-light) !important;
+        color: var(--bd-green-dark) !important;
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+    }
+
+    #navbarDefault {
+        border-bottom: 1px solid var(--bd-green-light);
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+    }
+</style>
