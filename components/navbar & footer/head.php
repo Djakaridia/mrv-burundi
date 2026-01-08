@@ -207,11 +207,6 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
         box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
     }
 
-    #sidebarDefault .nav-link-icon,
-    #sidebarDefault .nav-link-text {
-        color: var(--bd-white);
-    }
-
     #navbarDefault {
         border-bottom: 1px solid var(--bd-green-light);
         box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
