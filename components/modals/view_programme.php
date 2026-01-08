@@ -1,6 +1,6 @@
 <div class="modal fade" id="programmeCardViewModal" tabindex="-1" aria-labelledby="programmeCardViewModal"
     aria-hidden="true">
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content overflow-hidden">
             <div class="modal-header bg-body d-flex justify-content-between align-items-center border-bottom border-light p-2">
                 <h4 class="modal-title fw-bolder"> Information du programme</h4>

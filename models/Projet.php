@@ -17,7 +17,7 @@ class Projet
     public $signature_date;
     public $miparcours_date;
     public $structure_id;
-    public $action_id;
+    public $action_type;
     public $priorites_id;
     public $secteurs;
     public $groupes;
@@ -31,8 +31,8 @@ class Projet
 
     public function create()
     {
-        $query = "INSERT INTO " . $this->table . " (logo, code, name, description, objectif, status, budget, start_date, end_date, signature_date, miparcours_date, structure_id, secteurs, groupes, programmes, action_id, priorites_id, add_by) VALUES 
-                  (:logo, :code, :name, :description, :objectif, :status, :budget, :start_date, :end_date, :signature_date, :miparcours_date, :structure_id, :secteurs, :groupes, :programmes, :action_id, :priorites_id, :add_by)";
+        $query = "INSERT INTO " . $this->table . " (logo, code, name, description, objectif, status, budget, start_date, end_date, signature_date, miparcours_date, structure_id, secteurs, groupes, programmes, action_type, priorites_id, add_by) VALUES 
+                  (:logo, :code, :name, :description, :objectif, :status, :budget, :start_date, :end_date, :signature_date, :miparcours_date, :structure_id, :secteurs, :groupes, :programmes, :action_type, :priorites_id, :add_by)";
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':logo', $this->logo);
@@ -50,7 +50,7 @@ class Projet
         $stmt->bindParam(':secteurs', $this->secteurs);
         $stmt->bindParam(':groupes', $this->groupes);
         $stmt->bindParam(':programmes', $this->programmes);
-        $stmt->bindParam(':action_id', $this->action_id);
+        $stmt->bindParam(':action_type', $this->action_type);
         $stmt->bindParam(':priorites_id', $this->priorites_id);
         $stmt->bindParam(':add_by', $this->add_by);
 
@@ -64,11 +64,9 @@ class Projet
     {
         $query = "SELECT p.*, 
                         s.sigle as structure_sigle,
-                        a.name as action_name, 
                         pr.name as priorite_name
                   FROM " . $this->table . " p 
                   LEFT JOIN t_structures s ON p.structure_id = s.id
-                  LEFT JOIN t_actions a ON p.action_id = a.id
                   LEFT JOIN t_priorites pr ON p.priorites_id = pr.id
                   ORDER BY p.id ASC";
 
@@ -81,10 +79,9 @@ class Projet
     {
         $query = "SELECT p.*,
                         s.sigle as structure_sigle,
-                        a.name as action_name, pr.name as priorite_name
+                        pr.name as priorite_name
                   FROM " . $this->table . " p 
                   LEFT JOIN t_structures s ON p.structure_id = s.id
-                  LEFT JOIN t_actions a ON p.action_id = a.id
                   LEFT JOIN t_priorites pr ON p.priorites_id = pr.id
                   WHERE p.id = :id";
 
@@ -100,7 +97,7 @@ class Projet
       logo=:logo, code=:code, name=:name, description=:description, objectif=:objectif,
       status=:status, budget=:budget, start_date=:start_date, end_date=:end_date, 
       signature_date=:signature_date, miparcours_date=:miparcours_date, 
-      structure_id=:structure_id, secteurs=:secteurs, groupes=:groupes, programmes=:programmes, action_id=:action_id,
+      structure_id=:structure_id, secteurs=:secteurs, groupes=:groupes, programmes=:programmes, action_type=:action_type,
       priorites_id=:priorites_id, add_by=:add_by 
       WHERE id=:id";
 
@@ -121,7 +118,7 @@ class Projet
         $stmt->bindParam(':secteurs', $this->secteurs);
         $stmt->bindParam(':groupes', $this->groupes);
         $stmt->bindParam(':programmes', $this->programmes);
-        $stmt->bindParam(':action_id', $this->action_id);
+        $stmt->bindParam(':action_type', $this->action_type);
         $stmt->bindParam(':priorites_id', $this->priorites_id);
         $stmt->bindParam(':add_by', $this->add_by);
 

@@ -115,14 +115,13 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
 
 <style>
     :root {
-        --bd-green: #009300;
-        --bd-green-light: #00b500;
-        --bd-green-dark: #006c00;
-        --bd-red: #da0025;
-        --bd-white: #ffffff;
+        --bd-green: #0a7f5a;
+        --bd-green-light: #2fa07a;
+        --bd-green-dark: #055f43;
+        --bd-red: #b3263a;
+        --bd-white: #f6f8f7;
     }
 
-    
     @media screen and (min-width: 768px) {
         #navbarDefault .navbar-logo {
             background: linear-gradient(0deg, var(--bd-green), var(--bd-green-dark)) !important;
@@ -206,6 +205,11 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
         background: var(--bd-green-light) !important;
         color: var(--bd-green-dark) !important;
         box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+    }
+
+    #sidebarDefault .nav-link-icon,
+    #sidebarDefault .nav-link-text {
+        color: var(--bd-white);
     }
 
     #navbarDefault {

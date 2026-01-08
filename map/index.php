@@ -30,9 +30,9 @@ foreach ($projets_actifs as $p) {
 
 $projets_par_action = [];
 foreach ($projets_actifs as $p) {
-    $projets_par_action[$p['action_name']][] = $p;
+    $projets_par_action[$p['action_type']][] = $p;
 }
-$projets_actions_assoc = array_column($projets_actifs, 'action_name', 'action_name');
+$projets_actions_assoc = array_column($projets_actifs, 'action_type', 'action_type');
 
 //========================= Indicateurs 
 $indicateur = new Indicateur($db);
@@ -73,10 +73,10 @@ $secteur = new Secteur($db);
 $secteurs = $secteur->read();
 $secteurs_assoc = array_column($secteurs, 'name', 'id');
 
-//========================= Regions 
-$region = new Region($db);
-$regions = $region->read();
-$regions_assoc = array_column($regions, 'name', 'id');
+//========================= Provinces 
+$province = new Province($db);
+$provinces = $province->read();
+$provinces_assoc = array_column($provinces, 'name', 'id');
 
 //========================= Zones 
 $zone = new Zone($db);
@@ -90,13 +90,13 @@ $zonesCollectes = sort($zones);
 //     $zonesCollectes = array_merge($zonesCollectes, glob("../uploads/couches/*.$ext"));
 // }
 
-//========================= Projets par region
-$projets_par_region = [];
+//========================= Projets par province
+$projets_par_province = [];
 foreach ($indicateur_cmr as $indicateur) {
-    if (!empty($indicateur['region']) && isset($projets_par_id[$indicateur['projet_id']])) {
-        $region = $indicateur['region'];
-        if (!isset($projets_par_region[$region])) {
-            $projets_par_region[$region] = [
+    if (!empty($indicateur['province']) && isset($projets_par_id[$indicateur['projet_id']])) {
+        $province = $indicateur['province'];
+        if (!isset($projets_par_province[$province])) {
+            $projets_par_province[$province] = [
                 'projets' => [],
                 'budget_total' => 0,
                 'indicateurs_count' => 0
@@ -104,11 +104,11 @@ foreach ($indicateur_cmr as $indicateur) {
         }
 
         $projet_id = $indicateur['projet_id'];
-        if (!in_array($projet_id, $projets_par_region[$region]['projets'])) {
-            $projets_par_region[$region]['projets'][] = $projet_id;
-            $projets_par_region[$region]['budget_total'] += $projets_par_id[$projet_id]['budget'] ?? 0;
+        if (!in_array($projet_id, $projets_par_province[$province]['projets'])) {
+            $projets_par_province[$province]['projets'][] = $projet_id;
+            $projets_par_province[$province]['budget_total'] += $projets_par_id[$projet_id]['budget'] ?? 0;
         }
-        $projets_par_region[$region]['indicateurs_count']++;
+        $projets_par_province[$province]['indicateurs_count']++;
     }
 }
 ?>
@@ -182,7 +182,7 @@ foreach ($indicateur_cmr as $indicateur) {
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link fs-10 text-white active" id="couches-tab" data-bs-toggle="tab" data-bs-target="#couches"
                                         type="button" role="tab" aria-controls="couches" aria-selected="true">
-                                        Couches <span class="badge bg-success" id="regionsCount"></span>
+                                        Couches <span class="badge bg-success" id="provincesCount"></span>
                                     </button>
                                 </li>
                                 <li class="nav-item" role="presentation">
@@ -204,11 +204,11 @@ foreach ($indicateur_cmr as $indicateur) {
                             </ul>
                             <div class="tab-content" id="mapPanelTabContent">
                                 <div class="tab-pane fade show active" id="couches" role="tabpanel" aria-labelledby="couches-tab">
-                                    <div id="regionsList" class="list-group small">
+                                    <div id="provincesList" class="list-group small">
                                         <div class="list-group-item list-group-item-action bg-primary-subtle">
                                             <div class="input-group">
-                                                <input type="checkbox" id="all-regions" name="regions[]" value="all">
-                                                <label for="all-regions" class="text-capitalize fw-semibold link-primary cursor-pointer mx-1 w-75">Tout cocher</label>
+                                                <input type="checkbox" id="all-provinces" name="provinces[]" value="all">
+                                                <label for="all-provinces" class="text-capitalize fw-semibold link-primary cursor-pointer mx-1 w-75">Tout cocher</label>
                                             </div>
                                         </div>
                                     </div>
@@ -306,7 +306,7 @@ foreach ($indicateur_cmr as $indicateur) {
 
                         <!-- Panneau de statistiques -->
                         <div class="stats-panel d-none" id="statsPanel">
-                            <h6 id="statsRegionName">Statistiques de la zone</h6>
+                            <h6 id="statsProvinceName">Statistiques de la zone</h6>
                             <div class="stats-item">
                                 <span>Projets:</span>
                                 <span id="zoneProjects">0</span>

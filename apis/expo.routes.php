@@ -41,10 +41,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
         // -------------------- Projets (Actions) ------------------------
         $resultProjets = $projet->read();
-        if ($resultProjets) {
-            $dataStruc['action_attenuation'] = array_values(array_filter($resultProjets, fn($p) => strtoupper(removeAccents($p['action_name'] ?? "")) === 'ATTENUATION'));
-            $dataStruc['action_adaptation'] = array_values(array_filter($resultProjets, fn($p) => strtoupper(removeAccents($p['action_name'] ?? "")) === 'ADAPTATION'));
-        }
+        if ($resultProjets) {       
+            $dataStruc['action_attenuation'] = array_values(array_filter($resultProjets, fn($p) => strtoupper(removeAccents($p['action_type'] ?? "")) === 'ATTENUATION'));
+            $dataStruc['action_adaptation'] = array_values(array_filter($resultProjets, fn($p) => strtoupper(removeAccents($p['action_type'] ?? "")) === 'ADAPTATION'));
+        } 
 
         // -------------------- Inventaires ------------------------
         $resultInv = $inventory->read();

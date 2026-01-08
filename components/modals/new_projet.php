@@ -158,15 +158,13 @@
                                                     <!-- Action -->
                                                     <div class="col-md-6 mb-3">
                                                         <div class="form-floating">
-                                                            <select class="form-select" name="action_id" id="projetAction" required>
+                                                            <select class="form-select" name="action_type" id="projetAction" required>
                                                                 <option value="" selected disabled>Sélectionner une action</option>
-                                                                <?php if ($actions ?? []) : ?>
-                                                                    <?php foreach ($actions as $action) : ?>
-                                                                        <option value="<?= $action['id'] ?>"><?= $action['name'] ?></option>
-                                                                    <?php endforeach; ?>
-                                                                <?php endif; ?>
+                                                                <?php foreach (listTypeAction() as $key => $value) : ?>
+                                                                    <option value="<?= $key ?>"><?= $value ?></option>
+                                                                <?php endforeach; ?>
                                                             </select>
-                                                            <label for="projetAction">Action*</label>
+                                                            <label for="projetAction">Action type*</label>
                                                         </div>
                                                     </div>
                                                     <!-- Priorité -->
@@ -268,7 +266,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-12 mb-2">
+                                                    <!-- <div class="col-md-12 mb-2">
                                                         <div class="form-floating form-floating-advance-select">
                                                             <label for="MultipleSelectProgramme">Programmes concernés*</label>
                                                             <select class="form-select" name="programmes_listID" id="MultipleSelectProgramme" data-choices="data-choices" multiple="multiple" data-options='{"removeItemButton":true,"placeholder":true}' required>
@@ -284,7 +282,7 @@
                                                                 <?php endif; ?>
                                                             </select>
                                                         </div>
-                                                    </div>
+                                                    </div> -->
                                                 </div>
                                             </form>
                                         </div>
@@ -386,7 +384,7 @@
                     form.code.value = result.data.code || '';
                     form.budget.value = result.data.budget || 0;
                     form.structure_id.value = result.data.structure_id || '';
-                    form.action_id.value = result.data.action_id || '';
+                    form.action_type.value = result.data.action_type || '';
                     form.priorites_id.value = result.data.priorites_id || '';
                     form.status.value = result.data.status || '';
 
@@ -429,7 +427,7 @@
             $('#projetImage').val('');
             $('#MultipleSelectSecteur').val('');
             $('#MultipleSelectGroupe').val('');
-            $('#MultipleSelectProgramme').val('');
+            // $('#MultipleSelectProgramme').val('');
 
             tinymce.get('projetObjectif')?.setContent('');
             tinymce.get('projetDescription')?.setContent('');
@@ -486,7 +484,7 @@
                 formData.append('status', $('#projetStatus').val());
                 formData.append('secteurs', $('#MultipleSelectSecteur').val());
                 formData.append('groupes', $('#MultipleSelectGroupe').val());
-                formData.append('programmes', $('#MultipleSelectProgramme').val());
+                //formData.append('programmes', $('#MultipleSelectProgramme').val());
 
                 const fileInput = document.getElementById('projetImage');
                 if (fileInput.files.length > 0) {

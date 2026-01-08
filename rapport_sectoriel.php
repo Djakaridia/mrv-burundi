@@ -143,7 +143,7 @@
                                                 <tr>
                                                     <td class="align-middle"><?= $projet['code'] ?></td>
                                                     <td class="align-middle"><?= $projet['name'] ?></td>
-                                                    <td class="align-middle"><?= $projet['action_name'] ?></td>
+                                                    <td class="align-middle"><?= listTypeAction()[$projet['action_type']] ?></td>
                                                     <td class="align-middle rating" style="min-width:200px;">
                                                         <span class="badge bg-warning-subtle text-warning p-2 fs-10"><?php echo number_format($projet['budget'], 0, ',', ' '); ?></span>
                                                     </td>

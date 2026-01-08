@@ -24,9 +24,6 @@
     $projet = new Projet($db);
     $projets = $projet->read();
 
-    $action = new Action($db);
-    $actions = $action->read();
-
     $priorite = new Priorite($db);
     $priorites = $priorite->read();
 

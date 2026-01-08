@@ -20,9 +20,9 @@
                 </div>
 
                 <div id="coutContentContainer" style="display: none;">
-                    <form id="coutTaskForm" class="bg-light" style="min-height: 300px; max-height: 400px; overflow-y: auto;">
-                        <input type="hidden" id="cout_tache_id" name="tache_id">
-                        <?php if (isset($conventions_project) && count($conventions_project) > 0) { ?>
+                    <?php if (isset($conventions_project) && count($conventions_project) > 0) { ?>
+                        <form id="coutTaskForm" class="card" style="min-height: 300px; max-height: 400px; overflow-y: auto;">
+                            <input type="hidden" id="cout_tache_id" name="tache_id">
                             <table class="table table-sm table-hover table-striped fs-12 table-bordered border-emphasis" align="center">
                                 <thead class="bg-light">
                                     <tr>
@@ -52,20 +52,22 @@
                                 <button type="button" class="btn btn-secondary btn-sm px-3 my-0" onclick="cancelCTForm()">Annuler</button>
                                 <button type="submit" class="btn btn-primary btn-sm px-3 my-0" id="cout_tache_modbtn">Enregistrer</button>
                             </div>
-                        <?php } else { ?>
-                            <div class="col-12">
-                                <div class="text-center p-10">
-                                    <h4 class="mb-5 text-dark">
-                                        <span class="fas fa-history me-2"></span>Aucune convention disponible
-                                    </h4>
-                                    <?php if (isset($project_id)) { ?>
+                        </form>
+                    <?php } else { ?>
+                        <div class="col-12">
+                            <div class="card text-center p-10 mb-3">
+                                <h4 class="mb-5 text-dark">
+                                    <span class="fas fa-history me-2"></span>Aucune convention disponible
+                                </h4>
+                                <?php if (isset($project_id)) { ?>
                                     <a href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=finance'; ?>" class="btn btn-primary btn-sm px-3 my-0">Ajouter une convention</a>
-                                    <?php } ?>
-                                </div>
+                                <?php } ?>
+                            </div>
+                            <div class="modal-footer d-flex justify-content-between border-0 p-0">
                                 <button type="button" class="btn btn-secondary btn-sm px-3 my-0" onclick="cancelCTForm()">Annuler</button>
                             </div>
-                        <?php } ?>
-                    </form>
+                        </div>
+                    <?php } ?>
                 </div>
             </div>
         </div>

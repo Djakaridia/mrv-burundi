@@ -18,7 +18,7 @@ configureCORS();
 loadVarEnv();
 header("Content-Type: application/json");
 
-// Authentication
+// Authentication 
 try {
     $jwt = JWTUtils::getBearerToken();
     $payload = JWTUtils::validateJWT($jwt);
@@ -86,7 +86,7 @@ switch ($requestMethod) {
             $projet->signature_date = sanitize_input($_POST['signature_date'] ?? null);
             $projet->miparcours_date = sanitize_input($_POST['miparcours_date'] ?? null);
             $projet->structure_id = sanitize_input($_POST['structure_id']);
-            $projet->action_id = sanitize_input($_POST['action_id']);
+            $projet->action_type = sanitize_input($_POST['action_type']);
             $projet->priorites_id = sanitize_input($_POST['priorites_id']);
             $projet->secteurs = isset($_POST['secteurs']) ? json_encode($_POST['secteurs']) : null;
             $projet->groupes = isset($_POST['groupes']) ? json_encode($_POST['groupes']) : null;
@@ -122,7 +122,7 @@ switch ($requestMethod) {
             $projet->signature_date = sanitize_input($_POST['signature_date'] ?? null);
             $projet->miparcours_date = sanitize_input($_POST['miparcours_date'] ?? null);
             $projet->structure_id = sanitize_input($_POST['structure_id']);
-            $projet->action_id = sanitize_input($_POST['action_id']);
+            $projet->action_type = sanitize_input($_POST['action_type']);
             $projet->priorites_id = sanitize_input($_POST['priorites_id']);
             $projet->secteurs = isset($_POST['secteurs']) ? json_encode($_POST['secteurs']) : null;
             $projet->groupes = isset($_POST['groupes']) ? json_encode($_POST['groupes']) : null;

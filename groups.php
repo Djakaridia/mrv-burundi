@@ -37,9 +37,6 @@
   $secteurs = $secteur->read();
   $secteurs = array_filter($secteurs, function ($secteur) { return $secteur['state'] == 'actif'; });
 
-  $action = new Action($db);
-  $actions = $action->read();
-
   ?>
 </head>
 

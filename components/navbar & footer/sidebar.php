@@ -201,11 +201,11 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                     </div>
 
                     <div class="nav-item-wrapper">
-                        <a class="nav-link dropdown-indicator label-1 rounded-0 py-2 m-0" href="#nv-projects" role="button" data-bs-toggle="collapse" aria-expanded="<?= in_array($pageCurr, ['projects', 'project_view', 'cadre_resultat_cr', 'fiches_dynamiques']) ? 'true' : 'false'; ?>" aria-controls="nv-projects">
+                        <a class="nav-link dropdown-indicator label-1 rounded-0 py-2 m-0" href="#nv-projects" role="button" data-bs-toggle="collapse" aria-expanded="<?= in_array($pageCurr, ['niveau_resultat', 'projects', 'project_view', 'cadre_resultat_cr', 'fiches_dynamiques']) ? 'true' : 'false'; ?>" aria-controls="nv-projects">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center">
                                     <span class="nav-link-icon ms-2 my-1"><span data-feather="airplay"></span></span>
-                                    <span class="nav-link-text">Projets</span>
+                                    <span class="nav-link-text">Fiche des projets</span>
                                 </div>
                                 <div class="dropdown-indicator-icon-wrapper">
                                     <span class="fas fa-chevron-right dropdown-indicator-icon"></span>
@@ -213,13 +213,21 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                             </div>
                         </a>
                         <div class="parent-wrapper label-1">
-                            <ul class="nav collapse parent rounded-1 ms-1 <?= in_array($pageCurr, ['projects', 'project_view', 'cadre_resultat_cr', 'fiches_dynamiques']) ? 'show' : ''; ?>" data-bs-parent="#navbarVerticalCollapse" id="nv-projects">
-                                <li class="collapsed-nav-item-title d-none">Projets</li>
+                            <ul class="nav collapse parent rounded-1 ms-1 <?= in_array($pageCurr, ['niveau_resultat', 'projects', 'project_view', 'cadre_resultat_cr', 'fiches_dynamiques']) ? 'show' : ''; ?>" data-bs-parent="#navbarVerticalCollapse" id="nv-projects">
+                                <li class="collapsed-nav-item-title d-none">Fiche des projets</li>
+                                <li class="nav-item overflow-hidden">
+                                    <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'niveau_resultat' ? 'active' : '' ?>" href="niveau_resultat.php">
+                                        <div class="d-flex align-items-center">
+                                            <span class="fas fa-chevron-right fs-11"></span>
+                                            <span class="nav-link-text ms-lg-0 ms-1">Niveaux de résultats</span>
+                                        </div>
+                                    </a>
+                                </li>
                                 <li class="nav-item overflow-hidden">
                                     <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo in_array($pageCurr, ['projects', 'project_view']) ? 'active' : '' ?>" href="projects.php">
                                         <div class="d-flex align-items-center">
                                             <span class="fas fa-chevron-right fs-11"></span>
-                                            <span class="nav-link-text ms-lg-0 ms-1">Aperçu</span>
+                                            <span class="nav-link-text ms-lg-0 ms-1">Projets</span>
                                         </div>
                                     </a>
                                 </li>
@@ -227,7 +235,7 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                                     <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'cadre_resultat_cr' ? 'active' : '' ?>" href="cadre_resultat_cr.php">
                                         <div class="d-flex align-items-center">
                                             <span class="fas fa-chevron-right fs-11"></span>
-                                            <span class="nav-link-text ms-lg-0 ms-1">Cadre de résultat</span>
+                                            <span class="nav-link-text ms-lg-0 ms-1">Cadre de résultats</span>
                                         </div>
                                     </a>
                                 </li>

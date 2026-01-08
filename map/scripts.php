@@ -289,7 +289,7 @@
                         <div class='project-info d-flex flex-column gap-1'>
                             <span><strong>Code:</strong> " . $projet_info['code'] . "</span>
                             <span><strong>Statut:</strong> <span class='badge bg-" . ($projet_info['status'] == 'actif' ? 'success' : 'warning') . "'>" . $projet_info['status'] . "</span></span>
-                            <span><strong>Action:</strong> " . $projet_info['action_name'] . "</span>
+                            <span><strong>Action:</strong> " . $projet_info['action_type'] . "</span>
                             <span><strong>Budget:</strong> " . $budget . "</span>
                             <span><strong>Période:</strong> " . $start_date . " - " . $end_date . "</span>
                             <span><strong>Secteurs:</strong> " . $sectors_names . "</span>
@@ -326,7 +326,7 @@
                                 id: "<?= $projet_info['id'] ?>",
                                 name: "<?= $projet_info['name'] ?>",
                                 code: "<?= $projet_info['code'] ?>",
-                                action: "<?= $projet_info['action_name'] ?>",
+                                action: "<?= $projet_info['action_type'] ?>",
                                 secteurs: <?= $sector_ids_js ?>,
                                 budget: <?= $projet_info['budget'] ?? 0 ?>
                             }

@@ -41,9 +41,6 @@
   $unite = new Unite($db);
   $unites = $unite->read();
 
-  $action = new Action($db);
-  $actions = $action->read();
-
   $priorite = new Priorite($db);
   $priorites = $priorite->read();
 

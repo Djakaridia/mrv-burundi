@@ -1,6 +1,6 @@
 <div class="modal fade" id="projectsCardViewModal" tabindex="-1" aria-labelledby="projectsCardViewModal"
     aria-hidden="true">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content overflow-hidden">
             <div
                 class="modal-header bg-body d-flex justify-content-between align-items-center border-bottom border-light p-2">
@@ -11,7 +11,7 @@
                 </button>
             </div>
         
-            <div class="modal-body p-5 px-md-6">
+            <div class="modal-body p-4">
                 <!-- Loading Screen -->
                 <div id="projectLoadingScreen" class="text-center py-5">
                     <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
@@ -23,13 +23,13 @@
                 
                 <!-- Content Container (initially hidden) -->
                 <div id="projectContentContainer" style="display: none;">
-                    <div class="row g-4">
+                    <div class="row g-3">
                         <!-- Header Section -->
                         <div class="col-12 col-md-3">
-                            <img id="projectCoverView" class="rounded-1 w-100 border border-light shadow-sm d-none" src="" alt=""
-                                style="max-height: 200px;min-height: 150px;" />
-                            <i id="projectCoverIcon" class="far fa-image text-body-tertiary" style="width: 100%; font-size:200px"></i>
+                            <img id="projectCoverView" class="rounded-1 w-100 border border-light shadow-sm d-none" src="" alt="" style="max-height: 150px;min-height: 100px;" />
+                            <i id="projectCoverIcon" class="far fa-image text-body-tertiary" style="width: 100%; font-size:150px"></i>
                         </div>
+                        
                         <div class="col-12 col-md-9">
                             <div class="align-items-start align-items-md-center">
                                 <h3 class="fw-bolder mb-2" id="projetNameView"></h3>
@@ -40,7 +40,7 @@
                             </div>
 
                             <!-- Progress Bar -->
-                            <div class="mt-3">
+                            <div class="mt-2">
                                 <div class="d-flex justify-content-between mb-1">
                                     <small>Progression</small>
                                     <small id="budgetProgressText">0%</small>
@@ -51,27 +51,27 @@
                                 </div>
                             </div>
 
-                            <div class="mt-3 d-flex justify-content-between align-items-start">
-                                <div class="mb-3">
+                            <div class="mt-2 d-flex justify-content-between align-items-start">
+                                <div class="mb-2">
                                     <small class="mb-2">Période</small>
                                     <div class="d-flex align-items-center gap-2">
                                         <span class="fa-regular fa-calendar text-primary"></span>
                                         <small id="projetDatesView" class="fw-semibold"></small>
                                     </div>
                                 </div>
-                                <div class="mb-3">
-                                    <small class="mb-2">Budget alloué</small>
+                                <div class="mb-2">
+                                    <small class="mb-2">Budget alloué (USD)</small>
                                     <div class="d-flex align-items-center gap-2">
-                                        <span class="fa-regular fa-credit-card text-primary"></span>
-                                        <h4 class="text-success mb-0" id="projetBudgetTextView"></h4>
+                                        <span class="fa-regular fa-credit-card rounded-1 text-primary"></span>
+                                        <h4 class="text-red mb-0" id="projetBudgetTextView"></h4>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-12 col-md-4">
-                            <div class="card border-0 shadow-sm h-100">
-                                <div class="card-body">
+                            <div class="card rounded-1 border-0 shadow-sm h-100">
+                                <div class="card-body p-3">
                                     <h5 class="card-title border-bottom pb-2 mb-3">
                                         <i class="fas fa-link text-primary me-2"></i>Informations liées
                                     </h5>
@@ -81,8 +81,8 @@
                         </div>
 
                         <div class="col-12 col-md-8">
-                            <div class="card border-0 shadow-sm h-100">
-                                <div class="card-body">
+                            <div class="card rounded-1 border-0 shadow-sm h-100">
+                                <div class="card-body p-3">
                                     <h5 class="card-title border-bottom pb-2 mb-3">
                                         <i class="fas fa-info-circle text-primary me-2"></i>Informations du projet
                                     </h5>
@@ -110,6 +110,8 @@
 
 <script>
     let ViewProjectID = null;
+    let listActions = <?php echo json_encode(listTypeAction()); ?>;
+    console.log(listActions);
 
     $(document).ready(function() {
         $('#projectsCardViewModal').on('shown.bs.modal', async function(event) {
@@ -146,13 +148,7 @@
                 $('#projetDatesView').text(`${data.start_date} → ${data.end_date}`);
 
                 // Fetch related data
-                const [projetActionRes, projetPrioriteRes, projetTasksRes] = await Promise.all([
-                    fetch(`./apis/actions.routes.php?id=${data.action_id}`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        },
-                        method: 'GET',
-                    }),
+                const [projetPrioriteRes, projetTasksRes] = await Promise.all([
                     fetch(`./apis/priorites.routes.php?id=${data.priorites_id}`, {
                         headers: {
                             'Authorization': `Bearer ${token}`
@@ -167,7 +163,6 @@
                     }),
                 ]);
 
-                const projetAction = await projetActionRes.json();
                 const projetPriorite = await projetPrioriteRes.json();
                 const projetTasks = await projetTasksRes.json();
 
@@ -187,16 +182,15 @@
                 const ProjetInfosSupplementaires = $('#projetInfosSupplementaires');
                 ProjetInfosSupplementaires.empty().append(`
                     <div class="col-12">
-                        <div class="card border border-primary border-opacity-10 hover-shadow-sm h-100">
+                        <div class="card rounded-1 border border-primary border-opacity-10 hover-shadow-sm h-100">
                             <div class="card-body p-3">
-                                <div class="d-flex align-items-start gap-3">
-                                    <div class="avatar avatar-lg bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center">
+                                <div class="d-flex align-items-start gap-2">
+                                    <div class="avatar avatar-lg bg-primary p-2 bg-opacity-10 rounded-1 d-flex align-items-center justify-content-center">
                                         <i class="fas fa-users text-primary"></i>
                                     </div>
                                     <div>
                                         <h6 class="mb-1 text-primary">Responsable</h6>
                                         <p class="mb-0 fw-semibold">${data.structure_sigle}</p>
-                                        <small class="text-muted">Gestionnaire du projet</small>
                                     </div>
                                 </div>
                             </div>
@@ -205,29 +199,27 @@
 
                     <!-- Action -->
                     <div class="col-12">
-                        <div class="card border border-success border-opacity-10 hover-shadow-sm h-100">
+                        <div class="card rounded-1 border border-primary border-opacity-10 hover-shadow-sm h-100">
                             <div class="card-body p-3">
-                                <div class="d-flex align-items-start gap-3">
-                                    <div class="avatar avatar-lg bg-success bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center">
-                                        <i class="fas fa-tasks text-success"></i>
+                                <div class="d-flex align-items-start gap-2">
+                                    <div class="avatar avatar-lg bg-primary p-2 bg-opacity-10 rounded-1 d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-tasks text-primary"></i>
                                     </div>
                                     <div>
-                                        <h6 class="mb-1 text-primary">Action</h6>
-                                        <p class="mb-0 fw-semibold">${projetAction.data.name}</p>
-                                        <small class="text-muted">${projetAction.data.code}</small>
+                                        <h6 class="mb-1 text-primary">Type action</h6>
+                                        <p class="mb-0 fw-semibold">${listActions[data.action_type]}</p>
                                     </div>
                                 </div>
-                                <p class="mt-2 mb-0 small text-muted">${projetAction.data.description}</p>
                             </div>
                         </div>
                     </div>
                     
                     <!-- Priorité -->
                     <div class="col-12">
-                        <div class="card border border-warning border-opacity-10 hover-shadow-sm h-100">
+                        <div class="card rounded-1 border border-warning border-opacity-10 hover-shadow-sm h-100">
                             <div class="card-body p-3">
-                                <div class="d-flex align-items-start gap-3">
-                                    <div class="avatar avatar-lg bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center">
+                                <div class="d-flex align-items-start gap-2">
+                                    <div class="avatar avatar-lg bg-primary p-2 bg-opacity-10 rounded-1 d-flex align-items-center justify-content-center">
                                         <i class="fas fa-exclamation-triangle text-primary"></i>
                                     </div>
                                     <div>
@@ -235,7 +227,6 @@
                                         <p class="mb-0 fw-semibold">${projetPriorite.data.name}</p>
                                         <div class="d-flex align-items-center gap-1">
                                             <span class="badge" style="background-color: ${projetPriorite.data.couleur}; width: 12px; height: 12px; border-radius: 50%;"></span>
-                                            <small class="text-muted">Niveau ${data.priorites_id}</small>
                                         </div>
                                     </div>
                                 </div>

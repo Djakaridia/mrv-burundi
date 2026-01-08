@@ -207,7 +207,7 @@ $logoParts = explode("../", $project_curr['logo'] ?? '');
                         <img class="rounded-1 w-100 border border-light shadow-sm" src="<?php echo end($logoParts); ?>"
                             alt="no-image" style="min-height: 65px; object-fit: contain; object-position: center;" />
                     <?php else : ?>
-                        <i class="far fa-image text-body-tertiary" style="width: 100%; font-size:250px"></i>
+                        <i class="far fa-image text-body-tertiary" style="width: 100%; font-size:200px"></i>
                     <?php endif; ?>
                 </div>
 
@@ -282,14 +282,14 @@ $logoParts = explode("../", $project_curr['logo'] ?? '');
                         </div>
                     </div>
 
-                    <div class="d-flex flex-column border-top border-top-light p-2 mb-1">
+                    <!-- <div class="d-flex flex-column border-top border-top-light p-2 mb-1">
                         <h5 class="text-body-emphasis mb-2">Programmes <span class="text-muted fs-9">(<?php echo count($programmes_project); ?>)</span></h5>
                         <div class="d-flex flex-wrap gap-2">
                             <?php foreach ($programmes_project as $programme) { ?>
                                 <span class="badge badge-phoenix badge-phoenix-primary"><?php echo $programme['name']; ?></span>
                             <?php } ?>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
 

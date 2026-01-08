@@ -24,10 +24,6 @@
     $priorites = $priorite->read();
 
     // ####################################
-    $action = new Action($db);
-    $actions = $action->read();
-
-    // ####################################
     $secteur = new Secteur($db);
     $data_secteurs = $secteur->read();
     $secteurs = array_filter($data_secteurs, function ($secteur) {
@@ -191,73 +187,6 @@
                             </div>
 
 
-                            <!-- Actions -->
-                            <div class="col-12">
-                                <div class="card rounded-bottom-sm rounded-top-0 border-0 border-top border-4 border-primary h-100 shadow-sm">
-                                    <div class="card-header d-flex justify-content-between align-items-center bg-body-emphasis px-3 py-2">
-                                        <h5 class="card-title m-0 p-0">Types d'actions</h5>
-
-                                        <div class="ms-lg-2">
-                                            <button title="Ajouter" class="btn btn-subtle-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addActionModal" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
-                                                <i class="fas fa-plus"></i> Ajouter un type d'action</button>
-                                        </div>
-                                    </div>
-                                    <div class="card-body p-1">
-                                        <div class="table-responsive mx-n1 px-1 scrollbar" style="min-height: 432px;">
-                                            <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable3">
-                                                <thead class="bg-secondary-subtle">
-                                                    <tr>
-                                                        <th class="sort align-middle" scope="col" data-sort="product"> Code</th>
-                                                        <th class="sort align-middle" scope="col" data-sort="product"> Nom</th>
-                                                        <th class="sort align-middle" scope="col" data-sort="customer"> Objectif</th>
-                                                        <th class="sort align-middle" scope="col" data-sort="rating"> Secteur</th>
-                                                        <th class="sort align-middle" scope="col" data-sort="time" style="min-width:100px;"> Actions</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody class="list" id="table-latest-review-body">
-                                                    <?php foreach ($actions as $action) { ?>
-                                                        <tr
-                                                            class="hover-actions-trigger btn-reveal-trigger position-static">
-                                                            <td class="align-middle customer"><?= $action['code'] ?></td>
-                                                            <td class="align-middle product"><?= $action['name'] ?></td>
-                                                            <td class="align-middle product"><?= $action['objectif'] ?></td>
-                                                            <td class="align-middle product py-0">
-                                                                <?php foreach ($secteurs as $secteur) : ?>
-                                                                    <?php if ($action['secteur_id'] == $secteur['id']) : ?>
-                                                                        <?php echo $secteur['name']; ?>
-                                                                    <?php endif; ?>
-                                                                <?php endforeach; ?>
-                                                            </td>
-
-                                                            <td class="align-middle review">
-                                                                <div class="position-relative">
-                                                                    <div class="">
-                                                                        <?php if (checkPermis($db, 'update')) : ?>
-                                                                            <button title="Modifier" type="button" data-bs-toggle="modal" data-bs-target="#addActionModal" data-id="<?= $action['id'] ?>"
-                                                                                class="btn btn-sm btn-phoenix-info me-1 fs-10 px-2 py-1">
-                                                                                <span class="uil-pen fs-8"></span>
-                                                                            </button>
-                                                                        <?php endif; ?>
-
-                                                                        <?php if (checkPermis($db, 'delete')) : ?>
-                                                                            <button title="Supprimer" onclick="deleteData(<?php echo $action['id'] ?>, 'Êtes-vous sûr de vouloir supprimer cette action ?', 'actions')" type="button" class="btn btn-sm btn-phoenix-danger fs-10 px-2 py-1">
-                                                                                <span class="uil-trash-alt fs-8"></span>
-                                                                            </button>
-                                                                        <?php endif; ?>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-
-                                                        </tr>
-                                                    <?php } ?>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-
                             <!-- Configuration Tableau de bord -->
                             <div class="col-12">
                                 <div class="card rounded-bottom-sm rounded-top-0 border-0 border-top border-4 border-primary h-100 shadow-sm">
@@ -267,70 +196,81 @@
                                         <?php if (count($section_dash) < 4) : ?>
                                             <div class="ms-lg-2">
                                                 <button title="Ajouter" class="btn btn-subtle-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addCardDashModal" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
-                                                    <i class="fas fa-plus"></i> Ajouter une card</button>
+                                                    <i class="fas fa-plus"></i> Ajouter une section</button>
                                             </div>
                                         <?php endif; ?>
                                     </div>
 
                                     <div class="card-body px-3">
-                                        <?php foreach ($section_dash as $section) { ?>
-                                            <div class="d-flex lh-1 align-items-center p-2 hover-actions-trigger btn-reveal-trigger shadow rounded-1 border mt-1">
-                                                <div class="col-3 border-end me-2 d-flex align-items-center gap-2">
-                                                    <i class="<?= !empty($section['icone']) ? $section['icone'] . ' text-' . $section['couleur'] : 'fas fa-question-circle' ?> fs-9 text-red"></i>
-                                                    <span class="fs-9"><?= $section['intitule'] ?></span>
-                                                </div>
+                                        <?php if (count($section_dash) > 0) { ?>
+                                            <?php foreach ($section_dash as $section) { ?>
+                                                <div class="row align-items-center p-2 hover-actions-trigger btn-reveal-trigger shadow rounded-1 border m-0">
+                                                    <div class="col-3 border-end me-2 justify-content-start d-flex align-items-center gap-2">
+                                                        <i class="<?= !empty($section['icone']) ? $section['icone'] . ' text-' . $section['couleur'] : 'fas fa-question-circle' ?> fs-9 text-red"></i>
+                                                        <span class="fs-9"><?= $section['intitule'] ?></span>
+                                                    </div>
 
-                                                <div class="col-4 border-end me-2">
-                                                    <?php if ($section['entity_type'] == 'indicateur') : ?>
-                                                        <span class="fs-9 text-muted">Indicateur : </span>
-                                                        <a class="fw-semibold fs-9" href="referentiels.php?id=<?= $section['entity_id'] ?>">
-                                                            <?php foreach ($indicateurs as $indicateur) { ?>
-                                                                <?php if ($indicateur['id'] == $section['entity_id']) { ?>
-                                                                    <?= $indicateur['intitule'] ?>
+                                                    <div class="col border-end d-flex justify-content-center align-items-center gap-2 me-2">
+                                                        <span class="fs-9 text-muted">Couleur : </span>
+                                                        <div key="<?= $key ?>" class="card fw-semibold bg-<?= $section['couleur'] ?> text-center border-3 border-light" style="width: 45px; height: 25px; border-radius: 2px;"></div>
+                                                    </div>
+
+                                                    <div class="col border-end d-flex justify-content-center align-items-center gap-2 me-2">
+                                                        <span class="fs-9 text-muted">Position : </span>
+                                                        <span class="fs-9 fw-semibold"><?= $section['position'] ?></span>
+                                                    </div>
+
+                                                    <div class="col d-flex justify-content-end align-items-center gap-2 me-2">
+                                                        <div class="position-relative">
+                                                            <?php if (checkPermis($db, 'update')) : ?>
+                                                                <button title="Modifier" type="button" data-bs-toggle="modal" data-bs-target="#addCardDashModal" data-id="<?= $section['id'] ?>"
+                                                                    class="btn btn-sm btn-phoenix-info me-1 fs-10 px-2 py-1">
+                                                                    <span class="uil-pen fs-8"></span>
+                                                                </button>
+                                                            <?php endif; ?>
+
+                                                            <?php if (checkPermis($db, 'delete')) : ?>
+                                                                <button title="Supprimer" onclick="deleteData(<?php echo $section['id'] ?>, 'Êtes-vous sûr de vouloir supprimer cette section ?', 'sections_dash')" type="button" class="btn btn-sm btn-phoenix-danger fs-10 px-2 py-1">
+                                                                    <span class="uil-trash-alt fs-8"></span>
+                                                                </button>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-12 border-top py-2 mt-2">
+                                                        <?php if ($section['entity_type'] == 'indicateur') : ?>
+                                                            <span class="fs-9 text-muted">Indicateur : </span>
+                                                            <a class="fw-semibold fs-9" href="referentiels.php?id=<?= $section['entity_id'] ?>">
+                                                                <?php foreach ($indicateurs as $indicateur) { ?>
+                                                                    <?php if ($indicateur['id'] == $section['entity_id']) { ?>
+                                                                        <?= $indicateur['intitule'] ?>
+                                                                    <?php } ?>
                                                                 <?php } ?>
-                                                            <?php } ?>
-                                                        </a>
-                                                    <?php elseif ($section['entity_type'] == 'projet') : ?>
-                                                        <span class="fs-9 text-muted">Projet : </span>
-                                                        <a class="fw-semibold fs-9" href="project_view.php?id=<?= $section['entity_id'] ?>">
-                                                            <?php foreach ($projects as $project) { ?>
-                                                                <?php if ($project['id'] == $section['entity_id']) { ?>
-                                                                    <?= $project['name'] ?>
+                                                            </a>
+                                                        <?php elseif ($section['entity_type'] == 'projet') : ?>
+                                                            <span class="fs-9 text-muted">Projet : </span>
+                                                            <a class="fw-semibold fs-9" href="project_view.php?id=<?= $section['entity_id'] ?>">
+                                                                <?php foreach ($projects as $project) { ?>
+                                                                    <?php if ($project['id'] == $section['entity_id']) { ?>
+                                                                        <?= $project['name'] ?>
+                                                                    <?php } ?>
                                                                 <?php } ?>
-                                                            <?php } ?>
-                                                        </a>
-                                                    <?php endif; ?>
-                                                </div>
-
-                                                <div class="col border-end d-flex align-items-center gap-2 me-2">
-                                                    <span class="fs-9 text-muted">Couleur : </span>
-                                                    <div key="<?= $key ?>" class="card fw-semibold bg-<?= $section['couleur'] ?> text-center border-3 border-light" style="width: 45px; height: 25px; border-radius: 2px;"></div>
-                                                </div>
-
-                                                <div class="col border-end d-flex align-items-center gap-2 me-2">
-                                                    <span class="fs-9 text-muted">Position : </span>
-                                                    <span class="fs-9 fw-semibold"><?= $section['position'] ?></span>
-                                                </div>
-
-                                                <div class="col me-2">
-                                                    <div class="position-relative">
-                                                        <?php if (checkPermis($db, 'update')) : ?>
-                                                            <button title="Modifier" type="button" data-bs-toggle="modal" data-bs-target="#addCardDashModal" data-id="<?= $section['id'] ?>"
-                                                                class="btn btn-sm btn-phoenix-info me-1 fs-10 px-2 py-1">
-                                                                <span class="uil-pen fs-8"></span>
-                                                            </button>
-                                                        <?php endif; ?>
-
-                                                        <?php if (checkPermis($db, 'delete')) : ?>
-                                                            <button title="Supprimer" onclick="deleteData(<?php echo $section['id'] ?>, 'Êtes-vous sûr de vouloir supprimer cette section ?', 'sections_dash')" type="button" class="btn btn-sm btn-phoenix-danger fs-10 px-2 py-1">
-                                                                <span class="uil-trash-alt fs-8"></span>
-                                                            </button>
+                                                            </a>
                                                         <?php endif; ?>
                                                     </div>
                                                 </div>
+                                            <?php } ?>
+                                        <?php } else { ?>
+                                            <div class="text-center py-5 my-5" style="min-height: 200px;">
+                                                <div class="d-flex justify-content-center mb-3">
+                                                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-warning">
+                                                        <path d="M12 8V12M12 16H12.01M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                                    </svg>
+                                                </div>
+                                                <h4 class="text-800 mb-3">Aucune section trouvée</h4>
+                                                <p class="text-600 mb-5">Il semble que vous n'ayez pas encore de sections. Commencez par en créer une.</p>
                                             </div>
                                         <?php } ?>
-
                                     </div>
                                 </div>
                             </div>

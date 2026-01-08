@@ -29,9 +29,6 @@
     return $structure['state'] == 'actif';
   });
 
-  $action = new Action($db);
-  $actions = $action->read();
-
   $priorite = new Priorite($db);
   $priorites = $priorite->read();
 
@@ -157,7 +154,11 @@
                           </div>
 
                           <div class="d-flex align-items-center mb-1"><span class="fa-solid fa-rocket me-2 text-body-tertiary fs-10 fw-extra-bold"></span>
-                            <p class="mb-0 text-truncate">Action : <span class="fw-semibold ms-1"><?= $projet['action_name'] ?></span></p>
+                            <p class="mb-0 text-truncate">Type action : 
+                              <span class="fw-semibold ms-1">
+                                <?= $projet['action_type'] == 'adaptation' ? 'Adaptation' : 'Atténuation' ?>
+                              </span>
+                            </p>
                           </div>
                         </div>
                       </div>

@@ -234,7 +234,7 @@
                   <div class="card-body p-3">
                     <div class="d-flex justify-content-between align-items-center">
                       <h5 class="mb-0">Sécurité</h5>
-                      <button class="btn btn-sm btn-outline-primary rounded-1" type="button" data-bs-toggle="collapse"
+                      <button class="btn btn-sm btn-subtle-primary rounded-1" type="button" data-bs-toggle="collapse"
                         data-bs-target="#changePassword">
                         <span class="uil uil-lock me-1"></span> Modifier
                       </button>
