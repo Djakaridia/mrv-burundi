@@ -323,7 +323,7 @@
                                                             <h5 class="mb-3">Validation des informations du projet</h5>
                                                             <p class="text-body-emphasis fs-9">Veuillez vous assurer de la véracité des informations du projet</p>
                                                             <div class="d-flex justify-content-center border-0 px-0 pb-0">
-                                                                <button type="button" class="btn btn-success my-0 px-5" id="projet_modbtn">Valider les données</button>
+                                                                <button type="button" class="btn btn-primary my-0 px-5" id="projet_modbtn">Valider les données</button>
                                                             </div>
                                                         </div>
                                                     </div>

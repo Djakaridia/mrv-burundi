@@ -322,44 +322,55 @@
                   return strtotime($a['end_date']) - strtotime($b['end_date']);
                 });
 
-                if(count($projetsWithDeadline) > 0){
+                if (count($projetsWithDeadline) > 0) {
                   foreach (array_slice($projetsWithDeadline, 0, 5) as $projet):
                     $daysLeft = floor((strtotime($projet['end_date']) - time()) / (60 * 60 * 24));
                 ?>
-                  <div onclick="window.location.href = 'project_view.php?id=<?= $projet['id'] ?>';" class="list-group-item list-group-item-action cursor-pointer border-bottom shadow-sm mb-1 py-2 px-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <h6 class="mb-1"><?= $projet['name'] ?></h6>
-                      <span class="badge badge-phoenix fs-10 badge-phoenix-<?= $daysLeft < 30 ? 'danger' : ($daysLeft < 90 ? 'warning' : 'success') ?>"><?= $daysLeft ?> jours</span>
-                    </div>
-                    <p class="mb-0 fs-10 text-body-secondary">Échéance: <?= date('d/m/Y', strtotime($projet['end_date'])) ?></p>
-                    <?php
-                    $tache_projet = new Tache($db);
-                    $tache_projet->projet_id = $projet['id'];
-                    $taches_projet = $tache_projet->readByProjet();
-                    $taches_projet = array_filter($taches_projet, function ($tache) {
-                      return $tache['state'] == 'actif';
-                    });
-                    $totalTacheCount = count($taches_projet);
-                    $finishedTacheCount = count(array_filter($taches_projet, function ($tache) {
-                      return strtolower($tache['status']) === 'terminée';
-                    }));
-                    $progress = $totalTacheCount > 0 ? (round(($finishedTacheCount / $totalTacheCount), 2) * 100) : 0;
-                    ?>
-                    <div class="my-1">
-                      <div class="d-flex justify-content-between fs-10 text-body-secondary mb-1">
-                        <span>Progression</span>
-                        <span><?= $finishedTacheCount ?> / <?= $totalTacheCount ?> tâches</span>
+                    <div onclick="window.location.href = 'project_view.php?id=<?= $projet['id'] ?>';" class="list-group-item list-group-item-action cursor-pointer border-bottom shadow-sm mb-1 py-2 px-3">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="mb-1"><?= $projet['name'] ?></h6>
+                        <span class="badge badge-phoenix fs-10 badge-phoenix-<?= $daysLeft < 30 ? 'danger' : ($daysLeft < 90 ? 'warning' : 'success') ?>"><?= $daysLeft ?> jours</span>
                       </div>
-                      <div class="progress progress-thin">
-                        <div class="progress-bar bg-<?= $progress < 30 ? 'danger' : ($progress < 70 ? 'warning' : 'success') ?>"
-                          style="width: <?= $progress ?>%"
-                          role="progressbar"></div>
+                      <p class="mb-0 fs-10 text-body-secondary">Échéance: <?= date('d/m/Y', strtotime($projet['end_date'])) ?></p>
+                      <?php
+                      $tache_projet = new Tache($db);
+                      $tache_projet->projet_id = $projet['id'];
+                      $taches_projet = $tache_projet->readByProjet();
+                      $taches_projet = array_filter($taches_projet, function ($tache) {
+                        return $tache['state'] == 'actif';
+                      });
+                      $totalTacheCount = count($taches_projet);
+                      $finishedTacheCount = count(array_filter($taches_projet, function ($tache) {
+                        return strtolower($tache['status']) === 'terminée';
+                      }));
+                      $progress = $totalTacheCount > 0 ? (round(($finishedTacheCount / $totalTacheCount), 2) * 100) : 0;
+                      ?>
+                      <div class="my-1">
+                        <div class="d-flex justify-content-between fs-10 text-body-secondary mb-1">
+                          <span>Progression</span>
+                          <span><?= $finishedTacheCount ?> / <?= $totalTacheCount ?> tâches</span>
+                        </div>
+                        <div class="progress progress-thin">
+                          <div class="progress-bar bg-<?= $progress < 30 ? 'danger' : ($progress < 70 ? 'warning' : 'success') ?>"
+                            style="width: <?= $progress ?>%"
+                            role="progressbar"></div>
+                        </div>
                       </div>
                     </div>
+                  <?php endforeach; ?>
+                <?php } else { ?>
+                  <div class="text-center py-5 my-3" style="min-height: 300px;">
+                    <div class="d-flex justify-content-center mb-3">
+                      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-warning">
+                        <path d="M12 8V12M12 16H12.01M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </div>
+                    <h4 class="text-800 mb-3">Aucun projet trouvé</h4>
+                    <p class="text-600 mb-3">Veuillez ajouter des données pour avoir des alertes </p>
+                    <a href="projects.php" class="btn btn-subtle-primary rounded-1 btn-sm px-5">
+                      <span class="fa fa-plus fs-9 me-2"></span>Ajouter un projet
+                    </a>
                   </div>
-                <?php endforeach; ?>
-                <?php }else { ?>
-                  <div class="text-center py-10">Pas de projets trouvés</div>
                 <?php } ?>
               </div>
             </div>

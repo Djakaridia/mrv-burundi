@@ -371,14 +371,14 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                         <div class="parent-wrapper label-1">
                             <ul class="nav collapse parent rounded-1 ms-1 <?= in_array($pageCurr, ['rapport_dynamique', 'rapport_periodique', 'rperiode_view', 'dashboard', 'rapport_sectoriel']) ? 'show' : ''; ?>" data-bs-parent="#navbarVerticalCollapse" id="nv-reports">
                                 <li class="collapsed-nav-item-title d-none">Rapports</li>
-                                <!-- <li class="nav-item overflow-hidden">
+                                <li class="nav-item overflow-hidden">
                                     <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'rapport_dynamique' ? 'active' : '' ?>" href="rapport_dynamique.php">
                                         <div class="d-flex align-items-center">
                                             <span class="fas fa-chevron-right fs-11"></span>
                                             <span class="nav-link-text ms-lg-0 ms-1">Rapports dynamiques</span>
                                         </div>
                                     </a>
-                                </li> -->
+                                </li>
                                 <li class="nav-item overflow-hidden">
                                     <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'rapport_sectoriel' ? 'active' : '' ?>" href="rapport_sectoriel.php">
                                         <div class="d-flex align-items-center">

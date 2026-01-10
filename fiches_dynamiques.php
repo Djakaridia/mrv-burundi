@@ -21,7 +21,7 @@
 
         <div class="content">
             <div class="mx-n4 mt-n5 mx-lg-n6 p-0">
-                <iframe src="fiches" style="height: 80vh; width: 100%;" allow="fullscreen"></iframe>
+                <iframe src="fiches/dashboard.php?page=fiches" style="height: 80vh; width: 100%;" allow="fullscreen"></iframe>
             </div>
         </div>
 

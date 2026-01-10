@@ -18,7 +18,7 @@
                         <h5 class="text-muted">Aucune visualisation disponible</h5>
                         <p class="text-secondary">Aucun graphique n’a pu être généré à partir des données actuelles.</p>
                         <p class="text-secondary mt-5">Veuillez vérifier les données et les paramètres de visualisation des indicateurs.</p>
-                        <button onclick="window.location.href = 'referentiels.php';" class="btn btn-phoenix-info">Configurer les indicateurs</button>
+                        <button onclick="window.location.href = 'referentiels.php';" class="btn btn-subtle-primary">Configurer les indicateurs</button>
                     </div>
                 </div>
             <?php } ?>

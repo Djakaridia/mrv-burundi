@@ -24,29 +24,23 @@
 
     if (!empty($all_projects) && $sel_id == '') {
         $sel_id = $all_projects[0]['id'];
+        $project->id = $sel_id;
+        $project_curr = $project->readById();
+
+        $indicateur = new Indicateur($db);
+        $indicateur->projet_id = $project_curr['id'];
+        $indicateurs_project = $indicateur->readByProjet();
+
+        $secteur = new Secteur($db);
+        $secteurs = $secteur->read();
+        $secteurs = array_filter($secteurs, function ($structure) {
+            return $structure['state'] == 'actif' && $structure['parent_id'] == 0;
+        });
+
+        $secteurs_project = array_filter($secteurs, function ($s) use ($project_curr) {
+            return in_array($s['id'], explode(',', str_replace('"', '', $project_curr['secteurs'])));
+        });
     }
-
-    $project->id = $sel_id;
-    $project_curr = $project->readById();
-
-    if (empty($project_curr)) {
-        echo "<script>window.location.href = 'suivi_indicateurs.php';</script>";
-        exit;
-    }
-
-    $indicateur = new Indicateur($db);
-    $indicateur->projet_id = $project_curr['id'];
-    $indicateurs_project = $indicateur->readByProjet();
-
-    $secteur = new Secteur($db);
-    $secteurs = $secteur->read();
-    $secteurs = array_filter($secteurs, function ($structure) {
-        return $structure['state'] == 'actif' && $structure['parent_id'] == 0;
-    });
-
-    $secteurs_project = array_filter($secteurs, function ($s) use ($project_curr) {
-        return in_array($s['id'], explode(',', str_replace('"', '', $project_curr['secteurs'])));
-    });
 
     $structure = new Structure($db);
     $structures = $structure->read();
@@ -116,7 +110,7 @@
             <div class="row mt-3">
                 <div class="col-12">
                     <div class="mx-n4 p-1 mx-lg-n6 bg-body-emphasis border-y">
-                        <?php if (!empty($all_projects)) { ?>
+                        <?php if (!empty($all_projects) && $sel_id != '') { ?>
                             <div class="table-responsive mx-n1 px-1 scrollbar" style="min-height: 432px;">
                                 <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
                                     <thead class="bg-secondary-subtle">

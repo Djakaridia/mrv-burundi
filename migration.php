@@ -82,6 +82,7 @@
                     addRootNiveaux($db);
                     addRootSecteur($db);
                     addRootDossier($db);
+                    addRootFeuilleLigneType($db);
                     showMessage("Configuration complète terminée avec succès !", 'success');
                     break;
                 case 'create_all_tables':
@@ -119,6 +120,10 @@
                 case 'add_niveaux':
                     addRootNiveaux($db);
                     showMessage("Niveaux ajoutés avec succès.", 'success');
+                    break;
+                case 'add_feuille_ligne_type':
+                    addRootFeuilleLigneType($db);
+                    showMessage("Feuille Ligne Type ajoutés avec succès.", 'success');
                     break;
                 default:
                     showMessage("Action non reconnue.", 'warning');
@@ -199,6 +204,9 @@
                             </button>
                             <button type="submit" name="action" value="add_dossiers" class="btn btn-light">
                                 Ajouter les Dossiers
+                            </button>
+                            <button type="submit" name="action" value="add_feuille_ligne_type" class="btn btn-subtle-primary">
+                                Ajouter les Feuille Ligne Type
                             </button>
                         </form>
                     </div>

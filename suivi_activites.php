@@ -24,19 +24,13 @@
 
     if (!empty($all_projects) && $sel_id == '') {
         $sel_id = $all_projects[0]['id'];
+        $project->id = $sel_id;
+        $project_curr = $project->readById();
+
+        $tache = new Tache($db);
+        $tache->projet_id = $project_curr['id'];
+        $taches_project = $tache->readByProjet();
     }
-
-    $project->id = $sel_id;
-    $project_curr = $project->readById();
-
-    if (empty($project_curr)) {
-        echo "<script>window.location.href = 'suivi_activites.php';</script>";
-        exit;
-    }
-
-    $tache = new Tache($db);
-    $tache->projet_id = $project_curr['id'];
-    $taches_project = $tache->readByProjet();
 
     $tache_indicateur = new TacheIndicateur($db);
     $tache_indicateurs = $tache_indicateur->read();

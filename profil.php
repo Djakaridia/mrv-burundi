@@ -290,7 +290,7 @@
                           <button type="button" class="btn btn-sm btn-phoenix-secondary rounded-1" data-bs-toggle="collapse" data-bs-target="#changePassword">
                             Annuler
                           </button>
-                          <button type="submit" name="changePasswordForm" class="btn btn-sm btn-phoenix-primary rounded-1">
+                          <button type="submit" name="changePasswordForm" class="btn btn-sm btn-primary rounded-1">
                             Mettre à jour
                           </button>
                         </div>
