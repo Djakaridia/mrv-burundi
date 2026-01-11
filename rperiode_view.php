@@ -138,7 +138,7 @@
 
     ?>
 
-    <title><?= htmlspecialchars($rapport_curr['intitule']) ?></title>
+    <title><?= $rapport_curr['intitule'] ?></title>
 </head>
 
 <body class="bg-light dark__bg-dark">
@@ -154,11 +154,11 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div>
-                            <h2 class="mb-2"><?= htmlspecialchars($rapport_curr['intitule']) ?></h2>
+                            <h2 class="mb-2"><?= $rapport_curr['intitule'] ?></h2>
                             <div class="text-muted">
-                                <span class="me-3">Code: <?= htmlspecialchars($rapport_curr['code']) ?></span>
+                                <span class="me-3">Code: <?= $rapport_curr['code'] ?></span>
                                 <span class="me-3">Créé le: <?= date('d/m/Y', strtotime($rapport_curr['created_at'])) ?></span>
-                                <span class="me-3">Créé par: <?= htmlspecialchars($users[$rapport_curr['add_by']]['nom']) ?></span>
+                                <span class="me-3">Créé par: <?= $users[$rapport_curr['add_by']]['nom'] ?></span>
                             </div>
                         </div>
                         <div class="btn-reveal-trigger gap-1">
@@ -192,16 +192,16 @@
                                 <div class="card-body p-3">
                                     <div class="row">
                                         <dt class="col-sm-4">Projet</dt>
-                                        <dd class="col-sm-8"><a href="./project_view.php?id=<?php echo $rapport_curr['projet_id']; ?>"><?= htmlspecialchars($project_rapport['name'] ?? 'Non spécifié') ?></a></dd>
+                                        <dd class="col-sm-8"><a href="./project_view.php?id=<?php echo $rapport_curr['projet_id']; ?>"><?= $project_rapport['name'] ?? 'Non spécifié' ?></a></dd>
 
                                         <dt class="col-sm-4">Périodicité</dt>
                                         <dd class="col-sm-8"><span class="badge bg-info"><?= listPeriodicite()[$rapport_curr['periode']] ?></span></dd>
 
                                         <dt class="col-sm-4">Référence</dt>
                                         <dd class="col-sm-8">
-                                            <?= listMois()[$rapport_curr['mois_ref']] ?> <?= htmlspecialchars($rapport_curr['annee_ref']) ?> -
+                                            <?= listMois()[$rapport_curr['mois_ref']] ?> <?= $rapport_curr['annee_ref'] ?> -
                                             <?= listMois()[$rapport_curr['mois_ref'] + $rapport_curr['periode'] > 12 ? $rapport_curr['mois_ref'] + $rapport_curr['periode'] - 12 : $rapport_curr['mois_ref'] + $rapport_curr['periode']] ?>
-                                            <?= htmlspecialchars($rapport_curr['periode'] + $rapport_curr['mois_ref'] >= 12 ? $rapport_curr['annee_ref'] + 1 : $rapport_curr['annee_ref']) ?>
+                                            <?= $rapport_curr['periode'] + $rapport_curr['mois_ref'] >= 12 ? $rapport_curr['annee_ref'] + 1 : $rapport_curr['annee_ref'] ?>
                                         </dd>
 
                                         <dt class="col-sm-4">Etat</dt>
@@ -220,7 +220,7 @@
                                     <h5 class="mb-0">Description</h5>
                                 </div>
                                 <div class="card-body p-3">
-                                    <?= !empty($rapport_curr['description']) ? nl2br(htmlspecialchars($rapport_curr['description'])) : '<p class="text-muted">Aucune description fournie</p>' ?>
+                                    <?= !empty($rapport_curr['description']) ? nl2br($rapport_curr['description']) : '<p class="text-muted">Aucune description fournie</p>' ?>
                                 </div>
                             </div>
                         </div>

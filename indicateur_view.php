@@ -439,7 +439,7 @@
         $suivis_classe = array_filter($suivis_raw, fn($suivi) => $suivi['annee'] == $annee); ?>
         mrvStackGroupChart({
             id: 'chartClasse<?= $index ?>',
-            title: '<?= htmlspecialchars($ref_curr['intitule']) . ' (' . $unite_ref['name'] . ')' ?>',
+            title: '<?= $ref_curr['intitule'] . ' (' . $unite_ref['name'] . ')' ?>',
             unite: '<?= $unite_ref['name'] ?>',
             categories: [<?= $annee ?>],
             series: [
@@ -468,7 +468,7 @@
 
     mrvColumnChart({
         id: 'chartAnnee<?= $ref_curr['id'] ?>',
-        title: '<?= htmlspecialchars($ref_curr['intitule']) . ' (' . $unite_ref['name'] . ')' ?>',
+        title: '<?= $ref_curr['intitule'] . ' (' . $unite_ref['name'] . ')' ?>',
         unite: '<?= $unite_ref['name'] ?>',
         categories: <?= json_encode($annees) ?>,
         cibles: <?= json_encode($cibles) ?>,
@@ -477,7 +477,7 @@
 
     mrvPieChart({
         id: 'chartSecteur<?= $ref_curr['id'] ?>',
-        title: '<?= htmlspecialchars($ref_curr['intitule']) . ' (' . $unite_ref['name'] . ')' ?>',
+        title: '<?= $ref_curr['intitule'] . ' (' . $unite_ref['name'] . ')' ?>',
         unite: '<?= $unite_ref['name'] ?>',
         data: <?= json_encode($chart_data) ?>,
     });

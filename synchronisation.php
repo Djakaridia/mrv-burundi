@@ -45,10 +45,10 @@
                     <div class="col-md-6 col-lg-3">
                         <div class="card border-0 shadow-sm" style="min-height: 150px;">
                             <div class="card-body p-3">
-                                <a href="<?= htmlspecialchars($secteur['domaine']) ?>" target="_blank" class="card-title mb-2 pb-1 d-flex gap-2 align-items-center text-primary border-3 border-bottom">
-                                    <?= htmlspecialchars($secteur['name']) ?> <i class="fa fa-external-link-alt"></i>
+                                <a href="<?= $secteur['domaine'] ?>" target="_blank" class="card-title mb-2 pb-1 d-flex gap-2 align-items-center text-primary border-3 border-bottom">
+                                    <?= $secteur['name'] ?> <i class="fa fa-external-link-alt"></i>
                                 </a>
-                                <p class="text-muted small mb-1">Domaine: <strong><?= htmlspecialchars($secteur['domaine']) ?></strong></p>
+                                <p class="text-muted small mb-1">Domaine: <strong><?= $secteur['domaine'] ?></strong></p>
                                 <button class="btn btn-sm btn-success w-100 btn-syncData mt-2" data-sector="<?= $secteur['name'] ?>">Synchroniser</button>
                                 <div id="log-<?= $secteur['name'] ?>" class="log-box mt-3"></div>
                             </div>

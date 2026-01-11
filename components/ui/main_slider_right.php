@@ -78,8 +78,8 @@
                 id: '<?= $id_chart ?>',
                 categories: <?= json_encode($annees) ?>,
                 series: <?= json_encode($series_data) ?>,
-                unite: '<?= htmlspecialchars($unite_grouped[$referentiel['id']] ?? 'Unité') ?>',
-                title: '<?= htmlspecialchars($referentiel['intitule']) . ' (' . $unite_grouped[$referentiel['id']] . ')' ?>'
+                unite: '<?= ($unite_grouped[$referentiel['id']] ?? 'Unité') ?>',
+                title: '<?= ($referentiel['intitule']) . ' (' . $unite_grouped[$referentiel['id']] . ')' ?>'
             },
             <?php endforeach; ?>
         ];

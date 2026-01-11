@@ -14,6 +14,8 @@
     <?php
     include './components/navbar & footer/head.php';
 
+    $tab = isset($_GET['tab']) ? $_GET['tab'] : 'action';
+    if (!in_array($tab, ['action', 'inventory', 'structure', 'finance'])) $tab = 'action';
 
     $sel_id = isset($_GET['sector']) ? $_GET['sector'] : '';
     $secteur = new Secteur($db);
@@ -23,53 +25,54 @@
     });
     sort($secteurs);
 
-    if ($sel_id !== '') {
-        $secteur->id = $sel_id;
-        $secteur_curr = $secteur->readById();
-    } else {
-        $secteur_curr = $secteurs[0];
-    };
+    if (count($secteurs) > 0) {
+        if ($sel_id !== '') {
+            $secteur->id = $sel_id;
+            $secteur_curr = $secteur->readById();
+        } else {
+            $secteur_curr = $secteurs[0];
+        };
+    }
 
-    $tab = isset($_GET['tab']) ? $_GET['tab'] : 'action';
-    if (!in_array($tab, ['action', 'inventory', 'structure', 'finance'])) $tab = 'action';
+    if (isset($secteur_curr)) {
+        // Liste des actions
+        $projet = new Projet($db);
+        $projets = $projet->read();
+        $projets = array_filter($projets, function ($projet) use ($secteur_curr) {
+            return $projet['state'] == 'actif' && in_array($secteur_curr['id'], explode(',', str_replace('"', '', $projet['secteurs'])));
+        });
 
-    // Liste des actions
-    $projet = new Projet($db);
-    $projets = $projet->read();
-    $projets = array_filter($projets, function ($projet) use ($secteur_curr) {
-        return $projet['state'] == 'actif' && in_array($secteur_curr['id'], explode(',', str_replace('"', '', $projet['secteurs'])));
-    });
+        // Inventaires
+        $inventory = new Inventory($db);
+        $inventory->annee = date('Y');
+        $inventory_curr = $inventory->readByAnnee();
+        $inventory_data = json_decode($inventory->readData($inventory_curr['viewtable']), true);
+        $columns_vw = $inventory_data['columns'];
+        $data_vw = array_filter($inventory_data['data'], function ($data) use ($secteur_curr) {
+            return strtoupper(removeAccents($data['secteur'])) === strtoupper(removeAccents($secteur_curr['name']));
+        });
 
-    // Inventaires
-    $inventory = new Inventory($db);
-    $inventory->annee = date('Y');
-    $inventory_curr = $inventory->readByAnnee();
-    $inventory_data = json_decode($inventory->readData($inventory_curr['viewtable']), true);
-    $columns_vw = $inventory_data['columns'];
-    $data_vw = array_filter($inventory_data['data'], function ($data) use ($secteur_curr) {
-        return strtoupper(removeAccents($data['secteur'])) === strtoupper(removeAccents($secteur_curr['name']));
-    });
+        // Structures
+        $type_structure = new StructureType($db);
+        $type_structures = $type_structure->read();
 
-    // Structures
-    $type_structure = new StructureType($db);
-    $type_structures = $type_structure->read();
+        $structure = new Structure($db);
+        $structures = $structure->read();
+        $structures = array_filter($structures, function ($structure) use ($secteur_curr) {
+            return $structure['state'] == 'actif' && $structure['secteur_id'] == $secteur_curr['id'];
+        });
 
-    $structure = new Structure($db);
-    $structures = $structure->read();
-    $structures = array_filter($structures, function ($structure) use ($secteur_curr) {
-        return $structure['state'] == 'actif' && $structure['secteur_id'] == $secteur_curr['id'];
-    });
+        // Conventions
+        $structures_ids = array_map(function ($structure) {
+            return $structure['id'];
+        }, $structures);
 
-    // Conventions
-    $structures_ids = array_map(function ($structure) {
-        return $structure['id'];
-    }, $structures);
-
-    $convention = new Convention($db);
-    $conventions = $convention->read();
-    $conventions = array_filter($conventions, function ($convention) use ($structures_ids) {
-        return in_array($convention['structure_id'], $structures_ids);
-    });
+        $convention = new Convention($db);
+        $conventions = $convention->read();
+        $conventions = array_filter($conventions, function ($convention) use ($structures_ids) {
+            return in_array($convention['structure_id'], $structures_ids);
+        });
+    }
     ?>
 </head>
 
@@ -85,7 +88,7 @@
             <div class="mx-n4 mt-n5 px-0 mx-lg-n6 px-lg-0 bg-body-emphasis border border-start-0">
                 <div class="card-body p-2 d-lg-flex flex-row justify-content-between align-items-center">
                     <div class="col-lg-4 mb-2 mb-lg-0">
-                        <h4 class="my-1 fw-black">Synthèse des données - <?php echo $secteur_curr['name']; ?></h4>
+                        <h4 class="my-1 fw-black">Synthèse des données - <?php echo $secteur_curr['name'] ?? ''; ?></h4>
                     </div>
 
                     <div class="col-lg-3 mb-2 mb-lg-0 text-center">
@@ -100,8 +103,6 @@
                     </div>
 
                     <div class="col-lg-4 mb-2 mb-lg-0 text-lg-end">
-                        <a title="Ajouter" class="btn btn-subtle-primary btn-sm" href="synchronisation.php">
-                            <i class="fas fa-sync"></i> Synchroniser</a>
                     </div>
                 </div>
             </div>
@@ -139,27 +140,29 @@
                                             </tr>
                                         </thead>
                                         <tbody class="list" id="table-latest-review-body">
-                                            <?php foreach ($projets as $projet) : ?>
-                                                <tr>
-                                                    <td class="align-middle"><?= $projet['code'] ?></td>
-                                                    <td class="align-middle"><?= $projet['name'] ?></td>
-                                                    <td class="align-middle"><?= listTypeAction()[$projet['action_type']] ?></td>
-                                                    <td class="align-middle rating" style="min-width:200px;">
-                                                        <span class="badge bg-warning-subtle text-warning p-2 fs-10"><?php echo number_format($projet['budget'], 0, ',', ' '); ?></span>
-                                                    </td>
-                                                    <td class="align-middle"><?= $projet['structure_sigle'] ?></td>
-                                                    <td class="align-middle">
-                                                        <div class="btn-group btn-group-sm" role="group">
-                                                            <button title="Voir" class="btn btn-sm px-2 py-1 btn-phoenix-info" data-bs-toggle="modal" data-bs-target="#projectsCardViewModal" data-id="<?= $projet['id'] ?>">
-                                                                <span class="uil-eye fs-8"></span>
-                                                            </button>
-                                                            <a title="Consulter" href="project_view.php?id=<?= $projet['id'] ?>" class="btn btn-sm px-2 py-1 btn-phoenix-success">
-                                                                <span class="uil-arrow-right fs-8"></span>
-                                                            </a>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            <?php endforeach; ?>
+                                            <?php if (isset($projets) && count($projets) > 0) : ?>
+                                                <?php foreach ($projets as $projet) : ?>
+                                                    <tr>
+                                                        <td class="align-middle"><?= $projet['code'] ?></td>
+                                                        <td class="align-middle"><?= $projet['name'] ?></td>
+                                                        <td class="align-middle"><?= listTypeAction()[$projet['action_type']] ?></td>
+                                                        <td class="align-middle rating" style="min-width:200px;">
+                                                            <span class="badge bg-warning-subtle text-warning p-2 fs-10"><?php echo number_format($projet['budget'], 0, ',', ' '); ?></span>
+                                                        </td>
+                                                        <td class="align-middle"><?= $projet['structure_sigle'] ?></td>
+                                                        <td class="align-middle">
+                                                            <div class="btn-group btn-group-sm" role="group">
+                                                                <button title="Voir" class="btn btn-sm px-2 py-1 btn-phoenix-info" data-bs-toggle="modal" data-bs-target="#projectsCardViewModal" data-id="<?= $projet['id'] ?>">
+                                                                    <span class="uil-eye fs-8"></span>
+                                                                </button>
+                                                                <a title="Consulter" href="project_view.php?id=<?= $projet['id'] ?>" class="btn btn-sm px-2 py-1 btn-phoenix-success">
+                                                                    <span class="uil-arrow-right fs-8"></span>
+                                                                </a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
                                         </tbody>
                                     </table>
                                 </div>
@@ -173,24 +176,36 @@
                         <div class="col-12">
                             <div class="mx-n4 px-1 pb-3 mx-lg-n6 bg-body-emphasis border-y">
                                 <div class="mx-n1 mb-3 px-1 scrollbar">
-                                    <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable2">
-                                        <thead class="bg-secondary-subtle">
-                                            <tr>
-                                                <?php foreach ($columns_vw as $column) { ?>
-                                                    <th class="align-middle text-capitalize px-2" scope="col" style="width: 10%"><?php echo $column; ?></th>
-                                                <?php } ?>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="list" id="table-latest-review-body">
-                                            <?php foreach ($data_vw as $row) { ?>
-                                                <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                                                    <?php foreach ($row as $value) { ?>
-                                                        <td class="align-middle px-2"> <?php echo $value; ?> </td>
+                                    <?php if (isset($columns_vw) && count($columns_vw) > 0) { ?>
+                                        <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable2">
+                                            <thead class="bg-secondary-subtle">
+                                                <tr>
+                                                    <?php foreach ($columns_vw as $column) { ?>
+                                                        <th class="align-middle text-capitalize px-2" scope="col" style="width: 10%"><?php echo $column; ?></th>
                                                     <?php } ?>
                                                 </tr>
-                                            <?php } ?>
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody class="list" id="table-latest-review-body">
+                                                <?php foreach ($data_vw as $row) { ?>
+                                                    <tr class="hover-actions-trigger btn-reveal-trigger position-static">
+                                                        <?php foreach ($row as $value) { ?>
+                                                            <td class="align-middle px-2"> <?php echo $value; ?> </td>
+                                                        <?php } ?>
+                                                    </tr>
+                                                <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    <?php } else { ?>
+                                        <div class="text-center py-5 my-5" style="min-height: 350px;">
+                                            <div class="d-flex justify-content-center mb-3">
+                                                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-warning">
+                                                    <path d="M12 8V12M12 16H12.01M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                            </div>
+                                            <h4 class="text-800 mb-3">Aucune donnée d'inventaire trouvée</h4>
+                                            <p class="text-600 mb-5">Il semble que vous n'ayez pas encore d'inventaire disponible.</p>
+                                        </div>
+                                    <?php } ?>
                                 </div>
                             </div>
                         </div>
@@ -214,31 +229,33 @@
                                             </tr>
                                         </thead>
                                         <tbody class="list" id="table-latest-review-body">
-                                            <?php foreach ($structures as $structure) {
-                                                $logoStruc = explode("../", $structure['logo'] ?? ''); ?>
-                                                <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                                                    <td class="align-middle product py-1">
-                                                        <?php if ($structure['logo']) { ?>
-                                                            <img class="d-block rounded-1 w-100 object-fit-contain" src="<?php echo end($logoStruc) ?>" alt="Logo" height="35" />
-                                                        <?php } else { ?>
-                                                            <div class="d-block rounded-1 border border-translucent text-center p-1 text-primary">
-                                                                <i class="fas fa-users fs-8 p-1"></i>
-                                                            </div>
-                                                        <?php } ?>
-                                                    </td>
-                                                    <td class="align-middle product"><?php echo $structure['code']; ?></td>
-                                                    <td class="align-middle rating"><?php echo $structure['sigle']; ?></td>
-                                                    <td class="align-middle rating"><?php echo $structure['email']; ?></td>
-                                                    <td class="align-middle rating"><?php echo $structure['phone']; ?></td>
-                                                    <td class="align-middle review">
-                                                        <?php foreach ($type_structures as $type_structure) { ?>
-                                                            <?php if ($type_structure['id'] == $structure['type_id']) { ?>
-                                                                <?php echo $type_structure['name']; ?>
+                                            <?php if (isset($structures) && count($structures) > 0) : ?>
+                                                <?php foreach ($structures as $structure) :
+                                                    $logoStruc = explode("../", $structure['logo'] ?? ''); ?>
+                                                    <tr class="hover-actions-trigger btn-reveal-trigger position-static">
+                                                        <td class="align-middle product py-1">
+                                                            <?php if ($structure['logo']) { ?>
+                                                                <img class="d-block rounded-1 w-100 object-fit-contain" src="<?php echo end($logoStruc) ?>" alt="Logo" height="35" />
+                                                            <?php } else { ?>
+                                                                <div class="d-block rounded-1 border border-translucent text-center p-1 text-primary">
+                                                                    <i class="fas fa-users fs-8 p-1"></i>
+                                                                </div>
                                                             <?php } ?>
-                                                        <?php } ?>
-                                                    </td>
-                                                </tr>
-                                            <?php } ?>
+                                                        </td>
+                                                        <td class="align-middle product"><?php echo $structure['code']; ?></td>
+                                                        <td class="align-middle rating"><?php echo $structure['sigle']; ?></td>
+                                                        <td class="align-middle rating"><?php echo $structure['email']; ?></td>
+                                                        <td class="align-middle rating"><?php echo $structure['phone']; ?></td>
+                                                        <td class="align-middle review">
+                                                            <?php foreach ($type_structures as $type_structure) { ?>
+                                                                <?php if ($type_structure['id'] == $structure['type_id']) { ?>
+                                                                    <?php echo $type_structure['name']; ?>
+                                                                <?php } ?>
+                                                            <?php } ?>
+                                                        </td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
                                         </tbody>
                                     </table>
                                 </div>
@@ -264,39 +281,41 @@
                                             </tr>
                                         </thead>
                                         <tbody class="list" id="table-latest-review-body">
-                                            <?php foreach ($conventions as $convention) { ?>
-                                                <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                                                    <td class="align-middle product py-0">
-                                                        <?php foreach ($structures as $structure) {
-                                                            $logoStruc = explode("../", $structure['logo'] ?? ''); ?>
-                                                            <?php if ($structure['id'] == $convention['structure_id']) { ?>
-                                                                <?php if ($structure['logo']) { ?>
-                                                                    <img class="d-block rounded-1 w-100 object-fit-contain" src="<?php echo end($logoStruc) ?>" alt="Logo" height="35" />
-                                                                <?php } else { ?>
-                                                                    <div class="d-block rounded-1 border border-translucent text-center p-1 text-primary">
-                                                                        <i class="fas fa-users fs-8 p-1"></i>
-                                                                    </div>
+                                            <?php if (isset($conventions) && count($conventions) > 0) : ?>
+                                                <?php foreach ($conventions as $convention) : ?>
+                                                    <tr class="hover-actions-trigger btn-reveal-trigger position-static">
+                                                        <td class="align-middle product py-0">
+                                                            <?php foreach ($structures as $structure) {
+                                                                $logoStruc = explode("../", $structure['logo'] ?? ''); ?>
+                                                                <?php if ($structure['id'] == $convention['structure_id']) { ?>
+                                                                    <?php if ($structure['logo']) { ?>
+                                                                        <img class="d-block rounded-1 w-100 object-fit-contain" src="<?php echo end($logoStruc) ?>" alt="Logo" height="35" />
+                                                                    <?php } else { ?>
+                                                                        <div class="d-block rounded-1 border border-translucent text-center p-1 text-primary">
+                                                                            <i class="fas fa-users fs-8 p-1"></i>
+                                                                        </div>
+                                                                    <?php } ?>
                                                                 <?php } ?>
                                                             <?php } ?>
-                                                        <?php } ?>
-                                                    </td>
-                                                    <td class="align-middle product"><?php echo $convention['code']; ?></td>
-                                                    <td class="align-middle customer"><?php echo $convention['name']; ?></td>
-                                                    <td class="align-middle review">
-                                                        <?php foreach ($structures as $structure) { ?>
-                                                            <?php if ($structure['id'] == $convention['structure_id']) { ?>
-                                                                <?php echo $structure['sigle']; ?>
+                                                        </td>
+                                                        <td class="align-middle product"><?php echo $convention['code']; ?></td>
+                                                        <td class="align-middle customer"><?php echo $convention['name']; ?></td>
+                                                        <td class="align-middle review">
+                                                            <?php foreach ($structures as $structure) { ?>
+                                                                <?php if ($structure['id'] == $convention['structure_id']) { ?>
+                                                                    <?php echo $structure['sigle']; ?>
+                                                                <?php } ?>
                                                             <?php } ?>
-                                                        <?php } ?>
-                                                    </td>
-                                                    <td class="align-middle rating" style="min-width:200px;">
-                                                        <span class="badge bg-info-subtle text-info p-2 fs-10"><?php echo number_format($convention['montant'], 0, ',', ' '); ?></span>
-                                                    </td>
-                                                    <td class="align-middle date">
-                                                        <?php echo date('Y-m-d', strtotime($convention['date_accord'])); ?>
-                                                    </td>
-                                                </tr>
-                                            <?php } ?>
+                                                        </td>
+                                                        <td class="align-middle rating" style="min-width:200px;">
+                                                            <span class="badge bg-info-subtle text-info p-2 fs-10"><?php echo number_format($convention['montant'], 0, ',', ' '); ?></span>
+                                                        </td>
+                                                        <td class="align-middle date">
+                                                            <?php echo date('Y-m-d', strtotime($convention['date_accord'])); ?>
+                                                        </td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
                                         </tbody>
                                     </table>
                                 </div>

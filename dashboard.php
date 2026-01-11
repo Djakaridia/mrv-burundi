@@ -91,7 +91,7 @@
                                     <select class="form-select">
                                         <option>Tous</option>
                                         <?php foreach ($projets as $projet): ?>
-                                            <option value="<?= $projet['id'] ?>"><?= htmlspecialchars($projet['name']) ?></option>
+                                            <option value="<?= $projet['id'] ?>"><?= $projet['name'] ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>

@@ -209,7 +209,6 @@
                 $('#rowSuiviTacheForm').append('<tr><td colspan="2" class="text-center p-10">Aucun indicateur trouvé.</td></tr>');
             }
         } catch (error) {
-            console.log(error);
             errorAction('Erreur lors du chargement du suivi.');
         }
     }

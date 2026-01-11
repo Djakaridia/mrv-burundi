@@ -97,7 +97,7 @@ $user_tasks = array_filter($tasks, function ($task) use ($userId) {
                                 <div class="offcanvas-body p-0">
                                     <div class="px-5 py-3">
                                         <div class="d-flex flex-between-center align-items-start gap-5 mb-4">
-                                            <h2 class="fw-bold fs-6 mb-0 text-body-highlight"><?= htmlspecialchars($task['name']) ?></h2>
+                                            <h2 class="fw-bold fs-6 mb-0 text-body-highlight"><?= ($task['name']) ?></h2>
                                             <button title="Fermer" class="btn btn-phoenix-secondary shadow-sm btn-icon px-2" type="button" data-bs-dismiss="offcanvas" aria-label="Close">
                                                 <span class="fa-solid fa-xmark"></span>
                                             </button>
@@ -106,12 +106,12 @@ $user_tasks = array_filter($tasks, function ($task) use ($userId) {
                                         <div class="mb-4">
                                             <div class="d-flex justify-content-between align-items-center mb-2">
                                                 <span class="text-body">Code:</span>
-                                                <span class="text-body-highlight fw-bold"><?= htmlspecialchars($task['code']) ?></span>
+                                                <span class="text-body-highlight fw-bold"><?= ($task['code']) ?></span>
                                             </div>
 
                                             <div class="d-flex justify-content-between align-items-center mb-2">
                                                 <span class="text-body">Statut:</span>
-                                                <span class="badge bg-<?= getBadgeClass($task['status']) ?>"><?= htmlspecialchars($task['status']) ?></span>
+                                                <span class="badge bg-<?= getBadgeClass($task['status']) ?>"><?= ($task['status']) ?></span>
                                             </div>
 
                                             <div class="d-flex justify-content-between align-items-center mb-2">
@@ -128,7 +128,7 @@ $user_tasks = array_filter($tasks, function ($task) use ($userId) {
 
                                         <div class="mb-5">
                                             <h4 class="text-body me-3">Description</h4>
-                                            <p class="text-body-highlight mb-0"><?= nl2br(htmlspecialchars($task['description'])) ?></p>
+                                            <p class="text-body-highlight mb-0"><?= nl2br(($task['description'])) ?></p>
                                         </div>
 
                                         <div class="row mb-5">

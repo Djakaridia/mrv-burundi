@@ -18,8 +18,8 @@
         <div id="cibleContentContainer" style="display: none;">
           <?php if (isset($project_curr)) : ?>
             <form action="" class="row-border" enctype="multipart/form-data" name="FormCible" id="FormCible">
-              <input type="hidden" name="cmr_id" id="cible_cmr_id" value="<?= htmlspecialchars($cmr_curr['id'] ?? '') ?>">
-              <input type="hidden" name="projet_id" id="cible_projet_id" value="<?= htmlspecialchars($project_curr['id'] ?? '') ?>">
+              <input type="hidden" name="cmr_id" id="cible_cmr_id" value="<?= $cmr_curr['id'] ?>">
+              <input type="hidden" name="projet_id" id="cible_projet_id" value="<?= $project_curr['id'] ?>">
 
               <div class="overflow-auto" style="min-height: 300px; max-height: 400px;">
                 <table class="table table-sm table-hover table-striped fs-12 table-bordered border-emphasis" align="center">
@@ -39,7 +39,7 @@
                     <?php if (isset($secteurs_project)) : ?>
                     <?php foreach ($secteurs_project as $secteur) : ?>
                       <tr>
-                        <td class="align-middle text-start px-2" width="15%"><?= htmlspecialchars($secteur['name']) ?></td>
+                        <td class="align-middle text-start px-2" width="15%"><?= $secteur['name'] ?></td>
                         <?php for ($year = $startYear; $year <= $endYear; $year++) : ?>
                           <td class="align-middle text-center px-2">
                             <input type="text" class="form-control py-3"

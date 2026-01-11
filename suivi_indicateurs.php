@@ -24,6 +24,9 @@
 
     if (!empty($all_projects) && $sel_id == '') {
         $sel_id = $all_projects[0]['id'];
+    }
+
+    if ($sel_id != '') {
         $project->id = $sel_id;
         $project_curr = $project->readById();
 

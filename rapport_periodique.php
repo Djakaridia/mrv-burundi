@@ -80,7 +80,7 @@
                                     <select class="form-select">
                                         <option>Tous</option>
                                         <?php foreach ($projets as $projet): ?>
-                                            <option value="<?= $projet['id'] ?>"><?= htmlspecialchars($projet['name']) ?></option>
+                                            <option value="<?= $projet['id'] ?>"><?= $projet['name'] ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
@@ -129,7 +129,7 @@
                                     <div class="col-md-6 col-lg-4 mb-4 rapport-item">
                                         <div class="card rounded-1 shadow-sm card-float h-100">
                                             <div class="card-header d-flex justify-content-between align-items-center p-2">
-                                                <h5 class="mb-0"><?= htmlspecialchars($rapport['intitule']) ?></h5>
+                                                <h5 class="mb-0"><?= $rapport['intitule'] ?></h5>
                                                 <span class="badge fs-10 rounded-pill text-bg-<?php echo $rapport['state'] == 'actif' ? 'warning' : 'success' ?>">
                                                     <?php echo $rapport['state'] == 'actif' ? 'Actif' : 'Validé' ?>
                                                 </span>
@@ -138,11 +138,11 @@
                                             <div class="card-body">
                                                 <div class="mb-2">
                                                     <small class="text-muted">Code:</small>
-                                                    <strong><?= htmlspecialchars($rapport['code']) ?></strong>
+                                                    <strong><?= $rapport['code'] ?></strong>
                                                 </div>
                                                 <div class="mb-2">
                                                     <small class="text-muted">Projet:</small>
-                                                    <strong><?= htmlspecialchars($projet_rapport['name'] ?? 'Non attribué') ?></strong>
+                                                    <strong><?= $projet_rapport['name'] ?? 'Non attribué' ?></strong>
                                                 </div>
                                                 <div class="mb-2">
                                                     <small class="text-muted">Périodicité:</small>
@@ -151,9 +151,9 @@
                                                 <div class="mb-2">
                                                     <small class="text-muted">Période de référence:</small>
                                                     <strong>
-                                                        <?= listMois()[$rapport['mois_ref']] ?> <?= htmlspecialchars($rapport['annee_ref']) ?> -
+                                                        <?= listMois()[$rapport['mois_ref']] ?> <?= $rapport['annee_ref'] ?> -
                                                         <?= listMois()[$rapport['mois_ref'] + $rapport['periode'] > 12 ? $rapport['mois_ref'] + $rapport['periode'] - 12 : $rapport['mois_ref'] + $rapport['periode']] ?>
-                                                        <?= htmlspecialchars($rapport['periode'] + $rapport['mois_ref'] >= 12 ? $rapport['annee_ref'] + 1 : $rapport['annee_ref']) ?>
+                                                        <?= $rapport['periode'] + $rapport['mois_ref'] >= 12 ? $rapport['annee_ref'] + 1 : $rapport['annee_ref'] ?>
                                                     </strong>
                                                 </div>
                                             </div>

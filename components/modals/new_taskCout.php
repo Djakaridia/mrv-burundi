@@ -34,7 +34,7 @@
                                     <?php foreach ($conventions_project as $convention) { ?>
                                         <tr>
                                             <td class="align-middle text-start px-2">
-                                                <?= htmlspecialchars($convention['name']) ?>
+                                                <?= $convention['name'] ?>
                                             </td>
                                             <td class="align-middle text-center px-2">
                                                 <input type="text" class="form-control py-2"

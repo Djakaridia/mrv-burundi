@@ -111,7 +111,6 @@
 <script>
     let ViewProjectID = null;
     let listActions = <?php echo json_encode(listTypeAction()); ?>;
-    console.log(listActions);
 
     $(document).ready(function() {
         $('#projectsCardViewModal').on('shown.bs.modal', async function(event) {

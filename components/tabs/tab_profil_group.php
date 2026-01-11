@@ -113,7 +113,7 @@ $structures = $structure->read();
 
                         <td class="align-middle fw-semibold text-start p-2">
                             <span class="badge badge-phoenix fs-10 badge-phoenix-<?php echo $group['state'] == 'actif' ? 'success' : 'danger'; ?>">
-                                <?php echo htmlspecialchars($group['state']); ?>
+                                <?php echo ($group['state']); ?>
                                 <span class="ms-1 uil <?php echo $group['state'] == 'actif' ? 'uil-check-circle' : 'uil-ban'; ?> fs-10"></span>
                             </span>
                         </td>

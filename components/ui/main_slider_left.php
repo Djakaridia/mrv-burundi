@@ -65,7 +65,7 @@
                     id: '<?= $id_chart ?>',
                     data: <?= json_encode($chart_data) ?>,
                     unite: '<?= $unite_grouped[$referentiel['id']] ?? 'Unité' ?>',
-                    title: '<?= htmlspecialchars($referentiel['intitule']) . ' (' . $unite_grouped[$referentiel['id']] . ')' ?>'
+                    title: '<?= ($referentiel['intitule']) . ' (' . $unite_grouped[$referentiel['id']] . ')' ?>'
                 },
             <?php endforeach; ?>
         ];

@@ -94,7 +94,7 @@
                             <div class="offcanvas-body p-0">
                                 <div class="px-5 py-3">
                                     <div class="d-flex flex-between-center align-items-start gap-5 mb-4">
-                                        <h2 class="fw-bold fs-6 mb-0 text-body-highlight"><?= htmlspecialchars($tache['name']) ?></h2>
+                                        <h2 class="fw-bold fs-6 mb-0 text-body-highlight"><?= ($tache['name']) ?></h2>
                                         <button title="Fermer" class="btn btn-phoenix-secondary shadow-sm btn-icon px-2" type="button" data-bs-dismiss="offcanvas" aria-label="Close">
                                             <span class="fa-solid fa-xmark"></span>
                                         </button>
@@ -103,12 +103,12 @@
                                     <div class="mb-4">
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <span class="text-body">Code:</span>
-                                            <span class="text-body-highlight fw-bold"><?= htmlspecialchars($tache['code']) ?></span>
+                                            <span class="text-body-highlight fw-bold"><?= ($tache['code']) ?></span>
                                         </div>
 
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <span class="text-body">Statut:</span>
-                                            <span class="badge bg-<?= getBadgeClass($tache['status']) ?>"><?= htmlspecialchars($tache['status']) ?></span>
+                                            <span class="badge bg-<?= getBadgeClass($tache['status']) ?>"><?= ($tache['status']) ?></span>
                                         </div>
 
                                         <div class="d-flex justify-content-between align-items-center mb-2">
@@ -125,7 +125,7 @@
 
                                     <div class="mb-5">
                                         <h4 class="text-body me-3">Description</h4>
-                                        <p class="text-body-highlight mb-0"><?= nl2br(htmlspecialchars($tache['description'])) ?></p>
+                                        <p class="text-body-highlight mb-0"><?= nl2br(($tache['description'])) ?></p>
                                     </div>
 
                                     <div class="row mb-5">

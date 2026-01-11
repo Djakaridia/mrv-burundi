@@ -380,14 +380,6 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                                     </a>
                                 </li>
                                 <li class="nav-item overflow-hidden">
-                                    <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'rapport_sectoriel' ? 'active' : '' ?>" href="rapport_sectoriel.php">
-                                        <div class="d-flex align-items-center">
-                                            <span class="fas fa-chevron-right fs-11"></span>
-                                            <span class="nav-link-text ms-lg-0 ms-1">Synthèse sectorielle</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item overflow-hidden">
                                     <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo in_array($pageCurr, ['rapport_periodique', 'rperiode_view']) ? 'active' : '' ?>" href="rapport_periodique.php">
                                         <div class="d-flex align-items-center">
                                             <span class="fas fa-chevron-right fs-11"></span>
@@ -395,11 +387,11 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                                         </div>
                                     </a>
                                 </li>
-                                <li class="nav-item overflow-hidden">
-                                    <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'dashboard' ? 'active' : '' ?>" href="dashboard.php">
+                                  <li class="nav-item overflow-hidden">
+                                    <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'rapport_sectoriel' ? 'active' : '' ?>" href="rapport_sectoriel.php">
                                         <div class="d-flex align-items-center">
                                             <span class="fas fa-chevron-right fs-11"></span>
-                                            <span class="nav-link-text ms-lg-0 ms-1">Tableaux de bord</span>
+                                            <span class="nav-link-text ms-lg-0 ms-1">Synthèse sectorielle</span>
                                         </div>
                                     </a>
                                 </li>

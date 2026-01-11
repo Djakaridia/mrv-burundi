@@ -3,7 +3,6 @@
     <div class="swiper section3-slider swiper-initialized swiper-horizontal swiper-backface-hidden" data-swiper="{&quot;autoplay&quot;:true,&quot;spaceBetween&quot;:5,&quot;loop&quot;:false,&quot;slideToClickedSlide&quot;:true}">
         <div class="swiper-wrapper" id="swiper-wrapper-dashboard" aria-live="off" style="max-height: 435px;">
             <?php if (!empty($referentiels_dash)) { ?>
-
                 <?php foreach ($referentiels_dash as $referentiel) { ?>
                     <div class="swiper-slide" role="group" data-swiper-slide-index="<?= $referentiel['id'] ?>">
                         <div id="suiviRefEvoChart<?= $referentiel['id'] ?>" style="height: 400px;"></div>
@@ -41,51 +40,56 @@
             <?php if (!empty($referentiels_dash)): ?>
                 <?php foreach ($referentiels_dash as $referentiel):
                     $id_chart = "suiviRefEvoChart" . $referentiel['id'];
+
                     $indicateur = new Indicateur($db);
                     $indicateur->referentiel_id = $referentiel['id'];
                     $indicateurs = array_filter($indicateur->readByReferentiel(), fn($i) => $i['state'] == 'actif');
 
-                    if (empty($indicateurs)) continue;
+                    if ($indicateurs) {
+                        $projet = new Projet($db);
+                        $projet->id = $indicateurs[0]['projet_id'];
+                        $projet_ref = $projet->readById();
+                        $annees = [];
+                        for ($year = date('Y', strtotime($projet_ref['start_date'])); $year <= date('Y', strtotime($projet_ref['end_date'])); $year++) {
+                            $annees[] = $year;
+                        }
 
-                    $projet = new Projet($db);
-                    $projet->id = $indicateurs[0]['projet_id'];
-                    $projet_ref = $projet->readById();
+                        $cible = new Cible($db);
+                        $cible->cmr_id = $indicateurs[0]['id'];
+                        $cibles_raw = $cible->readByCMR();
+                        $cibles_map = [];
+                        if (count($cibles_raw) > 0) {
+                            foreach ($cibles_raw as $item) {
+                                $year = $item['annee'];
+                                $value = (float)$item['valeur'];
+                                if (!isset($cibles_map[$year])) $cibles_map[$year] = 0;
+                                $cibles_map[$year] += $value;
+                            }
+                        }
+                        $cibles = array_map(fn($y) => (float)($cibles_map[$y] ?? 0), $annees);
 
-                    $annees = [];
-                    for ($year = date('Y', strtotime($projet_ref['start_date'])); $year <= date('Y', strtotime($projet_ref['end_date'])); $year++) {
-                        $annees[] = $year;
+                        $suivi = new Suivi($db);
+                        $suivi->cmr_id = $indicateurs[0]['id'];
+                        $suivis_raw = $suivi->readByCMR();
+                        $suivis_map = [];
+                        if (count($suivis_raw) > 0) {
+                            foreach ($suivis_raw as $item) {
+                                $year = $item['annee'];
+                                $value = (float)$item['valeur'];
+                                if (!isset($suivis_map[$year])) $suivis_map[$year] = 0;
+                                $suivis_map[$year] += $value;
+                            }
+                        }
+                        $suivis = array_map(fn($y) => (float)($suivis_map[$y] ?? 0), $annees);
                     }
 
-                    $cible = new Cible($db);
-                    $cible->cmr_id = $indicateurs[0]['id'];
-                    $cibles_raw = $cible->readByCMR();
-                    $cibles_map = [];
-                    foreach ($cibles_raw as $item) {
-                        $year = $item['annee'];
-                        $value = (float)$item['valeur'];
-                        if (!isset($cibles_map[$year])) $cibles_map[$year] = 0;
-                        $cibles_map[$year] += $value;
-                    }
-                    $cibles = array_map(fn($y) => (float)($cibles_map[$y] ?? 0), $annees);
-
-                    $suivi = new Suivi($db);
-                    $suivi->cmr_id = $indicateurs[0]['id'];
-                    $suivis_raw = $suivi->readByCMR();
-                    $suivis_map = [];
-                    foreach ($suivis_raw as $item) {
-                        $year = $item['annee'];
-                        $value = (float)$item['valeur'];
-                        if (!isset($suivis_map[$year])) $suivis_map[$year] = 0;
-                        $suivis_map[$year] += $value;
-                    }
-                    $suivis = array_map(fn($y) => (float)($suivis_map[$y] ?? 0), $annees);
                 ?> {
                         id: '<?= $id_chart ?>',
-                        categories: <?= json_encode($annees) ?>,
-                        cibles: <?= json_encode($cibles) ?>,
-                        suivis: <?= json_encode($suivis) ?>,
+                        categories: <?= json_encode($annees ?? []) ?>,
+                        cibles: <?= json_encode($cibles ?? []) ?>,
+                        suivis: <?= json_encode($suivis ?? []) ?>,
                         unite: '<?= $unite_grouped[$referentiel['id']] ?? 'Unité' ?>',
-                        title: '<?= htmlspecialchars($referentiel['intitule']) . ' (' . $unite_grouped[$referentiel['id']] . ')' ?>'
+                        title: '<?= $referentiel['intitule'] . ' (' . $unite_grouped[$referentiel['id']] . ')' ?>'
                     },
                 <?php endforeach; ?>
             <?php endif; ?>

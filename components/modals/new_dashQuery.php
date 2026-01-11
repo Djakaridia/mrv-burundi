@@ -243,8 +243,6 @@
             const url = formdashID ? `./apis/requete_fiche.routes.php?id=${formdashID}` : './apis/requete_fiche.routes.php';
             formData.append("query_sql", sqlQuery);
 
-            console.log("SQL généré :", sqlQuery);
-
             /*
             $('#dash_modbtn').prop('disabled', true);
             $('#dash_modbtn').text('Envoi en cours...');

@@ -262,7 +262,6 @@
           $('#MultipleRefResponsable').trigger('change');
           $('#MultipleRefConvention').trigger('change');
         } catch (error) {
-          console.log(error);
           errorAction('Erreur lors du chargement des données.');
         } finally {
           $('#referentielLoadingScreen').hide();

@@ -64,7 +64,7 @@
         <?php if ($error): ?>
           <div class="alert alert-subtle-danger d-flex align-items-center py-2 px-3 rounded-1" role="alert">
             <span class="fas fa-times-circle text-danger fs-5 me-3"></span>
-            <p class="mb-0 flex-1"><strong>Erreur :</strong> <?php echo htmlspecialchars($error); ?></p>
+            <p class="mb-0 flex-1"><strong>Erreur :</strong> <?php echo ($error); ?></p>
             <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
           </div>
         <?php endif; ?>
@@ -72,7 +72,7 @@
         <?php if ($success): ?>
           <div class="alert alert-subtle-success d-flex align-items-center py-2 px-3 rounded-1" role="alert">
             <span class="fas fa-check-circle text-success fs-5 me-3"></span>
-            <p class="mb-0 flex-1"><strong>Succès :</strong>  <?php echo htmlspecialchars($success); ?></p>
+            <p class="mb-0 flex-1"><strong>Succès :</strong>  <?php echo ($success); ?></p>
             <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
           </div>
         <?php endif; ?>
@@ -113,10 +113,10 @@
                         </div>
                       </div>
                       <div class="col-12 col-sm-auto flex-1">
-                        <h3 class="fw-bolder mb-1"><?php echo htmlspecialchars($user_info['nom']); ?></h3>
-                        <p class="mb-1 text-700 text-capitalize"><?php echo htmlspecialchars($user_info['fonction']); ?></p>
+                        <h3 class="fw-bolder mb-1"><?php echo ($user_info['nom']); ?></h3>
+                        <p class="mb-1 text-700 text-capitalize"><?php echo ($user_info['fonction']); ?></p>
                         <span class="badge bg-soft-primary text-primary">
-                          <?php echo htmlspecialchars($user_info['sigle']); ?>
+                          <?php echo ($user_info['sigle']); ?>
                         </span>
                       </div>
                     </div>
@@ -140,19 +140,19 @@
                         <div class="mb-1">
                           <label class="form-label">Nom complet</label>
                           <input type="text" class="form-control form-control-sm rounded-1"
-                            value="<?php echo htmlspecialchars($user_info['nom']); ?>" required>
+                            value="<?php echo ($user_info['nom']); ?>" required>
                         </div>
 
                         <div class="mb-1">
                           <label class="form-label">Fonction</label>
                           <input type="text" class="form-control form-control-sm rounded-1"
-                            value="<?php echo htmlspecialchars($user_info['fonction']); ?>">
+                            value="<?php echo ($user_info['fonction']); ?>">
                         </div>
 
                         <div class="mb-1">
                           <label class="form-label">Téléphone</label>
                           <input type="tel" class="form-control form-control-sm rounded-1"
-                            value="<?php echo htmlspecialchars($user_info['phone']); ?>">
+                            value="<?php echo ($user_info['phone']); ?>">
                         </div>
 
                         <div class="d-flex justify-content-between gap-2 mt-3">
@@ -174,7 +174,7 @@
                         <span class="me-2 uil uil-user fs-6 text-primary"></span>
                         <div>
                           <h6 class="text-body-highlight mb-0">Username</h6>
-                          <p class="mb-0 text-body-secondary small text-capitalize"><?php echo htmlspecialchars($user_info['username']); ?>
+                          <p class="mb-0 text-body-secondary small text-capitalize"><?php echo ($user_info['username']); ?>
                           </p>
                         </div>
                       </div>
@@ -185,9 +185,9 @@
                         <span class="me-2 uil uil-envelope-alt fs-6 text-primary"></span>
                         <div>
                           <h6 class="text-body-highlight mb-0">Email</h6>
-                          <a href="mailto:<?php echo htmlspecialchars($user_info['email']); ?>"
+                          <a href="mailto:<?php echo ($user_info['email']); ?>"
                             class="text-decoration-none small">
-                            <?php echo htmlspecialchars($user_info['email']); ?>
+                            <?php echo ($user_info['email']); ?>
                           </a>
                         </div>
                       </div>
@@ -198,9 +198,9 @@
                         <span class="me-2 uil uil-phone fs-6 text-primary"></span>
                         <div>
                           <h6 class="text-body-highlight mb-0">Téléphone</h6>
-                          <a href="tel:<?php echo htmlspecialchars($user_info['phone']); ?>"
+                          <a href="tel:<?php echo ($user_info['phone']); ?>"
                             class="text-decoration-none small">
-                            <?php echo htmlspecialchars($user_info['phone']); ?>
+                            <?php echo ($user_info['phone']); ?>
                           </a>
                         </div>
                       </div>
@@ -211,7 +211,7 @@
                         <span class="me-2 uil uil-briefcase fs-6 text-primary"></span>
                         <div>
                           <h6 class="text-body-highlight mb-0">Fonction</h6>
-                          <p class="mb-0 text-body-secondary small text-capitalize"><?php echo htmlspecialchars($user_info['fonction']); ?>
+                          <p class="mb-0 text-body-secondary small text-capitalize"><?php echo ($user_info['fonction']); ?>
                           </p>
                         </div>
                       </div>

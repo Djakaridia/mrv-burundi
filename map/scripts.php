@@ -1,12 +1,12 @@
 <script>
     let map, markerCluster, allMarkers = [],
-        regionsLayer, zonesLayers, searchResultsLayer, currentBasemap;
+        provincesLayer, zonesLayers, searchResultsLayer, currentBasemap;
 
-    let regionTabLayers = [];
+    let provinceTabLayers = [];
     let zoneTabLayers = [];
-    const listRegions = [];
+    const listProvinces = [];
     const listZones = [];
-    const regionStats = <?= json_encode($projets_par_region) ?>;
+    const provinceStats = <?= json_encode($projets_par_province) ?>;
     const progressIndicator = $('#progressIndicator');
 
     const animationConfig = {
@@ -17,32 +17,80 @@
     };
 
     async function initMap() {
-        var map = L.map("mapContainer", {
+        map = L.map("mapContainer", {
             zoomControl: false,
             fadeAnimation: true,
             markerZoomAnimation: true,
-            maxBounds: [ [-4.5, 29.0], [-2.3, 30.9] ],
+            maxBounds: [
+                [-4.5, 29.0],
+                [-2.3, 30.9]
+            ],
             maxBoundsViscosity: 1.0
         }).setView([-3.3731, 29.9189], 8);
+
+        map.createPane('paneCountry');
+        map.createPane('paneProvince');
+        map.createPane('paneZone');
+        map.getPane('paneCountry').style.zIndex = 200;
+        map.getPane('paneProvince').style.zIndex = 400;
+        map.getPane('paneZone').style.zIndex = 600;
 
         progressIndicator.css({
             'width': '20%',
             'transition': 'width 0.5s ease-in-out'
         });
-        
+
         currentBasemap = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
             maxZoom: 19,
             attribution: '&copy; OpenStreetMap'
         }).addTo(map);
         progressIndicator.css('width', '40%');
 
-        // =================== Charger les régions du Burundi ===================
-        const shapefileUrl = "../documents/none.zip";
-        const regionsList = $('#regionsList');
-        const regionsCount = $('#regionsCount');
-        shp(shapefileUrl).then(function(geojson) {
+        // =================== Charger la carte complète du Burundi ===================
+        const shapefileUrlBurundi = "../documents/burundi_Burundi_Country_Boundary.zip";
+        shp(shapefileUrlBurundi).then(function(geojson) {
+            const burundiLayer = L.geoJSON(geojson, {
+                pane: 'paneCountry',
+                interactive: false,
+                style: {
+                    color: "#da0025",
+                    weight: 2,
+                    fillColor: "#da0025",
+                    fillOpacity: 0.02
+                },
+                onEachFeature: function(feature, layer) {
+                    const props = feature.properties || {};
+                    layer.on("mouseover", function() {
+                        layer.setStyle({
+                            weight: 3,
+                            fillOpacity: 0.15
+                        });
+                        layer.bringToFront();
+                    });
+
+                    layer.on("mouseout", function() {
+                        layer.setStyle({
+                            weight: 2,
+                            fillOpacity: 0.05
+                        });
+                    });
+                }
+            });
+
+            burundiLayer.addTo(map);
+            map.fitBounds(burundiLayer.getBounds(), {
+                padding: [30, 30]
+            });
+        })
+
+        // =================== Charger les provinces du Burundi ===================
+        const shapefileUrlProvinces = "../documents/burundi_Province_level_1.zip";
+        const provincesList = $('#provincesList');
+        const provincesCount = $('#provincesCount');
+        shp(shapefileUrlProvinces).then(function(geojson) {
             loadedCouche = 0;
-            regionsLayer = L.geoJSON(geojson, {
+            provincesLayer = L.geoJSON(geojson, {
+                pane: 'paneProvince',
                 style: {
                     color: "#3388ff",
                     weight: 2,
@@ -51,25 +99,27 @@
                 },
                 onEachFeature: function(feature, layer) {
                     if (feature.properties) {
-                        const id = feature.properties.ID_1 || '';
-                        const type1 = feature.properties.TYPE_1 || '';
-                        const name0 = feature.properties.NAME_0 || '';
-                        const name1 = feature.properties.NAME_1 || '';
+                        console.log(feature.properties);
+
+                        const id = feature.properties.shapeid || '';
+                        const type1 = feature.properties.shapetype || '';
+                        const name0 = feature.properties.shape0 || '';
+                        const name1 = feature.properties.shape1 || '';
 
                         const popupContent = `
                         <div class="p-1">
                             <div class="project-title">${name1}</div>
                             <div class="project-info">
                                 <span><strong>Nom pays:</strong> ${name0}</span><br/>
-                                <span><strong>Nom région:</strong> ${name1}</span>
+                                <span><strong>Nom province:</strong> ${name1}</span>
                             </div>
                         </div>`;
 
                         const checkContent = `
                         <div class="list-group-item list-group-item-action">
                             <div class="input-group">
-                                <input type="checkbox" class="region-checkbox" id="reg-${id}" name="regions[]" value="${name1}">
-                                <label for="reg-${id}" class="text-capitalize link-primary cursor-pointer mx-1 w-75">${name1}</label>
+                                <input type="checkbox" class="province-checkbox" id="prov-${id}" name="provinces[]" value="${name1}">
+                                <label for="prov-${id}" class="text-capitalize link-primary cursor-pointer mx-1 w-75">${name1}</label>
                             </div>
                         </div>`;
 
@@ -87,8 +137,8 @@
                                 weight: 2
                             }), 1000);
                             updateZoneStats(name1);
-                            $(`.region-item[data-region="${name1}"]`).addClass('highlight-item');
-                            setTimeout(() => $(`.region-item[data-region="${name1}"]`).removeClass('highlight-item'), 2000);
+                            $(`.province-item[data-province="${name1}"]`).addClass('highlight-item');
+                            setTimeout(() => $(`.province-item[data-province="${name1}"]`).removeClass('highlight-item'), 2000);
                         });
 
                         layer.on('mouseover', function() {
@@ -107,17 +157,17 @@
                         });
 
                         loadedCouche++;
-                        layer.regionName = name1;
-                        regionsList.append(checkContent);
-                        listRegions.push(checkContent);
-                        setTimeout(() => $(`#reg-${id}`).parent().parent().hide().fadeIn(500), loadedCouche * 100);
+                        layer.provinceName = name1;
+                        provincesList.append(checkContent);
+                        listProvinces.push(checkContent);
+                        setTimeout(() => $(`#prov-${id}`).parent().parent().hide().fadeIn(500), loadedCouche * 100);
                     }
                 }
             });
 
-            regionTabLayers.push(regionsLayer);
-            regionsCount.text(loadedCouche);
-            map.flyToBounds(regionsLayer.getBounds(), {
+            provinceTabLayers.push(provincesLayer);
+            provincesCount.text(loadedCouche);
+            map.flyToBounds(provincesLayer.getBounds(), {
                 duration: 1,
                 padding: [20, 20]
             });
@@ -159,6 +209,7 @@
 
                 shp(zoneUrl).then(function(geojson) {
                     const zoneLayer = L.geoJSON(geojson, {
+                        pane: 'paneZone',
                         style: {
                             color: "#79822f",
                             weight: 2,
@@ -175,7 +226,7 @@
                                 <div class="p-1">
                                     <div class="project-title">${zoneName}</div>
                                     <div class="project-info">
-                                        <span><strong>Région:</strong> ${name1}</span><br/>
+                                        <span><strong>Province:</strong> ${name1}</span><br/>
                                         <span><strong>Zone Code:</strong> ${code2}</span><br/>
                                         <span><strong>Zone Name:</strong> ${name2}</span><br/>
                                     </div>
@@ -319,7 +370,7 @@
                                 projet_id: "<?= $indicateur['projet_id'] ?>",
                                 intitule: "<?= $indicateur['intitule'] ?>",
                                 code: "<?= $indicateur['code'] ?>",
-                                region: "<?= $indicateur['region'] ?? '' ?>",
+                                province: "<?= $indicateur['province'] ?? '' ?>",
                                 zone_id: "<?= $indicateur['zone_id'] ?? '' ?>"
                             },
                             projet: {
@@ -366,7 +417,7 @@
             const div = L.DomUtil.create("div", "legend animated-legend");
             div.innerHTML = `
             <h6>Légende</h6>
-            <i style="background: #3388ff"></i> Limites régionales <br>
+            <i style="background: #3388ff"></i> Limites provinciales <br>
             <i style="background: #79822f"></i> Zones de collecte <br>
             <i style="background: #f7ae17"></i> Indicateurs <br>
             `;
@@ -501,11 +552,11 @@
         });
 
         // =================== Card display ===================
-        $('#all-regions').on('change', function() {
+        $('#all-provinces').on('change', function() {
             const checked = $(this).is(':checked');
-            animateCheckboxGroup('.region-checkbox', checked);
-            $('.region-checkbox').prop('checked', checked);
-            updateRegionMap();
+            animateCheckboxGroup('.province-checkbox', checked);
+            $('.province-checkbox').prop('checked', checked);
+            updateProvinceMap();
         });
 
         $('#all-zones').on('change', function() {
@@ -522,9 +573,9 @@
             updateProjMap();
         });
 
-        $(document).on('change', '.region-checkbox', function() {
+        $(document).on('change', '.province-checkbox', function() {
             animateCheckbox(this);
-            updateRegionMap();
+            updateProvinceMap();
         });
 
         $(document).on('change', '.zone-checkbox', function() {
@@ -714,14 +765,14 @@
         animateEndProgress();
     }
 
-    function updateZoneStats(regionName) {
-        const stats = regionStats[regionName] || {
+    function updateZoneStats(provinceName) {
+        const stats = provinceStats[provinceName] || {
             projets: [],
             budget_total: 0,
             indicateurs_count: 0
         };
 
-        $('#statsRegionName').text(`Statistiques - ${regionName}`);
+        $('#statsProvinceName').text(`Statistiques - ${provinceName}`);
         $('#zoneProjects').text(stats.projets.length);
         $('#zoneBudget').text(stats.budget_total.toLocaleString() + ' FCFA');
         $('#zoneIndicators').text(stats.indicateurs_count);
@@ -776,8 +827,8 @@
         $('#filterScenario').val('');
     }
 
-    function updateRegionMap() {
-        const selectedRegions = $('.region-checkbox:checked').map(function() {
+    function updateProvinceMap() {
+        const selectedProvinces = $('.province-checkbox:checked').map(function() {
             return $(this).val().toLowerCase();
         }).get();
 
@@ -787,7 +838,7 @@
             'opacity': '1'
         });
 
-        regionsLayer.eachLayer(function(layer) {
+        provincesLayer.eachLayer(function(layer) {
             if (map.hasLayer(layer)) {
                 layer.setStyle({
                     fillOpacity: 0
@@ -797,9 +848,9 @@
         });
 
         setTimeout(() => {
-            if (regionsLayer && selectedRegions.length > 0) {
-                regionsLayer.eachLayer(function(layer) {
-                    if (layer.regionName && selectedRegions.includes(layer.regionName.toLowerCase())) {
+            if (provincesLayer && selectedProvinces.length > 0) {
+                provincesLayer.eachLayer(function(layer) {
+                    if (layer.provinceName && selectedProvinces.includes(layer.provinceName.toLowerCase())) {
                         layer.setStyle({
                             fillOpacity: 0
                         });
@@ -890,7 +941,7 @@
     }
 
     function updateAllMarkers() {
-        const selectedRegions = $('.region-checkbox:checked').map(function() {
+        const selectedProvinces = $('.province-checkbox:checked').map(function() {
             return $(this).val().toLowerCase();
         }).get();
 
@@ -908,15 +959,15 @@
             let addedMarkers = 0;
             allMarkers.forEach(m => {
                 const markerData = m.options;
-                const markerRegion = (markerData.indicateur.region || '').toLowerCase();
+                const markerProvince = (markerData.indicateur.province || '').toLowerCase();
                 const markerZone = (markerData.indicateur.zone_id || '').toString();
                 const markerProjet = markerData.projet.id.toString();
 
-                const showByRegion = selectedRegions.length === 0 || selectedRegions.includes(markerRegion);
+                const showByProvince = selectedProvinces.length === 0 || selectedProvinces.includes(markerProvince);
                 const showByZone = selectedZones.length === 0 || selectedZones.includes(markerZone);
                 const showByProjet = selectedProjets.length === 0 || selectedProjets.includes(markerProjet);
 
-                if (showByRegion && showByZone && showByProjet) {
+                if (showByProvince && showByZone && showByProjet) {
                     setTimeout(() => markerCluster.addLayer(m), addedMarkers * 30);
                     addedMarkers++;
                 }
@@ -924,7 +975,7 @@
 
             progressIndicator.css('width', '60%');
 
-            if (selectedRegions.length === 0 && selectedZones.length === 0 && selectedProjets.length === 0) {
+            if (selectedProvinces.length === 0 && selectedZones.length === 0 && selectedProjets.length === 0) {
                 markerCluster.clearLayers();
             }
 

@@ -62,7 +62,7 @@
                   <?php foreach ($row_roles as $role): ?>
                     <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                       <td class="align-middle px-2">
-                        <?php echo htmlspecialchars($role['name']); ?>
+                        <?php echo $role['name']; ?>
                       </td>
                       <td class="align-middle px-2">
                         <?php echo date('d/m/Y', strtotime($role['created_at'])); ?>

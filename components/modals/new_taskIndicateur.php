@@ -44,8 +44,8 @@
                             </div>
 
                             <div class="col-12">
-                                <label for="indicateur_tache_description" class="form-label">Description*</label>
-                                <textarea class="form-control" id="indicateur_tache_description" placeholder="Entrer la description" required></textarea>
+                                <label for="indicateur_tache_description" class="form-label">Description</label>
+                                <textarea class="form-control" id="indicateur_tache_description" placeholder="Entrer la description"></textarea>
                             </div>
 
                             <!-- Boutons -->

@@ -47,8 +47,8 @@
                                                 </div>
                                             </div>
                                             <div class="w-75">
-                                                <h5 class="mb-0"> <?= htmlspecialchars($user_info['prenom'] . ' ' . $user_info['nom']) ?> </h5>
-                                                <p class="text-600 mb-0"><?= htmlspecialchars($user_info['fonction']) ?></p>
+                                                <h5 class="mb-0"> <?= ($user_info['prenom'] . ' ' . $user_info['nom']) ?> </h5>
+                                                <p class="text-600 mb-0"><?= ($user_info['fonction']) ?></p>
                                             </div>
                                         </div>
                                         <div class="col-2 text-end">
@@ -64,13 +64,13 @@
                                             <div class="col-12">
                                                 <div class="d-flex align-items-center">
                                                     <span class="fas fa-envelope text-700 me-2"></span>
-                                                    <span class="text-800"><?= htmlspecialchars($user_info['email']) ?></span>
+                                                    <span class="text-800"><?= ($user_info['email']) ?></span>
                                                 </div>
                                             </div>
                                             <div class="col-12 ">
                                                 <div class="d-flex align-items-center">
                                                     <span class="fas fa-phone text-700 me-2"></span>
-                                                    <span class="text-800"><?= htmlspecialchars($user_info['phone']) ?></span>
+                                                    <span class="text-800"><?= ($user_info['phone']) ?></span>
                                                 </div>
                                             </div>
                                             <div class="col-12">
@@ -86,7 +86,7 @@
                                                                     break;
                                                                 }
                                                             }
-                                                            echo htmlspecialchars($structure_name);
+                                                            echo ($structure_name);
                                                             ?>
                                                         <?php else: ?>
                                                             Non spécifié

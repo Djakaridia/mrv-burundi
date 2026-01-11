@@ -80,9 +80,7 @@
             });
 
             const result = await response.json();
-            console.log(ref);
             const filteredIndicateurs = result.data.filter(item => item.referentiel_id === ref);
-            console.log(filteredIndicateurs);
 
             if (filteredIndicateurs.length > 0) {
                 filteredIndicateurs.forEach(item => {

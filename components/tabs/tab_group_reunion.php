@@ -89,7 +89,7 @@
             <div class="offcanvas-body p-0">
               <div class="p-3">
                 <div class="d-flex flex-between-center align-items-start gap-5 mb-3">
-                  <h2 class="fw-bold fs-6 mb-0 text-body-highlight"><?= htmlspecialchars($reunion['name']) ?></h2>
+                  <h2 class="fw-bold fs-6 mb-0 text-body-highlight"><?= $reunion['name'] ?></h2>
 
                   <div class="ms-auto d-flex align-items-center gap-2">
                     <?php if (checkPermis($db, 'update')): ?>
@@ -114,7 +114,7 @@
                   <h5 class="text-body me-3">Informations</h5>
                   <div class="d-flex justify-content-between align-items-center mb-1">
                     <span class="text-body">Code:</span>
-                    <span class="text-body-highlight fw-bold"><?= htmlspecialchars($reunion['code']) ?></span>
+                    <span class="text-body-highlight fw-bold"><?= $reunion['code'] ?></span>
                   </div>
 
                   <div class="d-flex justify-content-between align-items-center mb-1">
@@ -130,7 +130,7 @@
 
                 <div class="mb-3 border-top pt-2">
                   <h5 class="text-body me-3">Description</h5>
-                  <p class="text-body-highlight mb-0"><?= nl2br(htmlspecialchars($reunion['description'])) ?></p>
+                  <p class="text-body-highlight mb-0"><?= nl2br($reunion['description']) ?></p>
                 </div>
 
                 <div class="mb-3 border-top pt-2">
@@ -169,7 +169,7 @@
                         <div class="d-flex flex-between-center">
                           <div>
                             <div class="d-flex align-items-center mb-1 flex-wrap"><span class="fa-solid fa-file-lines me-2 fs-9 text-body-tertiary"></span>
-                              <p class="text-body-highlight mb-0 lh-1"><?= htmlspecialchars($document['name']) ?></p>
+                              <p class="text-body-highlight mb-0 lh-1"><?= $document['name'] ?></p>
                             </div>
                             <div class="d-flex fs-9 text-body-tertiary mb-0 flex-wrap"><span><?= round($document['file_size'] / 1024 / 1024, 2) ?> MB</span>
                               <span class="text-body-quaternary mx-1">| </span>

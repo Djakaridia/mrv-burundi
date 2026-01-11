@@ -135,16 +135,16 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <h6 class="text-body-tertiary mb-2"><?= htmlspecialchars($section['intitule'] ?? '') ?></h6>
+                                <h6 class="text-body-tertiary mb-2"><?= ($section['intitule'] ?? '') ?></h6>
                                 <h2 class="text-<?= $section['couleur'] ?> mb-0">
-                                    <?= htmlspecialchars($value) ?>
+                                    <?= ($value) ?>
                                     <?php if (!empty($unit)): ?>
-                                        <small class="fs-9"><?= htmlspecialchars($unit) ?></small>
+                                        <small class="fs-9"><?= ($unit) ?></small>
                                     <?php endif; ?>
                                 </h2>
                             </div>
                             <div class="icon-wrapper bg-<?= $section['couleur'] ?> bg-opacity-10 rounded-2">
-                                <span class="p-2 <?= htmlspecialchars($section['icone'] ?? '') ?> text-<?= $section['couleur'] ?> fs-4"></span>
+                                <span class="p-2 <?= ($section['icone'] ?? '') ?> text-<?= $section['couleur'] ?> fs-4"></span>
                             </div>
                         </div>
                         <?php if (!empty($badge)): ?>
@@ -153,7 +153,7 @@
                     </div>
 
                     <?php if (!empty($link)): ?>
-                        <div onclick="window.location.href='<?= htmlspecialchars($link) ?>';" class="stretched-link"></div>
+                        <div onclick="window.location.href='<?= ($link) ?>';" class="stretched-link"></div>
                     <?php endif; ?>
                 </div>
             </div>

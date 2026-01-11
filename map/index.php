@@ -150,7 +150,7 @@ foreach ($indicateur_cmr as $indicateur) {
                         <select id="filterAction" class="form-select mb-2" required>
                             <option value="">Toutes les actions</option>
                             <?php foreach ($projets_actions_assoc as $action) {
-                                echo "<option value='{$action}'>" . htmlspecialchars($action) . "</option>";
+                                echo "<option value='{$action}'>" . ($action) . "</option>";
                             } ?>
                         </select>
 
@@ -253,7 +253,7 @@ foreach ($indicateur_cmr as $indicateur) {
                                         </div>
                                         <?php foreach ($projets_actions_assoc as $action) { ?>
                                             <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                                                <span class="text-capitalize"><?= htmlspecialchars($action) ?></span>
+                                                <span class="text-capitalize"><?= ($action) ?></span>
                                                 <span class="badge bg-primary"><?= count($projets_par_action[$action]) ?></span>
                                             </div>
                                         <?php } ?>
