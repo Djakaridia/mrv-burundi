@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" dir="ltr" data-navigation-type="default" data-navbar-horizontal-shape="default">
+<html lang="fr" dir="ltr" data-navigation-type="default" data-navbar-horizontal-shape="default" class="chrome windows fontawesome-i2svg-active fontawesome-i2svg-complete navbar-vertical-collapsed">
 
 <head>
   <meta charset="utf-8" />

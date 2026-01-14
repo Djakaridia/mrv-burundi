@@ -20,7 +20,7 @@
                         <th class="sort align-middle">Code</th>
                         <th class="sort align-middle">Intitulé</th>
                         <th class="sort align-middle">Bailleur</th>
-                        <th class="sort align-middle" style="min-width:110px;">Montant (FCFA)</th>
+                        <th class="sort align-middle" style="min-width:110px;">Montant (USD)</th>
                         <th class="sort align-middle">Date d'acord</th>
                         <th class="sort align-middle" style="min-width:100px;">Actions</th>
                     </tr>

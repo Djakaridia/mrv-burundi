@@ -1,6 +1,6 @@
 <?php $array_typeLogo = ".jpg, .jpeg, .png, .gif, .webp"; ?>
 <div class="modal fade" id="addProjetModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addProjetModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content bg-body-highlight p-4">
             <div class="modal-header justify-content-between border-0 p-0 mb-3">
                 <h3 class="mb-0" id="projet_modtitle">Ajouter un projet</h3>
@@ -18,73 +18,73 @@
 
                 <div id="projetContentContainer" style="display: none;">
                     <div class="card theme-wizard" data-theme-wizard="data-theme-wizard">
-                        <div class="card-body pt-3 pb-0">
+                        <div class="card-body p-2">
                             <div class="row justify-content-between">
                                 <div class="col-md-3">
-                                    <div class="scrollbar shadow-sm rounded-1 mb-3 px-3" style="height: max-content;">
+                                    <div class="scrollbar shadow-sm rounded-1 px-2" style="height: max-content;">
                                         <ul class="nav justify-content-between flex-nowrap nav-wizard nav-wizard-vertical-md" role="tablist">
                                             <li class="nav-item" role="presentation">
                                                 <a class="nav-link active py-0 py-md-3" href="#phoenix-wizard-tab1" data-bs-toggle="tab" data-wizard-step="1" aria-selected="true" role="tab">
-                                                    <div class="text-center d-inline-block d-md-flex align-items-center gap-3">
+                                                    <div class="text-center d-inline-block d-md-flex align-items-center gap-2">
                                                         <span class="nav-item-circle-parent">
                                                             <span class="nav-item-circle">
                                                                 <span class="fa-solid fa-id-card nav-item-icon"></span>
                                                                 <span class="fa-solid fa-check check-icon"></span>
                                                             </span>
                                                         </span>
-                                                        <span class="nav-item-title fs-9 fs-xl-8">Identification</span>
+                                                        <span class="nav-item-title fs-9">Identification</span>
                                                     </div>
                                                 </a>
                                             </li>
                                             <li class="nav-item" role="presentation">
                                                 <a class="nav-link py-0 py-md-3" href="#phoenix-wizard-tab2" data-bs-toggle="tab" data-wizard-step="2" aria-selected="false" tabindex="-1" role="tab">
-                                                    <div class="text-center d-inline-block d-md-flex align-items-center gap-3">
+                                                    <div class="text-center d-inline-block d-md-flex align-items-center gap-2">
                                                         <span class="nav-item-circle-parent">
                                                             <span class="nav-item-circle">
                                                                 <span class="fa-solid fa-calendar-alt nav-item-icon"></span>
                                                                 <span class="fa-solid fa-check check-icon"></span>
                                                             </span>
                                                         </span>
-                                                        <span class="nav-item-title fs-9 fs-xl-8">Délimitation</span>
+                                                        <span class="nav-item-title fs-9">Délimitation</span>
                                                     </div>
                                                 </a>
                                             </li>
                                             <li class="nav-item" role="presentation">
                                                 <a class="nav-link py-0 py-md-3" href="#phoenix-wizard-tab3" data-bs-toggle="tab" data-wizard-step="3" aria-selected="false" tabindex="-1" role="tab">
-                                                    <div class="text-center d-inline-block d-md-flex align-items-center gap-3">
+                                                    <div class="text-center d-inline-block d-md-flex align-items-center gap-2">
                                                         <span class="nav-item-circle-parent">
                                                             <span class="nav-item-circle">
                                                                 <span class="fa-solid fa-list-alt nav-item-icon"></span>
                                                                 <span class="fa-solid fa-check check-icon"></span>
                                                             </span>
                                                         </span>
-                                                        <span class="nav-item-title fs-9 fs-xl-8">Objectifs</span>
+                                                        <span class="nav-item-title fs-9">Objectifs</span>
                                                     </div>
                                                 </a>
                                             </li>
                                             <li class="nav-item" role="presentation">
                                                 <a class="nav-link py-0 py-md-3" href="#phoenix-wizard-tab4" data-bs-toggle="tab" data-wizard-step="4" aria-selected="false" tabindex="-1" role="tab">
-                                                    <div class="text-center d-inline-block d-md-flex align-items-center gap-3">
+                                                    <div class="text-center d-inline-block d-md-flex align-items-center gap-2">
                                                         <span class="nav-item-circle-parent">
                                                             <span class="nav-item-circle">
                                                                 <span class="fa-solid fa-newspaper nav-item-icon"></span>
                                                                 <span class="fa-solid fa-check check-icon"></span>
                                                             </span>
                                                         </span>
-                                                        <span class="nav-item-title fs-9 fs-xl-8">Description</span>
+                                                        <span class="nav-item-title fs-9">Description</span>
                                                     </div>
                                                 </a>
                                             </li>
                                             <li class="nav-item" role="presentation">
                                                 <a class="nav-link py-0 py-md-3" href="#phoenix-wizard-tab5" data-bs-toggle="tab" data-wizard-step="5" aria-selected="false" tabindex="-1" role="tab">
-                                                    <div class="text-center d-inline-block d-md-flex align-items-center gap-3">
+                                                    <div class="text-center d-inline-block d-md-flex align-items-center gap-2">
                                                         <span class="nav-item-circle-parent">
                                                             <span class="nav-item-circle">
                                                                 <span class="fa-solid fa-check-double nav-item-icon"></span>
                                                                 <span class="fa-solid fa-check check-icon"></span>
                                                             </span>
                                                         </span>
-                                                        <span class="nav-item-title fs-9 fs-xl-8">Validation</span>
+                                                        <span class="nav-item-title fs-9">Validation</span>
                                                     </div>
                                                 </a>
                                             </li>
@@ -97,7 +97,7 @@
                                         <div class="tab-pane active" role="tabpanel" aria-labelledby="phoenix-wizard-tab1" id="phoenix-wizard-tab1">
                                             <form id="wizProjetForm1" novalidate="novalidate" class="needs-validation" data-wizard-form="1">
                                                 <div class="row g-3 mb-3">
-                                                    <div class="col-md-2 mb-3">
+                                                    <div class="col-md-3">
                                                         <div class="d-flex align-items-center justify-content-center">
                                                             <div class="avatar avatar-4xl">
                                                                 <img id="projetLoadImage" class="rounded-1 border border-light shadow-sm rounded-1 w-100 avatar-placeholder d-none" src="" alt="no-image">
@@ -105,7 +105,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-10 mb-3">
+                                                    <div class="col-md-9">
                                                         <label for="projetImage" class="border border-dashed rounded-1 px-2 py-3 w-100 btn">
                                                             <input type="file" name="file" id="projetImage" accept="<?php echo $array_typeLogo ?>" class="form-control d-none w-100" />
                                                             <input type="hidden" name="allow_files" id="allow_file_projet" value="<?php echo $array_typeLogo; ?>">
@@ -181,7 +181,6 @@
                                                             <label for="projetPriorite">Priorité*</label>
                                                         </div>
                                                     </div>
-
                                                     <input type="hidden" name="status" id="projetStatus" value="Planifié">
                                                 </div>
                                             </form>
@@ -194,7 +193,7 @@
                                                     <div class="col-md-6 mb-2">
                                                         <div class="flatpickr-input-container">
                                                             <div class="form-floating">
-                                                                <input class="form-control datetimepicker" name="start_date" id="projetStartDate" type="text" placeholder="Date de début" data-options="{&quot;disableMobile&quot;:true}" readonly>
+                                                                <input class="form-control datetimepicker" name="start_date" id="projetStartDate" value="<?= date('Y-m-d') ?>" type="text" placeholder="Date de début">
                                                                 <label class="ps-6" for="projetStartDate">Date de début</label>
                                                                 <span class="uil uil-calendar-alt flatpickr-icon text-body-tertiary"></span>
                                                             </div>
@@ -204,7 +203,7 @@
                                                     <div class="col-md-6 mb-2">
                                                         <div class="flatpickr-input-container">
                                                             <div class="form-floating">
-                                                                <input class="form-control datetimepicker" name="end_date" id="projetEndDate" type="text" placeholder="Date de clôture" data-options="{&quot;disableMobile&quot;:true}" readonly>
+                                                                <input class="form-control datetimepicker" name="end_date" id="projetEndDate" value="<?= date('Y-m-d') ?>" type="text" placeholder="Date de clôture">
                                                                 <label class="ps-6" for="projetEndDate">Date de clôture</label>
                                                                 <span class="uil uil-calendar-alt flatpickr-icon text-body-tertiary"></span>
                                                             </div>
@@ -214,7 +213,7 @@
                                                     <div class="col-md-6 mb-2">
                                                         <div class="flatpickr-input-container">
                                                             <div class="form-floating">
-                                                                <input class="form-control datetimepicker" name="signature_date" id="projetSignatureDate" type="text" placeholder="Date de signature" data-options="{&quot;disableMobile&quot;:true}" readonly>
+                                                                <input class="form-control datetimepicker" name="signature_date" id="projetSignatureDate" value="<?= date('Y-m-d') ?>" type="text" placeholder="Date de signature">
                                                                 <label class="ps-6" for="projetSignatureDate">Date de signature</label>
                                                                 <span class="uil uil-pen flatpickr-icon text-body-tertiary"></span>
                                                             </div>
@@ -223,7 +222,7 @@
                                                     <div class="col-md-6 mb-2">
                                                         <div class="flatpickr-input-container">
                                                             <div class="form-floating">
-                                                                <input class="form-control datetimepicker" name="miparcours_date" id="projetMiparcours" type="text" placeholder="Date de mi-parcours" data-options="{&quot;disableMobile&quot;:true}" readonly>
+                                                                <input class="form-control datetimepicker" name="miparcours_date" id="projetMiparcours" value="<?= date('Y-m-d') ?>" type="text" placeholder="Date de mi-parcours">
                                                                 <label class="ps-6" for="projetMiparcours">Date de mi-parcours</label>
                                                                 <span class="uil uil-clock flatpickr-icon text-body-tertiary"></span>
                                                             </div>
@@ -311,21 +310,11 @@
 
                                         <div class="tab-pane" role="tabpanel" aria-labelledby="phoenix-wizard-tab5" id="phoenix-wizard-tab5">
                                             <form id="wizProjetForm5" novalidate="novalidate" class="needs-validation" data-wizard-form="5">
-                                                <div class="row flex-center py-5 g-3">
-                                                    <div class="col-4">
-                                                        <div class="text-center align-items-center">
-                                                            <img class="d-dark-none" src="./assets/img/spot-illustrations/23.png" alt="" width="250">
-                                                            <img class="d-light-none" src="./assets/img/spot-illustrations/dark_23.png" alt="" width="250">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <div class="text-center">
-                                                            <h5 class="mb-3">Validation des informations du projet</h5>
-                                                            <p class="text-body-emphasis fs-9">Veuillez vous assurer de la véracité des informations du projet</p>
-                                                            <div class="d-flex justify-content-center border-0 px-0 pb-0">
-                                                                <button type="button" class="btn btn-primary my-0 px-5" id="projet_modbtn">Valider les données</button>
-                                                            </div>
-                                                        </div>
+                                                <div class="text-center py-5 my-5">
+                                                    <h5 class="mb-3">Validation des informations du projet</h5>
+                                                    <p class="text-body-emphasis fs-9">Veuillez vous assurer de la véracité des informations du projet</p>
+                                                    <div class="d-flex justify-content-center border-0 px-0 pb-0">
+                                                        <button type="button" class="btn btn-primary my-0 px-5" id="projet_modbtn">Valider les données</button>
                                                     </div>
                                                 </div>
                                             </form>
@@ -334,13 +323,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-footer border-top border-light" data-wizard-footer="data-wizard-footer">
+                        <div class="card-footer border-top border-light p-2" data-wizard-footer="data-wizard-footer">
                             <div class="d-flex pager justify-content-between wizard list-inline mb-0">
-                                <button class="d-none btn btn-secondary px-3" type="button" data-wizard-prev-btn="data-wizard-prev-btn">
+                                <button class="d-none btn btn-sm btn-secondary px-3" type="button" data-wizard-prev-btn="data-wizard-prev-btn">
                                     <span class="fas fa-chevron-left me-1" data-fa-transform="shrink-3"></span>
                                     Précédent
                                 </button>
-                                <button class="btn btn-primary px-3" type="submit" data-wizard-next-btn="data-wizard-next-btn">
+                                <button class="btn btn-sm btn-primary px-3" type="submit" data-wizard-next-btn="data-wizard-next-btn">
                                     Suivant <span class="fas fa-chevron-right ms-1" data-fa-transform="shrink-3"></span>
                                 </button>
                             </div>

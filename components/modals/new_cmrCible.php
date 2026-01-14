@@ -25,7 +25,7 @@
                 <table class="table table-sm table-hover table-striped fs-12 table-bordered border-emphasis" align="center">
                   <thead class="bg-light">
                     <tr>
-                      <th scope="col" class="fs-12 px-2 text-center" width="15%">Secteurs</th>
+                      <th scope="col" class="fs-12 px-2 text-center" width="15%">Scénario</th>
                       <?php
                       $startYear = date('Y', strtotime($project_curr['start_date']));
                       $endYear = date('Y', strtotime($project_curr['end_date']));
@@ -36,21 +36,16 @@
                   </thead>
 
                   <tbody>
-                    <?php if (isset($secteurs_project)) : ?>
-                    <?php foreach ($secteurs_project as $secteur) : ?>
+                    <?php foreach (listTypeScenario() as $scenario) : ?>
                       <tr>
-                        <td class="align-middle text-start px-2" width="15%"><?= $secteur['name'] ?></td>
+                        <td class="align-middle text-start px-2" width="15%"><?= $scenario ?></td>
                         <?php for ($year = $startYear; $year <= $endYear; $year++) : ?>
                           <td class="align-middle text-center px-2">
-                            <input type="text" class="form-control py-3"
-                              name="cible[<?= $secteur['id'] ?>][<?= $year ?>]"
-                              id="cible-<?= $secteur['id'] ?>-<?= $year ?>"
-                              value="">
+                            <input type="text" class="form-control py-3" name="cible[<?= $scenario ?>][<?= $year ?>]" id="cible-<?= $scenario ?>-<?= $year ?>" value="">
                           </td>
                         <?php endfor; ?>
                       </tr>
                     <?php endforeach; ?>
-                    <?php endif; ?>
                   </tbody>
                 </table>
               </div>
@@ -98,7 +93,7 @@
 
           if (result.status === 'success' && result.data?.length) {
             result.data.forEach(item => {
-              $(`#cible-${item.secteur_id}-${item.annee}`).val(item.valeur);
+              $(`#cible-${item.scenario}-${item.annee}`).val(item.valeur);
             });
           }
         } catch (error) {
@@ -139,12 +134,12 @@
       $('[name^="cible["]').each(function() {
         const matches = this.name.match(/cible\[(\d+)\]\[(\d+)\]/);
         if (matches) {
-          const secteurId = matches[1];
+          const scenario = matches[1];
           const year = matches[2];
 
-          if (!cibles[secteurId]) cibles[secteurId] = {};
-          cibles[secteurId][year] = {
-            secteur_id: secteurId,
+          if (!cibles[scenario]) cibles[scenario] = {};
+          cibles[scenario][year] = {
+            scenario: scenario,
             valeur: this.value,
             annee: year
           };

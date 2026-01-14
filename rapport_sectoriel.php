@@ -134,7 +134,7 @@
                                                 <th class="align-middle px-2" scope="col"> Code</th>
                                                 <th class="align-middle px-2" scope="col" width="30%"> Intitulé</th>
                                                 <th class="align-middle px-2" scope="col"> Actions</th>
-                                                <th class="align-middle px-2" scope="col"> Budget (FCFA)</th>
+                                                <th class="align-middle px-2" scope="col"> Budget (USD)</th>
                                                 <th class="align-middle px-2" scope="col"> Structure</th>
                                                 <th class="align-middle px-2" scope="col" width="10%"> Actions</th>
                                             </tr>
@@ -276,7 +276,7 @@
                                                 <th class="align-middle px-2">Code</th>
                                                 <th class="align-middle px-2">Intitulé</th>
                                                 <th class="align-middle px-2">Bailleur</th>
-                                                <th class="align-middle px-2" style="min-width:110px;">Montant (FCFA)</th>
+                                                <th class="align-middle px-2" style="min-width:110px;">Montant (USD)</th>
                                                 <th class="align-middle px-2">Date d'acord</th>
                                             </tr>
                                         </thead>
@@ -339,7 +339,7 @@
     mrvBarChart({
         id: 'tauxDecaissementChart',
         title: 'Taux de décaissement',
-        unite: 'FCFA',
+        unite: 'USD',
         categories: <?= json_encode($column_categories ?? []) ?>,
         data: <?= json_encode($column_data ?? []) ?>
     });

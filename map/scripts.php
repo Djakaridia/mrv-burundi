@@ -21,10 +21,6 @@
             zoomControl: false,
             fadeAnimation: true,
             markerZoomAnimation: true,
-            maxBounds: [
-                [-4.5, 29.0],
-                [-2.3, 30.9]
-            ],
             maxBoundsViscosity: 1.0
         }).setView([-3.3731, 29.9189], 8);
 
@@ -53,10 +49,10 @@
                 pane: 'paneCountry',
                 interactive: false,
                 style: {
-                    color: "#da0025",
-                    weight: 2,
-                    fillColor: "#da0025",
-                    fillOpacity: 0.02
+                    color: "#055f43",
+                    weight: 3,
+                    fillColor: "#055f43",
+                    fillOpacity: 0.05
                 },
                 onEachFeature: function(feature, layer) {
                     const props = feature.properties || {};
@@ -83,154 +79,198 @@
             });
         })
 
-        // =================== Charger les provinces du Burundi ===================
-        const shapefileUrlProvinces = "../documents/burundi_Province_level_1.zip";
-        const provincesList = $('#provincesList');
-        const provincesCount = $('#provincesCount');
-        shp(shapefileUrlProvinces).then(function(geojson) {
-            loadedCouche = 0;
-            provincesLayer = L.geoJSON(geojson, {
-                pane: 'paneProvince',
-                style: {
-                    color: "#3388ff",
-                    weight: 2,
-                    fillColor: "#3388ff",
-                    fillOpacity: 0.1,
-                },
-                onEachFeature: function(feature, layer) {
-                    if (feature.properties) {
-                        console.log(feature.properties);
+        // =================== Provinces views ===================
+        <?php if (!empty($provinces)): ?>
+            const provinces = <?= json_encode($provinces) ?>;
+            const provincesList = $('#provincesList');
+            const provincesCount = $('#provincesCount');
+            let loadedProvinces = 0;
+            let loadedProvinceLayers = 0;
+            let provinceLayersMap = new Map();
+            let allProvinceLayers = [];
 
-                        const id = feature.properties.shapeid || '';
-                        const type1 = feature.properties.shapetype || '';
-                        const name0 = feature.properties.shape0 || '';
-                        const name1 = feature.properties.shape1 || '';
+            provinces.forEach((province, index) => {
+                const provinceCode = province.code;
+                const provinceName = province.name;
+                const provinceUrl = province.couches;
+                const provinceColor = province.couleur;
 
-                        const popupContent = `
-                        <div class="p-1">
-                            <div class="project-title">${name1}</div>
-                            <div class="project-info">
-                                <span><strong>Nom pays:</strong> ${name0}</span><br/>
-                                <span><strong>Nom province:</strong> ${name1}</span>
-                            </div>
-                        </div>`;
+                const checkContent = `
+                <div class="list-group-item list-group-item-action province-item" data-province="${provinceName}">
+                    <div class="input-group">
+                        <input type="checkbox" class="province-checkbox" id="${provinceCode}" name="provinces[]" value="${provinceName}">
+                        <label for="${provinceCode}" class="text-capitalize link-primary cursor-pointer mx-1 d-flex justify-content-between" style="width: 90%;">
+                            ${provinceName} ${provinceUrl ? "<i class='far fa-map'></i>" : ""}
+                        </label>
+                    </div>
+                </div>`;
 
-                        const checkContent = `
-                        <div class="list-group-item list-group-item-action">
-                            <div class="input-group">
-                                <input type="checkbox" class="province-checkbox" id="prov-${id}" name="provinces[]" value="${name1}">
-                                <label for="prov-${id}" class="text-capitalize link-primary cursor-pointer mx-1 w-75">${name1}</label>
-                            </div>
-                        </div>`;
+                provincesList.append(checkContent);
+                listProvinces.push(checkContent);
+                loadedProvinces++;
+                updateProvinceCounters();
 
-                        layer.bindPopup(popupContent);
-                        layer.on('click', function() {
-                            layer.setStyle({
-                                fillColor: '#ff6b6b',
-                                fillOpacity: 0.3,
-                                weight: 3
-                            });
+                shp(provinceUrl).then(function(geojson) {
+                    const provinceLayer = L.geoJSON(geojson, {
+                        pane: 'paneProvince',
+                        style: {
+                            color: provinceColor,
+                            weight: 2,
+                            fillColor: provinceColor,
+                            fillOpacity: 0.05
+                        },
+                        onEachFeature: function(feature, layer) {
+                            if (feature.properties) {
+                                const props = feature.properties || {};
+                                const country = props.NAME_0 ?? '—';
+                                const province = props.NAME_1 ?? '—';
+                                const typeAdmin = props.TYPE_1 ?? '—';
+                                const codeAdmin = props.CC_1 ?? '—';
+                                const iso = props.ISO ?? '—';
 
-                            setTimeout(() => layer.setStyle({
-                                fillColor: '#3388ff',
-                                fillOpacity: 0.1,
-                                weight: 2
-                            }), 1000);
-                            updateZoneStats(name1);
-                            $(`.province-item[data-province="${name1}"]`).addClass('highlight-item');
-                            setTimeout(() => $(`.province-item[data-province="${name1}"]`).removeClass('highlight-item'), 2000);
-                        });
+                                const popupContent = `
+                                <div class="popup-card">
+                                    <div class="popup-header"><i class="fas fa-map-marked-alt me-1"></i> ${province}</div>
+                                    <div class="popup-body">
+                                        <table class="table table-sm table-borderless mb-0">
+                                            <tr><th>Pays</th><td>${country}</td></tr>
+                                            <tr><th>Province</th><td>${province}</td></tr>
+                                            <tr><th>Type</th><td>${typeAdmin}</td></tr>
+                                            <tr><th>Code administratif</th><td>${codeAdmin}</td></tr>
+                                            <tr><th>Code ISO</th><td>${iso}</td></tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                `;
 
-                        layer.on('mouseover', function() {
-                            layer.setStyle({
-                                weight: 3,
-                                fillOpacity: 0.2
-                            });
-                            layer.bringToFront();
-                        });
+                                layer.bindPopup(popupContent);
+                                if (!provinceLayersMap.has(provinceName)) provinceLayersMap.set(provinceName, []);
+                                provinceLayersMap.get(provinceName).push(layer);
 
-                        layer.on('mouseout', function() {
-                            layer.setStyle({
-                                weight: 2,
-                                fillOpacity: 0.1
-                            });
-                        });
+                                layer.on('click', function(e) {
+                                    layer.setStyle({
+                                        fillColor: provinceColor,
+                                        fillOpacity: 0.3,
+                                        weight: 3
+                                    });
 
-                        loadedCouche++;
-                        layer.provinceName = name1;
-                        provincesList.append(checkContent);
-                        listProvinces.push(checkContent);
-                        setTimeout(() => $(`#prov-${id}`).parent().parent().hide().fadeIn(500), loadedCouche * 100);
-                    }
-                }
+                                    map.fitBounds(layer.getBounds(), {
+                                        padding: [20, 20],
+                                        maxZoom: 10
+                                    });
+
+                                    setTimeout(() => layer.setStyle({
+                                        fillColor: provinceColor,
+                                        fillOpacity: 0.05,
+                                        weight: 2
+                                    }), 1000);
+
+                                    $(`.province-item[data-province="${provinceName}"]`).addClass('highlight-item');
+                                    setTimeout(() => $(`.province-item[data-province="${provinceName}"]`).removeClass('highlight-item'), 2000);
+                                });
+
+                                layer.on('mouseover', function() {
+                                    layer.setStyle({
+                                        weight: 3,
+                                        fillOpacity: 0.15
+                                    });
+                                    layer.bringToFront();
+                                });
+
+                                layer.on('mouseout', function() {
+                                    layer.setStyle({
+                                        weight: 2,
+                                        fillOpacity: 0.05
+                                    });
+                                });
+
+                                loadedProvinceLayers++;
+                                layer.provinceName = provinceName;
+                                allProvinceLayers.push(layer);
+                                setTimeout(() => $(`#${provinceCode}`).parent().parent().hide().fadeIn(500), index * 150);
+                                updateProvinceCounters();
+                            }
+                        },
+                    });
+
+                    provinceTabLayers.push(provinceLayer);
+                }).catch(function(error) {
+                    loadedProvinceLayers++;
+                    updateProvinceCounters();
+                });
+
             });
 
-            provinceTabLayers.push(provincesLayer);
-            provincesCount.text(loadedCouche);
-            map.flyToBounds(provincesLayer.getBounds(), {
-                duration: 1,
-                padding: [20, 20]
-            });
-            progressIndicator.css('width', '80%');
-        });
+            function updateProvinceCounters() {
+                provincesCount.text(loadedProvinces);
+                progressIndicator.css('width', `${70 + (loadedProvinceLayers / provinces.length) * 20}%`);
+            }
+        <?php endif; ?>
 
-        // =================== zones de collecte ===================
+        // =================== Zones de collecte ===================
         <?php if (!empty($zones)): ?>
             const zones = <?= json_encode($zones) ?>;
             const zonesList = $('#zonesList');
             const zonesCount = $('#zonesCount');
             let loadedZones = 0;
-            let loadedLayers = 0;
+            let loadedZoneLayers = 0;
             let zoneLayersMap = new Map();
             let allZoneLayers = [];
 
             zones.forEach((zone, index) => {
                 const zoneCode = zone.code;
                 const zoneName = zone.name;
+                const zoneType = zone.type_name;
                 const zoneUrl = zone.couches;
-
-                if (!zoneUrl) {
-                    updateCounters();
-                    return;
-                }
+                const zoneColor = zone.couleur;
+                const zoneShow = zone.afficher == "1" ? true : false;
 
                 const checkContent = `
                 <div class="list-group-item list-group-item-action zone-item" data-zone="${zoneName}">
                     <div class="input-group">
-                        <input type="checkbox" class="zone-checkbox" id="${zoneCode}" name="zones[]" value="${zoneName}"> <!-- CORRECTION: value="${zoneName}" au lieu de value="${zoneUrl}" -->
-                        <label for="${zoneCode}" class="text-capitalize link-primary cursor-pointer mx-1 w-75">${zoneName}</label>
+                        <input type="checkbox" class="zone-checkbox" id="${zoneCode}" name="zones[]" value="${zoneName}" ${zoneShow ? 'checked' : ''}>
+                        <label for="${zoneCode}" class="text-capitalize link-primary cursor-pointer mx-1 d-flex justify-content-between" style="width: 90%;">
+                            ${zoneName} ${zoneUrl ? "<i class='far fa-map'></i>" : ""}
+                        </label>
                     </div>
                 </div>`;
 
                 zonesList.append(checkContent);
                 listZones.push(checkContent);
                 loadedZones++;
-                updateCounters();
+                updateZoneCounters();
 
                 shp(zoneUrl).then(function(geojson) {
                     const zoneLayer = L.geoJSON(geojson, {
                         pane: 'paneZone',
                         style: {
-                            color: "#79822f",
+                            color: zoneColor,
                             weight: 2,
-                            fillColor: "#79822f",
+                            fillColor: zoneColor,
                             fillOpacity: 0.05
                         },
                         onEachFeature: function(feature, layer) {
                             if (feature.properties) {
-                                let name1 = feature.properties['adm1nm'] ?? 'NA';
-                                let code2 = feature.properties['adm2cd'] ?? 'NA';
-                                let name2 = feature.properties['adm2nm'] ?? (feature.properties['NAME_2'] ?? 'NA');
+                                const props = feature.properties || {};
+                                const country = props.NAME_0 ?? '—';
+                                const province = props.NAME_1 ?? '—';
+                                const typeAdmin = props.TYPE_1 ?? '—';
+                                const codeAdmin = props.CC_1 ?? '—';
+                                const iso = props.ISO ?? '—';
 
-                                let popupContent = `
-                                <div class="p-1">
-                                    <div class="project-title">${zoneName}</div>
-                                    <div class="project-info">
-                                        <span><strong>Province:</strong> ${name1}</span><br/>
-                                        <span><strong>Zone Code:</strong> ${code2}</span><br/>
-                                        <span><strong>Zone Name:</strong> ${name2}</span><br/>
+                                const popupContent = `
+                                <div class="popup-card">
+                                    <div class="popup-header"><i class="fas fa-map-marked-alt me-1"></i> ${zoneName}</div>
+                                    <div class="popup-body">
+                                        <table class="table table-sm table-borderless mb-0">
+                                            <tr><th>Zone</th><td>${zoneName}</td></tr>
+                                            <tr><th>Type</th><td>${zoneType}</td></tr>
+                                            <tr><th>Code administratif</th><td>${codeAdmin}</td></tr>
+                                            <tr><th>Code ISO</th><td>${iso}</td></tr>
+                                        </table>
                                     </div>
-                                </div>`;
+                                </div>
+                                `;
 
                                 layer.bindPopup(popupContent);
                                 if (!zoneLayersMap.has(zoneName)) zoneLayersMap.set(zoneName, []);
@@ -238,13 +278,18 @@
 
                                 layer.on('click', function(e) {
                                     layer.setStyle({
-                                        fillColor: '#ffa726',
+                                        fillColor: zoneColor,
                                         fillOpacity: 0.3,
                                         weight: 3
                                     });
 
+                                    map.fitBounds(layer.getBounds(), {
+                                        padding: [20, 20],
+                                        maxZoom: 10
+                                    });
+
                                     setTimeout(() => layer.setStyle({
-                                        fillColor: '#79822f',
+                                        fillColor: zoneColor,
                                         fillOpacity: 0.05,
                                         weight: 2
                                     }), 1000);
@@ -268,35 +313,28 @@
                                     });
                                 });
 
-                                loadedLayers++;
+                                loadedZoneLayers++;
                                 layer.zoneName = zoneName;
                                 allZoneLayers.push(layer);
                                 setTimeout(() => $(`#${zoneCode}`).parent().parent().hide().fadeIn(500), index * 150);
-                                updateCounters();
+                                updateZoneCounters();
                             }
                         },
                     });
 
                     zoneTabLayers.push(zoneLayer);
-                    if (loadedLayers > 0) {
-                        const group = new L.featureGroup(allZoneLayers);
-                        map.fitBounds(group.getBounds(), {
-                            padding: [20, 20],
-                            maxZoom: 10
-                        });
-                    }
+                    if (zoneShow) zoneLayer.addTo(map);
                 }).catch(function(error) {
-                    loadedLayers++;
-                    updateCounters();
+                    loadedZoneLayers++;
+                    updateZoneCounters();
                 });
 
             });
 
-            function updateCounters() {
+            function updateZoneCounters() {
                 zonesCount.text(loadedZones);
-                progressIndicator.css('width', `${70 + (loadedLayers / zones.length) * 20}%`);
+                progressIndicator.css('width', `${70 + (loadedZoneLayers / zones.length) * 20}%`);
             }
-
         <?php endif; ?>
 
         // =================== Cluster de marqueurs ===================
@@ -320,7 +358,7 @@
                 $projet_info = $projets_par_id[$indicateur['projet_id']];
                 $start_date = !empty($projet_info['start_date']) ? date('d/m/Y', strtotime($projet_info['start_date'])) : 'Non définie';
                 $end_date = !empty($projet_info['end_date']) ? date('d/m/Y', strtotime($projet_info['end_date'])) : 'Non définie';
-                $budget = !empty($projet_info['budget']) ? number_format($projet_info['budget'], 0, ',', ' ') . ' FCFA' : 'Non défini';
+                $budget = !empty($projet_info['budget']) ? number_format($projet_info['budget'], 0, ',', ' ') . ' USD' : 'Non défini';
                 $sectors = explode(',', str_replace('"', '', $projet_info['secteurs'] ?? ""));
                 $sectors_names = array_map(function ($sector_id) use ($secteurs_assoc) {
                     return $secteurs_assoc[$sector_id] ?? 'Non défini';
@@ -774,7 +812,7 @@
 
         $('#statsProvinceName').text(`Statistiques - ${provinceName}`);
         $('#zoneProjects').text(stats.projets.length);
-        $('#zoneBudget').text(stats.budget_total.toLocaleString() + ' FCFA');
+        $('#zoneBudget').text(stats.budget_total.toLocaleString() + ' USD');
         $('#zoneIndicators').text(stats.indicateurs_count);
         $('#statsPanel').removeClass('d-none').hide().slideDown(400);
     }
@@ -838,38 +876,44 @@
             'opacity': '1'
         });
 
-        provincesLayer.eachLayer(function(layer) {
-            if (map.hasLayer(layer)) {
-                layer.setStyle({
-                    fillOpacity: 0
-                });
-                setTimeout(() => map.removeLayer(layer), 300);
-            }
+        if (!provinceTabLayers || provinceTabLayers.length === 0) return;
+
+        provinceTabLayers.forEach(provinceLayer => {
+            provinceLayer.eachLayer(layer => {
+                if (map.hasLayer(layer)) {
+                    layer.setStyle({
+                        fillOpacity: 0
+                    });
+                    setTimeout(() => map.removeLayer(layer), 300);
+                }
+            });
         });
 
         setTimeout(() => {
-            if (provincesLayer && selectedProvinces.length > 0) {
-                provincesLayer.eachLayer(function(layer) {
-                    if (layer.provinceName && selectedProvinces.includes(layer.provinceName.toLowerCase())) {
-                        layer.setStyle({
-                            fillOpacity: 0
-                        });
-                        layer.addTo(map);
-
-                        let opacity = 0;
-                        const fadeInterval = setInterval(() => {
-                            opacity += 0.05;
+            if (selectedProvinces.length > 0) {
+                provinceTabLayers.forEach(provinceLayer => {
+                    provinceLayer.eachLayer(layer => {
+                        if (layer.provinceName && selectedProvinces.includes(layer.provinceName.toLowerCase())) {
                             layer.setStyle({
-                                fillOpacity: opacity * 0.1
+                                fillOpacity: 0
                             });
-                            if (opacity >= 1) clearInterval(fadeInterval);
-                        }, 30);
-                    }
+                            layer.addTo(map);
+
+                            let opacity = 0;
+                            const fadeInterval = setInterval(() => {
+                                opacity += 0.05;
+                                layer.setStyle({
+                                    fillOpacity: opacity * 0.05
+                                });
+                                if (opacity >= 1) clearInterval(fadeInterval);
+                            }, 30);
+                        }
+                    });
                 });
             }
+
             progressIndicator.css('width', '80%');
             animateEndProgress();
-            // updateAllMarkers();
         }, 350);
     }
 

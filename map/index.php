@@ -182,7 +182,7 @@ foreach ($indicateur_cmr as $indicateur) {
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link fs-10 text-white active" id="couches-tab" data-bs-toggle="tab" data-bs-target="#couches"
                                         type="button" role="tab" aria-controls="couches" aria-selected="true">
-                                        Couches <span class="badge bg-success" id="provincesCount"></span>
+                                        Provinces <span class="badge bg-success" id="provincesCount"></span>
                                     </button>
                                 </li>
                                 <li class="nav-item" role="presentation">
@@ -313,7 +313,7 @@ foreach ($indicateur_cmr as $indicateur) {
                             </div>
                             <div class="stats-item">
                                 <span>Budget total:</span>
-                                <span id="zoneBudget">0 FCFA</span>
+                                <span id="zoneBudget">0 USD</span>
                             </div>
                             <div class="stats-item">
                                 <span>Indicateurs:</span>

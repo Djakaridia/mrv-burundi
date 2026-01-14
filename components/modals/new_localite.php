@@ -1,4 +1,4 @@
-<!-- modal -->
+<?php $array_type = ".shp, .shx, .dbf, .prj, .sbn, .sbx, .fbn, .fbx, .ain, .aih, .ixs, .mxs, .atx, .mtx, .zip"; ?>
 <div class="modal fade" id="addLocaliteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addLocaliteModal" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content bg-body-highlight p-4">
@@ -69,6 +69,15 @@
                                     <div class="col-lg-6 mt-1">
                                         <label class="form-label">Couleur</label>
                                         <input class="form-control form-control-sm" type="color" name="couleur" id="localite_couleur" />
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12 mt-1">
+                                    <div class="mb-1">
+                                        <label class="form-label">Couches (<?php echo $array_type; ?>)</label>
+                                        <input class="form-control" name="file" id="file_couche" type="file" accept="<?php echo $array_type; ?>" />
+                                        <input type="hidden" name="allow_files" id="allow_file_prov" value="<?php echo $array_type; ?>">
+                                        <input type="hidden" name="couches" id="localite_couches">
                                     </div>
                                 </div>
                             </div>
@@ -170,6 +179,7 @@
                         if (niveau == 0) {
                             form.sigle.value = result.data.sigle;
                             form.couleur.value = result.data.couleur;
+                            form.couches.value = result.data.couches;
                         }
                         if (niveau == 1) {
                             $('#loc_parent_' + niveau).val(result.data.province)

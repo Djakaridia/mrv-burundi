@@ -21,7 +21,7 @@
                         <th class="sort align-middle" scope="col" style="min-width:200px;">Libellé</th>
                         <th class="sort align-middle text-center" scope="col">Priorité</th>
                         <th class="sort align-middle text-center" scope="col">Indicateur</th>
-                        <th class="sort align-middle text-center" scope="col">Cout (FCFA)</th>
+                        <th class="sort align-middle text-center" scope="col">Cout (USD)</th>
                         <th class="sort align-middle text-center" scope="col">Etat</th>
                         <th class="sort align-middle text-center" scope="col" style="min-width:100px;">Actions</th>
                     </tr>

@@ -30,7 +30,7 @@
     $collines = $colline->read();
 
     // Détermination du niveau (0=Provinces, 1=Communes, 2=Collines)
-    $niveau = 2;
+    $niveau = 0;
     if (isset($_GET['niveau']) && is_numeric($_GET['niveau']) && $_GET['niveau'] >= 0 && $_GET['niveau'] <= 2) {
         $niveau = (int)$_GET['niveau'];
     }
@@ -137,8 +137,8 @@
                     <!-- Navigation par niveaux -->
                     <ul class="nav nav-underline" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link <?php echo $libelle[$niveau] == "Collines" ? "active" : ""; ?>" href="./localites.php?niveau=2">
-                                Collines
+                            <a class="nav-link <?php echo $libelle[$niveau] == "Provinces" ? "active" : ""; ?>" href="./localites.php?niveau=0">
+                                Provinces
                             </a>
                         </li>
                         <li class="nav-item">
@@ -147,8 +147,8 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link <?php echo $libelle[$niveau] == "Provinces" ? "active" : ""; ?>" href="./localites.php?niveau=0">
-                                Provinces
+                            <a class="nav-link <?php echo $libelle[$niveau] == "Collines" ? "active" : ""; ?>" href="./localites.php?niveau=2">
+                                Collines
                             </a>
                         </li>
                     </ul>
@@ -233,11 +233,12 @@
                                             <?php for ($i = 0; $i <= $niveau; $i++) { ?>
                                                 <td class="px-2"><?php echo ($i == $niveau) ? "<strong>$libelle[$i]</strong>" : $libelle[$i]; ?></td>
                                             <?php } ?>
-                                            
+
                                             <!-- Colonnes spécifiques pour les provinces -->
                                             <?php if ($niveau == 0) { ?>
                                                 <td class="px-2"><strong>Abbréviation</strong></td>
                                                 <td class="px-2"><strong>Couleur</strong></td>
+                                                <td class="px-2"><strong>Couches</strong></td>
                                             <?php } ?>
 
                                             <td class="px-2" width="10%"><strong>Actions</strong></td>
@@ -259,6 +260,15 @@
                                                         <td class="px-2"><?php echo $localite["sigle"]; ?></td>
                                                         <td class="px-2">
                                                             <div class="progress-bar progress-bar-info" style="width: 100%;background-color: <?php echo $localite["couleur"]; ?>;height: 20px;"></div>
+                                                        </td>
+                                                        <td class="px-2 align-middle">
+                                                            <?php if ($localite['couches'] != '') { ?>
+                                                                <button title="Télécharger les couches" class="btn btn-sm btn-phoenix-info fs-10 px-2 py-1 d-flex align-items-center gap-1 rounded-1"
+                                                                    onclick="downloadFiles('Couches', '<?php echo $localite['name']; ?>', '<?php echo $localite['couches']; ?>')">
+                                                                    <span class="uil-cloud-download fs-8"></span>
+                                                                    <span class="fs-10">Télécharger</span>
+                                                                </button>
+                                                            <?php } ?>
                                                         </td>
                                                     <?php } ?>
 

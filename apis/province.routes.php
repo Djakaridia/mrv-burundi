@@ -6,6 +6,7 @@ require_once $routePath . 'config/cors-access.php';
 require_once $routePath . 'config/jwt-token.php';
 require_once $routePath . 'config/database.php';
 require_once $routePath . 'models/Province.php';
+require_once $routePath . 'config/functions.php';
 
 configureCORS();
 header("Content-Type: application/json");
@@ -25,6 +26,7 @@ $database = new Database();
 $db = $database->getConnection();
 $province = new Province($db);
 $requestMethod = $_SERVER['REQUEST_METHOD'];
+$uploadDirectory = $routePath . 'uploads/couches/';
 
 function sanitize_input($data)
 {
@@ -35,6 +37,12 @@ switch ($requestMethod) {
     case 'POST':
         $id = isset($_GET['id']) ? sanitize_input($_GET['id']) : null;
         if (!$id) {
+            if (isset($_FILES['file']) && $_FILES['file']['error'] === 0) {
+                $province->couches = uploadFile($_FILES['file'], $_POST['allow_files'], $uploadDirectory);
+            } else {
+                $province->couches = sanitize_input($_POST['couches']);
+            }
+
             $province->name = sanitize_input($_POST['name']);
             $province->code = sanitize_input($_POST['code']);
             $province->sigle = sanitize_input($_POST['sigle']);
@@ -52,6 +60,12 @@ switch ($requestMethod) {
                 echo json_encode(array('status' => 'danger', 'message' => 'Erreur lors de la création de la province.'));
             }
         } else {
+            if (isset($_FILES['file']) && $_FILES['file']['error'] === 0) {
+                $province->couches = uploadFile($_FILES['file'], $_POST['allow_files'], $uploadDirectory);
+            } else {
+                $province->couches = sanitize_input($_POST['couches']);
+            }
+
             $province->id = sanitize_input($_GET['id']);
             $province->name = sanitize_input($_POST['name']);
             $province->code = sanitize_input($_POST['code']);
@@ -69,8 +83,10 @@ switch ($requestMethod) {
 
     case 'DELETE':
         $province->id = isset($_GET['id']) ? sanitize_input($_GET['id']) : die(json_encode(['error' => 'ID manquant']));
+        $provinceData = $province->readById();
 
         if ($province->delete()) {
+            deleteFile($provinceData['couches']);
             echo json_encode(array('status' => 'success', 'message' => 'Province supprimée avec succès.'));
         } else {
             echo json_encode(array('status' => 'danger', 'message' => 'Erreur lors de la suppression de la province.'));

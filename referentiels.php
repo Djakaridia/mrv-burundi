@@ -87,7 +87,6 @@
                     <th class="sort align-middle" scope="col"> Agrégat</th>
                     <th class="sort align-middle" scope="col"> Catégorie</th>
                     <th class="sort align-middle" scope="col"> Responsables</th>
-                    <th class="sort align-middle" scope="col"> Conventions</th>
                     <th class="sort align-middle" scope="col"> Métadonnées</th>
                     <th class="sort align-middle" scope="col" style="min-width:100px;">Actions</th>
                   </tr>
@@ -148,7 +147,7 @@
                         <?php endforeach; ?>
                       </td>
 
-                      <td class="align-middle text-start px-2">
+                      <!-- <td class="align-middle text-start px-2">
                         <?php if (!empty($conventionRioRef)) : ?>
                           <?php foreach ($conventionRioRef as $conventionRio): ?>
                             <?php foreach ($programmes as $programme): ?>
@@ -164,7 +163,7 @@
                           data-referentiel_id="<?php echo $referentiel['id']; ?>">
                           (Modifier)
                         </button>
-                      </td>
+                      </td> -->
 
                       <td class="align-middle px-2">
                         <button title="Métadonnées" type="button" class="btn btn-sm btn-link text-primary p-0 m-0" data-bs-toggle="modal" data-bs-target="#addMetadataModal"

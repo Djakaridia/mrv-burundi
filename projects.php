@@ -88,7 +88,7 @@
 
       <div class="row mt-3">
         <div class="col-12">
-          <div class="row mx-n4 py-3 mx-lg-n6 bg-body-emphasis border-y">
+          <div class="row g-3 mx-n4 pb-5 mx-lg-n6 bg-body-emphasis border-y">
             <?php if (empty($projets)) { ?>
               <div class="text-center py-5 my-5" style="min-height: 350px;">
                 <div class="d-flex justify-content-center mb-3">
@@ -118,32 +118,36 @@
                 }));
                 $progress = $totalTacheCount > 0 ? (round(($finishedTacheCount / $totalTacheCount), 2) * 100) : 0;
               ?>
-                <div class="col-12 col-lg-6 col-xl-6 mb-3 projet-item">
-                  <div class="card h-100 hover-actions-trigger rounded-bottom-sm rounded-top-0 border-0 border-top border-4 border-primary shadow-sm">
-                    <div class="card-body p-3">
+                <div class="col-12 col-lg-4 col-xl-4 projet-item">
+                  <div class="card h-100 hover-actions-trigger rounded-top-0 border-0 border-top border-4 border-primary shadow-sm">
+                    <div class="card-header px-2 py-0 bg-primary-subtle rounded-0 border border-bottom-0 border-primary-subtle">
                       <div class="d-flex align-items-center justify-content-between">
                         <a href="project_view.php?id=<?= $projet['id'] ?>" class="text-decoration-none text-body-emphasis">
-                          <h4 class="mb-2 line-clamp-1 lh-sm flex-1 me-3 text-primary"><?= $projet['name'] ?></h4>
+                          <h5 class="mb-1 line-clamp-1 lh-sm flex-1 me-3 text-primary"><?= html_entity_decode($projet['name']) ?></h5>
                         </a>
                         <div class="top-0 end-0 gap-1">
-                          <button title="Voir" class="btn btn-subtle-primary btn-icon flex-shrink-0" data-bs-toggle="modal" data-bs-target="#projectsCardViewModal" data-id="<?= $projet['id'] ?>">
+                          <button title="Voir" class="btn btn-subtle-primary btn-icon flex-shrink-0 rounded-circle" data-bs-toggle="modal" data-bs-target="#projectsCardViewModal" data-id="<?= $projet['id'] ?>">
                             <span class="fa-solid fa-eye"></span>
                           </button>
                         </div>
                       </div>
+                    </div>
+
+                    <div class="card-body p-3 border border-primary-subtle border-top-0 rounded-bottom-sm">
                       <span class="badge badge-phoenix fs-10 mb-2 rounded-pill badge-phoenix-<?= $projet['state'] == 'actif' ? 'success' : 'danger'; ?>"><?= $projet['state'] == 'actif' ? 'Actif' : 'Archivé'; ?></span>
 
                       <div class="row g-3 d-flex flex-row align-items-center">
-                        <div class="col-lg-2 col-12 mb-3">
+                        <!-- <div class="col-lg-2 col-12 mb-3">
                           <?php if (!empty($projet['logo'])) : ?>
                             <img class="rounded-1 w-100 border border-light shadow-sm" src="<?php echo end($logoParts); ?>"
                               alt="no-image" style="min-height: 65px; max-height: 150px; object-fit: contain; object-position: center;" />
                           <?php else : ?>
                             <i class="far fa-image fs-1 text-body-tertiary"></i>
                           <?php endif; ?>
-                        </div>
-                        <div class="col-lg-10 col-12 mb-3">
-                          <div class="d-flex align-items-center mb-1"><span class="fa-solid fa-chalkboard me-2 text-body-tertiary fs-10 fw-extra-bold"></span>
+                        </div> -->
+                        <div class="col-lg-10 col-12 mb-1 fs-9">
+                          <div class="d-flex align-items-center mb-1">
+                            <span class="fa-solid fa-chalkboard me-2 text-body-tertiary fs-10 fw-extra-bold"></span>
                             <p class="mb-0 text-truncate">Code : <span class="fw-semibold ms-1"> <?= $projet['code'] ?? "NA"; ?></span></p>
                             <span class="mx-3">|</span>
                             <p class="mb-0 text-truncate">Status : <span class="badge badge-phoenix fs-10 badge-phoenix-warning"><?= $projet['status'] ?></span></p>
@@ -154,7 +158,7 @@
                           </div>
 
                           <div class="d-flex align-items-center mb-1"><span class="fa-solid fa-rocket me-2 text-body-tertiary fs-10 fw-extra-bold"></span>
-                            <p class="mb-0 text-truncate">Type action : 
+                            <p class="mb-0 text-truncate">Type action :
                               <span class="fw-semibold ms-1">
                                 <?= $projet['action_type'] == 'adaptation' ? 'Adaptation' : 'Atténuation' ?>
                               </span>
@@ -174,12 +178,12 @@
                         <div class="progress-bar rounded bg-warning" role="progressbar" aria-label="progression" style="width: <?= $progress ?>%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                       </div>
 
-                      <div class="d-flex align-items-center justify-content-between mt-3">
+                      <div class="d-flex align-items-center justify-content-between mt-2">
                         <p class="mb-0 fs-9"><span class="far fa-calendar"></span> Début :<span class="fw-semibold text-body-tertiary text-opactity-85 ms-1"> <?= date('Y-m-d', strtotime($projet['start_date'])) ?></span></p>
                         <p class="mb-0 fs-9"><span class="far fa-calendar"></span> Clôture : <span class="fw-semibold text-body-tertiary text-opactity-85 ms-1"> <?= date('Y-m-d', strtotime($projet['end_date'])) ?></span></p>
                       </div>
 
-                      <div class="d-flex d-lg-block d-xl-flex justify-content-between align-items-center mt-3">
+                      <div class="d-flex d-lg-block d-xl-flex justify-content-between align-items-center mt-2 fs-9">
                         <div class="avatar-group">
                           <?php
                           $group = new GroupeUsers($db);

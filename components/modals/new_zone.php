@@ -1,4 +1,4 @@
-<?php $array_type = ".shp, .shx, .dbf, .prj, .sbn, .sbx, .fbn, .fbx, .ain, .aih, .ixs, .mxs, .atx, .mtx, .zip";?>
+<?php $array_type = ".shp, .shx, .dbf, .prj, .sbn, .sbx, .fbn, .fbx, .ain, .aih, .ixs, .mxs, .atx, .mtx, .zip"; ?>
 <div class="modal fade" id="addZoneModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addZoneModal" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content bg-body-highlight p-4">
@@ -39,9 +39,9 @@
                                     <select class="form-select" name="type_id" id="zone_type_id" required>
                                         <option value="">Sélectionner</option>
                                         <?php if ($type_zones ?? []) : ?>
-                                        <?php foreach ($type_zones as $type_zone) : ?>
-                                            <option value="<?php echo $type_zone['id']; ?>"><?php echo $type_zone['name']; ?></option>
-                                        <?php endforeach; ?>
+                                            <?php foreach ($type_zones as $type_zone) : ?>
+                                                <option value="<?php echo $type_zone['id']; ?>"><?php echo $type_zone['name']; ?></option>
+                                            <?php endforeach; ?>
                                         <?php endif; ?>
                                     </select>
                                 </div>
@@ -61,6 +61,29 @@
                                     <input type="hidden" name="couches" id="zone_couches">
                                 </div>
                             </div>
+
+                            <div class="col-lg-6 mt-1">
+                                <div class="mb-1">
+                                    <label class="form-label">Couleur sur la carte</label>
+                                    <input class="form-control" name="couleur" id="zone_couleur" type="color" />
+                                </div>
+                            </div>
+                            <div class="col-lg-6 mt-1">
+                                <div class="mb-1">
+                                    <label class="form-label">Afficher sur la carte par défaut</label>
+                                    <div class="form-check d-flex align-items-center gap-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" id="zone_oui_afficher" type="radio" name="afficher" checked="" />
+                                            <label class="form-check-label" for="zone_oui_afficher">Oui</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" id="zone_non_afficher" type="radio" name="afficher" />
+                                            <label class="form-check-label" for="zone_non_afficher">Non</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
 
                             <div class="col-lg-12 mt-1">
                                 <div class="mb-1">
@@ -114,6 +137,9 @@
                         form.type_id.value = result.data.type_id;
                         form.superficie.value = result.data.superficie;
                         form.couches.value = result.data.couches;
+                        form.couleur.value = result.data.couleur;
+                        $('#zone_oui_afficher').prop('checked', result.data.afficher == "1" ? true : false);
+                        $('#zone_non_afficher').prop('checked', result.data.afficher == "0" ? true : false);
                     } else {
                         throw new Error('Données invalides');
                     }
@@ -152,10 +178,13 @@
             const submitBtn = $('#zone_modbtn');
             submitBtn.prop('disabled', true);
             submitBtn.text('Envoi en cours...');
+            formData.append('afficher', $('#zone_oui_afficher').is(':checked') ? 1 : 0);
 
             try {
                 const response = await fetch(url, {
-                    headers: { 'Authorization': `Bearer ${token}` },
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
                     method: "POST",
                     body: formData
                 });

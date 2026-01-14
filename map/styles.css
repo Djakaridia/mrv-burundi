@@ -516,3 +516,25 @@
     color: white;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
+
+
+.popup-header {
+    font-weight: 600;
+    color: #2fa07a;
+    border-bottom: 1px solid #e5e5e5;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+}
+
+.popup-body th {
+    color: #6c757d;
+    font-weight: 500;
+    width: 45%;
+    padding: 3px 6px;
+}
+
+.popup-body td {
+    font-weight: 600;
+    color: #212529;
+    padding: 3px 6px;
+}

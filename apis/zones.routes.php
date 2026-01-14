@@ -47,6 +47,8 @@ switch ($requestMethod) {
             $zone->name = sanitize_input($_POST['name']);
             $zone->code = sanitize_input($_POST['code']);
             $zone->superficie = sanitize_input($_POST['superficie']);
+            $zone->couleur = sanitize_input($_POST['couleur']);
+            $zone->afficher = sanitize_input($_POST['afficher']);
             $zone->description = sanitize_input($_POST['description']);
             $zone->type_id = sanitize_input($_POST['type_id']);
             $zone->add_by = sanitize_input($payload['user_id']);
@@ -72,6 +74,8 @@ switch ($requestMethod) {
             $zone->name = sanitize_input($_POST['name']);
             $zone->code = sanitize_input($_POST['code']);
             $zone->superficie = sanitize_input($_POST['superficie']);
+            $zone->couleur = sanitize_input($_POST['couleur']);
+            $zone->afficher = sanitize_input($_POST['afficher']);
             $zone->description = sanitize_input($_POST['description']);
             $zone->type_id = sanitize_input($_POST['type_id']);
             $zone->add_by = sanitize_input($payload['user_id']);

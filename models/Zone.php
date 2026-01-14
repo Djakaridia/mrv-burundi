@@ -9,6 +9,8 @@ class Zone {
     public $name;
     public $superficie;
     public $couches;
+    public $couleur;
+    public $afficher;
     public $description;
     public $type_id;
     public $add_by;
@@ -19,12 +21,14 @@ class Zone {
     }
 
     public function create() {
-        $query = "INSERT INTO " . $this->table . " (code, name, superficie, couches, description, type_id, add_by) VALUES (:code, :name, :superficie, :couches, :description, :type_id, :add_by)";
+        $query = "INSERT INTO " . $this->table . " (code, name, superficie, couches, couleur, afficher, description, type_id, add_by) VALUES (:code, :name, :superficie, :couches, :couleur, :afficher, :description, :type_id, :add_by)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':code', $this->code);
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':superficie', $this->superficie);
         $stmt->bindParam(':couches', $this->couches);
+        $stmt->bindParam(':couleur', $this->couleur);
+        $stmt->bindParam(':afficher', $this->afficher);
         $stmt->bindParam(':description', $this->description);
         $stmt->bindParam(':type_id', $this->type_id);
         $stmt->bindParam(':add_by', $this->add_by);
@@ -35,7 +39,7 @@ class Zone {
     }
 
     public function read() {
-        $query = "SELECT * FROM " . $this->table . " ORDER BY id DESC";
+        $query = "SELECT t_zones.* , t_type_zones.name as type_name FROM " . $this->table . " LEFT JOIN t_type_zones ON t_zones.type_id = t_type_zones.id ORDER BY t_zones.id DESC";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -43,7 +47,7 @@ class Zone {
     }
 
     public function readById() {
-        $query = "SELECT * FROM " . $this->table . " WHERE id = ?";
+        $query = "SELECT t_zones.* , t_type_zones.name as type_name FROM " . $this->table . " LEFT JOIN t_type_zones ON t_zones.type_id = t_type_zones.id WHERE t_zones.id = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $this->id);
         $stmt->execute();
@@ -52,7 +56,7 @@ class Zone {
     }
 
     public function readByTypeId() {
-        $query = "SELECT * FROM " . $this->table . " WHERE type_id = ?";
+        $query = "SELECT t_zones.* , t_type_zones.name as type_name FROM " . $this->table . " LEFT JOIN t_type_zones ON t_zones.type_id = t_type_zones.id WHERE type_id = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $this->type_id);
         $stmt->execute();
@@ -61,12 +65,14 @@ class Zone {
     }
 
     public function update() {
-        $query = "UPDATE " . $this->table . " SET code=:code, name=:name, superficie=:superficie, couches=:couches, description=:description, type_id=:type_id, add_by=:add_by WHERE id=:id";
+        $query = "UPDATE " . $this->table . " SET code=:code, name=:name, superficie=:superficie, couches=:couches, couleur=:couleur, afficher=:afficher, description=:description, type_id=:type_id, add_by=:add_by WHERE id=:id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':code', $this->code);
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':superficie', $this->superficie);
         $stmt->bindParam(':couches', $this->couches);
+        $stmt->bindParam(':couleur', $this->couleur);
+        $stmt->bindParam(':afficher', $this->afficher);
         $stmt->bindParam(':description', $this->description);
         $stmt->bindParam(':type_id', $this->type_id);
         $stmt->bindParam(':add_by', $this->add_by);

@@ -191,7 +191,7 @@ function show_page($MENU_ITEMS, $MENU_TITLE, $page_interdite, $page_edit, $page_
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content bg-body-highlight p-4">
       <div class="modal-header justify-content-between border-0 p-0 mb-3">
-        <h3 class="mb-0" id="newPermisModalLabel">Nouveau Permission du role</h3>
+        <h3 class="mb-0" id="newPermisModalLabel">Nouvelle permission du role</h3>
         <button class="btn btn-sm btn-phoenix-secondary" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times text-danger"></span></button>
       </div>
 

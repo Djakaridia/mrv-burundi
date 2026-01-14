@@ -120,13 +120,14 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
         --bd-green-dark: #055f43;
         --bd-red: #b3263a;
         --bd-white: #f6f8f7;
+        --bd-gray: #dddddd;
     }
 
-    @media screen and (min-width: 768px) {
+    /* @media screen and (min-width: 768px) {
         #navbarDefault .navbar-logo {
             background: linear-gradient(0deg, var(--bd-green), var(--bd-green-dark)) !important;
         }
-    }
+    } */
 
     #sidebarDefault {
         background: linear-gradient(90deg, var(--bd-green), var(--bd-green-dark)) !important;
@@ -169,9 +170,10 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
     }
 
     #sidebarDefault .navbar-vertical-label {
-        background: var(--bd-green-dark) !important;
-        color: var(--bd-green-light) !important;
-        border-left: 2px solid var(--bd-red);
+        background: var(--bd-gray) !important;
+        color: var(--bd-green-dark) !important;
+        border-left: 3px solid var(--bd-red);
+        border-radius: 0px 3px 3px 0px;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
@@ -206,9 +208,9 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
         color: var(--bd-green-dark) !important;
         box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
     }
-
+/* 
     #navbarDefault {
         border-bottom: 1px solid var(--bd-green-light);
         box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
-    }
+    } */
 </style>

@@ -1,7 +1,9 @@
-/config
 /trash
 /vendors
 /uploads
 /plugins
 /assets
 /fiches
+
+/config/database.php
+/config/.env

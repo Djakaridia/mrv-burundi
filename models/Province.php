@@ -9,6 +9,7 @@ class Province {
     public $name;
     public $sigle;
     public $couleur;
+    public $couches;
     public $add_by;
 
     public function __construct($db) {
@@ -16,12 +17,13 @@ class Province {
     }
 
     public function create() {
-        $query = "INSERT INTO " . $this->table . " (code, name, sigle, couleur, add_by) VALUES (:code, :name, :sigle, :couleur, :add_by)";
+        $query = "INSERT INTO " . $this->table . " (code, name, sigle, couleur, couches, add_by) VALUES (:code, :name, :sigle, :couleur, :couches, :add_by)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':code', $this->code);
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':sigle', $this->sigle);
         $stmt->bindParam(':couleur', $this->couleur);
+        $stmt->bindParam(':couches', $this->couches);
         $stmt->bindParam(':add_by', $this->add_by);
         if($stmt->execute()){
             return true;
@@ -47,12 +49,13 @@ class Province {
     }
 
     public function update() {
-        $query = "UPDATE " . $this->table . " SET code=:code, name=:name, sigle=:sigle, couleur=:couleur, add_by=:add_by WHERE id=:id";
+        $query = "UPDATE " . $this->table . " SET code=:code, name=:name, sigle=:sigle, couleur=:couleur, couches=:couches, add_by=:add_by WHERE id=:id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':code', $this->code);
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':sigle', $this->sigle);
         $stmt->bindParam(':couleur', $this->couleur);
+        $stmt->bindParam(':couches', $this->couches);
         $stmt->bindParam(':add_by', $this->add_by);
         $stmt->bindParam(':id', $this->id);
         if($stmt->execute()){

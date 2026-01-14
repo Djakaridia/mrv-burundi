@@ -68,7 +68,7 @@
                                             <th class="sort align-middle px-2" scope="col">Unité</th>
                                             <th class="sort align-middle px-2" scope="col">Catégorie</th>
                                             <th class="sort align-middle px-2" scope="col">Responsables</th>
-                                            <th class="sort align-middle px-2" scope="col">Indicateur CMR</th>
+                                            <th class="sort align-middle px-2 text-nowrap" scope="col">Indicateur projet</th>
                                             <th class="sort align-middle px-2" scope="col">Total prévu</th>
                                             <th class="sort align-middle px-2" scope="col">Total réalisé</th>
                                             <th class="sort align-middle px-2" scope="col">Taux réalisation</th>

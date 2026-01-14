@@ -15,7 +15,7 @@
   $project_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
   $tab = isset($_GET['tab']) ? $_GET['tab'] : 'view';
 
-  if (!in_array($tab, ['view', 'task', 'indicator', 'finance'])) {
+  if (!in_array($tab, ['view', 'task', 'indicator', 'finance', 'synthese'])) {
     $tab = 'view';
   }
 
@@ -156,7 +156,8 @@
         <li class="nav-item" role="task"><a class="nav-link <?php echo $tab == 'task' ? 'active' : ''; ?>" id="task-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=task'; ?>">Activités</a></li>
         <li class="nav-item" role="indicateur"><a class="nav-link <?php echo $tab == 'indicator' ? 'active' : ''; ?>" id="indicator-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=indicator'; ?>">Indicateurs</a></li>
         <!-- <li class="nav-item" role="member"><a class="nav-link <php echo $tab == 'member' ? 'active' : ''; ?>" id="member-tab" data-bs-toggle="tab" href="#tab-member" role="tab" aria-controls="tab-member" aria-selected="true">Structures</a></li> -->
-        <li class="nav-item" role="finance"><a class="nav-link <?php echo $tab == 'finance' ? 'active' : ''; ?>" id="finance-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=finance'; ?>">Source de financement</a></li>
+        <li class="nav-item" role="finance"><a class="nav-link <?php echo $tab == 'finance' ? 'active' : ''; ?>" id="finance-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=finance'; ?>">Financements</a></li>
+        <li class="nav-item" role="synthese"><a class="nav-link <?php echo $tab == 'synthese' ? 'active' : ''; ?>" id="synthese-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=synthese'; ?>">Synthèse</a></li>
       </ul>
 
       <div class="mx-n4 mx-lg-n6 px-2 px-lg-3 bg-body-emphasis border">
@@ -175,6 +176,9 @@
           </div> -->
           <div class="tab-pane fade <?php echo $tab == 'finance' ? 'active show' : ''; ?>" id="tab-finance" role="tabpanel" aria-labelledby="finance-tab">
             <?php include './components/tabs/tab_proj_finance.php'; ?>
+          </div>
+          <div class="tab-pane fade <?php echo $tab == 'synthese' ? 'active show' : ''; ?>" id="tab-synthese" role="tabpanel" aria-labelledby="synthese-tab">
+            <?php include './components/tabs/tab_proj_synthese.php'; ?>
           </div>
         </div>
       </div>
