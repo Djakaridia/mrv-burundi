@@ -7,7 +7,7 @@ class Cible
     public $id;
     public $valeur;
     public $annee;
-    public $secteur_id;
+    public $scenario;
     public $cmr_id;
     public $projet_id;
     public $add_by;
@@ -19,12 +19,12 @@ class Cible
 
     public function create()
     {
-        $query = "INSERT INTO " . $this->table . " (valeur, annee, secteur_id, cmr_id, projet_id, add_by) VALUES 
-             (:valeur, :annee, :secteur_id, :cmr_id, :projet_id, :add_by)";
+        $query = "INSERT INTO " . $this->table . " (valeur, annee, scenario, cmr_id, projet_id, add_by) VALUES 
+             (:valeur, :annee, :scenario, :cmr_id, :projet_id, :add_by)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':valeur', $this->valeur);
         $stmt->bindParam(':annee', $this->annee);
-        $stmt->bindParam(':secteur_id', $this->secteur_id);
+        $stmt->bindParam(':scenario', $this->scenario);
         $stmt->bindParam(':cmr_id', $this->cmr_id);
         $stmt->bindParam(':projet_id', $this->projet_id);
         $stmt->bindParam(':add_by', $this->add_by);

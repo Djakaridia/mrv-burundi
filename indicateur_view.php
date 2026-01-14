@@ -66,12 +66,6 @@
         return $structure['state'] == 'actif';
     });
 
-    $secteur = new Secteur($db);
-    $data_secteurs = $secteur->read();
-    $secteurs = array_filter($data_secteurs, function ($secteur) {
-        return $secteur['parent_id'] == 0 && $secteur['state'] == 'actif';
-    });
-
     // ==========================================================>
     if (!empty($indicateur_cmr)) {
         $first_cmr = reset($indicateur_cmr);
@@ -117,26 +111,19 @@
         $suivis = array_map(fn($y) => (float)($suivis_map[$y] ?? 0), $annees);
         $suivis_sum = array_sum($suivis_map);
 
-        // #######################################################
-        // Construction des données pour le graphique par secteur
-        $secteurs_project = array_filter($secteurs, function ($s) use ($project_cmr) {
-            return in_array($s['id'], explode(',', str_replace('"', '', $project_cmr['secteurs'])));
-        });
-
-        $suivis_par_secteur = [];
+        $suivis_par_scenario = [];
         foreach ($suivis_raw as $suivi) {
-            if (!isset($suivis_par_secteur[$suivi['secteur_id']])) {
-                $suivis_par_secteur[$suivi['secteur_id']] = 0;
+            if (!isset($suivis_par_scenario[$suivi['scenario']])) {
+                $suivis_par_scenario[$suivi['scenario']] = 0;
             }
-            $suivis_par_secteur[$suivi['secteur_id']] += (float)$suivi['valeur'];
+            $suivis_par_scenario[$suivi['scenario']] += (float)$suivi['valeur'];
         }
 
         $chart_data = [];
-        foreach ($secteurs_project as $secteur) {
-            $secteur_id = $secteur['id'];
-            $valeur = $suivis_par_secteur[$secteur_id] ?? 0;
+        foreach (listTypeScenario() as $key => $scenario) {
+            $valeur = $suivis_par_scenario[$key] ?? 0;
             $chart_data[] = [
-                'name' => $secteur['name'],
+                'name' => $scenario,
                 'y' => $valeur,
             ];
         }
@@ -158,14 +145,14 @@
                     <!-- Header -->
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div>
-                            <h3 class="mb-1"><?= $ref_curr['intitule'] ?></h3>
+                            <h4 class="mb-1"><?= $ref_curr['intitule'] ?></h4>
                             <div class="text-muted">
                                 <span class="me-3">Créé le: <?= date('d/m/Y', strtotime($ref_curr['created_at'])) ?></span>
                                 <span class="me-3">Créé par: <?= $users[$ref_curr['add_by']]['nom'] ?></span>
                             </div>
                         </div>
                         <div class="btn-reveal-trigger d-flex gap-2">
-                            <button title="Voir les résultats" type="button" class="btn btn-sm btn-phoenix-primary fs-10 px-2 py-1" onclick="window.location.href = 'suivi_indicateurs.php?id=<?php echo $ref_curr['id']; ?>';">
+                            <button title="Voir les résultats" type="button" class="btn btn-sm btn-phoenix-primary text-nowrap fs-10 px-2 py-1" onclick="window.location.href = 'suivi_indicateurs.php?id=<?php echo $ref_curr['id']; ?>';">
                                 <span class="uil-arrow-left"></span> Voir les résultats
                             </button>
 
@@ -274,7 +261,7 @@
                                     <table class="table table-sm table-hover table-striped fs-9 table-bordered border-emphasis" id="id-datatable">
                                         <thead class="bg-light dark__bg-dark">
                                             <tr>
-                                                <th scope="col" class="px-2">Secteur</th>
+                                                <th scope="col" class="px-2">Scénario</th>
                                                 <th scope="col" class="px-2">Année</th>
                                                 <th scope="col" class="px-2">Valeur</th>
                                                 <th scope="col" class="px-2">Date d'ajout</th>
@@ -285,13 +272,7 @@
                                         <tbody>
                                             <?php foreach ($suivis_raw as $suivi): ?>
                                                 <tr class="align-middle">
-                                                    <td class="px-2">
-                                                        <?php foreach ($secteurs_project as $secteur) : ?>
-                                                            <?php if ($secteur['id'] == $suivi['secteur_id']) : ?>
-                                                                <?= $secteur['name'] ?>
-                                                            <?php endif; ?>
-                                                        <?php endforeach; ?>
-                                                    </td>
+                                                    <td class="px-2"><?= listTypeScenario()[$suivi['scenario']] ?></td>
                                                     <td class="px-2"><?= $suivi['annee'] ?></td>
                                                     <td class="px-2"><?= $suivi['valeur'] ?></td>
                                                     <td class="px-2"><?= $suivi['date_suivie'] ?></td>
@@ -350,6 +331,7 @@
                                                                             <?php if (!empty($ref_curr['modele']) && $ref_curr['modele'] !== "valeur_absolue") : ?>
                                                                                 <th scope="col" class="px-2">Classe</th>
                                                                             <?php endif; ?>
+                                                                            <th scope="col" class="px-2">Scénario</th>
                                                                             <th scope="col" class="px-2">Valeur</th>
                                                                             <th scope="col" class="px-2">Date suivie</th>
                                                                         </tr>
@@ -377,6 +359,7 @@
                                                                                 <?php if (!empty($ref_curr['modele']) && $ref_curr['modele'] !== "valeur_absolue") : ?>
                                                                                     <td class="px-2"><?= $suivi['classe'] ?></td>
                                                                                 <?php endif; ?>
+                                                                                <td class="px-2"><?= listTypeScenario()[$suivi['scenario']] ?></td>
                                                                                 <td class="px-2"><?= $suivi['valeur'] ?></td>
                                                                                 <td class="px-2"><?= $suivi['date_suivie'] ?></td>
                                                                             </tr>
@@ -418,7 +401,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="card rounded-1 shadow-sm border h-100">
-                                <div class="card-body p-2" id="chartSecteur<?= $ref_curr['id'] ?>"></div>
+                                <div class="card-body p-2" id="chartScenario<?= $ref_curr['id'] ?>"></div>
                             </div>
                         </div>
                     </div>
@@ -476,7 +459,7 @@
     });
 
     mrvPieChart({
-        id: 'chartSecteur<?= $ref_curr['id'] ?>',
+        id: 'chartScenario<?= $ref_curr['id'] ?>',
         title: '<?= $ref_curr['intitule'] . ' (' . $unite_ref['name'] . ')' ?>',
         unite: '<?= $unite_ref['name'] ?>',
         data: <?= json_encode($chart_data) ?>,

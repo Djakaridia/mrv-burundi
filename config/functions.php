@@ -509,7 +509,7 @@ function loadVarEnv()
 
 // #####################################################################
 // #####################################################################
-// Fonctions de listes
+// Fonctions de listes 
 function listTypeAction()
 {
     return [
@@ -521,7 +521,7 @@ function listTypeAction()
 function listTypeScenario(){
     return [
         'conditionnel' => 'Conditionnel',
-        'indconditionnel' => 'Indconditionnel'
+        'inconditionnel' => 'Inconditionnel'
     ];
 }
 

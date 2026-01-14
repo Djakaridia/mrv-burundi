@@ -75,7 +75,7 @@
                                 <div class="col-lg-12 mt-1">
                                     <div class="mb-1">
                                         <label class="form-label">Couches (<?php echo $array_type; ?>)</label>
-                                        <input class="form-control" name="file" id="file_couche" type="file" accept="<?php echo $array_type; ?>" />
+                                        <input class="form-control" name="file" id="file_couche_localite" type="file" accept="<?php echo $array_type; ?>" />
                                         <input type="hidden" name="allow_files" id="allow_file_prov" value="<?php echo $array_type; ?>">
                                         <input type="hidden" name="couches" id="localite_couches">
                                     </div>

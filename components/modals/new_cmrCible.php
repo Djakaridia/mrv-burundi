@@ -36,12 +36,12 @@
                   </thead>
 
                   <tbody>
-                    <?php foreach (listTypeScenario() as $scenario) : ?>
+                    <?php foreach (listTypeScenario() as $key => $scenario) : ?>
                       <tr>
                         <td class="align-middle text-start px-2" width="15%"><?= $scenario ?></td>
                         <?php for ($year = $startYear; $year <= $endYear; $year++) : ?>
                           <td class="align-middle text-center px-2">
-                            <input type="text" class="form-control py-3" name="cible[<?= $scenario ?>][<?= $year ?>]" id="cible-<?= $scenario ?>-<?= $year ?>" value="">
+                            <input type="number" step="any" class="form-control py-3" name="cible[<?= $key ?>][<?= $year ?>]" id="cible-<?= $key ?>-<?= $year ?>" placeholder="—">
                           </td>
                         <?php endfor; ?>
                       </tr>
@@ -67,12 +67,10 @@
     const modal = $('#newIndicateurCibleModal');
     const form = $('#FormCible');
 
-    // Gestion de l'ouverture du modal
     modal.on('shown.bs.modal', async function(event) {
       const dataId = $(event.relatedTarget).data('id');
       const cibleCmrid = $('#cible_cmr_id');
 
-      // Show loading screen and hide content
       $('#cibleLoadingScreen').show();
       $('#cibleContentContainer').hide();
 
@@ -127,52 +125,74 @@
     form.on('submit', async function(e) {
       e.preventDefault();
 
-      const formData = new FormData(this);
       const cibles = {};
+      const inputs = $('#FormCible').find('[name^="cible["]');
 
-      // Récupération structurée des données
-      $('[name^="cible["]').each(function() {
-        const matches = this.name.match(/cible\[(\d+)\]\[(\d+)\]/);
-        if (matches) {
-          const scenario = matches[1];
-          const year = matches[2];
+      let hasData = false;
 
-          if (!cibles[scenario]) cibles[scenario] = {};
-          cibles[scenario][year] = {
-            scenario: scenario,
-            valeur: this.value,
-            annee: year
-          };
-        }
+      inputs.each(function() {
+        const name = this.name;
+        const value = $(this).val().trim();
+
+        if (value === '' || value === null || value === undefined) return;
+
+        const numValue = parseFloat(value.replace(',', '.'));
+        if (isNaN(numValue)) return;
+
+        const matches = name.match(/cible\[([^\]]+)\]\[(\d{4})\]/);
+        if (!matches || matches.length !== 3) return;
+
+        const scenarioKey = matches[1];
+        const year = parseInt(matches[2]);
+
+        if (!cibles[scenarioKey]) cibles[scenarioKey] = {};
+
+        cibles[scenarioKey][year] = {
+          valeur: numValue,
+          annee: year
+        };
+
+        hasData = true;
       });
 
+      const totalCibles = Object.values(cibles).reduce((total, annees) => {
+        return total + Object.keys(annees).length;
+      }, 0);
+
+      if (!hasData || totalCibles === 0) {
+        errorAction('Veuillez saisir au moins une valeur.');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('cmr_id', $('#cible_cmr_id').val());
+      formData.append('projet_id', $('#cible_projet_id').val());
       formData.append('valeur_cibles', JSON.stringify(cibles));
       const submitBtn = $('#cible_modbtn');
-      submitBtn.prop('disabled', true);
-      submitBtn.text('Envoi en cours...');
+      const originalText = submitBtn.text();
+      submitBtn.prop('disabled', true).text('Enregistrement...');
 
       try {
         const response = await fetch('./apis/cibles.routes.php', {
+          method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`
           },
-          method: 'POST',
-          body: formData,
+          body: formData
         });
 
         const result = await response.json();
-
         if (result.status === 'success') {
           successAction('Données enregistrées avec succès');
           modal.modal('hide');
         } else {
-          errorAction(result.message || 'Erreur lors de l\'enregistrement');
+          errorAction(result.message || 'Erreur lors de l’enregistrement');
         }
       } catch (error) {
-        errorAction('Erreur lors de l\'envoi des données');
+        console.error('Erreur fetch :', error);
+        errorAction('Erreur lors de l’envoi des données');
       } finally {
-        submitBtn.prop('disabled', false);
-        submitBtn.text('Enregistrer');
+        submitBtn.prop('disabled', false).text(originalText);
       }
     });
   });

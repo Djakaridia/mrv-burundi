@@ -39,7 +39,7 @@ switch ($requestMethod) {
             $suivi->id = $id;
             $suivi->cmr_id = sanitize_input($_POST['cmr_id']);
             $suivi->projet_id = sanitize_input($_POST['projet_id']);
-            $suivi->secteur_id = sanitize_input($_POST['secteur_id']);
+            $suivi->scenario = sanitize_input($_POST['scenario']);
             $suivi->echelle = sanitize_input($_POST['echelle'] ?? '');
             $suivi->classe = sanitize_input($_POST['classe'] ?? '');
             $suivi->annee = sanitize_input($_POST['annee']);
@@ -61,7 +61,7 @@ switch ($requestMethod) {
         } else {
             $suivi->cmr_id = sanitize_input($_POST['cmr_id']);
             $suivi->projet_id = sanitize_input($_POST['projet_id']);
-            $suivi->secteur_id = sanitize_input($_POST['secteur_id']);
+            $suivi->scenario = sanitize_input($_POST['scenario']);
             $suivi->echelle = sanitize_input($_POST['echelle'] ?? '');
             $suivi->classe = sanitize_input($_POST['classe'] ?? '');
             $suivi->annee = sanitize_input($_POST['annee']);

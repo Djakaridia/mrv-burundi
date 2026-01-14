@@ -64,17 +64,17 @@ switch ($requestMethod) {
             // Insertion des nouvelles cibles
             $successCount = 0;
             $errors = [];
-            foreach ($ciblesData as $secteurId => $annees) {
+            foreach ($ciblesData as $scenario => $annees) {
                 foreach ($annees as $annee => $data) {
 
                     if (empty($data['valeur']) || empty($data['annee'])) {
-                        $errors[] = "Données manquantes pour le secteur $secteurId, année $annee";
+                        $errors[] = "Données manquantes pour le scenario $scenario, année $annee";
                         continue;
                     }
 
                     $cible->valeur = sanitize_input($data['valeur']);
                     $cible->annee = sanitize_input($annee);
-                    $cible->secteur_id = sanitize_input($secteurId);
+                    $cible->scenario = sanitize_input($scenario);
                     $cible->cmr_id = $cmr_id;
                     $cible->projet_id = $projet_id;
                     $cible->add_by = $add_by;
@@ -82,7 +82,7 @@ switch ($requestMethod) {
                     if ($cible->create()) {
                         $successCount++;
                     } else {
-                        $errors[] = "Erreur lors de la création de la cible pour le secteur $secteurId, année $annee";
+                        $errors[] = "Erreur lors de la création de la cible pour le scenario $scenario, année $annee";
                     }
                 }
             }

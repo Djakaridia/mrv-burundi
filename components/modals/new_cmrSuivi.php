@@ -29,7 +29,7 @@
               <table class="table table-sm table-hover table-striped fs-9 table-bordered border-emphasis" align="center">
                 <thead class="bg-light">
                   <tr>
-                    <th scope="col" class="text-start px-2">Secteur</th>
+                    <th scope="col" class="text-start px-2">Scénario</th>
                     <th scope="col" class="text-center">Année</th>
                     <th scope="col" class="text-center">Valeur</th>
                     <th scope="col" class="text-center">Date</th>
@@ -56,14 +56,12 @@
 
               <div class="col-lg-6 mt-1">
                 <div class="mb-1">
-                  <label class="form-label">Secteur suivie*</label>
-                  <select class="form-select" name="secteur_id" id="suivi_secteur_id" required>
-                    <option value="" disabled selected>Sélectionner un secteur</option>
-                    <?php if ($secteurs_project ?? []) : ?>
-                      <?php foreach ($secteurs_project as $secteur) { ?>
-                        <option value="<?php echo $secteur['id']; ?>"><?php echo $secteur['name']; ?></option>
+                  <label class="form-label">Scénario suivie*</label>
+                  <select class="form-select" name="scenario" id="suivi_scenario" required>
+                    <option value="" disabled selected>Sélectionner un scénario</option>
+                      <?php foreach (listTypeScenario() as $key => $scenario) { ?>
+                        <option value="<?php echo $key; ?>"><?php echo $scenario; ?></option>
                       <?php } ?>
-                    <?php endif; ?>
                   </select>
                 </div>
               </div>
@@ -115,7 +113,7 @@
 <script>
   let suiviCMRId = null;
   let indicCMRId = null;
-  const suiviSecteurs = Object.values(<?php echo json_encode($secteurs_project ?? []); ?>);
+  const suiviScenarios = <?php echo json_encode(listTypeScenario() ?? []); ?>;
   const suiviProvinces = Object.values(<?php echo json_encode($provinces ?? []); ?>);
   const suiviZones = Object.values(<?php echo json_encode($zones ?? []); ?>);
   const suiviTypologies = Object.values(<?php echo json_encode($typologies ?? []); ?>);
@@ -185,7 +183,7 @@
             .forEach(element => {
               tbody.append(`
             <tr class="align-middle">
-              <td class="text-start px-2">${suiviSecteurs.find(s => s.id == element.secteur_id)?.name}</td>
+              <td class="text-start px-2">${suiviScenarios[element.scenario]}</td>
               <td class="text-center">${element.annee}</td>
               <td class="text-center">${element.valeur}</td>
               <td class="text-center">${element.date_suivie}</td>
@@ -298,7 +296,7 @@
           form.date_suivie.value = result.data.date_suivie;
           form.valeur.value = result.data.valeur;
           form.observation.value = result.data.observation;
-          form.secteur_id.value = result.data.secteur_id;
+          form.scenario.value = result.data.scenario;
           form.cmr_id.value = result.data.cmr_id;
           form.projet_id.value = result.data.projet_id;
           if (form.echelle) form.echelle.value = result.data.echelle;
@@ -428,4 +426,5 @@
     $('#suiviCMRTableContent').addClass('d-none');
     $('#suiviCMRFormContent').removeClass('d-none');
   }
+</script>
 </script>
