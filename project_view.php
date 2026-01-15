@@ -46,9 +46,17 @@
 
   $user = new User($db);
   $users = $user->read();
+  
+  $grouped_users = [];
+  foreach ($users as $user) {
+    $grouped_users[$user['id']] = $user;
+  }
+
   $users = array_filter($users, function ($user) {
     return $user['state'] == 'actif';
   });
+
+  
 
   $type_structure = new StructureType($db);
   $type_structures = $type_structure->read();
@@ -91,6 +99,13 @@
   $grouped_tache_indicateurs = [];
   foreach ($tache_indicateurs as $tache_indicateur) {
     $grouped_tache_indicateurs[$tache_indicateur['tache_id']][] = $tache_indicateur;
+  }
+
+  $tache_suivi_indicateur = new TacheSuiviIndicateur($db);
+  $tache_suivi_indicateurs = $tache_suivi_indicateur->read();
+  $grouped_tache_suivi_indicateurs = [];
+  foreach ($tache_suivi_indicateurs as $tache_suivi_indicateur) {
+    $grouped_tache_suivi_indicateurs[$tache_suivi_indicateur['tache_id']][] = $tache_suivi_indicateur;
   }
 
   $tache_cout = new TacheCout($db);
@@ -192,4 +207,5 @@
   <?php include './components/navbar & footer/foot.php'; ?>
 </body>
 <script src="assets/scripts/chart-pie.js"></script>
+
 </html>

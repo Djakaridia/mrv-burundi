@@ -29,32 +29,30 @@
                     <header class="shadow border border-rounded p-3 bg-primary-subtle">
                         <div class="row g-3">
                             <div class="col-6 d-flex align-items-center">
-                                <img class="p-1" src="<?php echo (is_file("./assets/images/logo-full.png")) ? './assets/images/logo-full.png' : './images/image_none.png'; ?>" alt="" style="height: 60px" />
-                                <div>
-                                    <div class="fw-bold fs-16">MRV - Burundi</div>
-                                    <div class="fs-12">
-                                        <?php echo $project_curr['name'] . " (" . $project_curr['code'] . ")" ?>
-                                    </div>
+                                <img class="p-1" src="<?php echo (is_file("./assets/images/logo-full.png")) ? './assets/images/logo-full.png' : './images/image_none.png'; ?>" alt="" style="height: 50px" />
+                                <div class="ms-3">
+                                    <div class="fw-bold fs-9">MRV - Burundi</div>
+                                    <div class="fs-9">Rapport sur l'état d'avancement et les résultats de la mise en œuvre</div>
                                 </div>
                             </div>
 
                             <div class="col-6 d-flex align-items-center justify-content-end">
-                                <p class=" fs-12 text-end">Rapport sur l'état d'avancement et les
-                                    résultats de la mise en œuvre</p>
+                                <div class="fw-bold fs-9">Office Burundaise pour la Protection de l'Environnement (OBPE)</div>
                             </div>
                         </div>
                         <hr class="border border-primary mb-3 w-100">
 
                         <div class="p-3">
-                            <h2 class="text-primary text-center mb-3 fw-bold">
-                                <?php echo $project_curr['name'] . " (" . $project_curr['code'] . ")" ?>
-                            </h2>
+                            <h3 class="text-primary text-center mb-3 fw-bold">
+                                <?php echo html_entity_decode($project_curr['name']) . " (" . $project_curr['code'] . ")" ?>
+                            </h3>
                             <table border="1" class="table w-100">
                                 <tr class="border">
                                     <td class="p-2 text-center">
-                                        <?php echo $project_curr['name'] ?> | FY
+                                        <?php echo html_entity_decode($project_curr['name']) ?> | FY
                                         <?php echo date("Y") ?> | Seq No: 1 | Archived on
-                                        <?php echo date("Y-m-d") ?></td>
+                                        <?php echo date("Y-m-d") ?>
+                                    </td>
                                 </tr>
                             </table>
                         </div>
@@ -62,7 +60,7 @@
 
                     <div class="p-3">
                         <div class="accordion" id="accordionFlushExample">
-                            <div class="accordion-item">
+                            <div class="accordion-item border-0">
                                 <button type="button" id="litem_lib_1"
                                     class="btn-sm bg-primary rounded-0 text-white text-start accordion-button collapsed fw-bold btn fs-16 py-2 my-1"
                                     data-bs-toggle="collapse" data-bs-target="#litem_1"
@@ -72,23 +70,21 @@
                                 <div id="litem_1" class="accordion-collapse collapse show">
                                     <table class="table table-bordered table-striped">
                                         <tr>
-                                            <td class="bg-light text-nowrap text-end"><strong>Intitulé du projet : </strong></td>
-                                            <td><?php echo $project_curr['name'] . " (" . $project_curr['code'] . ")" ?>
+                                            <td class="bg-light text-nowrap text-end text-primary"><strong>Intitulé du projet : </strong></td>
+                                            <td><?php echo html_entity_decode($project_curr['name']) . " (" . $project_curr['code'] . ")" ?>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="bg-light text-nowrap text-end"><strong>Code IATI : </strong></td>
+                                            <td class="bg-light text-nowrap text-end text-primary"><strong>Code IATI : </strong></td>
                                             <td><?php echo $project_curr['code'] ?></td>
                                         </tr>
                                         <tr>
-                                            <td class="bg-light text-nowrap text-end"><strong>Partenaire de mise en œuvre : </strong></td>
+                                            <td class="bg-light text-nowrap text-end text-primary"><strong>Partenaire de mise en œuvre : </strong></td>
                                             <td>
                                                 <?php
                                                 if (count($structures) > 0) {
                                                     foreach ($structures as $structure) {
-                                                        if ($structure['id'] == $project_curr['structure_id']) {
-                                                            echo html_entity_decode($structure['description']) . ' <b>(' . $structure["sigle"] . ')</b>';
-                                                        }
+                                                        if ($structure['id'] == $project_curr['structure_id']) echo html_entity_decode($structure['description']) . ' <b>(' . $structure["sigle"] . ')</b>';
                                                     }
                                                 } else {
                                                     echo 'Aucune structure trouvée';
@@ -97,17 +93,17 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="bg-light text-nowrap text-end"><strong>Date
+                                            <td class="bg-light text-nowrap text-end text-primary"><strong>Date
                                                     démarage : </strong></td>
                                             <td> <?php echo $project_curr['start_date'] ?></td>
                                         </tr>
                                         <tr>
-                                            <td class="bg-light text-nowrap text-end"><strong>Date
+                                            <td class="bg-light text-nowrap text-end text-primary"><strong>Date
                                                     clôture : </strong></td>
                                             <td> <?php echo $project_curr['end_date'] ?></td>
                                         </tr>
                                         <tr>
-                                            <td class="bg-light text-nowrap text-end"><strong>Durée du
+                                            <td class="bg-light text-nowrap text-end text-primary"><strong>Durée du
                                                     Projet : </strong></td>
                                             <td>
                                                 <?php
@@ -142,35 +138,42 @@
                                 </div>
                             </div>
 
-
-                            <div class="accordion-item">
+                            <div class="accordion-item border-0">
                                 <button type="button" id="litem_lib_2"
                                     class="btn-sm bg-primary rounded-0 text-white text-start accordion-button collapsed fw-bold btn fs-16 py-2 my-1"
                                     data-bs-toggle="collapse" data-bs-target="#litem_2"
                                     aria-expanded="false">
                                     Chapitre 2 : DETAILS FINANCIERS
                                 </button>
-                                <div id="litem_2" class="" style="padding: 10px;">
-                                    <?php if (isset($pr_conventions)) { ?>
-
-                                        <div class="border-top mb-3 pt-1">
-                                            <strong>Source de Financement :</strong>
+                                <div id="litem_2" class="accordion-collapse collapse show" style="padding: 10px;">
+                                    <?php if (isset($structures_project)) { ?>
+                                        <div class="mb-3">
+                                            <div class="text-primary fs-8 fw-bold mb-1 border-bottom">Source de Financement :</div>
                                             <ul>
-                                                <?php foreach ($pr_conventions as $convention) { ?>
-                                                    <li class="my-1"><?php echo $convention["libelle"] ?> :
-                                                        <strong><?php echo number_format($convention["montant"], 0, ',', ' ') . " USD"; ?></strong>
+                                                <?php foreach ($conventions_project as $convention) { ?>
+                                                    <li class="my-1"><?php echo $convention["name"] ?> :
+                                                        <span class="fw-bold">
+                                                            <?php echo number_format($convention["montant"], 0, ',', ' ') . " USD"; ?>
+                                                        </span>
+                                                        <?php foreach ($structures_project as $structure) { ?>
+                                                            <?php if ($structure['id'] == $convention['structure_id']) { ?>
+                                                                <i class="fa fa-arrow-right mx-1 text-primary"></i>
+                                                                <?php echo html_entity_decode($structure['description']) . ' <b>(' . $structure["sigle"] . ')</b>'; ?>
+                                                            <?php } ?>
+                                                        <?php } ?>
                                                     </li>
                                                 <?php } ?>
                                             </ul>
                                         </div>
-                                        <div class="border-top mb-3 pt-1"><strong>Budget Total : </strong>
-                                            <?php echo number_format($project_curr["budget"], 0, ',', ' ')." USD"; ?>
+                                        <div class="mb-3">
+                                            <div class="text-primary fs-8 fw-bold mb-1 border-bottom">Budget Total :</div>
+                                            <?php echo number_format($project_curr["budget"], 0, ',', ' ') . " USD"; ?>
                                         </div>
                                     <?php } ?>
                                 </div>
                             </div>
 
-                            <div class="accordion-item">
+                            <div class="accordion-item border-0">
                                 <button type="button" id="litem_lib_3"
                                     class="btn-sm bg-primary rounded-0 text-white text-start accordion-button collapsed fw-bold btn fs-16 py-2 my-1"
                                     data-bs-toggle="collapse" data-bs-target="#litem_3"
@@ -178,13 +181,18 @@
                                     Chapitre 3 : DESCRIPTION DU PROJET
                                 </button>
                                 <div id="litem_3" class="accordion-collapse collapse show">
-                                    <div class="text-primary fw-bold fs-16 mb-1 border-bottom">Objectifs</div>
-                                    <div>
-                                        
-                                    </div>
+                                    <?php if (!empty($project_curr['objectif'])) { ?>
+                                        <div class="text-primary fs-8 fw-bold mb-1 border-bottom">Objectifs</div>
+                                        <div class="text-justify"><?= html_entity_decode($project_curr['objectif']) ?></div>
+                                    <?php } ?>
 
-                                    <div class="text-primary fw-bold fs-16 mb-1 border-bottom">Résultats</div>
+                                    <?php if (!empty($project_curr['description'])) { ?>
+                                        <div class="text-primary fs-8 fw-bold mb-1 border-bottom">Description</div>
+                                        <div class="text-justify"><?= html_entity_decode($project_curr['description']) ?></div>
+                                    <?php } ?>
+
                                     <?php if (isset($pr_resultats) && count($pr_resultats) > 0) { ?>
+                                        <div class="text-primary fs-8 fw-bold mb-1 border-bottom">Résultats</div>
                                         <ul class="list-group list-group-flush">
                                             <?php foreach ($pr_resultats as $resultat) { ?>
                                                 <li class="list-group-item"><strong>Niveau
@@ -202,14 +210,12 @@
                                                 <?php } ?>
                                             <?php } ?>
                                         </ul>
-                                    <?php } else { ?>
-                                        <p class="text-start mx-3">Aucun objectif ou résultat trouvé</p>
                                     <?php } ?>
                                 </div>
                             </div>
 
 
-                            <div class="accordion-item">
+                            <div class="accordion-item border-0">
                                 <button type="button" id="litem_lib_4"
                                     class="btn-sm bg-primary rounded-0 text-white text-start accordion-button collapsed fw-bold btn fs-16 py-2 my-1"
                                     data-bs-toggle="collapse" data-bs-target="#litem_4"
@@ -218,49 +224,46 @@
                                 </button>
                                 <div id="litem_4" class="accordion-collapse collapse show">
                                     <table
-                                        class="table table-hover table-bordered table-striped-columns small"
+                                        class="table table-hover table-bordered small"
                                         border="1" style="width:100%; table-layout: fixed;">
                                         <thead class="bg-secondary-subtle text-nowrap">
-                                            <!-- <tr>
-                                                                <th colspan="8" class="bg-warning text-white text-center fs-16">Suivi des Indicateurs pour l’année <?php echo date("Y") ?></th>
-                                                            </tr> -->
                                             <tr class="text-center">
-                                                <th style="width: 30%;" class="align-items-center"
-                                                    rowspan="2">Nom de l’indicateur</th>
+                                                <th style="width: 30%;" class="align-items-center" rowspan="3">Intitulé de l’indicateur</th>
                                                 <th style="width: 20%;" colspan="2">Référence</th>
-                                                <th style="width: 20%;" colspan="2">Cible</th>
-                                                <th style="width: 30%;" colspan="3">Actuelle</th>
+                                                <th style="width: 20%;" colspan="2">Valeur Cible</th>
+                                                <th style="width: 30%;" colspan="4">Valeur Réalisée</th>
                                             </tr>
                                             <tr class="text-center">
-                                                <th>Valeur</th>
-                                                <th>Mois/Année</th>
-                                                <th>Valeur</th>
-                                                <th>Mois/Année</th>
-                                                <th>Valeur</th>
-                                                <th>Progression (%)</th>
-                                                <th>Date</th>
+                                                <th rowspan="2">Valeur</th>
+                                                <th rowspan="2">Année</th>
+                                                <th colspan="2"><?php echo date("Y") ?></th>
+                                                <th colspan="2"><?php echo date("Y") ?></th>
+                                                <th colspan="2">Progression (%)</th>
+                                            </tr>
+                                            <tr>
+                                                <th>Incon.</th>
+                                                <th>Con.</th>
+                                                <th>Incon.</th>
+                                                <th>Con.</th>
+                                                <th>Incon.</th>
+                                                <th>Con.</th>
                                             </tr>
                                         </thead>
 
-                                        <?php if (isset($data_Indicateur) && count($data_Indicateur) > 0) { ?>
+                                        <?php if (isset($indicateurs_project) && count($indicateurs_project) > 0) { ?>
                                             <tbody>
-                                                <?php foreach ($data_Indicateur as $indic) { ?>
+                                                <?php foreach ($indicateurs_project as $indic) { ?>
                                                     <tr>
-                                                        <td><?php echo $indic["indic_name"] ?></td>
-                                                        <td class="text-center">
-                                                            <?php echo $indic["val_refer"] ?></td>
-                                                        <td class="text-center">
-                                                            <?php echo $indic["date_refer"] ?></td>
-                                                        <td class="text-center">
-                                                            <?php echo $indic["val_cible"] ?></td>
-                                                        <td class="text-center">
-                                                            <?php echo $indic["date_cible"] ?></td>
-                                                        <td class="text-center"><?php echo $indic["val_curr"] ?>
-                                                        </td>
-                                                        <td class="text-center bg-warning-subtle">
-                                                            <?php echo $indic["val_progr"] ?></td>
-                                                        <td class="text-center">
-                                                            <?php echo $indic["date_curr"] ?></td>
+                                                        <td><?php echo $indic["intitule"] ?></td>
+                                                        <td class="text-center"><?php echo $indic["valeur_reference"] ?></td>
+                                                        <td class="text-center"><?php echo $indic["annee_reference"] ?></td>
+                                                        <td class="text-center"><?php echo "-" ?></td>
+                                                        <td class="text-center"><?php echo "-" ?></td>
+                                                        <td class="text-center"><?php echo "-" ?></td>
+                                                        <td class="text-center"><?php echo "-" ?></td>
+                                                        <td class="text-center"><?php echo "-" ?></td>
+                                                        <td class="text-center"><?php echo "-" ?></td>
+                                                        <td class="text-center"><?php echo "-" ?></td>
                                                     </tr>
                                                 <?php } ?>
                                             </tbody>
@@ -269,123 +272,84 @@
                                 </div>
                             </div>
 
-                            <div class="accordion-item">
+                            <div class="accordion-item border-0">
                                 <button type="button" aria-expanded="false"
                                     style="width:100%; text-align: start" aria-controls="litem_5"
                                     class="btn-sm bg-primary rounded-0 text-white text-start accordion-button collapsed fw-bold btn fs-16 py-2 my-1"
                                     data-bs-toggle="collapse" data-bs-target="#litem_5">
-                                    Chapitre 5 : SUIVI DES ACTIVITÉS DU PTBA <?php echo date("Y") ?>
+                                    Chapitre 5 : SUIVI DES ACTIVITÉS DU PROJET <?php echo date("Y") ?>
                                 </button>
                                 <div id="litem_5" class="accordion-collapse collapse show">
                                     <table
-                                        class="table table-hover table-bordered table-striped-columns small"
+                                        class="table table-hover table-bordered small"
                                         border="1" style="width:100%; table-layout: fixed;">
                                         <thead class="bg-secondary-subtle text-nowrap">
                                             <tr class="text-center">
-                                                <th class="text-center" style="width: 8%;">Code</th>
-                                                <th class="text-center" style="width: 25%;">Activités
-                                                </th>
-                                                <th class="text-center" style="width: 8%;">Responsables
-                                                </th>
-                                                <th class="text-center" style="width: 10%;">Acteurs</th>
-                                                <th class="text-center" style="width: 8%;">Période</th>
-                                                <th class="text-center" style="width: 8%;">Tache</th>
-                                                <th class="text-center" style="width: 8%;">Indicateur
-                                                </th>
+                                                <th class="text-center" style="width: 5%;">Code</th>
+                                                <th class="text-center" style="width: 35%;">Activités</th>
+                                                <th class="text-center" style="width: 15%;">Responsables</th>
+                                                <th class="text-center" style="width: 15%;">Indicateur</th>
+                                                <th class="text-center" style="width: 10%;">Cout(USD)</th>
                                                 <th class="text-center" style="width: 10%;">Statut</th>
-                                                <th class="text-center" style="width: 10%;">Observation
-                                                </th>
+                                                <th class="text-center" style="width: 10%;">Observation</th>
                                             </tr>
                                         </thead>
 
-                                        <?php if (isset($data_Suivi_PTBA) && count($data_Suivi_PTBA) > 0) { ?>
+                                        <?php if (isset($taches_project) && count($taches_project) > 0) { ?>
                                             <tbody>
-                                                <?php foreach ($data_Suivi_PTBA as $suivi) { ?>
-                                                    <tr>
-                                                        <td><?php echo $suivi["code"] ?></td>
-                                                        <td><?php echo $suivi["activ"] ?></td>
-                                                        <td class="text-center"><?php echo $suivi["respon"] ?>
-                                                        </td>
-                                                        <td class="text-center"><?php echo $suivi["actor"] ?>
-                                                        </td>
-                                                        <td class="text-center"><?php echo $suivi["period"] ?>
-                                                        </td>
-                                                        <td class="text-center bg-success-subtle">
-                                                            <?php echo $suivi["tache"] ?></td>
-                                                        <td class="text-center bg-danger-subtle">
-                                                            <?php echo $suivi["indic"] ?></td>
-                                                        <td class="text-center bg-warning-subtle">
-                                                            <?php echo $suivi["statu"] ?></td>
-                                                        <td class="text-center"><?php echo $suivi["commen"] ?>
-                                                        </td>
-                                                    </tr>
-                                                <?php } ?>
-                                            </tbody>
-                                        <?php } ?>
-                                    </table>
-                                </div>
-                            </div>
+                                                <?php foreach ($taches_project as $tache) {
+                                                    $indicateurs = $grouped_tache_indicateurs[$tache['id']] ?? [];
 
-                            <div class="accordion-item">
-                                <button type="button" aria-expanded="false"
-                                    style="width:100%; text-align: start" aria-controls="litem_6"
-                                    class="btn-sm bg-primary rounded-0 text-white text-start accordion-button collapsed fw-bold btn fs-16 py-2 my-1"
-                                    data-bs-toggle="collapse" data-bs-target="#litem_6">
-                                    Chapitre 6 : ETAT D'EXÉCUTION DES ACTIVITÉS DU PTBA
-                                    <?php echo date("Y") ?> PAR COMPOSANTE
-                                </button>
-                                <div id="litem_6" class="accordion-collapse collapse show">
-                                    <table
-                                        class="table table-hover table-bordered table-striped-columns small"
-                                        border="1" style="width:100%; table-layout: fixed;">
-                                        <thead class="bg-secondary-subtle text-nowrap">
-                                            <tr class="text-center">
-                                                <th style="width: 15%;" class="text-center">Code</th>
-                                                <th style="width: 30%;" class="text-center">Intitulés
-                                                </th>
-                                                <th style="width: 10%;" class="text-center">Activités
-                                                    Planifiées</th>
-                                                <th style="width: 10%;" class="text-center">Activités
-                                                    Réalisées</th>
-                                                <th style="width: 10%;" class="text-center">Avancement
-                                                    Technique</th>
-                                            </tr>
-                                        </thead>
+                                                    $nbre_indicateurs = count($indicateurs);
+                                                    $couts = $grouped_tache_couts[$tache['id']] ?? [];
+                                                    $total_couts = array_sum(array_map('floatval', array_column($couts, 'montant')));
 
-                                        <?php if (isset($data_Exec_PTBA) && count($data_Exec_PTBA) > 0) {
-                                            $total_plan = $total_real = $taux_glob = 0
-                                        ?>
-                                            <tbody>
-                                                <?php foreach ($data_Exec_PTBA as $exec) {
-                                                    if ($exec["niveau"] == 1) {
-                                                        $total_plan = $total_plan + $exec["planifie"];
-                                                        $total_real = $total_real + $exec["realise"];
-                                                        $taux_glob = $total_plan > 0 ? round($total_real / $total_plan, 2) * 100 : 0;
+                                                    $total_task_cible = array_sum(array_map('floatval', array_column($indicateurs, 'valeur_cible')));
+                                                    $suivis_indic = $grouped_tache_suivi_indicateurs[$tache['id']] ?? [];
+                                                    $total_task_suivi = array_sum(array_map('floatval', array_column($suivis_indic, 'valeur_suivi')));
+
+                                                    unset($taux_indicateur);
+                                                    $taux_indicateur = 0;
+                                                    if (isset($total_task_cible) && $total_task_cible > 0) {
+                                                        if ($total_task_suivi >= $total_task_cible) {
+                                                            $taux_indicateur = 100;
+                                                        } else {
+                                                            $taux_indicateur = round(($total_task_suivi / $total_task_cible) * 100, 2);
+                                                        }
+                                                    } else {
+                                                        $taux_indicateur = 0;
                                                     }
                                                 ?>
-                                                    <tr
-                                                        class="<?php echo $exec["niveau"] == 1 ? "bg-success-subtle" : ($exec["niveau"] == 2 ? "bg-danger-subtle" : "") ?>">
-                                                        <td
-                                                            class="<?php echo ($exec["niveau"] == '0') ? 'text-primary' : '' ?> ">
-                                                            <?php for ($k = 0; $k < $exec["niveau"]; $k++)
-                                                                echo "<span class='text-light'>&nbsp;| </span>";
-                                                            echo $exec["code"] ?>
+                                                    <tr>
+                                                        <td><?php echo $tache["code"] ?></td>
+                                                        <td><?php echo $tache["name"] ?></td>
+                                                        <td class="text-center"><?php echo $grouped_users[$tache['assigned_id']]['nom'] . ' ' . $grouped_users[$tache['assigned_id']]['prenom'] ?></td>
+                                                        <td class="text-center">
+                                                            <?php
+                                                            if ($taux_indicateur < 39)
+                                                                $color = "danger";
+                                                            elseif ($taux_indicateur < 69)
+                                                                $color = "warning";
+                                                            elseif ($taux_indicateur >= 70)
+                                                                $color = "success"; ?>
+                                                            <span id="tauxIndic_<?php echo $tache['id']; ?>">
+                                                                <div class="progress progress-xl rounded-0 p-0 m-0" style="height: 1.5rem; width: 150px">
+                                                                    <div class="progress-bar progress-bar-striped progress-bar-animated fs-14 fw-bold bg-<?php echo $color; ?> " aria-valuenow="70" style="width: 100%;">
+                                                                        <?php echo (isset($taux_indicateur) && $taux_indicateur > 0) ? $taux_indicateur . " %" : "Non suivie"; ?>
+                                                                    </div>
+                                                                </div>
+                                                            </span>
                                                         </td>
-                                                        <td><?php echo $exec["intitule"] ?></td>
-                                                        <td class="text-center"><?php echo $exec["planifie"] ?>
+                                                        <td class="text-center"><?= ($total_couts > 0) ? number_format($total_couts, 0, ',', ' ') : "Ajouter" ?></td>
+                                                        <td class="text-center">
+                                                            <span class="col text-nowrap badge badge-phoenix fs-10 
+                                                            badge-phoenix-<?php echo $taux_indicateur > 0 ? ($taux_indicateur >= 100 ? "success" : "warning") : "danger" ?>">
+                                                                <?php echo $taux_indicateur > 0 ? ($taux_indicateur >= 100 ? "Terminé" : "En cours") : "Non entamé" ?>
+                                                            </span>
                                                         </td>
-                                                        <td class="text-center"><?php echo $exec["realise"] ?>
-                                                        </td>
-                                                        <td class="text-center"><?php echo $exec["taux"] ?></td>
+                                                        <td class="text-center text-capitalize"><?php echo isset($tache['status']) ? $tache['status'] : "Suivre" ?></td>
                                                     </tr>
                                                 <?php } ?>
-                                                <tr class="bg-light fw-bold">
-                                                    <td colspan="2" class="text-center">Réalisation globale
-                                                        des activités</td>
-                                                    <td class="text-center"><?= $total_plan ?></td>
-                                                    <td class="text-center"><?= $total_real ?></td>
-                                                    <td class="text-center"><?= $taux_glob ?> %</td>
-                                                </tr>
                                             </tbody>
                                         <?php } ?>
                                     </table>

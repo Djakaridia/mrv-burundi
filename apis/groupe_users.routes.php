@@ -32,7 +32,7 @@ $sendgreen = new GroupeGreen($_ENV['API_GREEN_INSTANCE'], $_ENV['API_GREEN_TOKEN
 $requestMethod = $_SERVER['REQUEST_METHOD'];
 
 function sanitize_input($data) {
-    return htmlspecialchars(strip_tags(trim($data)));
+    return htmlspecialchars(trim($data));
 }
 
 // function getUserData($groupe_id) {

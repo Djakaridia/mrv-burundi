@@ -5,7 +5,7 @@
         <div class="modal-content bg-body-highlight p-4">
             <!-- Header avec bouton fermer et titre -->
             <div class="modal-header justify-content-between border-0 p-0 mb-2">
-                <h3 class="mb-0 fw-bold text-primary"> <span class="fas fa-tasks me-2"></span>Suivi des tâches </h3>
+                <h3 class="mb-0 fw-bold text-primary"> <span class="fas fa-tasks me-2"></span>Suivi Indicateur des tâches </h3>
                 <button type="button" class="btn btn-sm btn-phoenix-secondary" data-bs-dismiss="modal"
                     aria-label="Close"><span class="fas fa-times text-danger"></span></button>
             </div>

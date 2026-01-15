@@ -24,8 +24,7 @@
               <div class="col-lg-6 mt-1">
                 <div class="mb-1">
                   <label class="form-label">Code*</label>
-                  <input oninput="checkColumns('code', 'code_conven', 'code_conven_feedback', 'conventions')" class="form-control" type="text" name="code" id="code_conven" placeholder="Entrer le code"
-                    required />
+                  <input class="form-control" type="text" name="code" id="code_conven" placeholder="Entrer le code" required />
                   <div class="invalid-feedback" id="code_conven_feedback"></div>
                 </div>
               </div>

@@ -23,7 +23,7 @@
                             <div class="col-lg-6 mt-1">
                                 <div class="mb-1">
                                     <label class="form-label">Code</label>
-                                    <input oninput="checkColumns('code', 'tache_code', 'tache_codeFeedback', 'taches')" class="form-control" type="text" name="code" id="tache_code"
+                                    <input class="form-control" type="text" name="code" id="tache_code"
                                         placeholder="Entrer le code de la tâche" required />
                                     <div id="tache_codeFeedback" class="invalid-feedback"></div>
                                 </div>

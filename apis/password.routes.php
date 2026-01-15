@@ -24,7 +24,7 @@ $requestMethod = $_SERVER['REQUEST_METHOD'];
 
 function sanitize_input($data)
 {
-    return htmlspecialchars(strip_tags(trim($data)));
+    return htmlspecialchars(trim($data));
 }
 
 if ($requestMethod && $requestMethod == 'POST') {

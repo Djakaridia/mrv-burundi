@@ -54,6 +54,10 @@
 
     $user = new User($db);
     $users = $user->read();
+    $grouped_users = [];
+    foreach ($users as $user) {
+        $grouped_users[$user['id']] = $user;
+    }
     ?>
 </head>
 
@@ -77,7 +81,7 @@
                             <select class="btn btn-phoenix-primary rounded-pill btn-sm form-select form-select-sm rounded-1 text-start" name="result" id="resultID" onchange="window.location.href = 'suivi_activites.php?proj=' + this.value">
                                 <option value="" class="text-center" selected disabled>---Sélectionner un projet---</option>
                                 <?php foreach ($all_projects as $project) { ?>
-                                    <option value="<?php echo $project['id']; ?>" <?php if ($sel_id == $project['id']) echo 'selected'; ?>><?php echo $project['name']; ?></option>
+                                    <option value="<?php echo $project['id']; ?>" <?php if ($sel_id == $project['id']) echo 'selected'; ?>><?php echo html_entity_decode($project['name']); ?></option>
                                 <?php } ?>
                             </select>
                         </form>
@@ -117,16 +121,16 @@
                                             $suivis_indic = $grouped_tache_suivi_indicateurs[$tache['id']] ?? [];
                                             $total_task_suivi = array_sum(array_map('floatval', array_column($suivis_indic, 'valeur_suivi')));
 
-                                            unset($taux_progress);
-                                            $taux_progress = 0;
+                                            unset($taux_indicateur);
+                                            $taux_indicateur = 0;
                                             if (isset($total_task_cible) && $total_task_cible > 0) {
                                                 if ($total_task_suivi >= $total_task_cible) {
-                                                    $taux_progress = 100;
+                                                    $taux_indicateur = 100;
                                                 } else {
-                                                    $taux_progress = round(($total_task_suivi / $total_task_cible) * 100, 2);
+                                                    $taux_indicateur = round(($total_task_suivi / $total_task_cible) * 100, 2);
                                                 }
                                             } else {
-                                                $taux_progress = 0;
+                                                $taux_indicateur = 0;
                                             }
                                         ?>
                                             <tr>
@@ -138,11 +142,7 @@
                                                 </td>
 
                                                 <td>
-                                                    <?php foreach ($users as $user) {
-                                                        if ($user['id'] == $tache['assigned_id']) {
-                                                            echo $user['nom'] . ' ' . $user['prenom'];
-                                                        }
-                                                    } ?>
+                                                    <?php echo $grouped_users[$tache['assigned_id']]['nom'] . ' ' . $grouped_users[$tache['assigned_id']]['prenom'] ?>
                                                 </td>
 
                                                 <td class="text-center">
@@ -159,26 +159,31 @@
                                                     <a class="btn btn-link text-decoration-none fw-bold py-1 px-0 m-0" data-bs-toggle="modal"
                                                         data-bs-target="#SuiviTAskModal" aria-haspopup="true" aria-expanded="false" data-id="<?php echo $tache['id']; ?>">
                                                         <?php
-                                                        if ($taux_progress < 39)
+                                                        if ($taux_indicateur < 39)
                                                             $color = "danger";
-                                                        elseif ($taux_progress < 69)
+                                                        elseif ($taux_indicateur < 69)
                                                             $color = "warning";
-                                                        elseif ($taux_progress >= 70)
+                                                        elseif ($taux_indicateur >= 70)
                                                             $color = "success"; ?>
                                                         <span id="tauxIndic_<?php echo $tache['id']; ?>">
                                                             <div class="progress progress-xl rounded-0 p-0 m-0" style="height: 1.5rem; width: 200px">
                                                                 <div class="progress-bar progress-bar-striped progress-bar-animated fs-14 fw-bold bg-<?php echo $color; ?> " aria-valuenow="70" style="width: 100%;">
-                                                                    <?php echo (isset($taux_progress) && $taux_progress > 0) ? $taux_progress . " %" : "Suivre"; ?>
+                                                                    <?php echo (isset($taux_indicateur) && $taux_indicateur > 0) ? $taux_indicateur . " %" : "Suivre"; ?>
                                                                 </div>
                                                             </div>
                                                         </span>
                                                     </a>
                                                 </td>
                                                 <td class="text-center">
-                                                    <span class="col text-nowrap badge badge-phoenix fs-10 
-                                                        badge-phoenix-<?php echo $taux_progress > 0 ? ($taux_progress >= 100 ? "success" : "warning") : "danger" ?>">
-                                                        <?php echo $taux_progress > 0 ? ($taux_progress >= 100 ? "Terminé" : "En cours") : "Non suivi" ?>
-                                                    </span>
+                                                    <!-- <span class="col text-nowrap badge badge-phoenix fs-10 
+                                                        badge-phoenix-<?php echo $taux_indicateur > 0 ? ($taux_indicateur >= 100 ? "success" : "warning") : "danger" ?>">
+                                                        <?php echo $taux_indicateur > 0 ? ($taux_indicateur >= 100 ? "Terminé" : "En cours") : "Non suivi" ?>
+                                                    </span> -->
+
+                                                    <a class="btn btn-link text-decoration-none fw-bold py-1 px-0 m-0 text-capitalize" data-bs-toggle="modal"
+                                                        data-bs-target="#SuiviTAskModal" aria-haspopup="true" aria-expanded="false" data-id="<?php echo $tache['id']; ?>">
+                                                        <?php echo isset($tache['status']) ? $tache['status'] : "Suivre" ?>
+                                                    </a>
                                                 </td>
                                             </tr>
 

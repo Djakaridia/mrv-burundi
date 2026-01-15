@@ -25,7 +25,7 @@ $logoParts = explode("../", $project_curr['logo'] ?? '');
 <div class="content px-0 py-0 pt-navbar">
     <div class="row g-0">
         <div class="col-12 col-xxl-8 px-0 pb-9">
-            <h3 class="text-body-emphasis fw-bolder mb-2"><?php echo html_entity_decode($project_curr['name']); ?></h3>
+            <h4 class="text-body-emphasis fw-bolder mb-2"><?php echo html_entity_decode($project_curr['name']); ?></h4>
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <span class="badge badge-phoenix badge-phoenix-<?php echo $project_curr['state'] == 'actif' ? 'success' : 'danger'; ?>">
                     <?php echo $project_curr['state'] == 'actif' ? 'Actif' : 'Archivé'; ?>

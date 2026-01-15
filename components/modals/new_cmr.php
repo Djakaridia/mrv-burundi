@@ -21,7 +21,7 @@
             <!-- Code de l'indicateur -->
             <div class="col-md-4">
               <div class="form-floating">
-                <input oninput="checkColumns('code', 'indicateurCode', 'indicateurCodeFeedback', 'indicateurs')" class="form-control" name="code" id="indicateurCode" type="text" placeholder="Code de l'indicateur" required>
+                <input class="form-control" name="code" id="indicateurCode" type="text" placeholder="Code de l'indicateur" required>
                 <label for="indicateurCode">Code de l'indicateur*</label>
                 <div class="invalid-feedback" id="indicateurCodeFeedback"></div>
               </div>
@@ -41,7 +41,7 @@
                   <option value="" selected disabled>Sélectionner un referentiel</option>
                   <?php if ($referentiels ?? []) : ?>
                     <?php foreach ($referentiels as $ref) : ?>
-                      <option value="<?= $ref['id'] ?>"><?= $ref['intitule'] ?></option>
+                      <option value="<?= $ref['id'] ?>"><?= html_entity_decode($ref['intitule']) ?></option>
                     <?php endforeach; ?>
                   <?php endif; ?>
                 </select>
@@ -55,7 +55,7 @@
                   <option value="" selected disabled>Sélectionner un niveau</option>
                   <?php if ($niveau_resultats ?? []) : ?>
                     <?php foreach ($niveau_resultats as $niveau_result) : ?>
-                      <option value="<?= $niveau_result['id'] ?>"><?= $niveau_result['name'] ?></option>
+                      <option value="<?= $niveau_result['id'] ?>"><?= html_entity_decode($niveau_result['name']) ?></option>
                     <?php endforeach; ?>
                   <?php endif; ?>
                 </select>
@@ -69,7 +69,7 @@
                   <option value="" selected disabled>Sélectionner un projet</option>
                   <?php if ($projets ?? []) : ?>
                     <?php foreach ($projets as $projet) : ?>
-                      <option value="<?= $projet['id'] ?>"><?= $projet['name'] ?></option>
+                      <option value="<?= $projet['id'] ?>"><?= html_entity_decode($projet['name']) ?></option>
                     <?php endforeach; ?>
                   <?php endif; ?>
                 </select>
