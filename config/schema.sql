@@ -419,6 +419,7 @@ CREATE TABLE IF NOT EXISTS t_referentiel_indicateur (
     norme VARCHAR(30),
     unite VARCHAR(30),
     domaine VARCHAR(30),
+    action VARCHAR(30),
     echelle VARCHAR(100),
     modele VARCHAR(100),
     fonction_agregation VARCHAR(50),
@@ -487,7 +488,21 @@ CREATE TABLE IF NOT EXISTS t_niveau_resultat (
     code VARCHAR(50) NOT NULL,
     name TEXT,
     niveau INT,
+    parent INT,
     programme INT,
+    add_by INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Table des indicateur de niveau de resultat
+CREATE TABLE IF NOT EXISTS t_niveau_indicateur (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(50) NOT NULL,
+    intitule TEXT,
+    unite VARCHAR(50),
+    resultat INT,
+    cibles TEXT,
     add_by INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

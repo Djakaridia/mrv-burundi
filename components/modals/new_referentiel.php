@@ -98,6 +98,24 @@
                 <label for="referentielDomaine">Secteur*</label>
               </div>
             </div>
+
+            <!-- Action prioritaire -->
+            <div class="col-md-6">
+              <div class="form-floating">
+                <select class="form-select" name="action" id="referentielAction" required>
+                  <option value="" selected disabled>Sélectionner une action prioritaire</option>
+                  <?php if ($sous_secteurs ?? []) : ?>
+                    <?php foreach ($sous_secteurs as $sous_sec): ?>
+                      <option value="<?= $sous_sec['id'] ?>" data-parent="<?= $sous_sec['parent_id'] ?>">
+                        <?= $sous_sec['name'] ?>
+                      </option>
+                    <?php endforeach; ?>
+                  <?php endif; ?>
+                </select>
+                <label for="referentielAction">Action prioritaire*</label>
+              </div>
+            </div>
+
             <!-- Responsable -->
             <div class="col-md-6">
               <div class="form-floating">
@@ -114,7 +132,7 @@
             </div>
 
             <!-- Autre Responsable -->
-            <div class="col-md-12">
+            <div class="col-md-6">
               <div class="d-flex flex-column">
                 <select class="form-control select2" style="padding-left: 10px;" id="MultipleRefResponsable" name="autre_responsable" multiple="multiple"
                   data-placeholder="Autres responsables">
@@ -217,6 +235,8 @@
 
 <script>
   let formReferentielID = null;
+    var allSubSectors = [];
+
   $(document).ready(function() {
     initSelect2("#addReferentielModal");
 
@@ -251,6 +271,7 @@
           form.echelle.value = result.data.echelle;
           form.modele.value = result.data.modele;
           form.domaine.value = result.data.domaine;
+          form.action.value = result.data.action;
           form.responsable.value = result.data.responsable;
           form.fonction_agregation.value = result.data.fonction_agregation;
           form.seuil_min.value = result.data.seuil_min;
@@ -261,6 +282,7 @@
           $('#MultipleRefResponsable').val(result.data.autre_responsable.split(','));
           $('#MultipleRefResponsable').trigger('change');
           $('#MultipleRefConvention').trigger('change');
+          $('#referentielAction').attr('disabled', false);
         } catch (error) {
           errorAction('Erreur lors du chargement des données.');
         } finally {
@@ -291,6 +313,41 @@
         $('#referentielContentContainer').hide();
       }, 200);
     });
+
+    $('#referentielAction option').each(function() {
+        if ($(this).val()) {
+            allSubSectors.push({
+                value: $(this).val(),
+                text: $(this).text(),
+                parent: $(this).data('parent')
+            });
+        }
+    });
+
+    $('#referentielDomaine').on('change', function() {
+        var selectedSectorId = $(this).val();
+        var $subSectorSelect = $('#referentielAction');
+        $subSectorSelect.val('');
+        $subSectorSelect.find('option').not(':first').remove();
+        
+        if (selectedSectorId) {
+            var filteredSubSectors = allSubSectors.filter(function(subSector) {
+                return subSector.parent == selectedSectorId;
+            });
+            
+            $.each(filteredSubSectors, function(index, subSector) {
+                $subSectorSelect.append($('<option>', {
+                    value: subSector.value,
+                    text: subSector.text
+                }));
+            });
+            $subSectorSelect.attr('disabled', false);
+        } else {
+            $subSectorSelect.attr('disabled', true);
+        }
+        $subSectorSelect.trigger('change');
+    });
+    $('#referentielAction').attr('disabled', true);
 
     $('#FormReferentiel').on('submit', async function(event) {
       event.preventDefault();

@@ -8,6 +8,7 @@ class NiveauResultat
     public $code;
     public $name;
     public $niveau;
+    public $parent;
     public $programme;
     public $add_by;
 
@@ -18,12 +19,13 @@ class NiveauResultat
 
     public function create()
     {
-        $query = "INSERT INTO " . $this->table . " (code, name, niveau, programme, add_by) VALUES 
-             (:code, :name, :niveau, :programme, :add_by)";
+        $query = "INSERT INTO " . $this->table . " (code, name, niveau, parent, programme, add_by) VALUES 
+             (:code, :name, :niveau, :parent, :programme, :add_by)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':code', $this->code);
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':niveau', $this->niveau);
+        $stmt->bindParam(':parent', $this->parent);
         $stmt->bindParam(':programme', $this->programme);
         $stmt->bindParam(':add_by', $this->add_by);
 
@@ -74,11 +76,12 @@ class NiveauResultat
 
     public function update()
     {
-        $query = "UPDATE " . $this->table . " SET code=:code, name=:name, niveau=:niveau, programme=:programme, add_by=:add_by WHERE id=:id";
+        $query = "UPDATE " . $this->table . " SET code=:code, name=:name, niveau=:niveau, parent=:parent, programme=:programme, add_by=:add_by WHERE id=:id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':code', $this->code);
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':niveau', $this->niveau);
+        $stmt->bindParam(':parent', $this->parent);
         $stmt->bindParam(':programme', $this->programme);
         $stmt->bindParam(':add_by', $this->add_by);
         $stmt->bindParam(':id', $this->id);
@@ -101,3 +104,4 @@ class NiveauResultat
         return false;
     }
 }
+

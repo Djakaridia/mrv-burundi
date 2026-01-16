@@ -30,7 +30,7 @@ $uploadDirectory = $routePath . 'uploads/couches/';
 
 function sanitize_input($data)
 {
-    return htmlspecialchars(trim($data));
+    return trim($data);
 }
 
 switch ($requestMethod) {

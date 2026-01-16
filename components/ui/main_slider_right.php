@@ -75,11 +75,11 @@
                     $series_data[] = $secteur_data;
                 }
             ?>{
-                id: '<?= $id_chart ?>',
+                id: "<?= $id_chart ?>",
                 categories: <?= json_encode($annees) ?>,
                 series: <?= json_encode($series_data) ?>,
-                unite: '<?= ($unite_grouped[$referentiel['id']] ?? 'Unité') ?>',
-                title: '<?= ($referentiel['intitule']) . ' (' . $unite_grouped[$referentiel['id']] . ')' ?>'
+                unite: "<?= ($unite_grouped[$referentiel['id']] ?? 'Unité') ?>",
+                title: "<?= ($referentiel['intitule']) . " (" . $unite_grouped[$referentiel['id']] . ")" ?>"
             },
             <?php endforeach; ?>
         ];

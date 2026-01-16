@@ -33,7 +33,7 @@ $uploadDirectory = $routePath . 'uploads/inventories/';
 
 function sanitize_input($data)
 {
-    return htmlspecialchars(trim($data));
+    return trim($data);
 }
 
 switch ($requestMethod) {

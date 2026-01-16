@@ -208,9 +208,12 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
         color: var(--bd-green-dark) !important;
         box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
     }
-/* 
-    #navbarDefault {
-        border-bottom: 1px solid var(--bd-green-light);
-        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
-    } */
+
+    #sidebarDefault .nav-link-text {
+        color: var(--bd-white) !important;
+    }
+
+    #sidebarDefault .nav-link-icon:hover {
+        color: var(--bd-green-dark) !important;
+    }
 </style>

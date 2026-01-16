@@ -29,7 +29,7 @@ $requestMethod = $_SERVER['REQUEST_METHOD'];
 // Input sanitization function
 function sanitize_input($data)
 {
-    return htmlspecialchars(trim($data));
+    return trim($data);
 }
 
 switch ($requestMethod) {
@@ -62,17 +62,18 @@ switch ($requestMethod) {
             $referentiel->intitule = sanitize_input($_POST['intitule']);
             $referentiel->description = sanitize_input($_POST['description']);
             $referentiel->categorie = sanitize_input($_POST['categorie']);
-            $referentiel->norme = sanitize_input($_POST['norme']);
             $referentiel->unite = sanitize_input($_POST['unite']);
             $referentiel->echelle = sanitize_input($_POST['echelle']);
             $referentiel->modele = sanitize_input($_POST['modele']);
             $referentiel->domaine = sanitize_input($_POST['domaine']);
+            $referentiel->action = sanitize_input($_POST['action']);
             $referentiel->responsable = sanitize_input($_POST['responsable']);
             $referentiel->autre_responsable = sanitize_input($_POST['autre_responsable']);
             $referentiel->fonction_agregation = sanitize_input($_POST['fonction_agregation']);
-            $referentiel->seuil_min = sanitize_input($_POST['seuil_min']);
-            $referentiel->seuil_max = sanitize_input($_POST['seuil_max']);
             $referentiel->sens_evolution = sanitize_input($_POST['sens_evolution']);
+            $referentiel->seuil_min = sanitize_input($_POST['seuil_min'] ?? "");
+            $referentiel->seuil_max = sanitize_input($_POST['seuil_max'] ?? "");
+            $referentiel->norme = sanitize_input($_POST['norme'] ?? "");
             $referentiel->in_dashboard = sanitize_input($_POST['in_dashboard'] ?? 0);
             $referentiel->add_by = sanitize_input($payload['user_id']);
 
@@ -86,17 +87,18 @@ switch ($requestMethod) {
             $referentiel->intitule = sanitize_input($_POST['intitule']);
             $referentiel->description = sanitize_input($_POST['description']);
             $referentiel->categorie = sanitize_input($_POST['categorie']);
-            $referentiel->norme = sanitize_input($_POST['norme']);
             $referentiel->unite = sanitize_input($_POST['unite']);
             $referentiel->echelle = sanitize_input($_POST['echelle']);
             $referentiel->modele = sanitize_input($_POST['modele']);
             $referentiel->domaine = sanitize_input($_POST['domaine']);
+            $referentiel->action = sanitize_input($_POST['action']);
             $referentiel->responsable = sanitize_input($_POST['responsable']);
             $referentiel->autre_responsable = sanitize_input($_POST['autre_responsable']);
             $referentiel->fonction_agregation = sanitize_input($_POST['fonction_agregation']);
-            $referentiel->seuil_min = sanitize_input($_POST['seuil_min']);
-            $referentiel->seuil_max = sanitize_input($_POST['seuil_max']);
             $referentiel->sens_evolution = sanitize_input($_POST['sens_evolution']);
+            $referentiel->seuil_min = sanitize_input($_POST['seuil_min']??"");
+            $referentiel->seuil_max = sanitize_input($_POST['seuil_max']??"");
+            $referentiel->norme = sanitize_input($_POST['norme']??"");
             $referentiel->in_dashboard = sanitize_input($_POST['in_dashboard'] ?? 0);
             $referentiel->add_by = sanitize_input($payload['user_id']);
 

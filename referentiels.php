@@ -108,7 +108,7 @@
                       </td>
 
                       <td class="align-middle px-2">
-                        <?php echo $referentiel['intitule']; ?>
+                        <?php echo html_entity_decode($referentiel['intitule']); ?>
                       </td>
 
                       <td class="align-middle px-2">

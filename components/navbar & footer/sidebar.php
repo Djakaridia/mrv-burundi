@@ -140,45 +140,8 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
 
                 <li class="nav-item">
                     <div class="navbar-vertical-label bg-light-subtle m-0 px-2 py-1">
-                        <i class="fas fa-list me-1"></i> Inventaires
+                        <i class="fas fa-list me-1"></i> Inventaires GES
                     </div>
-
-                    <!-- <div class="nav-item-wrapper">
-                        <a class="nav-link dropdown-indicator label-1 rounded-0 py-2 m-0" href="#nv-secteurs" role="button" data-bs-toggle="collapse" aria-expanded="<?= in_array($pageCurr, ['sectors', 'synchronisation']) ? 'true' : 'false'; ?>" aria-controls="nv-secteurs">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div class="d-flex align-items-center">
-                                    <span class="nav-link-icon ms-2 my-1"><span data-feather="twitch"></span></span>
-                                    <span class="nav-link-text">Secteurs</span>
-                                </div>
-                                <div class="dropdown-indicator-icon-wrapper">
-                                    <span class="fas fa-chevron-right dropdown-indicator-icon"></span>
-                                </div>
-                            </div>
-                        </a>
-                        <div class="parent-wrapper label-1">
-                            <ul class="nav collapse parent rounded-1 ms-1 <?= in_array($pageCurr, ['sectors', 'synchronisation']) ? 'show' : ''; ?>" data-bs-parent="#navbarVerticalCollapse" id="nv-secteurs">
-                                <li class="collapsed-nav-item-title d-none">Secteurs</li>
-                                <li class="nav-item overflow-hidden">
-                                    <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo in_array($pageCurr, ['sectors', 'synchronisation']) && !isset($_GET['id']) ? 'active' : '' ?>" href="sectors.php">
-                                        <div class="d-flex align-items-center">
-                                            <span class="fas fa-chevron-right fs-11"></span>
-                                            <span class="nav-link-text ms-lg-0 ms-1">Aperçu</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <?php foreach ($secteurs_nav as $secteur) { ?>
-                                    <li class="nav-item overflow-hidden">
-                                        <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'sectors' && isset($_GET['id']) && $_GET['id'] == $secteur['id'] ? 'active' : '' ?>" href="sectors.php?id=<?= $secteur['id'] ?>">
-                                            <div class="d-flex align-items-center">
-                                                <span class="fas fa-chevron-right fs-11"></span>
-                                                <span class="nav-link-text ms-lg-0 ms-1"><?= $secteur['name'] ?></span>
-                                            </div>
-                                        </a>
-                                    </li>
-                                <?php } ?>
-                            </ul>
-                        </div>
-                    </div> -->
 
                     <div class="nav-item-wrapper cursor-pointer" onclick="window.location.href = 'inventory.php'">
                         <a class="nav-link dropdown-indicator label-1 rounded-0 py-2 m-0 <?php echo $pageCurr === 'inventory' ? 'active' : '' ?>" href="inventory.php" role="button" aria-expanded="<?= $pageCurr === 'inventory' ? 'true' : 'false'; ?>">
@@ -186,6 +149,19 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                                 <div class="d-flex align-items-center">
                                     <span class="nav-link-icon ms-2 my-1"><span data-feather="server"></span></span>
                                     <span class="nav-link-text">Inventaires</span>
+                                </div>
+                                <div class="dropdown-indicator-icon-wrapper">
+                                    <span class="fas fa-chevron-right dropdown-indicator-icon"></span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="nav-item-wrapper cursor-pointer" onclick="window.location.href = 'register_carbone.php'">
+                        <a class="nav-link dropdown-indicator label-1 rounded-0 py-2 m-0 <?php echo $pageCurr === 'register_carbone' ? 'active' : '' ?>" href="register_carbone.php" role="button" aria-expanded="<?= $pageCurr === 'register_carbone' ? 'true' : 'false'; ?>">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <span class="nav-link-icon ms-2 my-1"><span data-feather="twitch"></span></span>
+                                    <span class="nav-link-text">Registre carbone</span>
                                 </div>
                                 <div class="dropdown-indicator-icon-wrapper">
                                     <span class="fas fa-chevron-right dropdown-indicator-icon"></span>
@@ -201,7 +177,7 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                     </div>
 
                     <div class="nav-item-wrapper">
-                        <a class="nav-link dropdown-indicator label-1 rounded-0 py-2 m-0" href="#nv-projects" role="button" data-bs-toggle="collapse" aria-expanded="<?= in_array($pageCurr, ['niveau_resultat', 'projects', 'project_view', 'cadre_resultat_cr', 'fiches_dynamiques']) ? 'true' : 'false'; ?>" aria-controls="nv-projects">
+                        <a class="nav-link dropdown-indicator label-1 rounded-0 py-2 m-0" href="#nv-projects" role="button" data-bs-toggle="collapse" aria-expanded="<?= in_array($pageCurr, ['programmes', 'projects', 'project_view', 'niveau_resultat', 'cadre_resultat_cr', 'fiches_dynamiques']) ? 'true' : 'false'; ?>" aria-controls="nv-projects">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center">
                                     <span class="nav-link-icon ms-2 my-1"><span data-feather="airplay"></span></span>
@@ -213,13 +189,21 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                             </div>
                         </a>
                         <div class="parent-wrapper label-1">
-                            <ul class="nav collapse parent rounded-1 ms-1 <?= in_array($pageCurr, ['niveau_resultat', 'projects', 'project_view', 'cadre_resultat_cr', 'fiches_dynamiques']) ? 'show' : ''; ?>" data-bs-parent="#navbarVerticalCollapse" id="nv-projects">
+                            <ul class="nav collapse parent rounded-1 ms-1 <?= in_array($pageCurr, ['programmes', 'projects', 'project_view', 'niveau_resultat', 'cadre_resultat_cr', 'fiches_dynamiques']) ? 'show' : ''; ?>" data-bs-parent="#navbarVerticalCollapse" id="nv-projects">
                                 <li class="collapsed-nav-item-title d-none">Fiche des projets</li>
+                                <li class="nav-item overflow-hidden">
+                                    <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'programmes' ? 'active' : '' ?>" href="programmes.php">
+                                        <div class="d-flex align-items-center">
+                                            <span class="fas fa-chevron-right fs-11"></span>
+                                            <span class="nav-link-text ms-lg-0 ms-1">Programmes</span>
+                                        </div>
+                                    </a>
+                                </li>
                                 <li class="nav-item overflow-hidden">
                                     <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo in_array($pageCurr, ['projects', 'project_view']) ? 'active' : '' ?>" href="projects.php">
                                         <div class="d-flex align-items-center">
                                             <span class="fas fa-chevron-right fs-11"></span>
-                                            <span class="nav-link-text ms-lg-0 ms-1">Aperçu</span>
+                                            <span class="nav-link-text ms-lg-0 ms-1">Projets</span>
                                         </div>
                                     </a>
                                 </li>
@@ -387,7 +371,7 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                                         </div>
                                     </a>
                                 </li>
-                                  <li class="nav-item overflow-hidden">
+                                <li class="nav-item overflow-hidden">
                                     <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'rapport_sectoriel' ? 'active' : '' ?>" href="rapport_sectoriel.php">
                                         <div class="d-flex align-items-center">
                                             <span class="fas fa-chevron-right fs-11"></span>

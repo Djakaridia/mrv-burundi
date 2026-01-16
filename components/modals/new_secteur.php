@@ -50,11 +50,10 @@
                 </div>
               </div>
 
-              <div class="col-12 mt-1">
+              <div id="sec_organism" class="col-12 mt-1">
                 <div class="mb-1">
-                  <label class="form-label">Organisme*</label>
-                  <input class="form-control" type="text" name="organisme" id="secteur_organism" placeholder="Entrer l'organisme"
-                    required />
+                  <label class="form-label">Organisme</label>
+                  <input class="form-control" type="text" name="organisme" id="secteur_organism" placeholder="Entrer l'organisme"/>
                 </div>
               </div>
 
@@ -109,8 +108,10 @@
       if (secteur_id) {
         form.parent_id.value = secteur_id;
         $('#sec_parent').removeClass('d-none');
+        $('#sec_organism').addClass('d-none');
       } else {
         $('#sec_parent').addClass('d-none');
+        $('#sec_organism').removeClass('d-none');
       }
 
       if (dataId) {

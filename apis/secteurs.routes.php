@@ -29,7 +29,7 @@ $requestMethod = $_SERVER['REQUEST_METHOD'];
 // Input sanitization function
 function sanitize_input($data)
 {
-    return htmlspecialchars(trim($data));
+    return trim($data);
 }
 
 switch ($requestMethod) {
@@ -60,9 +60,9 @@ switch ($requestMethod) {
             $secteur->id = $id;
             $secteur->name = sanitize_input($_POST['name']);
             $secteur->code = sanitize_input($_POST['code']);
-            $secteur->organisme = sanitize_input($_POST['organisme']);
-            $secteur->domaine = sanitize_input($_POST['domaine']??"none");
-            $secteur->source = sanitize_input($_POST['source']??"none");
+            $secteur->organisme = sanitize_input($_POST['organisme']??"N/A");
+            $secteur->domaine = sanitize_input($_POST['domaine']??"N/A");
+            $secteur->source = sanitize_input($_POST['source']??"N/A");
             $secteur->parent_id = sanitize_input($_POST['parent_id'] ?? 0);
             $secteur->description = sanitize_input($_POST['description']);
             $secteur->add_by = sanitize_input($payload['user_id']);
@@ -75,9 +75,9 @@ switch ($requestMethod) {
         } else {
             $secteur->name = sanitize_input($_POST['name']);
             $secteur->code = sanitize_input($_POST['code']);
-            $secteur->organisme = sanitize_input($_POST['organisme']);
-            $secteur->domaine = sanitize_input($_POST['domaine']??"none");
-            $secteur->source = sanitize_input($_POST['source']??"none");
+            $secteur->organisme = sanitize_input($_POST['organisme']??"N/A");
+            $secteur->domaine = sanitize_input($_POST['domaine']??"N/A");
+            $secteur->source = sanitize_input($_POST['source']??"N/A");
             $secteur->parent_id = sanitize_input($_POST['parent_id'] ?? 0);
             $secteur->description = sanitize_input($_POST['description']);
             $secteur->add_by = sanitize_input($payload['user_id']);

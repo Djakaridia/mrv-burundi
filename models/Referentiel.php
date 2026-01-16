@@ -15,6 +15,7 @@ class Referentiel
     public $echelle;
     public $modele;
     public $domaine;
+    public $action;
     public $responsable;
     public $autre_responsable;
     public $fonction_agregation;
@@ -34,9 +35,9 @@ class Referentiel
     public function create()
     {
         $query = "INSERT INTO " . $this->table . " 
-                 (code, intitule, description, categorie, norme, unite, echelle, modele, domaine, responsable, autre_responsable, fonction_agregation, seuil_min, seuil_max, sens_evolution, in_dashboard, add_by) 
+                 (code, intitule, description, categorie, norme, unite, echelle, modele, domaine, action, responsable, autre_responsable, fonction_agregation, seuil_min, seuil_max, sens_evolution, in_dashboard, add_by) 
                   VALUES 
-                 (:code, :intitule, :description, :categorie, :norme, :unite, :echelle, :modele, :domaine, :responsable, :autre_responsable, :fonction_agregation, :seuil_min, :seuil_max, :sens_evolution, :in_dashboard, :add_by)";
+                 (:code, :intitule, :description, :categorie, :norme, :unite, :echelle, :modele, :domaine, :action, :responsable, :autre_responsable, :fonction_agregation, :seuil_min, :seuil_max, :sens_evolution, :in_dashboard, :add_by)";
 
         $stmt = $this->conn->prepare($query);
 
@@ -50,6 +51,7 @@ class Referentiel
         $stmt->bindParam(':echelle', $this->echelle);
         $stmt->bindParam(':modele', $this->modele);
         $stmt->bindParam(':domaine', $this->domaine);
+        $stmt->bindParam(':action', $this->action);
         $stmt->bindParam(':responsable', $this->responsable);
         $stmt->bindParam(':autre_responsable', $this->autre_responsable);
         $stmt->bindParam(':fonction_agregation', $this->fonction_agregation);
@@ -98,6 +100,7 @@ class Referentiel
                      echelle = :echelle,
                      modele = :modele,
                      domaine = :domaine,
+                     action = :action,
                      responsable = :responsable,
                      autre_responsable = :autre_responsable,
                      fonction_agregation = :fonction_agregation,
@@ -119,6 +122,7 @@ class Referentiel
         $stmt->bindParam(':echelle', $this->echelle);
         $stmt->bindParam(':modele', $this->modele);
         $stmt->bindParam(':domaine', $this->domaine);
+        $stmt->bindParam(':action', $this->action);
         $stmt->bindParam(':responsable', $this->responsable);
         $stmt->bindParam(':autre_responsable', $this->autre_responsable);
         $stmt->bindParam(':fonction_agregation', $this->fonction_agregation);

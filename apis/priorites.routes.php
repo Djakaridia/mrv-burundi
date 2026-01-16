@@ -29,7 +29,7 @@ $requestMethod = $_SERVER['REQUEST_METHOD'];
 // Input sanitization function
 function sanitize_input($data)
 {
-    return htmlspecialchars(trim($data));
+    return trim($data);
 }
 
 switch ($requestMethod) {

@@ -71,8 +71,7 @@
                                     <table class="table table-bordered table-striped">
                                         <tr>
                                             <td class="bg-light text-nowrap text-end text-primary"><strong>Intitulé du projet : </strong></td>
-                                            <td><?php echo html_entity_decode($project_curr['name']) . " (" . $project_curr['code'] . ")" ?>
-                                            </td>
+                                            <td><?php echo html_entity_decode($project_curr['name']) . " (" . $project_curr['code'] . ")" ?></td>
                                         </tr>
                                         <tr>
                                             <td class="bg-light text-nowrap text-end text-primary"><strong>Code IATI : </strong></td>
@@ -151,7 +150,8 @@
                                             <div class="text-primary fs-8 fw-bold mb-1 border-bottom">Source de Financement :</div>
                                             <ul>
                                                 <?php foreach ($conventions_project as $convention) { ?>
-                                                    <li class="my-1"><?php echo $convention["name"] ?> :
+                                                    <li class="my-1">
+                                                        <?php echo html_entity_decode($convention["name"]) ?> :
                                                         <span class="fw-bold">
                                                             <?php echo number_format($convention["montant"], 0, ',', ' ') . " USD"; ?>
                                                         </span>
@@ -322,7 +322,7 @@
                                                 ?>
                                                     <tr>
                                                         <td><?php echo $tache["code"] ?></td>
-                                                        <td><?php echo $tache["name"] ?></td>
+                                                        <td><?php echo html_entity_decode($tache["name"]) ?></td>
                                                         <td class="text-center"><?php echo $grouped_users[$tache['assigned_id']]['nom'] . ' ' . $grouped_users[$tache['assigned_id']]['prenom'] ?></td>
                                                         <td class="text-center">
                                                             <?php

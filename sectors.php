@@ -66,7 +66,7 @@
                       <th class="sort align-middle" scope="col"> Code</th>
                       <th class="sort align-middle" scope="col"> Intitulé</th>
                       <th class="sort align-middle" scope="col"> Organisme responsable</th>
-                      <th class="sort align-middle" scope="col"> Sous-secteurs</th>
+                      <th class="sort align-middle" scope="col"> Actions prioritaires</th>
                       <th class="sort align-middle" scope="col"> Status</th>
                       <th class="sort align-middle" scope="col" style="min-width:100px;">Actions</th>
                     </tr>
@@ -83,7 +83,7 @@
                         <td class="align-middle px-2"><?= $secteur['organisme'] ?></td>
                         <td class="align-middle px-2">
                           <button title="Voir" type="button" class="btn btn-sm btn-link text-primary p-0 m-0" onclick="window.location.href='sectors.php?id=<?= $secteur['id'] ?>'">
-                            Sous-secteurs <span class="badge bg-success px-1">(<?= count($sous_secteur_items) ?>)</span>
+                            Actions <span class="badge bg-success px-1">(<?= count($sous_secteur_items) ?>)</span>
                           </button>
                         </td>
                         <td class="align-middle px-2">
@@ -136,15 +136,19 @@
         <div class="mx-n4 mt-n5 px-0 mx-lg-n6 px-lg-0 bg-body-emphasis border border-start-0">
           <div class="card-body p-2 d-lg-flex flex-row justify-content-between align-items-center g-3">
             <div class="col-auto">
-              <h4 class="my-1 fw-black">Liste des sous secteurs du secteur
+              <h4 class="my-1 fw-black">Liste des actions prioritaires du secteur
                 <span class="badge bg-primary px-1"><?php echo array_pop($secteur_parent)['name'] ?></span>
               </h4>
             </div>
-            <div class="ms-lg-2">
+            <div class="ms-lg-2 d-flex gap-2">
+              <button title="Retour" onclick="window.location.href='sectors.php'" class="btn btn-subtle-primary btn-sm">
+                <i class="fas fa-arrow-left"></i> Retour
+              </button>
+
               <button title="Ajouter" class="btn btn-subtle-primary btn-sm" id="addBtn" data-bs-toggle="modal"
                 data-bs-target="#addSecteurModal" data-parent_id="<?php echo $_GET['id'] ?>"
                 aria-haspopup="true" aria-expanded="false" data-bs-reference="child">
-                <i class="fas fa-plus"></i> Ajouter un sous secteur</button>
+                <i class="fas fa-plus"></i> Ajouter une action</button>
             </div>
           </div>
         </div>
@@ -159,7 +163,6 @@
                       <th class="sort align-middle" scope="col"> Code</th>
                       <th class="sort align-middle" scope="col"> Nom</th>
                       <th class="sort align-middle" scope="col"> Secteur</th>
-                      <th class="sort align-middle" scope="col"> Description</th>
                       <th class="sort align-middle" scope="col" style="min-width:100px;"> Actions</th>
                     </tr>
                   </thead>
@@ -176,7 +179,6 @@
                               <?php endif; ?>
                             <?php endforeach; ?>
                           </td>
-                          <td class="align-middle product py-0"> <?php echo $sous_secteur['description'] ?> </td>
                           <td class="align-middle review">
                             <div class="position-relative">
                               <div class="">

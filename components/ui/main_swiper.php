@@ -84,12 +84,12 @@
                     }
 
                 ?> {
-                        id: '<?= $id_chart ?>',
+                        id: "<?= $id_chart ?>",
                         categories: <?= json_encode($annees ?? []) ?>,
                         cibles: <?= json_encode($cibles ?? []) ?>,
                         suivis: <?= json_encode($suivis ?? []) ?>,
-                        unite: '<?= $unite_grouped[$referentiel['id']] ?? 'Unité' ?>',
-                        title: '<?= $referentiel['intitule'] . ' (' . $unite_grouped[$referentiel['id']] . ')' ?>'
+                        unite: "<?= $unite_grouped[$referentiel['id']] ?? 'Unité' ?>",
+                        title: "<?= $referentiel['intitule'] . " (" . $unite_grouped[$referentiel['id']] . ")" ?>"
                     },
                 <?php endforeach; ?>
             <?php endif; ?>

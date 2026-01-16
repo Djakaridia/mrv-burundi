@@ -72,6 +72,7 @@
   $referentiels_dash = array_filter($referentiels, function ($referentiel) {
     return ($referentiel['state'] == 'actif' && $referentiel['in_dashboard'] == 1);
   });
+  sort($referentiels_dash);
 
   $unite = new Unite($db);
   $unites = $unite->read();
@@ -328,7 +329,7 @@
                 ?>
                     <div onclick="window.location.href = 'project_view.php?id=<?= $projet['id'] ?>';" class="list-group-item list-group-item-action cursor-pointer border-bottom shadow-sm mb-1 py-2 px-3">
                       <div class="d-flex justify-content-between align-items-center">
-                        <h6 class="mb-1"><?= $projet['name'] ?></h6>
+                        <h6 class="mb-1"><?= html_entity_decode($projet['name']) ?></h6>
                         <span class="badge badge-phoenix fs-10 badge-phoenix-<?= $daysLeft < 30 ? 'danger' : ($daysLeft < 90 ? 'warning' : 'success') ?>"><?= $daysLeft ?> jours</span>
                       </div>
                       <p class="mb-0 fs-10 text-body-secondary">Échéance: <?= date('d/m/Y', strtotime($projet['end_date'])) ?></p>
@@ -513,7 +514,7 @@
                         <p class="mb-0 fs-9 text-body"><?= $projet['code'] ?></p>
                       </td>
                       <td class="align-middle ps-2">
-                        <a class="mb-0 fs-9 fw-semibold" href="project_view.php?id=<?= $projet['id'] ?>"><?= $projet['name'] ?></a>
+                        <a class="mb-0 fs-9 fw-semibold" href="project_view.php?id=<?= $projet['id'] ?>"><?= html_entity_decode($projet['name']) ?></a>
                       </td>
                       <td class="align-middle ps-2">
                         <p class="mb-0 fs-9 text-body">

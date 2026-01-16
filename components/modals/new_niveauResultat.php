@@ -1,6 +1,6 @@
 <div class="modal fade" id="addObjNiveauModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
   aria-labelledby="addObjNiveauModal" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog modal-md modal-dialog-centered">
     <div class="modal-content bg-body-highlight p-4">
       <div class="modal-header justify-content-between border-0 p-0 mb-3">
         <h3 class="mb-0" id="obj_objectif_modtitle">Ajouter un résultat</h3>
@@ -20,14 +20,30 @@
         <div id="niveauResultatContentContainer" style="display: none;">
           <form action="" name="FormObjNiveau" id="FormObjNiveau" method="POST" enctype="multipart/form-data">
             <div class="row g-4">
-              <div class="col-lg-12 mt-1">
+              <div class="col-lg-6 mt-1">
                 <div class="mb-1">
-                  <label class="form-label">Niveau de résultat*</label>
+                  <label class="form-label">Niveau*</label>
                   <select class="form-select form-select-sm rounded-1" name="niveau" id="obj_niveau_niveau" required>
-                    <option value="">Sélectionner le niveau</option>
+                    <option value="" selected disabled>Sélectionner le niveau</option>
                     <?php if ($niveaux ?? []) : ?>
                       <?php foreach ($niveaux as $niveau) { ?>
-                        <option value="<?php echo $niveau['id']; ?>"><?php echo $niveau['name']; ?></option>
+                        <option value="<?php echo $niveau['id']; ?>" data-level="<?php echo $niveau['level']; ?>"><?php echo $niveau['name']; ?></option>
+                      <?php } ?>
+                    <?php endif; ?>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-lg-6 mt-1">
+                <div class="mb-1">
+                  <label class="form-label">Parent*</label>
+                  <select class="form-select form-select-sm rounded-1" name="parent" id="obj_niveau_parent" disabled required>
+                    <option value="" selected disabled>Sélectionner le parent</option>
+                    <?php if ($niveau_resultats ?? []) : ?>
+                      <?php foreach ($niveau_resultats as $niveau_resultat) { ?>
+                        <option value="<?= $niveau_resultat['id']; ?>" data-niveau="<?= $niveau_resultat['niveau']; ?>">
+                          <?= $niveau_resultat['code'] . ' - ' . $niveau_resultat['name']; ?>
+                        </option>
                       <?php } ?>
                     <?php endif; ?>
                   </select>
@@ -65,6 +81,9 @@
 
 <script>
   let formObjNiveauID = null;
+  const selectParent = $('#obj_niveau_parent');
+  const parentOptions = selectParent.find('option').clone();
+
   $(document).ready(function() {
     $('#addObjNiveauModal').on('shown.bs.modal', async function(event) {
       const dataId = $(event.relatedTarget).data('id');
@@ -81,6 +100,7 @@
 
       if (dataId) {
         formObjNiveauID = dataId;
+        selectParent.prop('disabled', false);
         $('#obj_objectif_modtitle').text('Modifier un résultat');
         $('#obj_objectif_modbtn').text('Modifier');
         $('#niveauResultatLoadingText').text("Chargement des données niveau...");
@@ -97,6 +117,7 @@
           form.code.value = result.data.code;
           form.name.value = result.data.name;
           form.niveau.value = result.data.niveau;
+          form.parent.value = result.data.parent;
           form.programme.value = result.data.programme;
         } catch (error) {
           errorAction('Impossible de charger les données.');
@@ -157,5 +178,36 @@
         submitBtn.text('Enregistrer');
       }
     });
+
+    $('#obj_niveau_niveau').on('change', function() {
+      const selectedLevel = $(this).find(':selected').data('level');
+
+      // Level 0 → Axe stratégique → pas de parent
+      if (selectedLevel === 0) {
+        selectParent.prop('disabled', true);
+        selectParent.val('');
+        return;
+      }
+
+      // Parent attendu = niveau supérieur (level - 1)
+      const expectedParentLevel = selectedLevel - 1;
+
+      selectParent.prop('disabled', false);
+      selectParent.empty();
+      selectParent.append(parentOptions.first()); // "Sélectionner le parent"
+
+      parentOptions.each(function() {
+        const parentNiveauId = $(this).data('niveau');
+
+        // Récupérer le level du niveau du parent
+        const parentLevel = $('#obj_niveau_niveau option[value="' + parentNiveauId + '"]').data('level');
+
+        if (parentLevel === expectedParentLevel) {
+          selectParent.append($(this));
+        }
+      });
+    });
+
+
   });
 </script>
