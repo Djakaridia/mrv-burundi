@@ -61,7 +61,7 @@
                     <option value="" selected disabled>Sélectionner une unité</option>
                     <?php if ($unites ?? []) : ?>
                       <?php foreach ($unites as $unite) : ?>
-                        <option value="<?= $unite['id'] ?>"><?= $unite['name'] ?></option>
+                        <option value="<?= $unite['name'] ?>"><?= $unite['description'] ?></option>
                       <?php endforeach; ?>
                     <?php endif; ?>
                   </select>
@@ -108,7 +108,6 @@
 </div>
 
 <script>
-  const unites = <?php echo json_encode($unites); ?>;
   let currentIndicId = null;
   let isEditing = false;
 
@@ -186,7 +185,7 @@
           tbody.append(`
             <tr class="align-middle">
               <td class="text-start px-2">${element.intitule}</td>
-              <td class="text-center">${unites.find(u => u.id == element.unite)?.name || '-'}</td>
+              <td class="text-center">${element.unite}</td>
               <td class="text-start text-capitalize">${element.type}</td>
               ${ciblesText}
               <td class="text-center d-flex justify-content-center align-items-center gap-2">

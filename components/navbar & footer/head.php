@@ -165,15 +165,14 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
     }
 
     #sidebarDefault .nav.parent .nav-link.active {
-        background: var(--bd-green-light) !important;
+        background: var(--bd-green-dark) !important;
         color: var(--bd-green-dark) !important;
     }
 
     #sidebarDefault .navbar-vertical-label {
-        background: var(--bd-gray) !important;
-        color: var(--bd-green-dark) !important;
-        border-left: 3px solid var(--bd-red);
-        border-radius: 0px 3px 3px 0px;
+        background: var(--bd-green-light) !important;
+        color: var(--bd-white) !important;
+        border-left: 5px solid var(--bd-red);
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }

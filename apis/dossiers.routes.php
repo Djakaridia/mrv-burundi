@@ -61,7 +61,7 @@ switch ($requestMethod) {
             $dossier->name = sanitize_input($_POST['name']);
             $dossier->description = sanitize_input($_POST['description']);
             $dossier->type = sanitize_input('autres');
-            $dossier->parent_id = sanitize_input($_POST['parent_id'] ?? 0);
+            $dossier->parent = sanitize_input($_POST['parent'] ?? 0);
             $dossier->add_by = sanitize_input($payload['user_id']);
 
             if (empty($dossier->name)) {
@@ -78,7 +78,7 @@ switch ($requestMethod) {
             $dossier->name = sanitize_input($_POST['name']);
             $dossier->description = sanitize_input($_POST['description']);
             $dossier->type = sanitize_input('autres');
-            $dossier->parent_id = sanitize_input($_POST['parent_id']);
+            $dossier->parent = sanitize_input($_POST['parent']);
             $dossier->add_by = sanitize_input($payload['user_id']);
 
             if (empty($dossier->name)) {

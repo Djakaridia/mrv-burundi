@@ -76,7 +76,7 @@
                   <option value="" selected disabled>Sélectionner une unité</option>
                   <?php if ($unites ?? []) : ?>
                     <?php foreach ($unites as $unite): ?>
-                      <option value="<?= $unite['id'] ?>"><?= $unite['name'] ?></option>
+                      <option value="<?= $unite['name'] ?>"><?= $unite['description'] ?></option>
                     <?php endforeach; ?>
                   <?php endif; ?>
                 </select>
@@ -89,9 +89,9 @@
               <div class="form-floating">
                 <select class="form-select" name="domaine" id="referentielDomaine" required>
                   <option value="" selected disabled>Sélectionner un secteur</option>
-                  <?php if ($secteurs ?? []) : ?>
+                  <?php if (!empty($secteurs)) : ?>
                     <?php foreach ($secteurs as $secteur): ?>
-                      <option value="<?= $secteur['id'] ?>"><?= $secteur['name'] ?></option>
+                      <option value="<?= $secteur['id'] ?? '' ?>"><?= $secteur['name'] ?? '' ?></option>
                     <?php endforeach; ?>
                   <?php endif; ?>
                 </select>
@@ -106,7 +106,7 @@
                   <option value="" selected disabled>Sélectionner une action prioritaire</option>
                   <?php if ($sous_secteurs ?? []) : ?>
                     <?php foreach ($sous_secteurs as $sous_sec): ?>
-                      <option value="<?= $sous_sec['id'] ?>" data-parent="<?= $sous_sec['parent_id'] ?>">
+                      <option value="<?= $sous_sec['id'] ?>" data-parent="<?= $sous_sec['parent'] ?>">
                         <?= $sous_sec['name'] ?>
                       </option>
                     <?php endforeach; ?>
@@ -235,7 +235,7 @@
 
 <script>
   let formReferentielID = null;
-    var allSubSectors = [];
+  var allSubSectors = [];
 
   $(document).ready(function() {
     initSelect2("#addReferentielModal");
@@ -315,37 +315,37 @@
     });
 
     $('#referentielAction option').each(function() {
-        if ($(this).val()) {
-            allSubSectors.push({
-                value: $(this).val(),
-                text: $(this).text(),
-                parent: $(this).data('parent')
-            });
-        }
+      if ($(this).val()) {
+        allSubSectors.push({
+          value: $(this).val(),
+          text: $(this).text(),
+          parent: $(this).data('parent')
+        });
+      }
     });
 
     $('#referentielDomaine').on('change', function() {
-        var selectedSectorId = $(this).val();
-        var $subSectorSelect = $('#referentielAction');
-        $subSectorSelect.val('');
-        $subSectorSelect.find('option').not(':first').remove();
-        
-        if (selectedSectorId) {
-            var filteredSubSectors = allSubSectors.filter(function(subSector) {
-                return subSector.parent == selectedSectorId;
-            });
-            
-            $.each(filteredSubSectors, function(index, subSector) {
-                $subSectorSelect.append($('<option>', {
-                    value: subSector.value,
-                    text: subSector.text
-                }));
-            });
-            $subSectorSelect.attr('disabled', false);
-        } else {
-            $subSectorSelect.attr('disabled', true);
-        }
-        $subSectorSelect.trigger('change');
+      var selectedSectorId = $(this).val();
+      var $subSectorSelect = $('#referentielAction');
+      $subSectorSelect.val('');
+      $subSectorSelect.find('option').not(':first').remove();
+
+      if (selectedSectorId) {
+        var filteredSubSectors = allSubSectors.filter(function(subSector) {
+          return subSector.parent == selectedSectorId;
+        });
+
+        $.each(filteredSubSectors, function(index, subSector) {
+          $subSectorSelect.append($('<option>', {
+            value: subSector.value,
+            text: subSector.text
+          }));
+        });
+        $subSectorSelect.attr('disabled', false);
+      } else {
+        $subSectorSelect.attr('disabled', true);
+      }
+      $subSectorSelect.trigger('change');
     });
     $('#referentielAction').attr('disabled', true);
 

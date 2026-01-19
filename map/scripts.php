@@ -387,7 +387,7 @@
                         <div class='project-info d-flex flex-column gap-1'>
                             <span><strong>Indicateur:</strong> " . $indicateur['intitule'] . "</span>
                             <span><strong>Code:</strong> " . $indicateur['code'] . "</span>
-                            <span><strong>Unité:</strong> " . $unites_assoc[$indicateur['unite']] . "</span>
+                            <span><strong>Unité:</strong> " . $indicateur['unite'] . "</span>
                             <span><strong>Responsable:</strong> " . $structures_assoc[$indicateur['responsable']] . "</span>
                             <span><strong>Valeur cible:</strong> " . $indicateur['valeur_cible'] . "</span>
                             <span><strong>Valeur réalisée:</strong> " . $suivis_assoc[$indicateur['id']] . "</span>

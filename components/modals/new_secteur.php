@@ -31,11 +31,11 @@
 
                 <div id="sec_parent" class="col d-none">
                   <label class="form-label">Secteur*</label>
-                  <select class="form-select" name="parent_id" id="parent_id">
-                    <option value="0" selected>Selectionnez le secteur</option>
-                    <?php if ($secteurs ?? []) : ?>
+                  <select class="form-select" name="parent" id="parent">
+                    <option value="0" selected disabled>Selectionnez le secteur</option>
+                    <?php if (!empty($secteurs)) : ?>
                       <?php foreach ($secteurs as $secteur): ?>
-                        <option value="<?php echo $secteur['id'] ?>"><?php echo $secteur['name'] ?></option>
+                        <option value="<?php echo $secteur['id']??"" ?>"><?php echo $secteur['name']??"" ?></option>
                       <?php endforeach; ?>
                     <?php endif; ?>
                   </select>
@@ -99,14 +99,13 @@
   $(document).ready(function() {
     $('#addSecteurModal').on('shown.bs.modal', async function(event) {
       const dataId = $(event.relatedTarget).data('id');
-      const secteur_id = $(event.relatedTarget).data('parent_id');
+      const parent = $(event.relatedTarget).data('parent');
       const form = document.getElementById('FormSecteur');
       // Show loading screen and hide content
       $('#secteurLoadingScreen').show();
       $('#secteurContentContainer').hide();
 
-      if (secteur_id) {
-        form.parent_id.value = secteur_id;
+      if (parent) {
         $('#sec_parent').removeClass('d-none');
         $('#sec_organism').addClass('d-none');
       } else {
@@ -136,7 +135,7 @@
           // form.domaine.value = secteurData.domaine;
           // form.source.value = secteurData.source;
           form.description.value = secteurData.description;
-          form.parent_id.value = secteurData.parent_id;
+          form.parent.value = secteurData.parent;
         } catch (error) {
           errorAction('Impossible de charger les données.');
         } finally {

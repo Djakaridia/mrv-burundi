@@ -37,7 +37,7 @@
         $secteur = new Secteur($db);
         $secteurs = $secteur->read();
         $secteurs = array_filter($secteurs, function ($structure) {
-            return $structure['state'] == 'actif' && $structure['parent_id'] == 0;
+            return $structure['state'] == 'actif' && $structure['parent'] == 0;
         });
 
         $secteurs_project = array_filter($secteurs, function ($s) use ($project_curr) {
@@ -150,13 +150,7 @@
                                             <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                                                 <td class="align-middle px-2 py-0"> <?php echo $indicateur['code']; ?> </td>
                                                 <td class="align-middle px-2"> <?php echo $indicateur['intitule']; ?> </td>
-                                                <td class="align-middle px-2 py-0">
-                                                    <?php foreach ($unites as $unite) { ?>
-                                                        <?php if ($unite['id'] == $indicateur['unite']) { ?>
-                                                            <?php echo $unite['name']; ?>
-                                                        <?php } ?>
-                                                    <?php } ?>
-                                                </td>
+                                                <td class="align-middle px-2 py-0"><?php echo $indicateur['unite']; ?></td>
 
                                                 <td class="align-middle px-2 py-0"> <?php echo strtoupper($referentiel_curr['categorie'] ?? '-'); ?> </td>
                                                 <td class="align-middle px-2 py-0"> <?php echo listModeCalcul()[$indicateur['mode_calcul'] ?? '-']; ?> </td>

@@ -18,14 +18,41 @@ CREATE TABLE IF NOT EXISTS t_inventaires (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
     annee INT NOT NULL UNIQUE,
+    unite VARCHAR(50),
+    methode_ipcc VARCHAR(200),
+    source_donnees TEXT,
     description TEXT,
     viewtable TEXT,
     file TEXT,
+    afficher VARCHAR(20) DEFAULT 'oui',
+    status VARCHAR(20) DEFAULT 'invalide',
     add_by INT,
-    state VARCHAR(20) DEFAULT 'actif',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Table des resgistre carbone
+CREATE TABLE IF NOT EXISTS t_registres (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(200) NOT NULL,
+    annee INT NOT NULL UNIQUE,
+    description TEXT,
+    viewtable TEXT,
+    file TEXT,
+    afficher VARCHAR(20) DEFAULT 'oui',
+    status VARCHAR(20) DEFAULT 'invalide',
+    add_by INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- CREATE TABLE IF NOT EXISTS t_type_gaz (
+--     id INT AUTO_INCREMENT PRIMARY KEY,
+--     code VARCHAR(10) NOT NULL,        -- CO2, CH4, N2O
+--     name VARCHAR(50),
+--     prg DECIMAL(10,2) NOT NULL,       -- PRG IPCC
+--     reference_ipcc VARCHAR(50)        -- ex: IPCC AR6
+-- );
 
 -- Table des régions
 CREATE TABLE IF NOT EXISTS t_provinces (
@@ -87,7 +114,7 @@ CREATE TABLE IF NOT EXISTS t_zones (
     superficie VARCHAR(50),
     couches VARCHAR(50),
     couleur VARCHAR(20),
-    afficher VARCHAR(20),
+    afficher VARCHAR(20) DEFAULT 'oui',,
     description TEXT,
     type_id INT,
     add_by INT,
@@ -179,15 +206,15 @@ CREATE TABLE IF NOT EXISTS t_secteurs (
     domaine VARCHAR(200) NOT NULL,
     source TEXT,
     description TEXT,
-    parent_id INT DEFAULT 0,
+    parent INT DEFAULT 0,
     add_by INT,
     state VARCHAR(20) DEFAULT 'actif',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Table des actions
-CREATE TABLE IF NOT EXISTS t_actions (
+-- Table des actions prioritaires
+CREATE TABLE IF NOT EXISTS t_actions_prioritaires (
     id INT AUTO_INCREMENT PRIMARY KEY,
     code VARCHAR(50) NOT NULL,
     name VARCHAR(200) NOT NULL,
@@ -195,6 +222,7 @@ CREATE TABLE IF NOT EXISTS t_actions (
     objectif TEXT,
     secteur_id INT,
     add_by INT,
+    state VARCHAR(20) DEFAULT 'actif',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -226,7 +254,7 @@ CREATE TABLE IF NOT EXISTS t_dossiers (
     name VARCHAR(200) NOT NULL,
     type VARCHAR(50) NOT NULL,
     description TEXT,
-    parent_id INT DEFAULT 0,
+    parent INT DEFAULT 0,
     add_by INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -417,7 +445,7 @@ CREATE TABLE IF NOT EXISTS t_referentiel_indicateur (
     description TEXT,
     categorie VARCHAR(30),
     norme VARCHAR(30),
-    unite VARCHAR(30),
+    unite VARCHAR(50),
     domaine VARCHAR(30),
     action VARCHAR(30),
     echelle VARCHAR(100),

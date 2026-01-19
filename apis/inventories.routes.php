@@ -40,115 +40,230 @@ switch ($requestMethod) {
     case 'POST':
         $action = isset($_GET['action']) ? sanitize_input($_GET['action']) : null;
         if ($action == 'data') {
-            $inventory->annee = isset($_GET['annee']) ? intval($_GET['annee']) : null;
-            $data_inventory = $inventory->readByAnnee();
-            $tableName = $data_inventory['viewtable'];
-
-            if (!preg_match('/^[a-zA-Z0-9_]+$/', $tableName)) {
-                throw new Exception("Nom de table invalide");
-            }
-
-            if (isset($_FILES['file']) && $_FILES['file']['error'] == 0) {
-                $fileName = $_FILES['file']['name'];
-                $fileTmpName = $_FILES['file']['tmp_name'];
-                $allow_file = strval($_POST['allow_files']);
-
-                $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-                $newFileName = $data_inventory['annee'] . '-' . uniqid('', true) . '.' . $fileExt;
-                $fileDestination = $uploadDirectory . $newFileName;
-
-                if (!in_array('.' . $fileExt, explode(', ', $allow_file))) {
-                    http_response_code(400);
-                    echo json_encode(['status' => 'danger', 'message' => "Type de fichier non autorisé. Veuillez choisir un fichier de type: $allow_file"]);
+            try {
+                if (!isset($_GET['inventory']) || !is_numeric($_GET['inventory'])) {
+                    echo json_encode(["status" => "error", "message" => "Inventaire invalide ou manquant"]);
                     exit();
                 }
 
-                if (move_uploaded_file($fileTmpName, $fileDestination)) {
-                    $inventory->id = $data_inventory['id'];
-                    $inventory->name = $data_inventory['name'];
-                    $inventory->annee = $data_inventory['annee'];
-                    $inventory->description = $data_inventory['description'];
-                    $inventory->file = $fileDestination;
-                    $inventory->update();
+                $inventory->id = intval($_GET['inventory']);
+                $data_inventory = $inventory->readById();
+                if (!$data_inventory || !isset($data_inventory['viewtable'])) {
+                    echo json_encode(["status" => "error", "message" => "Aucun inventaire trouvé pour l'année spécifiée"]);
+                    exit();
+                }
+
+                $tableName = $data_inventory['viewtable'];
+                if (!preg_match('/^[a-zA-Z][a-zA-Z0-9_]{0,63}$/', $tableName)) {
+                    echo json_encode(["status" => "error", "message" => "Nom de table invalide ou trop long"]);
+                    exit();
+                }
+
+                if (!isset($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
+                    $errorMessage = match ($_FILES['file']['error'] ?? UPLOAD_ERR_NO_FILE) {
+                        UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE => "Le fichier est trop volumineux",
+                        UPLOAD_ERR_PARTIAL => "Le fichier n'a été que partiellement téléchargé",
+                        UPLOAD_ERR_NO_FILE => "Aucun fichier n'a été téléchargé",
+                        UPLOAD_ERR_NO_TMP_DIR => "Dossier temporaire manquant",
+                        UPLOAD_ERR_CANT_WRITE => "Échec de l'écriture du fichier",
+                        UPLOAD_ERR_EXTENSION => "Extension PHP bloquée",
+                        default => "Erreur inconnue lors du téléchargement"
+                    };
+                    echo json_encode(["status" => "error", "message" => $errorMessage]);
+                    exit();
+                }
+
+                $allowedExtensions = ['xlsx', 'xls', 'csv', 'ods'];
+                $fileExt = strtolower(pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION));
+                if (!in_array($fileExt, $allowedExtensions)) {
+                    echo json_encode(["status" => "error", "message" => "Type de fichier non autorisé. Types acceptés : " . implode(', ', $allowedExtensions)]);
+                    exit();
+                }
+
+                $maxFileSize = 10 * 1024 * 1024;
+                if ($_FILES['file']['size'] > $maxFileSize) {
+                    echo json_encode(["status" => "error", "message" => "Le fichier ne doit pas dépasser 10MB"]);
+                    exit();
+                }
+
+                $uploadDirectory = rtrim($uploadDirectory, '/') . '/';
+                if (!is_dir($uploadDirectory) || !is_writable($uploadDirectory)) {
+                    echo json_encode(["status" => "error", "message" => "Le répertoire de destination n'existe pas ou n'est pas accessible en écriture"]);
+                    exit();
+                }
+
+                $newFileName = sprintf('%d-%s.%s', $data_inventory['annee'], bin2hex(random_bytes(8)), $fileExt);
+                $fileDestination = $uploadDirectory . $newFileName;
+                $fileDestination = realpath(dirname($fileDestination)) . '/' . basename($newFileName);
+                if (!move_uploaded_file($_FILES['file']['tmp_name'], $fileDestination)) {
+                    echo json_encode(["status" => "error", "message" => "Impossible de déplacer le fichier téléchargé"]);
+                    exit();
+                }
+
+                $inventory->id = $data_inventory['id'] ?? null;
+                $inventory->file = $fileDestination;
+                if (!$inventory->updateFile()) {
+                    echo json_encode(["status" => "error", "message" => "Échec de la mise à jour du fichier dans la base de données"]);
+                    exit();
+                }
+
+                try {
+                    $spreadsheet = IOFactory::load($fileDestination);
+                    $sheetNames = ["Inventaire", "Sheet1", "Feuil1", "Feuille1", "Inventaire GES"];
+                    $sheetName = null;
+
+                    foreach ($sheetNames as $name) {
+                        if ($spreadsheet->getSheetByName($name)) {
+                            $sheetName = $name;
+                            break;
+                        }
+                    }
+
+                    if (!$sheetName) {
+                        $sheet = $spreadsheet->getActiveSheet();
+                        $sheetName = $sheet->getTitle();
+                    }
+
+                    $sheet = $spreadsheet->getSheetByName($sheetName) ?? $spreadsheet->getActiveSheet();
+                    $rawData = $sheet->toArray(null, true, true, true);
+                    if (count($rawData) < 2) {
+                        echo json_encode(["status" => "error", "message" => "Le fichier est vide ou ne contient pas suffisamment de données"]);
+                        exit();
+                    }
+
+                    $headers = array_shift($rawData);
+                    $columnsDefs = [];
+                    $cleanHeaders = [];
+                    $columnMap = [];
+                    $columnTypes = [];
+
+                    foreach ($headers as $key => $header) {
+                        $header = (string)($header ?? '');
+                        $cleanHeader = removeAccents(trim($header));
+                        $colName = cleanColumnName($cleanHeader);
+                        if ($colName === '' || $colName === 'column_') continue;
+
+                        $baseColName = $colName;
+                        $counter = 1;
+                        while (in_array("`$colName`", $cleanHeaders)) {
+                            $colName = $baseColName . '_' . $counter++;
+                        }
+
+                        $isNumericColumn = false;
+                        $hasDecimal = false;
+                        $sampleSize = min(10, count($rawData));
+                        $numericCount = 0;
+                        $decimalCount = 0;
+
+                        for ($i = 0; $i < $sampleSize; $i++) {
+                            if (isset($rawData[$i][$key])) {
+                                $value = $rawData[$i][$key];
+                                $formattedValue = formatCellValue($value);
+
+                                if (is_numeric($formattedValue)) {
+                                    $numericCount++;
+                                    if (is_float($formattedValue) || (is_string($formattedValue) && strpos($formattedValue, '.') !== false)) $decimalCount++;
+                                }
+                            }
+                        }
+
+                        if ($numericCount / $sampleSize > 0.7) {
+                            $isNumericColumn = true;
+                            if ($decimalCount / max(1, $numericCount) > 0.5) {
+                                $hasDecimal = true;
+                            }
+                        }
+
+                        if ($isNumericColumn) {
+                            if ($hasDecimal) {
+                                $columnsDefs[] = "`$colName` DECIMAL(15,3) NULL";
+                                $columnTypes[$key] = 'decimal';
+                            } else {
+                                $columnsDefs[] = "`$colName` INT NULL";
+                                $columnTypes[$key] = 'int';
+                            }
+                        } else {
+                            $columnsDefs[] = "`$colName` TEXT NULL";
+                            $columnTypes[$key] = 'text';
+                        }
+
+                        $cleanHeaders[] = "`$colName`";
+                        $columnMap[$key] = $colName;
+                    }
+
+                    if (empty($columnsDefs)) {
+                        echo json_encode(["status" => "error", "message" => "Aucune colonne valide détectée dans le fichier Excel."]);
+                        exit();
+                    }
+
+                    $columnsSql = implode(", ", $columnsDefs);
 
                     try {
-                        $spreadsheet = IOFactory::load($fileDestination);
-                        if ($spreadsheet->getSheetByName("Inventaire GES")) {
-                            $sheetName = "Inventaire GES";
-                        } elseif ($spreadsheet->getSheetByName("Sheet1")) {
-                            $sheetName = "Sheet1";
-                        } elseif ($spreadsheet->getSheetByName("Feuil1")) {
-                            $sheetName = "Feuil1";
-                        } else {
-                            echo json_encode(["status" => "danger", "message" => "Le fichier doit contenir une feuille nommée 'Inventaire GES', 'Sheet1' ou 'Feuil1'."]);
-                            exit();
-                        }
-
-                        $sheet = $spreadsheet->getSheetByName($sheetName);
-                        $data = $sheet->toArray(null, true, true, true);
-                        if (count($data) < 2) {
-                            echo json_encode(["status" => "danger", "message" => "Le fichier est vide ou ne contient pas suffisamment de données."]);
-                            exit();
-                        }
-
-                        $headers = array_shift($data);
-                        $columnsDefs = [];
-                        $cleanHeaders = [];
-                        foreach ($headers as $header) {
-                            $colHeader = removeAccents($header);
-                            $colName = cleanColumnName($colHeader);
-                            $columnsDefs[] = "`$colName` TEXT NULL";
-                            $cleanHeaders[] = "`$colName`";
-                        }
-
-                        $columnsSql = implode(", ", $columnsDefs);
-                        try {
-                            $stmt = $db->prepare("CREATE TABLE IF NOT EXISTS `$tableName` ($columnsSql) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
-                            $stmt->execute();
-                        } catch (\Throwable $th) {
-                            echo json_encode(["status" => "danger", "message" => "Erreur lors de la création de la table: " . $th->getMessage()]);
-                            exit();
-                        }
-
-                        try {
-                            $stmt = $db->prepare("SELECT * FROM `$tableName` LIMIT 1");
-                            $stmt->execute();
-                            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                            if (isset($result)) {
-                                $stmt = $db->prepare("DELETE FROM `$tableName`");
-                                $stmt->execute();
-                            } else {
-                                echo json_encode(["status" => "danger", "message" => "La table `$tableName` n'existe pas."]);
-                                exit();
-                            }
-                        } catch (\Throwable $th) {
-                            echo json_encode(["status" => "danger", "message" => "Erreur lors de la vérification ou du vidage de la table: " . $th->getMessage()]);
-                            exit();
-                        }
+                        $db->exec("DROP TABLE IF EXISTS `$tableName`");
+                        $db->exec("CREATE TABLE `$tableName` ( id INT PRIMARY KEY AUTO_INCREMENT, $columnsSql, imported_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+                        $db->beginTransaction();
 
                         $colNames = implode(",", $cleanHeaders);
                         $placeholders = rtrim(str_repeat("?,", count($cleanHeaders)), ",");
-                        $stmt = $db->prepare("INSERT INTO `$tableName` ($colNames) VALUES ($placeholders)");
+                        $insertStmt = $db->prepare("INSERT INTO `$tableName` ($colNames) VALUES ($placeholders)");
+                        $validRows = 0;
 
-                        foreach ($data as $row) {
+                        foreach ($rawData as $rowIndex => $row) {
                             $values = [];
+
                             foreach (array_keys($headers) as $key) {
-                                $values[] = $row[$key] ?? null;
+                                if (!isset($columnMap[$key])) continue;
+                                $value = $row[$key] ?? null;
+                                $formattedValue = formatCellValue($value);
+
+                                if (isset($columnTypes[$key])) {
+                                    if ($columnTypes[$key] === 'decimal' && is_numeric($formattedValue)) {
+                                        $formattedValue = number_format((float)$formattedValue, 3, '.', '');
+                                    } elseif ($columnTypes[$key] === 'int' && is_numeric($formattedValue)) {
+                                        $formattedValue = (int)$formattedValue;
+                                    }
+                                }
+
+                                $values[] = $formattedValue;
                             }
-                            $stmt->execute($values);
+
+                            $hasData = false;
+                            foreach ($values as $val) {
+                                if ($val !== null && $val !== '') {
+                                    $hasData = true;
+                                    break;
+                                }
+                            }
+
+                            if ($hasData) {
+                                $insertStmt->execute($values);
+                                $validRows++;
+                            }
                         }
 
-                        echo json_encode(["status" => "success", "message" => "Importation réussie.", "table" => $tableName]);
+                        $db->commit();
+                        error_log("Importation réussie dans la table $tableName : $validRows lignes importées");
+                        echo json_encode(["status" => "success", "message" => "Importation réussie.", "table" => $tableName, "rows_imported" => $validRows, "columns" => count($cleanHeaders)]);
                     } catch (Exception $e) {
-                        echo json_encode(["status" => "danger", "message" => $e->getMessage()]);
+                        echo json_encode(["status" => "danger", "message" => "Erreur lors du traitement du fichier : " . $e->getMessage()]);
                     }
+                } catch (Exception $e) {
+                    if (file_exists($fileDestination)) unlink($fileDestination);
+                    echo json_encode(["status" => "danger", "message" => "Erreur lors du traitement du fichier : " . $e->getMessage()]);
                 }
+            } catch (Exception $e) {
+                http_response_code(400);
+                echo json_encode(["status" => "danger", "message" => $e->getMessage(), "code" => $e->getCode()]);
+                exit();
             }
         } else {
             $id = isset($_GET['id']) ? sanitize_input($_GET['id']) : null;
             if (!$id) {
                 $inventory->name = sanitize_input($_POST['name']);
                 $inventory->annee = sanitize_input($_POST['annee']);
+                $inventory->unite = sanitize_input($_POST['unite']);
+                $inventory->methode_ipcc = sanitize_input($_POST['methode_ipcc']);
+                $inventory->source_donnees = sanitize_input($_POST['source_donnees']);
                 $inventory->description = sanitize_input($_POST['description']);
                 $inventory->viewtable = "vw_" . uniqid();
                 $inventory->add_by = sanitize_input($payload['user_id']);
@@ -167,6 +282,9 @@ switch ($requestMethod) {
                 $inventory->id = sanitize_input($_GET['id']);
                 $inventory->name = sanitize_input($_POST['name']);
                 $inventory->annee = sanitize_input($_POST['annee']);
+                $inventory->unite = sanitize_input($_POST['unite']);
+                $inventory->methode_ipcc = sanitize_input($_POST['methode_ipcc']);
+                $inventory->source_donnees = sanitize_input($_POST['source_donnees']);
                 $inventory->description = sanitize_input($_POST['description']);
                 $inventory->add_by = sanitize_input($payload['user_id']);
 
@@ -222,25 +340,6 @@ switch ($requestMethod) {
         echo json_encode(array("message" => "Method not allowed."));
         break;
 }
-
-
-function cleanColumnName($header)
-{
-    $header = str_replace(
-        ['₀', '₁', '₂', '₃', '₄', '₅', '₆', '₇', '₈', '₉', '⁰', '¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹'],
-        ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
-        $header
-    );
-    $header = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $header);
-    $header = preg_replace('/[^a-zA-Z0-9_]/', '_', strtolower($header));
-    $header = preg_replace('/_+/', '_', $header);
-    $header = trim($header, '_');
-    if ($header === '') {
-        $header = 'col_' . uniqid();
-    }
-    return $header;
-}
-
 
 $db = null;
 exit();

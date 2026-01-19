@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content bg-body-highlight p-4">
             <div class="modal-header justify-content-between border-0 p-0 mb-3">
-                <h3 class="mb-0" id="inventory_modtitle">Ajouter un inventaire</h3>
+                <h3 class="mb-0" id="inventory_modtitle">Importer des données</h3>
                 <button class="btn btn-sm btn-phoenix-secondary" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times text-danger"></span></button>
             </div>
             <div class="modal-body px-0">
@@ -39,15 +39,15 @@
 </div>
 
 <script>
-    let formInventoryAnnee = null;
+    let formInventoryId = null;
     $(document).ready(function() {
         $('#addDataInventoryModal').on('shown.bs.modal', async function(event) {
-            const dataAnnee = $(event.relatedTarget).data('annee');
+            const dataInventoryId = $(event.relatedTarget).data('inventory');
             const form = document.getElementById('FormDataInventory');
-            formInventoryAnnee = dataAnnee; 
+            formInventoryId = dataInventoryId; 
 
-            if(!dataAnnee){
-                errorAction('Veuillez selectionner une année');
+            if(!dataInventoryId){
+                errorAction('Veuillez sélectionner un inventaire');
                 $('#addDataInventoryModal').modal('hide');
             }
         });
@@ -69,7 +69,7 @@
             submitBtn.text('Envoi en cours...');
 
             try {
-                const response = await fetch("./apis/inventories.routes.php?action=data&annee=" + formInventoryAnnee, {
+                const response = await fetch("./apis/inventories.routes.php?action=data&inventory=" + formInventoryId, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     },

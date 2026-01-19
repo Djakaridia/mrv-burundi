@@ -63,7 +63,7 @@ switch ($requestMethod) {
             $secteur->organisme = sanitize_input($_POST['organisme']??"N/A");
             $secteur->domaine = sanitize_input($_POST['domaine']??"N/A");
             $secteur->source = sanitize_input($_POST['source']??"N/A");
-            $secteur->parent_id = sanitize_input($_POST['parent_id'] ?? 0);
+            $secteur->parent = sanitize_input($_POST['parent'] ?? 0);
             $secteur->description = sanitize_input($_POST['description']);
             $secteur->add_by = sanitize_input($payload['user_id']);
 
@@ -78,7 +78,7 @@ switch ($requestMethod) {
             $secteur->organisme = sanitize_input($_POST['organisme']??"N/A");
             $secteur->domaine = sanitize_input($_POST['domaine']??"N/A");
             $secteur->source = sanitize_input($_POST['source']??"N/A");
-            $secteur->parent_id = sanitize_input($_POST['parent_id'] ?? 0);
+            $secteur->parent = sanitize_input($_POST['parent'] ?? 0);
             $secteur->description = sanitize_input($_POST['description']);
             $secteur->add_by = sanitize_input($payload['user_id']);
 

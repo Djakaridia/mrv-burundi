@@ -29,8 +29,9 @@
                                 <thead class="bg-light">
                                     <tr>
                                         <th scope="col" class="text-center">Année</th>
-                                        <th scope="col" class="text-center">Libellé</th>
-                                        <th scope="col" class="text-center">Description</th>
+                                        <th scope="col" class="text-center">Intitulé</th>
+                                        <th scope="col" class="text-center">Unité</th>
+                                        <th scope="col" class="text-center">Méthode IPCC</th>
                                         <th scope="col" class="text-center">Actions</th>
                                     </tr>
                                 </thead>
@@ -42,25 +43,75 @@
                     <div id="inventoryFormContainer" style="display: none;">
                         <form action="" name="FormInventory" id="FormInventory" method="POST" enctype="multipart/form-data">
                             <div class="row g-4">
-                                <div class="col-lg-12 mt-1">
+                                <div class="col-lg-6 mt-1">
                                     <div class="mb-1">
                                         <label class="form-label">Année*</label>
                                         <input oninput="checkColumns('annee', 'inventory_annee', 'inventory_annee_feedback', 'inventories')"
-                                            class="form-control" type="number" min="2000" max="2100" name="annee" id="inventory_annee" placeholder="Entrer l'année" required />
+                                            class="form-control" type="number" min="2000" max="2100" name="annee" id="inventory_annee" value="<?= date('Y') ?>" placeholder="Entrer l'année" required />
                                         <div class="invalid-feedback" id="inventory_annee_feedback"></div>
                                     </div>
                                 </div>
-                                <div class="col-lg-12 mt-1">
+                                <div class="col-lg-6 mt-1">
                                     <div class="mb-1">
-                                        <label class="form-label">Libellé*</label>
-                                        <input class="form-control" type="text" name="name" id="inventory_name" placeholder="Entrer le libellé" required />
+                                        <label class="form-label">Unité*</label>
+                                        <select class="form-select" name="unite" id="inventory_unite" required>
+                                            <option value="" selected disabled>Sélectionner une unité</option>
+                                            <?php if ($unites ?? []) : ?>
+                                                <?php foreach ($unites as $unite) : ?>
+                                                    <option value="<?= $unite['name'] ?>"><?= $unite['description'] ?></option>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
+                                        </select>
                                     </div>
                                 </div>
 
                                 <div class="col-lg-12 mt-1">
                                     <div class="mb-1">
+                                        <label class="form-label">Intitulé*</label>
+                                        <input class="form-control" type="text" name="name" id="inventory_name" placeholder="Entrer le libellé" required />
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mt-1">
+                                    <div class="mb-1">
+                                        <label class="form-label">Méthode IPCC*</label>
+                                        <input class="form-control" type="text" name="methode_ipcc" id="inventory_methode_ipcc" placeholder="Entrer le libellé" required />
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 mt-1">
+                                    <div class="mb-1">
+                                        <label class="form-label">Source des données*</label>
+                                        <input class="form-control" type="text" name="source_donnees" id="inventory_source_donnees" placeholder="Entrer le libellé" required />
+                                    </div>
+                                </div>
+
+                                <!-- <div class="col-lg-6 mt-1">
+                                    <div class="mb-1">
+                                        <label class="form-label">Statut *</label>
+                                        <select class="form-select" name="status" id="inventory_status" required>
+                                            <option value="" selected disabled>Sélectionner un statut</option>
+                                            <option value="importe">Importer</option>
+                                            <option value="approuve">Approuver</option>
+                                            <option value="valide">Valider</option>
+                                            <option value="publie">Publier</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 mt-1">
+                                    <div class="mb-1">
+                                        <label class="form-label">Publication*</label>
+                                        <select class="form-select" name="afficher" id="inventory_publication" required>
+                                            <option value="" selected disabled>Sélectionner une publication</option>
+                                            <option value="publie">Publier</option>
+                                            <option value="non_publie">Non publier</option>
+                                        </select>
+                                    </div>
+                                </div> -->
+
+                                <div class="col-lg-12 mt-1">
+                                    <div class="mb-1">
                                         <label class="form-label">Description</label>
-                                        <textarea class="form-control" name="description" id="inventory_description" placeholder="Entrer la description" style="height: 60px"></textarea>
+                                        <textarea class="form-control" name="description" id="inventory_description" placeholder="Entrer la description" style="height: 50px"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -124,7 +175,8 @@
                                 <tr class="align-middle">
                                 <td class="text-center px-2">${element.annee}</td>
                                 <td class="text-center px-2">${element.name}</td>
-                                <td class="text-center px-2">${element.description}</td>
+                                <td class="text-center px-2">${element.unite}</td>
+                                <td class="text-center px-2">${element.methode_ipcc}</td>
                                 <td class="text-center px-2 d-flex justify-content-center align-items-center gap-2">
                                 <?php if (checkPermis($db, 'update')) : ?>
                                     <button type="button" onclick="editInventory('${element.id}')" 
@@ -142,10 +194,10 @@
                             </tr>`);
                     });
             } else {
-                tbody.html('<tr><td colspan="4" class="text-center py-5">Aucune donnée trouvée.</td></tr>');
+                tbody.html('<tr><td colspan="5" class="text-center py-5">Aucune donnée trouvée.</td></tr>');
             }
         } catch (error) {
-            tbody.html('<tr><td colspan="4" class="text-center py-5">Aucune donnée trouvée.</td></tr>');
+            tbody.html('<tr><td colspan="5" class="text-center py-5">Aucune donnée trouvée.</td></tr>');
         } finally {
             $('#inventoryLoadingScreen').hide();
             $('#inventoryContentContainer').show();
@@ -203,8 +255,11 @@
                 const result = await response.json();
                 if (result.status === 'success') {
                     form.annee.value = result.data.annee;
-                    form.description.value = result.data.description;
+                    form.unite.value = result.data.unite;
                     form.name.value = result.data.name;
+                    form.methode_ipcc.value = result.data.methode_ipcc;
+                    form.source_donnees.value = result.data.source_donnees;
+                    form.description.value = result.data.description;
                 }
             } catch (error) {
                 errorAction('Impossible de charger les données.');

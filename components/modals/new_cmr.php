@@ -84,7 +84,7 @@
                   <option value="" selected disabled>Sélectionner une unité</option>
                   <?php if ($unites ?? []) : ?>
                     <?php foreach ($unites as $unite) : ?>
-                      <option value="<?= $unite['id'] ?>"><?= $unite['name'] ?></option>
+                      <option value="<?= $unite['name'] ?>"><?= $unite['description'] ?></option>
                     <?php endforeach; ?>
                   <?php endif; ?>
                 </select>

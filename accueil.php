@@ -28,7 +28,7 @@
   $secteur = new Secteur($db);
   $secteurs = $secteur->read();
   $secteurs = array_filter($secteurs, function ($secteur) {
-    return $secteur['state'] == 'actif' && $secteur['parent_id'] == 0;
+    return $secteur['state'] == 'actif' && $secteur['parent'] == 0;
   });
 
   $projet = new Projet($db);
@@ -93,65 +93,34 @@
   $current_inventory_data = json_decode(!empty($current_inventory) ? $inventory->readData($current_inventory['viewtable']) : '', true);
 
   if (!empty($current_inventory_data['data'])) {
+    // ==================> Graphisme Evolution nette
+    $g2_years = [];
+    $g2_net_emissions_by_year = [];
+    foreach ($current_inventory_data['data'] as $row) {
+      $year = (int) ($row['annee'] ?? 0);
+      if (!$year) continue;
 
-    // ##############################################################
-    $secteur_categories = [];
-    $secteur_emissions = [];
-    foreach ($current_inventory_data['data'] as $entreprise) {
-      $secteur = $entreprise['secteur'] ?? 'Non spécifié';
-      $ges_totaux = floatval($entreprise['ges_totaux_kt_eq_co2'] ?? $entreprise['ges_totaux'] ?? 0);
-
-      if (!isset($secteur_emissions[$secteur])) {
-        $secteur_emissions[$secteur] = 0;
-        $secteur_categories[] = $secteur;
-      }
-      $secteur_emissions[$secteur] += $ges_totaux;
+      $net = normalizeNumber($row['emissions_nettes'] ?? (($row['total_emissions'] ?? 0) - ($row['total_absorptions'] ?? 0)));
+      if (!isset($g2_net_emissions_by_year[$year])) $g2_net_emissions_by_year[$year] = 0;
+      $g2_net_emissions_by_year[$year] += $net;
     }
 
-    $column_categories = $secteur_categories;
-    $column_data = array_values($secteur_emissions);
+    ksort($g2_net_emissions_by_year);
+    $g2_years = array_keys($g2_net_emissions_by_year);
+    $g2_values = array_map(fn($v) => round($v, 3), array_values($g2_net_emissions_by_year));
 
-    // ##############################################################
-    $ges_co2 = 0;
-    $ges_ch4 = 0;
-    $ges_n2o = 0;
+    // ==================> Graphisme Evolution vs Absorption
+    $g3_years = [];
+    $g3_emissions = [];
+    $g3_absorptions = [];
 
-    foreach ($current_inventory_data['data'] as $entreprise) {
-      $ges_co2 += floatval($entreprise['co2_t_eq_co2'] ?? $entreprise['co2'] ?? 0);
-      $ges_ch4 += floatval($entreprise['ch4_t_eq_co2'] ?? $entreprise['ch4'] ?? 0);
-      $ges_n2o += floatval($entreprise['n2o_t_eq_co2'] ?? $entreprise['n2o'] ?? 0);
-    }
+    foreach ($current_inventory_data['data'] as $row) {
+      $year = (int)$row['annee'];
+      if (!$year) continue;
 
-    $ges_data = [
-      ['name' => 'CO₂', 'y' => $ges_co2],
-      ['name' => 'CH₄', 'y' => $ges_ch4],
-      ['name' => 'N₂O', 'y' => $ges_n2o]
-    ];
-
-    // ##############################################################
-    $detail_data = [];
-    $js_detail_data = [];
-    foreach ($current_inventory_data['data'] as $entreprise) {
-      $secteur = $entreprise['secteur'] ?? 'Non spécifié';
-      $co2 = floatval($entreprise['co2_t_eq_co2'] ?? $entreprise['co2'] ?? 0);
-      $ch4 = floatval($entreprise['ch4_t_eq_co2'] ?? $entreprise['ch4'] ?? 0);
-      $n2o = floatval($entreprise['n2o_t_eq_co2'] ?? $entreprise['n2o'] ?? 0);
-
-      if (!isset($detail_data[$secteur])) {
-        $detail_data[$secteur] = ['CO₂' => 0, 'CH₄' => 0, 'N₂O' => 0];
-      }
-
-      $detail_data[$secteur]['CO₂'] += $co2;
-      $detail_data[$secteur]['CH₄'] += $ch4;
-      $detail_data[$secteur]['N₂O'] += $n2o;
-    }
-
-    foreach ($detail_data as $secteur => $gaz) {
-      $js_detail_data[$secteur] = [
-        ['name' => 'CO₂', 'y' => $gaz['CO₂']],
-        ['name' => 'CH₄', 'y' => $gaz['CH₄']],
-        ['name' => 'N₂O', 'y' => $gaz['N₂O']],
-      ];
+      $g3_years[] = $year;
+      $g3_emissions[] = round(normalizeNumber($row['total_emissions'] ?? 0), 3);
+      $g3_absorptions[] = round(abs(normalizeNumber($row['total_absorptions'] ?? 0)), 3);
     }
   }
   ?>
@@ -329,7 +298,7 @@
                 ?>
                     <div onclick="window.location.href = 'project_view.php?id=<?= $projet['id'] ?>';" class="list-group-item list-group-item-action cursor-pointer border-bottom shadow-sm mb-1 py-2 px-3">
                       <div class="d-flex justify-content-between align-items-center">
-                        <h6 class="mb-1"><?= html_entity_decode($projet['name']) ?></h6>
+                        <h6 class="mb-1 text-truncate"><?= html_entity_decode($projet['name']) ?></h6>
                         <span class="badge badge-phoenix fs-10 badge-phoenix-<?= $daysLeft < 30 ? 'danger' : ($daysLeft < 90 ? 'warning' : 'success') ?>"><?= $daysLeft ?> jours</span>
                       </div>
                       <p class="mb-0 fs-10 text-body-secondary">Échéance: <?= date('d/m/Y', strtotime($projet['end_date'])) ?></p>
@@ -414,11 +383,11 @@
         <div class="col-12 col-md-6 mb-3">
           <div class="card rounded-1 shadow-sm h-100">
             <div class="card-header rounded-top-1 py-2 px-3 bg-primary">
-              <h5 class="mb-0 text-white"><i class="fas fa-bar-chart me-2"></i> Emissions GES par secteur</h5>
+              <h5 class="mb-0 text-white"><i class="fas fa-bar-chart me-2"></i> Évolution des émissions nettes</h5>
             </div>
             <div class="card-body p-2">
               <?php if (!empty($current_inventory_data['data'])) { ?>
-                <div id="emissionsEvoChart" style="height: 400px;"></div>
+                <div id="emissionsNettesChart" style="height: 400px;"></div>
               <?php } else { ?>
                 <div class="text-center py-5 my-3" style="min-height: 300px;">
                   <div class="d-flex justify-content-center mb-3">
@@ -440,11 +409,11 @@
         <div class="col-12 col-md-6 mb-3">
           <div class="card rounded-1 shadow-sm h-100">
             <div class="card-header rounded-top-1 py-2 px-3 bg-primary">
-              <h5 class="mb-0 text-white"><i class="fas fa-wind me-2"></i> Emissions GES par gaz</h5>
+              <h5 class="mb-0 text-white"><i class="fas fa-wind me-2"></i> Évolution des émissions vs absorptions</h5>
             </div>
             <div class="card-body p-2">
               <?php if (!empty($current_inventory_data['data'])) { ?>
-                <div id="emissionsGazChart" style="height: 400px;"></div>
+                <div id="emissionAbsorptionChart" style="height: 400px;"></div>
               <?php } else { ?>
                 <div class="text-center py-5 my-3" style="min-height: 300px;">
                   <div class="d-flex justify-content-center mb-3">
@@ -513,8 +482,10 @@
                       <td class="align-middle ps-2">
                         <p class="mb-0 fs-9 text-body"><?= $projet['code'] ?></p>
                       </td>
-                      <td class="align-middle ps-2">
-                        <a class="mb-0 fs-9 fw-semibold" href="project_view.php?id=<?= $projet['id'] ?>"><?= html_entity_decode($projet['name']) ?></a>
+                      <td class="align-middle ps-2" style="width: 200px;">
+                        <a class="mb-0 fs-9 fw-semibold" href="project_view.php?id=<?= $projet['id'] ?>">
+                          <?= html_entity_decode($projet['name']) ?>
+                        </a>
                       </td>
                       <td class="align-middle ps-2">
                         <p class="mb-0 fs-9 text-body">
@@ -575,25 +546,26 @@
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
   <script>
-    mrvBarChart({
-      id: 'emissionsEvoChart',
-      title: 'Répartition par secteur',
-      unite: 'kt eq. CO₂',
-      categories: <?= json_encode($column_categories ?? []) ?>,
-      data: <?= json_encode($column_data ?? []) ?>,
-
-      desaggregate: true,
-      name: 'Secteur',
-      name2: 'Gaz',
-      title2: 'Répartition par gaz',
-      detailData: <?= json_encode($js_detail_data ?? []) ?>
+    mrvLineChart({
+      id: 'emissionsNettesChart',
+      title: 'Évolution des émissions nettes',
+      unite: <?= json_encode($current_inventory['unite'] ?? 'Gg éq. CO₂') ?>,
+      categories: <?= json_encode($g2_years ?? []) ?>,
+      data: <?= json_encode($g2_values ?? []) ?>
     });
 
-    mrvPieChart({
-      id: 'emissionsGazChart',
-      title: 'Répartition par type de GES',
-      unite: 'kt eq. CO₂',
-      data: <?= json_encode($ges_data ?? []) ?>,
+    mrvColumnCompareChart({
+      id: 'emissionAbsorptionChart',
+      title: 'Émissions et absorptions par année',
+      unite: <?= json_encode($current_inventory['unite'] ?? "") ?>,
+      categories: <?= json_encode($g3_years ?? []) ?>,
+      series: [{
+        name: 'Émissions',
+        data: <?= json_encode($g3_emissions ?? []) ?>
+      }, {
+        name: 'Absorptions',
+        data: <?= json_encode($g3_absorptions ?? []) ?>
+      }]
     });
   </script>
 </body>

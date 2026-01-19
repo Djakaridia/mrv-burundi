@@ -61,7 +61,6 @@ foreach ($indicateur_cmr as $cmr) {
 //========================= Unites 
 $unite = new Unite($db);
 $unites = $unite->read();
-$unites_assoc = array_column($unites, 'name', 'id');
 
 //========================= Structures
 $structure = new Structure($db);

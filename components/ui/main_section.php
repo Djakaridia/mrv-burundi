@@ -15,10 +15,6 @@
                             $referentiel->id = $section['entity_id'];
                             $referentiel_ref = $referentiel->readById();
 
-                            $unite = new Unite($db);
-                            $unite->id = $referentiel_ref['unite'] ?? null;
-                            $unite_ref = $unite->readById();
-
                             $indicateur = new Indicateur($db);
                             $indicateur->referentiel_id = $referentiel_ref['id'] ?? null;
                             $indicateur_cmr = array_filter($indicateur->readByReferentiel(), fn($i) => $i['state'] == 'actif');
@@ -55,7 +51,7 @@
                                 $is_positive = $sens_evolution == 'asc' ? $suivis_sum >= $cibles_sum : $suivis_sum <= $cibles_sum;
 
                                 $value = number_format($suivis_sum);
-                                $unit = $unite_ref['name'] ?? 'N/A';
+                                $unit = $referentiel_ref['unite'] ?? 'N/A';
                                 $badge = sprintf(
                                     '<span class="badge bg-%s-subtle text-%s"> <i class="fas fa-sort-amount-%s me-1"></i>%s %d%% vs cible</span>',
                                     $is_positive ? 'success' : 'warning',

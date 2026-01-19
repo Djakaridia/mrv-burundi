@@ -41,7 +41,7 @@
     $secteurs = $secteur->read();
     $secteurs_project = array_filter($secteurs, function ($secteur) use ($project_rapport) {
         $secteurs_ids = explode(',', str_replace('"', '', $project_rapport['secteurs']));
-        return $secteur['state'] == 'actif' && $secteur['parent_id'] == 0 && in_array($secteur['id'], $secteurs_ids);
+        return $secteur['state'] == 'actif' && $secteur['parent'] == 0 && in_array($secteur['id'], $secteurs_ids);
     });
 
     //##################################################
@@ -318,13 +318,7 @@
                                         <tr>
                                             <td class="px-2" style="min-width: 200px"><?= $indicateur['intitule'] ?></td>
                                             <td class="text-center text-capitalize"><?= $referentiel_curr['categorie'] ?? '-' ?></td>
-                                            <td class="text-center">
-                                                <?php foreach ($unites as $unite) { ?>
-                                                    <?php if ($unite['id'] == $indicateur['unite']) { ?>
-                                                        <?php echo $unite['name']; ?>
-                                                    <?php } ?>
-                                                <?php } ?>
-                                            </td>
+                                            <td class="text-center"><?= $indicateur['unite']; ?></td>
                                             <td class="text-center"><?= $indicateur['valeur_reference'] ?></td>
 
                                             <?php for ($year = date('Y', strtotime($project_rapport['start_date'])); $year <= date('Y', strtotime($project_rapport['end_date'])); $year++) : ?>

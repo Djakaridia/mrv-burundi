@@ -11,7 +11,7 @@ class Secteur
     public $domaine;
     public $source;
     public $description;
-    public $parent_id;
+    public $parent;
     public $add_by;
 
     public function __construct($db)
@@ -21,7 +21,7 @@ class Secteur
 
     public function create()
     {
-        $query = "INSERT INTO " . $this->table . " (code, name, organisme, domaine, source, description, parent_id, add_by) VALUES (:code, :name, :organisme, :domaine, :source, :description, :parent_id, :add_by)";
+        $query = "INSERT INTO " . $this->table . " (code, name, organisme, domaine, source, description, parent, add_by) VALUES (:code, :name, :organisme, :domaine, :source, :description, :parent, :add_by)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':code', $this->code);
         $stmt->bindParam(':name', $this->name);
@@ -29,7 +29,7 @@ class Secteur
         $stmt->bindParam(':domaine', $this->domaine);
         $stmt->bindParam(':source', $this->source);
         $stmt->bindParam(':description', $this->description);
-        $stmt->bindParam(':parent_id', $this->parent_id);
+        $stmt->bindParam(':parent', $this->parent);
         $stmt->bindParam(':add_by', $this->add_by);
 
         if ($stmt->execute()) {
@@ -60,7 +60,7 @@ class Secteur
 
     public function update()
     {
-        $query = "UPDATE " . $this->table . " SET code=:code, name=:name, organisme=:organisme, domaine=:domaine, source=:source, description=:description, parent_id=:parent_id, add_by=:add_by WHERE id=:id";
+        $query = "UPDATE " . $this->table . " SET code=:code, name=:name, organisme=:organisme, domaine=:domaine, source=:source, description=:description, parent=:parent, add_by=:add_by WHERE id=:id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $this->id);
         $stmt->bindParam(':code', $this->code);
@@ -69,7 +69,7 @@ class Secteur
         $stmt->bindParam(':domaine', $this->domaine);
         $stmt->bindParam(':source', $this->source);
         $stmt->bindParam(':description', $this->description);
-        $stmt->bindParam(':parent_id', $this->parent_id);
+        $stmt->bindParam(':parent', $this->parent);
         $stmt->bindParam(':add_by', $this->add_by);
 
         if ($stmt->execute()) {

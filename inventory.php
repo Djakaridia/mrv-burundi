@@ -9,95 +9,109 @@
     <!-- ===============================================-->
     <!--    Document Title-->
     <!-- ===============================================-->
-    <title>Registre des inventaires | MRV - Burundi</title>
+    <title>Inventaires GES | MRV - Burundi</title>
 
     <?php
     include './components/navbar & footer/head.php';
 
-    $sel_annee = isset($_GET['annee']) ? $_GET['annee'] : date('Y');
+    $sel_inventory = isset($_GET['inventory']) ? $_GET['inventory'] : null;
     $inventory = new Inventory($db);
     $inventories = $inventory->read();
-    $inventories = array_filter($inventories, function ($inventory) {
-        return $inventory['state'] == 'actif';
-    });
 
-    $annee_inventories = array_map(function ($inventory) {
-        return $inventory['annee'];
-    }, $inventories);
-    $annee_inventories = array_unique($annee_inventories);
-    sort($annee_inventories);
+    $unite = new Unite($db);
+    $unites = $unite->read();
 
-
-    if (!empty($inventories) && !$sel_annee) {
-        $sel_annee = $inventories[0]['annee'];
+    if (!empty($inventories) && !$sel_inventory) {
+        $sel_inventory = $inventories[0]['id'];
     }
 
-    if ($sel_annee) {
-        $inventory->annee = $sel_annee;
-        $current_inventory = $inventory->readByAnnee();
-        if ($current_inventory) {
+    if ($sel_inventory) {
+        $inventory->id = $sel_inventory;
+        $current_inventory = $inventory->readById();
+        
+        if (isset($current_inventory['viewtable'])) {
             $current_inventory_data = json_decode($inventory->readData($current_inventory['viewtable']), true);
+            $secteurs = ['agriculture' => 'Agriculture', 'fat' => 'FAT', 'energie' => 'Énergie', 'piup' => 'PIUP', 'dechets' => 'Déchets'];
 
             if (!empty($current_inventory_data['data'])) {
+                // ==================> Graphisme Par secteur
+                try {
+                    $g1_column_categories = [];
+                    $g1_column_data = [];
+                    foreach ($secteurs as $col => $label) {
+                        if ($col === 'piup') continue;
 
-                // ##############################################################
-                $secteur_categories = [];
-                $secteur_emissions = [];
-                foreach ($current_inventory_data['data'] as $entreprise) {
-                    $secteur = $entreprise['secteur'] ?? 'Non spécifié';
-                    $ges_totaux = floatval($entreprise['ges_totaux_kt_eq_co2'] ?? $entreprise['ges_totaux'] ?? 0);
+                        $total = 0;
+                        foreach ($current_inventory_data['data'] as $row) {
+                            $total += normalizeNumber($row[$col] ?? 0);
+                        }
 
-                    if (!isset($secteur_emissions[$secteur])) {
-                        $secteur_emissions[$secteur] = 0;
-                        $secteur_categories[] = $secteur;
+                        $g1_column_categories[] = $label;
+                        $g1_column_data[] = round($total, 3);
                     }
-                    $secteur_emissions[$secteur] += $ges_totaux;
+                } catch (\Throwable $th) {
+                    var_dump($th);
+                    die();
                 }
 
-                $column_categories = $secteur_categories;
-                $column_data = array_values($secteur_emissions);
+                // ==================> Graphisme Evolution nette
+                try {
+                    $g2_years = [];
+                    $g2_net_emissions_by_year = [];
+                    foreach ($current_inventory_data['data'] as $row) {
+                        $year = (int) ($row['annee'] ?? 0);
+                        if (!$year) continue;
 
-                // ##############################################################
-                $ges_co2 = 0;
-                $ges_ch4 = 0;
-                $ges_n2o = 0;
-
-                foreach ($current_inventory_data['data'] as $entreprise) {
-                    $ges_co2 += floatval($entreprise['co2_t_eq_co2'] ?? $entreprise['co2'] ?? 0);
-                    $ges_ch4 += floatval($entreprise['ch4_t_eq_co2'] ?? $entreprise['ch4'] ?? 0);
-                    $ges_n2o += floatval($entreprise['n2o_t_eq_co2'] ?? $entreprise['n2o'] ?? 0);
-                }
-
-                $ges_data = [
-                    ['name' => 'CO₂', 'y' => $ges_co2],
-                    ['name' => 'CH₄', 'y' => $ges_ch4],
-                    ['name' => 'N₂O', 'y' => $ges_n2o]
-                ];
-
-                // ##############################################################
-                $detail_data = [];
-                $js_detail_data = [];
-                foreach ($current_inventory_data['data'] as $entreprise) {
-                    $secteur = $entreprise['secteur'] ?? 'Non spécifié';
-                    $co2 = floatval($entreprise['co2_t_eq_co2'] ?? $entreprise['co2'] ?? 0);
-                    $ch4 = floatval($entreprise['ch4_t_eq_co2'] ?? $entreprise['ch4'] ?? 0);
-                    $n2o = floatval($entreprise['n2o_t_eq_co2'] ?? $entreprise['n2o'] ?? 0);
-
-                    if (!isset($detail_data[$secteur])) {
-                        $detail_data[$secteur] = ['CO₂' => 0, 'CH₄' => 0, 'N₂O' => 0];
+                        $net = normalizeNumber($row['emissions_nettes'] ?? (($row['total_emissions'] ?? 0) - ($row['total_absorptions'] ?? 0)));
+                        if (!isset($g2_net_emissions_by_year[$year])) $g2_net_emissions_by_year[$year] = 0;
+                        $g2_net_emissions_by_year[$year] += $net;
                     }
 
-                    $detail_data[$secteur]['CO₂'] += $co2;
-                    $detail_data[$secteur]['CH₄'] += $ch4;
-                    $detail_data[$secteur]['N₂O'] += $n2o;
+                    ksort($g2_net_emissions_by_year);
+                    $g2_years = array_keys($g2_net_emissions_by_year);
+                    $g2_values = array_map(fn($v) => round($v, 3), array_values($g2_net_emissions_by_year));
+                } catch (\Throwable $th) {
+                    var_dump($th);
+                    die();
                 }
 
-                foreach ($detail_data as $secteur => $gaz) {
-                    $js_detail_data[$secteur] = [
-                        ['name' => 'CO₂', 'y' => $gaz['CO₂']],
-                        ['name' => 'CH₄', 'y' => $gaz['CH₄']],
-                        ['name' => 'N₂O', 'y' => $gaz['N₂O']],
-                    ];
+                // ==================> Graphisme Evolution vs Absorption
+                try {
+                    $g3_years = [];
+                $g3_emissions = [];
+                $g3_absorptions = [];
+
+                foreach ($current_inventory_data['data'] as $row) {
+                    $year = (int)$row['annee'];
+                    if (!$year) continue;
+
+                    $g3_years[] = $year;
+                    $g3_emissions[] = round(normalizeNumber($row['total_emissions'] ?? 0), 3);
+                    $g3_absorptions[] = round(abs(normalizeNumber($row['total_absorptions'] ?? 0)), 3);
+                }
+                } catch (\Throwable $th) {
+                    var_dump($th);
+                    die();
+                }
+
+                // ==================> Contribution relative des secteurs
+                try {
+                    $g4_sector_share = [];
+                foreach ($secteurs as $col => $label) {
+                    $total = 0;
+                    foreach ($current_inventory_data['data'] as $row) {
+                        $total += normalizeNumber($row[$col] ?? 0);
+                    }
+                    if ($total > 0) {
+                        $g4_sector_share[] = [
+                            'name' => $label,
+                            'y' => round($total, 3)
+                        ];
+                    }
+                }
+                } catch (\Throwable $th) {
+                    var_dump($th);
+                    die();
                 }
             }
         }
@@ -119,16 +133,16 @@
                 <div class="card-body p-2 d-lg-flex flex-row justify-content-between align-items-center g-3">
                     <div class="col-lg-4 mb-2 mb-lg-0">
                         <h4 class="my-1 fw-black">
-                            Registre des inventaires (<a href="./documents/Inventaire GES.xlsx" download class="fs-8 text-decoration-none"> <span class="fa fa-file-excel"></span> Canevas </a>)
+                            Inventaires GES (<a href="./documents/Inventaire_GES.xlsx" download class="fs-8 text-decoration-none"> <span class="fa fa-file-excel"></span> Canevas </a>)
                         </h4>
                     </div>
 
                     <div class="col-lg-3 mb-2 mb-lg-0 text-center">
                         <form action="formNiveauResultat" method="post">
-                            <select class="btn btn-phoenix-primary rounded-pill btn-sm form-select form-select-sm rounded-1" name="result" id="resultID" onchange="window.location.href = 'inventory.php?annee=' + this.value">
-                                <option value="" class="text-center" selected disabled>---Sélectionner une année---</option>
-                                <?php foreach ($annee_inventories as $annee) { ?>
-                                    <option value="<?php echo $annee; ?>" <?php if ($sel_annee == $annee) echo 'selected'; ?>>Inventaire <?php echo $annee; ?></option>
+                            <select class="btn btn-phoenix-primary rounded-pill btn-sm form-select form-select-sm rounded-1" name="result" id="resultID" onchange="window.location.href = 'inventory.php?inventory=' + this.value">
+                                <option value="" class="text-center" selected disabled>---Sélectionner un inventaire---</option>
+                                <?php foreach ($inventories as $inventory) { ?>
+                                    <option value="<?php echo $inventory['id']; ?>" <?php if ($sel_inventory == $inventory['id']) echo 'selected'; ?>>Inventaire <?php echo $inventory['annee']; ?></option>
                                 <?php } ?>
                             </select>
                         </form>
@@ -136,7 +150,7 @@
 
                     <div class="col-lg-4 mb-2 mb-lg-0 d-flex gap-2 justify-content-lg-end">
                         <?php if (!empty($current_inventory)) { ?>
-                            <button type="button" data-bs-toggle="modal" data-bs-target="#addDataInventoryModal" data-annee="<?php echo $sel_annee; ?>" class="btn btn-subtle-primary btn-sm">
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#addDataInventoryModal" data-inventory="<?php echo $sel_inventory; ?>" class="btn btn-subtle-primary btn-sm">
                                 <span class="fa fa-database fs-9 me-2"></span>Données
                             </button>
                         <?php } ?>
@@ -151,33 +165,10 @@
                 <div class="col-12">
                     <div class="mx-n4 px-1 pb-3 mx-lg-n6 bg-body-emphasis border-y">
                         <?php if (!empty($inventories)) { ?>
-                            <!-- Tableau -->
-                            <h5 class="m-2 text-semibold"><i class="fas fa-table me-2"></i>Liste des Inventaires</h5>
                             <?php if (!empty($current_inventory_data)) { ?>
-                                <div class="mx-n1 mb-3 px-1 scrollbar">
-                                    <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
-                                        <thead class="bg-secondary-subtle">
-                                            <tr>
-                                                <?php foreach ($current_inventory_data['columns'] as $column) { ?>
-                                                    <th class="sort align-middle text-uppercase" scope="col" style="width: 10%"><?php echo $column; ?></th>
-                                                <?php } ?>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="list" id="table-latest-review-body">
-                                            <?php foreach ($current_inventory_data['data'] as $row) { ?>
-                                                <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                                                    <?php foreach ($row as $value) { ?>
-                                                        <td class="align-middle px-2"> <?php echo $value; ?> </td>
-                                                    <?php } ?>
-                                                </tr>
-                                            <?php } ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-
                                 <!-- Graphisme  -->
                                 <h5 class="m-2 text-semibold"><i class="fas fa-chart-line me-2"></i>Visualisation des Données</h5>
-                                <div class="row mx-0 mb-3">
+                                <div class="row mx-0 mb-3 g-3">
                                     <div class="col-lg-6 col-12">
                                         <div class="card rounded-1 shadow-sm border h-100" style="min-height: 400px;">
                                             <div class="card-body p-2" id="chartInventorySecteur"></div>
@@ -185,9 +176,47 @@
                                     </div>
                                     <div class="col-lg-6 col-12">
                                         <div class="card rounded-1 shadow-sm border h-100" style="min-height: 400px;">
-                                            <div class="card-body p-2" id="chartInventoryGaz"></div>
+                                            <div class="card-body p-2" id="chartInventorySectorShare"></div>
                                         </div>
                                     </div>
+                                    <div class="col-lg-12 col-12">
+                                        <div class="card rounded-1 shadow-sm border h-100" style="min-height: 400px;">
+                                            <div class="card-body p-2" id="chartInventoryNetEvolution"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-12">
+                                        <div class="card rounded-1 shadow-sm border h-100" style="min-height: 400px;">
+                                            <div class="card-body p-2" id="chartInventoryEmiVSAbsorp"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Tableau des données -->
+                                <h5 class="m-2 text-semibold"><i class="fas fa-table me-2"></i>Liste des Inventaires</h5>
+                                <div class="mx-n1 mb-3 px-1 scrollbar">
+                                    <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
+                                        <thead class="bg-secondary-subtle">
+                                            <tr>
+                                                <?php foreach ($current_inventory_data['columns'] as $column): ?>
+                                                    <th class="sort align-middle text-uppercase">
+                                                        <?= htmlspecialchars($column) ?>
+                                                    </th>
+                                                <?php endforeach; ?>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody class="list" id="table-latest-review-body">
+                                            <?php foreach ($current_inventory_data['data'] as $row): ?>
+                                                <tr class="hover-actions-trigger btn-reveal-trigger position-static">
+                                                    <?php foreach ($row as $key => $value): ?>
+                                                        <td class="align-middle px-2 <?= !in_array($key, ["id", "annee", "imported_at"]) ? 'text-end' : '' ?>">
+                                                            <?= (is_numeric($value) && !in_array($key, ["id", "annee", "imported_at"])) ? number_format($value, 4, '.', ' ') : htmlspecialchars($value) ?>
+                                                        </td>
+                                                    <?php endforeach; ?>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
                                 </div>
                             <?php } else { ?>
                                 <div class="text-center py-5 my-3" style="min-height: 350px;">
@@ -199,7 +228,7 @@
                                     <h4 class="text-800 mb-3">Aucune données trouvée</h4>
                                     <p class="text-600 mb-5">Veuillez ajouter des données pour afficher ses graphiques</p>
                                     <?php if (!empty($current_inventory)) { ?>
-                                        <button type="button" data-bs-toggle="modal" data-bs-target="#addDataInventoryModal" data-annee="<?php echo $sel_annee; ?>" class="btn btn-subtle-primary btn-sm">
+                                        <button type="button" data-bs-toggle="modal" data-bs-target="#addDataInventoryModal" data-inventory="<?php echo $sel_inventory; ?>" class="btn btn-subtle-primary btn-sm">
                                             <span class="fa fa-database fs-9 me-2"></span>Ajouter des données
                                         </button>
                                     <?php } ?>
@@ -236,23 +265,40 @@
 <script>
     mrvBarChart({
         id: 'chartInventorySecteur',
-        title: 'Répartition par secteur',
-        unite: 'kt eq. CO₂',
-        categories: <?= json_encode($column_categories ?? []) ?>,
-        data: <?= json_encode($column_data ?? []) ?>,
-
-        desaggregate: true,
-        name: 'Secteur',
-        name2: 'Gaz',
-        title2: 'Répartition par gaz',
-        detailData: <?= json_encode($js_detail_data ?? []) ?>
+        title: 'Émissions par secteur (Sans absorptions)',
+        unite: <?= json_encode($current_inventory['unite'] ?? "") ?>,
+        categories: <?= json_encode($g1_column_categories ?? []) ?>,
+        data: <?= json_encode($g1_column_data ?? []) ?>,
+        desaggregate: false,
     });
 
-    mrvPieChart({
-        id: 'chartInventoryGaz',
-        title: 'Répartition par type de GES',
-        unite: 'kt eq. CO₂',
-        data: <?= json_encode($ges_data ?? []) ?>,
+    mrvLineChart({
+        id: 'chartInventoryNetEvolution',
+        title: 'Évolution des émissions nettes',
+        unite: <?= json_encode($current_inventory['unite'] ?? 'Gg éq. CO₂') ?>,
+        categories: <?= json_encode($g2_years ?? []) ?>,
+        data: <?= json_encode($g2_values ?? []) ?>
+    });
+
+    mrvColumnCompareChart({
+        id: 'chartInventoryEmiVSAbsorp',
+        title: 'Émissions et absorptions par année',
+        unite: <?= json_encode($current_inventory['unite'] ?? "") ?>,
+        categories: <?= json_encode($g3_years ?? []) ?>,
+        series: [{
+            name: 'Émissions',
+            data: <?= json_encode($g3_emissions ?? []) ?>
+        }, {
+            name: 'Absorptions',
+            data: <?= json_encode($g3_absorptions ?? []) ?>
+        }]
+    });
+
+    mrvDonutChart({
+        id: 'chartInventorySectorShare',
+        title: 'Part relative des émissions par secteur',
+        unite: <?= json_encode($current_inventory['unite'] ?? "") ?>,
+        data: <?= json_encode($g4_sector_share ?? []) ?>
     });
 </script>
 

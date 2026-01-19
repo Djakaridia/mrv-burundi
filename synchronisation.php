@@ -16,7 +16,7 @@
     $secteur = new Secteur($db);
     $data_secteurs = $secteur->read();
     $secteurs = array_filter(array_reverse($data_secteurs), function ($secteur) {
-        return $secteur['parent_id'] == 0 && $secteur['state'] == 'actif';
+        return $secteur['parent'] == 0 && $secteur['state'] == 'actif';
     });
     ?>
 </head>

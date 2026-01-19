@@ -21,7 +21,7 @@
     $secteur = new Secteur($db);
     $secteurs = $secteur->read();
     $secteurs = array_filter($secteurs, function ($secteur) {
-        return $secteur['state'] == 'actif' && $secteur['parent_id'] == 0;
+        return $secteur['state'] == 'actif' && $secteur['parent'] == 0;
     });
     sort($secteurs);
 

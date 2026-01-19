@@ -31,8 +31,6 @@
 
     $unite = new Unite($db);
     $unites = $unite->read();
-    $unite->id = $ref_curr['unite'] ?? null;
-    $unite_ref = $unite->readById();
 
     $indicateur = new Indicateur($db);
     $indicateur->referentiel_id = $ref_curr['id'] ?? null;
@@ -192,7 +190,7 @@
                                         <dd class="col-sm-8 fs-9"><?= $ref_curr['code'] ?></dd>
 
                                         <dt class="col-sm-4 text-muted fs-9">Indicateur :</dt>
-                                        <dd class="col-sm-8 fs-9"><?= $ref_curr['intitule'] ?> (<?= "<strong>" . $unite_ref['name'] . "</strong>" ?>)</dd>
+                                        <dd class="col-sm-8 fs-9"><?= $ref_curr['intitule'] ?> (<?= "<strong>" . $ref_curr['unite'] . "</strong>" ?>)</dd>
 
                                         <dt class="col-sm-4 text-muted fs-9">Echelle :</dt>
                                         <dd class="col-sm-8 fs-9 text-capitalize">
@@ -422,8 +420,8 @@
         $suivis_classe = array_filter($suivis_raw, fn($suivi) => $suivi['annee'] == $annee); ?>
         mrvStackGroupChart({
             id: 'chartClasse<?= $index ?>',
-            title: '<?= $ref_curr['intitule'] . ' (' . $unite_ref['name'] . ')' ?>',
-            unite: '<?= $unite_ref['name'] ?>',
+            title: '<?= $ref_curr['intitule'] . ' (' . $ref_curr['unite'] . ')' ?>',
+            unite: '<?= $ref_curr['unite'] ?>',
             categories: [<?= $annee ?>],
             series: [
                 ...[{
@@ -451,8 +449,8 @@
 
     mrvColumnChart({
         id: 'chartAnnee<?= $ref_curr['id'] ?>',
-        title: '<?= $ref_curr['intitule'] . ' (' . $unite_ref['name'] . ')' ?>',
-        unite: '<?= $unite_ref['name'] ?>',
+        title: '<?= $ref_curr['intitule'] . ' (' . $ref_curr['unite'] . ')' ?>',
+        unite: '<?= $ref_curr['unite'] ?>',
         categories: <?= json_encode($annees) ?>,
         cibles: <?= json_encode($cibles) ?>,
         suivis: <?= json_encode($suivis) ?>
@@ -460,8 +458,8 @@
 
     mrvPieChart({
         id: 'chartScenario<?= $ref_curr['id'] ?>',
-        title: '<?= $ref_curr['intitule'] . ' (' . $unite_ref['name'] . ')' ?>',
-        unite: '<?= $unite_ref['name'] ?>',
+        title: '<?= $ref_curr['intitule'] . ' (' . $ref_curr['unite'] . ')' ?>',
+        unite: '<?= $ref_curr['unite'] ?>',
         data: <?= json_encode($chart_data) ?>,
     });
 </script>

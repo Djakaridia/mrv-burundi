@@ -158,8 +158,11 @@
                                                 endforeach;
                                             }
 
-                                            // ✅ Appel correct
-                                            renderTreeResultat(0, $grouped_resultat_niveau, 0);
+                                            if (count($grouped_resultat_niveau) > 0) {
+                                                renderTreeResultat(0, $grouped_resultat_niveau, 0);
+                                            } else {
+                                                echo '<tr><td colspan="2" class="text-center"><div class="py-5 my-5 text-center fs-8">Aucun résultat trouvé</div></td></tr>';
+                                            }
                                             ?>
                                         </tbody>
 

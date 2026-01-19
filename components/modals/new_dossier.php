@@ -37,7 +37,7 @@
             </div>
 
             <div class="modal-footer d-flex justify-content-between border-0 pt-3 px-0 pb-0">
-              <input type="hidden" name="parent_id" id="parent_id_dossier" value="0">
+              <input type="hidden" name="parent" id="parent_id_dossier" value="0">
               <button type="button" class="btn btn-secondary btn-sm px-3 my-0" data-bs-dismiss="modal"
                 aria-label="Close">Annuler</button>
               <button type="submit" class="btn btn-primary btn-sm px-3 my-0" id="dossier_modbtn">Ajouter</button>
@@ -59,7 +59,7 @@
       const dataId = $(event.relatedTarget).data('id');
       const dataParentId = $(event.relatedTarget).data('parent-id');
       const form = document.getElementById('FormDossier');
-      form.parent_id.value = dataParentId ? dataParentId : 0;
+      form.parent.value = dataParentId ? dataParentId : 0;
       // Show loading screen and hide content
       $('#dossierLoadingScreen').show();
       $('#dossierContentContainer').hide();

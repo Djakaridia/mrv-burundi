@@ -40,10 +40,10 @@
   $secteur = new Secteur($db);
   $data_secteurs = $secteur->read();
   $secteurs = array_filter($data_secteurs, function ($secteur) {
-    return $secteur['parent_id'] == 0 && $secteur['state'] == 'actif';
+    return $secteur['parent'] == 0 && $secteur['state'] == 'actif';
   });
   $sous_secteurs = array_filter($data_secteurs, function ($secteur) {
-    return $secteur['parent_id'] > 0 && $secteur['state'] == 'actif';
+    return $secteur['parent'] > 0 && $secteur['state'] == 'actif';
   });
 
   $modeles_typologie = array('valeur_relative', 'typo_quantitative', 'typo_qualitative')
@@ -111,13 +111,7 @@
                         <?php echo html_entity_decode($referentiel['intitule']); ?>
                       </td>
 
-                      <td class="align-middle px-2">
-                        <?php foreach ($unites as $unite): ?>
-                          <?php if ($unite['id'] == $referentiel['unite']): ?>
-                            <?php echo $unite['name']; ?>
-                          <?php endif; ?>
-                        <?php endforeach; ?>
-                      </td>
+                      <td class="align-middle px-2"><?php echo $referentiel['unite']; ?></td>
 
                       <td class="align-middle px-2">
                         <?php echo listModeAggregation()[$referentiel['fonction_agregation']]; ?>

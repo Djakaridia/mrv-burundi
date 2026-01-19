@@ -7,9 +7,14 @@ class Inventory
     public $id;
     public $name;
     public $annee;
+    public $unite;
+    public $methode_ipcc;
+    public $source_donnees;
     public $description;
     public $viewtable;
     public $file;
+    public $status;
+    public $afficher;
     public $add_by;
 
     public function __construct($db)
@@ -19,13 +24,17 @@ class Inventory
 
     public function create()
     {
-        $query = "INSERT INTO " . $this->table . " (name, annee, description, viewtable, add_by) VALUES 
-             (:name, :annee, :description, :viewtable, :add_by)";
+        $query = "INSERT INTO " . $this->table . " (name, annee, unite, methode_ipcc, source_donnees, description, viewtable, file, add_by) VALUES 
+             (:name, :annee, :unite, :methode_ipcc, :source_donnees, :description, :viewtable, :file, :add_by)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':annee', $this->annee);
+        $stmt->bindParam(':unite', $this->unite);
+        $stmt->bindParam(':methode_ipcc', $this->methode_ipcc);
+        $stmt->bindParam(':source_donnees', $this->source_donnees);
         $stmt->bindParam(':description', $this->description);
         $stmt->bindParam(':viewtable', $this->viewtable);
+        $stmt->bindParam(':file', $this->file);
         $stmt->bindParam(':add_by', $this->add_by);
 
         if ($stmt->execute()) {
@@ -65,12 +74,28 @@ class Inventory
 
     public function update()
     {
-        $query = "UPDATE " . $this->table . " SET name=:name, annee=:annee, description=:description, file=:file WHERE id=:id";
+        $query = "UPDATE " . $this->table . " SET name=:name, annee=:annee, unite=:unite, methode_ipcc=:methode_ipcc, source_donnees=:source_donnees, description=:description, add_by=:add_by WHERE id=:id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':annee', $this->annee);
-        $stmt->bindParam(':file', $this->file);
+        $stmt->bindParam(':unite', $this->unite);
+        $stmt->bindParam(':methode_ipcc', $this->methode_ipcc);
+        $stmt->bindParam(':source_donnees', $this->source_donnees);
         $stmt->bindParam(':description', $this->description);
+        $stmt->bindParam(':add_by', $this->add_by);
+        $stmt->bindParam(':id', $this->id);
+
+        if ($stmt->execute()) {
+            return true;
+        }
+        return false;
+    }
+
+    public function updateFile()
+    {
+        $query = "UPDATE " . $this->table . " SET file=:file WHERE id=:id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':file', $this->file);
         $stmt->bindParam(':id', $this->id);
 
         if ($stmt->execute()) {

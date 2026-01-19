@@ -17,12 +17,13 @@
   $secteur = new Secteur($db);
   $data_secteurs = $secteur->read();
   $secteurs = array_filter(array_reverse($data_secteurs), function ($secteur) {
-    return $secteur['parent_id'] == 0;
+    return $secteur['parent'] == 0;
   });
   $sous_secteurs = array_filter($data_secteurs, function ($secteur) {
-    return $secteur['parent_id'] > 0;
+    return $secteur['parent'] > 0;
   });
-
+  $actions_prio = new ActionPrioritaire($db);
+  $data_actions_prio = $actions_prio->read();
   ?>
 </head>
 
@@ -43,15 +44,15 @@
             </div>
 
             <div class="ms-lg-2 d-flex gap-2">
-              <!-- <a href="synchronisation.php">
-                <button title="Synchroniser" class="btn btn-subtle-primary btn-sm">
-                  <i class="fas fa-sync"></i> Synchroniser</button>
-              </a> -->
-
               <button title="Ajouter" class="btn btn-subtle-primary btn-sm" id="addBtn" data-bs-toggle="modal"
                 data-bs-target="#addSecteurModal" aria-haspopup="true" aria-expanded="false"
                 data-bs-reference="parent">
                 <i class="fas fa-plus"></i> Ajouter un secteur</button>
+
+              <button title="Ajouter" class="btn btn-subtle-primary btn-sm" id="addSousSecteurBtn" data-bs-toggle="modal"
+                data-bs-target="#addSecteurModal" data-parent="-1" aria-haspopup="true" aria-expanded="false"
+                data-bs-reference="parent">
+                <i class="fas fa-plus"></i> Ajouter un sous-secteur</button>
             </div>
           </div>
         </div>
@@ -60,34 +61,31 @@
           <div class="col-12">
             <div class="mx-n4 mx-lg-n6 bg-body-emphasis border-y">
               <div class="table-responsive p-1 scrollbar" style="min-height: 432px;">
-                <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable2">
+                <table class="table fs-9 table-bordered mb-0 border-top border-translucent">
                   <thead class="bg-secondary-subtle">
                     <tr>
                       <th class="sort align-middle" scope="col"> Code</th>
                       <th class="sort align-middle" scope="col"> Intitulé</th>
                       <th class="sort align-middle" scope="col"> Organisme responsable</th>
-                      <th class="sort align-middle" scope="col"> Actions prioritaires</th>
-                      <th class="sort align-middle" scope="col"> Status</th>
+                      <th class="sort align-middle" scope="col"> Catégories</th>
                       <th class="sort align-middle" scope="col" style="min-width:100px;">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     <?php foreach ($secteurs as $secteur):
                       $sous_secteur_items = array_filter($data_secteurs, function ($sous_secteur_item) use ($secteur) {
-                        return $sous_secteur_item['parent_id'] == $secteur['id'];
+                        return $sous_secteur_item['parent'] == $secteur['id'];
                       });
+                      sort($sous_secteur_items)
                     ?>
-                      <tr>
+                      <tr class="bg-light">
                         <td class="align-middle px-2"><?= $secteur['code'] ?></td>
                         <td class="align-middle px-2"><?= $secteur['name'] ?></td>
                         <td class="align-middle px-2"><?= $secteur['organisme'] ?></td>
                         <td class="align-middle px-2">
-                          <button title="Voir" type="button" class="btn btn-sm btn-link text-primary p-0 m-0" onclick="window.location.href='sectors.php?id=<?= $secteur['id'] ?>'">
-                            Actions <span class="badge bg-success px-1">(<?= count($sous_secteur_items) ?>)</span>
-                          </button>
-                        </td>
-                        <td class="align-middle px-2">
-                          <span class="fw-semibold text-capitalize fs-10 rounded-pill badge bg-<?php echo $secteur['state'] == 'actif' ? 'success' : 'warning' ?>"> <?php echo $secteur['state'] ?></span>
+                          <span class="text-primary p-0 m-0">
+                            Sous-secteurs <span class="badge bg-primary px-1 text-nowrap"><?= count($sous_secteur_items) ?></span>
+                          </span>
                         </td>
                         <td class="align-middle px-2">
                           <div class="position-relative">
@@ -116,6 +114,48 @@
                           </div>
                         </td>
                       </tr>
+
+                      <?php foreach ($sous_secteur_items as $sous_secteur_item):
+                        $sous_secteur_actions = array_filter($data_actions_prio, function ($action_prio) use ($sous_secteur_item) {
+                          return $action_prio['secteur_id'] == $sous_secteur_item['id'];
+                        });
+                      ?>
+                        <tr>
+                          <td class="align-middle px-2"><?= $sous_secteur_item['code'] ?></td>
+                          <td class="align-middle px-2"><?= $sous_secteur_item['name'] ?></td>
+                          <td class="align-middle px-2"><?= $sous_secteur_item['organisme'] ?></td>
+                          <td class="align-middle px-2">
+                            <button title="Voir" type="button" class="btn btn-sm btn-link text-warning text-nowrap p-0 m-0" onclick="window.location.href='sectors.php?id=<?= $sous_secteur_item['id'] ?>'">
+                              Actions prioritaires <span class="badge bg-warning px-1"><?= count($sous_secteur_actions) ?></span>
+                            </button>
+                          </td>
+                          <td class="align-middle px-2">
+                            <div class="d-flex gap-1">
+                              <?php if (checkPermis($db, 'update', 2)) : ?>
+                                <button title="Modifier" class="btn btn-sm btn-phoenix-info fs-10 px-2 py-1" data-bs-toggle="modal"
+                                  data-bs-target="#addSecteurModal" data-parent="-1" data-id="<?php echo $sous_secteur_item['id']; ?>">
+                                  <span class="uil-pen fs-8"></span>
+                                </button>
+                              <?php endif; ?>
+
+                              <?php if (checkPermis($db, 'update', 2)) : ?>
+                                <button title="Activer/Désactiver" onclick="updateState(<?php echo $sous_secteur_item['id']; ?>, '<?php echo $sous_secteur_item['state'] == 'actif' ? 'inactif' : 'actif'; ?>', 'Êtes-vous sûr de vouloir <?php echo $sous_secteur_item['state'] == 'actif' ? 'désactiver' : 'activer'; ?> ce sous-secteur ?', 'secteurs')"
+                                  type="button" class="btn btn-sm btn-phoenix-warning fs-10 px-2 py-1">
+                                  <span class="uil-<?php echo $sous_secteur_item['state'] == 'actif' ? 'ban text-warning' : 'check-circle text-success'; ?> fs-8"></span>
+                                </button>
+                              <?php endif; ?>
+
+                              <?php if (checkPermis($db, 'delete')) : ?>
+                                <button title="Supprimer" onclick="deleteData(<?php echo $sous_secteur_item['id']; ?>, 'Êtes-vous sûr de vouloir supprimer ce sous-secteur ?', 'secteurs')"
+                                  type="button" class="btn btn-sm btn-phoenix-danger fs-10 px-2 py-1">
+                                  <span class="uil-trash-alt fs-8"></span>
+                                </button>
+                              <?php endif; ?>
+                            </div>
+                          </td>
+                        </tr>
+                      <?php endforeach; ?>
+
                     <?php endforeach; ?>
 
                   </tbody>
@@ -129,8 +169,12 @@
       <!-- Sous-secteurs -->
       <?php if (isset($_GET['id']) && $_GET['id'] > 0 && is_numeric($_GET['id']) && $_GET['id'] != null && $_GET['id'] != ''):
         $id_parent = $_GET['id'];
-        $secteur_parent = array_filter($secteurs, function ($secteur) use ($id_parent) {
+        $secteur_parent = array_filter($sous_secteurs, function ($secteur) use ($id_parent) {
           return $secteur['id'] == $id_parent;
+        });
+
+        $actions_prio_child = array_filter($data_actions_prio, function ($action) use ($id_parent) {
+          return $action['secteur_id'] == $id_parent;
         });
       ?>
         <div class="mx-n4 mt-n5 px-0 mx-lg-n6 px-lg-0 bg-body-emphasis border border-start-0">
@@ -146,7 +190,7 @@
               </button>
 
               <button title="Ajouter" class="btn btn-subtle-primary btn-sm" id="addBtn" data-bs-toggle="modal"
-                data-bs-target="#addSecteurModal" data-parent_id="<?php echo $_GET['id'] ?>"
+                data-bs-target="#addActionPrioModal" data-parent="<?php echo $id_parent ?>"
                 aria-haspopup="true" aria-expanded="false" data-bs-reference="child">
                 <i class="fas fa-plus"></i> Ajouter une action</button>
             </div>
@@ -161,20 +205,19 @@
                   <thead class="bg-secondary-subtle">
                     <tr>
                       <th class="sort align-middle" scope="col"> Code</th>
-                      <th class="sort align-middle" scope="col"> Nom</th>
+                      <th class="sort align-middle" scope="col"> Intitulé</th>
                       <th class="sort align-middle" scope="col"> Secteur</th>
                       <th class="sort align-middle" scope="col" style="min-width:100px;"> Actions</th>
                     </tr>
                   </thead>
                   <tbody class="list" id="table-latest-review-body">
-                    <?php foreach ($sous_secteurs as $sous_secteur): ?>
-                      <?php if ($sous_secteur['parent_id'] == $_GET['id']): ?>
+                    <?php foreach ($actions_prio_child as $action_prio): ?>
                         <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                          <td class="align-middle customer"> <?php echo $sous_secteur['code'] ?> </td>
-                          <td class="align-middle customer"> <?php echo $sous_secteur['name'] ?> </td>
+                          <td class="align-middle customer"> <?php echo $action_prio['code'] ?> </td>
+                          <td class="align-middle customer"> <?php echo $action_prio['name'] ?> </td>
                           <td class="align-middle customer">
-                            <?php foreach ($secteurs as $secteur): ?>
-                              <?php if ($sous_secteur['parent_id'] == $secteur['id']): ?>
+                            <?php foreach ($sous_secteurs as $secteur): ?>
+                              <?php if ($action_prio['secteur_id'] == $secteur['id']): ?>
                                 <?php echo $secteur['name']; ?>
                               <?php endif; ?>
                             <?php endforeach; ?>
@@ -183,15 +226,15 @@
                             <div class="position-relative">
                               <div class="">
                                 <?php if (checkPermis($db, 'update')) : ?>
-                                  <button title="Modifier" type="button" data-bs-toggle="modal" data-bs-target="#addSecteurModal"
-                                    data-parent_id="<?php echo $sous_secteur['parent_id'] ?>" data-id="<?php echo $sous_secteur['id'] ?>"
+                                  <button title="Modifier" type="button" data-bs-toggle="modal" data-bs-target="#addActionPrioModal"
+                                    data-parent="<?php echo $action_prio['secteur_id'] ?>" data-id="<?php echo $action_prio['id'] ?>"
                                     class="btn btn-sm btn-phoenix-info me-1 fs-10 px-2 py-1">
                                     <span class="uil-pen fs-8"></span>
                                   </button>
                                 <?php endif; ?>
 
                                 <?php if (checkPermis($db, 'delete')) : ?>
-                                  <button title="Supprimer" onclick="deleteData(<?php echo $sous_secteur['id'] ?>, 'Êtes-vous sûr de vouloir supprimer ce sous secteur ?', 'secteurs')"
+                                  <button title="Supprimer" onclick="deleteData(<?php echo $action_prio['id'] ?>, 'Êtes-vous sûr de vouloir supprimer cette action ?', 'actions')"
                                     type="button" class="btn btn-sm btn-phoenix-danger fs-10 px-2 py-1">
                                     <span class="uil-trash-alt fs-8"></span>
                                   </button>
@@ -200,7 +243,6 @@
                             </div>
                           </td>
                         </tr>
-                      <?php endif; ?>
                     <?php endforeach; ?>
                   </tbody>
                 </table>

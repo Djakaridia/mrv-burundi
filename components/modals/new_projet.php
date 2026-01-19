@@ -228,24 +228,23 @@
                                                             </div>
                                                         </div>
                                                     </div>
-
                                                     <div class="col-md-12 mb-2">
                                                         <div class="form-floating form-floating-advance-select">
                                                             <label for="MultipleSelectSecteur">Secteur concerné*</label>
-                                                            <select class="form-select" name="secteurs_listID" id="MultipleSelectSecteur" data-choices="data-choices" multiple="multiple" data-options='{"removeItemButton":true,"placeholder":true}' required>
+                                                            <select class="form-select" name="secteurs_listID[]" id="MultipleSelectSecteur" data-choices="data-choices" multipledata-options='{"removeItemButton":true,"placeholder":true}' required>
                                                                 <option value="" disabled>Sélectionner un secteur</option>
-                                                                <?php if ($secteurs ?? []) : ?>
+                                                                <?php if (!empty($secteurs) && !empty($project_curr)) : ?>
                                                                     <?php foreach ($secteurs as $secteur) : ?>
-                                                                        <?php if (in_array($secteur['id'], explode(',', str_replace('"', '', $project_curr['secteurs'] ?? '')))) : ?>
-                                                                            <option value="<?= $secteur['id'] ?>" selected><?= $secteur['name'] ?></option>
-                                                                        <?php else : ?>
-                                                                            <option value="<?= $secteur['id'] ?>"><?= $secteur['name'] ?></option>
-                                                                        <?php endif; ?>
+                                                                        <option value="<?= (int)$secteur['id'] ?>"
+                                                                            <?= in_array((int)$secteur['id'], $project_curr["secteurs"], true) ? 'selected' : '' ?>>
+                                                                            <?= htmlspecialchars($secteur['name']) ?>
+                                                                        </option>
                                                                     <?php endforeach; ?>
                                                                 <?php endif; ?>
                                                             </select>
                                                         </div>
                                                     </div>
+
 
                                                     <div class="col-md-12 mb-2">
                                                         <div class="form-floating form-floating-advance-select">
@@ -265,7 +264,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <!-- <div class="col-md-12 mb-2">
+                                                    <div class="col-md-12 mb-2">
                                                         <div class="form-floating form-floating-advance-select">
                                                             <label for="MultipleSelectProgramme">Programmes concernés*</label>
                                                             <select class="form-select" name="programmes_listID" id="MultipleSelectProgramme" data-choices="data-choices" multiple="multiple" data-options='{"removeItemButton":true,"placeholder":true}' required>
@@ -281,7 +280,7 @@
                                                                 <?php endif; ?>
                                                             </select>
                                                         </div>
-                                                    </div> -->
+                                                    </div>
                                                 </div>
                                             </form>
                                         </div>

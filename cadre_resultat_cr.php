@@ -111,14 +111,7 @@
                     <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                       <td class="align-middle py-0"><?php echo $indicateur['code']; ?></td>
                       <td class="align-middle"><?php echo $indicateur['intitule']; ?></td>
-
-                      <td class="align-middle py-0">
-                        <?php foreach ($unites as $unite) { ?>
-                          <?php if ($unite['id'] == $indicateur['unite']) { ?>
-                            <?php echo $unite['name']; ?>
-                          <?php } ?>
-                        <?php } ?>
-                      </td>
+                      <td class="align-middle py-0"><?php echo $indicateur['unite'] ?></td>
                       <td class="align-middle"><?php echo listModeCalcul()[$indicateur['mode_calcul']]; ?></td>
                       <td class="align-middle">
                         <?php foreach ($structures as $structure) { ?>

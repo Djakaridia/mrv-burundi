@@ -93,7 +93,7 @@
                                                     </button>
                                                     <ul class="dropdown-menu dropdown-menu-start">
                                                         <?php if (checkPermis($db, 'update')) : ?>
-                                                            <li><a class="dropdown-item edit-folder-list" href="#addDossierModal" data-bs-toggle="modal" data-bs-target="#addDossierModal" data-id="<?= $dossier['id'] ?>" data-parent-id="<?= $dossier['parent_id'] ?>" role="button">Modifier</a></li>
+                                                            <li><a class="dropdown-item edit-folder-list" href="#addDossierModal" data-bs-toggle="modal" data-bs-target="#addDossierModal" data-id="<?= $dossier['id'] ?>" data-parent-id="<?= $dossier['parent'] ?>" role="button">Modifier</a></li>
                                                         <?php endif; ?>
 
                                                         <?php if (checkPermis($db, 'delete')) : ?>

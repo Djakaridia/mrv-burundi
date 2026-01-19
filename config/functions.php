@@ -235,7 +235,7 @@ function addRootDossier(PDO $db)
         $dossier->name = $data['name'];
         $dossier->description = $data['description'];
         $dossier->type = $data['type'];
-        $dossier->parent_id = 0;
+        $dossier->parent = 0;
         $dossier->add_by = $data['add_by'];
 
         $sql = "SELECT * FROM t_dossiers WHERE name = '{$data['name']}'";
@@ -675,6 +675,60 @@ function listIcones()
 
     ksort($icones);
     return $icones;
+}
+
+// #####################################################################
+// #####################################################################
+// #####################################################################
+function cleanColumnName($header)
+{
+    $header = str_replace(
+        ['₀', '₁', '₂', '₃', '₄', '₅', '₆', '₇', '₈', '₉', '⁰', '¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹'],
+        ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+        $header
+    );
+    $header = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $header);
+    $header = preg_replace('/[^a-zA-Z0-9_]/', '_', strtolower($header));
+    $header = preg_replace('/_+/', '_', $header);
+    $header = trim($header, '_');
+    return $header;
+}
+
+function normalizeNumber($value, $precision = 3)
+{
+    if ($value === null || $value === '') return null;
+    $value = str_replace(',', '.', $value);
+    return round((float)$value, $precision);
+}
+
+
+function formatCellValue($value)
+{
+    if ($value === null || $value === '') return null;
+
+    if (is_numeric($value)) {
+        if (is_float($value) || is_double($value)) {
+            $formatted = rtrim(sprintf('%.6f', $value), '0');
+            $formatted = rtrim($formatted, '.');
+
+            if (strpos($formatted, '.') !== false) {
+                $parts = explode('.', $formatted);
+                if (strlen($parts[1]) > 3) $formatted = number_format($value, 3, '.', '');
+            }
+            return $formatted;
+        }
+        return $value;
+    }
+
+    $stringValue = trim($value);
+    if (preg_match('/^-?\d+[\.,]\d+$/', $stringValue)) {
+        $numericValue = str_replace(',', '.', $stringValue);
+        $floatValue = (float)$numericValue;
+        return number_format($floatValue, 3, '.', '');
+    }
+
+    if (is_numeric($stringValue)) return (int)$stringValue;
+    return $stringValue;
 }
 
 function removeAccents($string)

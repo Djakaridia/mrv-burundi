@@ -27,10 +27,10 @@
     $secteur = new Secteur($db);
     $data_secteurs = $secteur->read();
     $secteurs = array_filter($data_secteurs, function ($secteur) {
-        return $secteur['parent_id'] == 0;
+        return $secteur['parent'] == 0;
     });
     $sous_secteurs = array_filter($data_secteurs, function ($secteur) {
-        return $secteur['parent_id'] > 0;
+        return $secteur['parent'] > 0;
     });
 
     // ####################################
