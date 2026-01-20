@@ -19,6 +19,10 @@
     $unite = new Unite($db);
     $unites = $unite->read();
 
+     // ####################################
+    $gaz = new Gaz($db);
+    $gazs = $gaz->read();
+
     // ####################################
     $priorite = new Priorite($db);
     $priorites = $priorite->read();
@@ -115,6 +119,66 @@
                                                                             <span class="uil-trash-alt fs-8"></span>
                                                                         </button>
                                                                     <?php endif; ?>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    <?php } ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- Gaz -->
+                            <div class="col-12 col-lg-6">
+                                <div class="card rounded-bottom-sm rounded-top-0 border-0 border-top border-4 border-primary h-100 shadow-sm">
+                                    <div class="card-header d-flex justify-content-between align-items-center bg-body-emphasis px-3 py-2">
+                                        <h5 class="card-title m-0 p-0">Liste des gaz</h5>
+
+                                        <div class="ms-lg-2">
+                                            <button class="btn btn-subtle-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addGazModal"
+                                                aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
+                                                <i class="fas fa-plus"></i> Ajouter un gaz</button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body p-1">
+                                        <div class="table-responsive mx-n1 px-1 scrollbar" style="min-height: 432px;">
+                                            <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable2">
+                                                <thead class="bg-secondary-subtle">
+                                                    <tr>
+                                                        <th class="sort align-middle" scope="col" data-sort="product"> Nom</th>
+                                                        <th class="sort align-middle" scope="col" data-sort="customer"> Couleur</th>
+                                                        <th class="sort align-middle" scope="col" data-sort="description"> Description</th>
+                                                        <th class="sort align-middle" scope="col" data-sort="time" style="min-width:100px;">Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="list" id="table-latest-review-body">
+
+                                                    <?php foreach ($gazs as $gaz) { ?>
+                                                        <tr class="hover-actions-trigger btn-reveal-trigger position-static">
+                                                            <td class="align-middle customer"><?= $gaz['name'] ?></td>
+                                                            <td class="align-middle product"> <input type="color" disabled value="<?= $gaz['couleur'] ?>"></td>
+                                                            <td class="align-middle product"><?= $gaz['description'] ?></td>
+                                                            <td class="align-middle review">
+                                                                <div class="position-relative">
+                                                                    <div class="">
+                                                                        <?php if (checkPermis($db, 'update')) : ?>
+                                                                            <button type="button" data-bs-toggle="modal" data-bs-target="#addGazModal"
+                                                                                data-id="<?= $gaz['id'] ?>" class="btn btn-sm btn-phoenix-info me-1 fs-10 px-2 py-1">
+                                                                                <span class="uil-pen fs-8"></span>
+                                                                            </button>
+                                                                        <?php endif; ?>
+
+                                                                        <?php if (checkPermis($db, 'delete')) : ?>
+                                                                            <button
+                                                                                onclick="deleteData(<?php echo $gaz['id'] ?>, 'Êtes-vous sûr de vouloir supprimer ce gaz ?', 'gazs')"
+                                                                                type="button" class="btn btn-sm btn-phoenix-danger fs-10 px-2 py-1">
+                                                                                <span class="uil-trash-alt fs-8"></span>
+                                                                            </button>
+                                                                        <?php endif; ?>
+                                                                    </div>
                                                                 </div>
                                                             </td>
                                                         </tr>

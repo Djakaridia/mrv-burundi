@@ -4,6 +4,7 @@
 /plugins
 /assets
 /fiches
+/documents
 
 /config/database.php
 /config/.env

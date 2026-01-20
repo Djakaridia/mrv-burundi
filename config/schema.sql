@@ -34,10 +34,15 @@ CREATE TABLE IF NOT EXISTS t_inventaires (
 -- Table des resgistre carbone
 CREATE TABLE IF NOT EXISTS t_registres (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(200) NOT NULL,
-    annee INT NOT NULL UNIQUE,
-    description TEXT,
-    viewtable TEXT,
+    secteur VARCHAR(50) NOT NULL,
+    categorie VARCHAR(200) NOT NULL,
+    annee INT NOT NULL,
+    unite VARCHAR(50),
+    gaz VARCHAR(20),
+    emission_annee DECIMAL(15,2),
+    emission_absolue DECIMAL(15,2),
+    emission_niveau DECIMAL(15,2),
+    emission_cumulee DECIMAL(15,2),
     file TEXT,
     afficher VARCHAR(20) DEFAULT 'oui',
     status VARCHAR(20) DEFAULT 'invalide',
@@ -46,13 +51,14 @@ CREATE TABLE IF NOT EXISTS t_registres (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- CREATE TABLE IF NOT EXISTS t_type_gaz (
---     id INT AUTO_INCREMENT PRIMARY KEY,
---     code VARCHAR(10) NOT NULL,        -- CO2, CH4, N2O
---     name VARCHAR(50),
---     prg DECIMAL(10,2) NOT NULL,       -- PRG IPCC
---     reference_ipcc VARCHAR(50)        -- ex: IPCC AR6
--- );
+CREATE TABLE IF NOT EXISTS t_gaz (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(20) NOT NULL,        -- CO2, CH4, N2O
+    couleur VARCHAR(20),
+    description TEXT,
+    prg DECIMAL(10,2) NOT NULL,       -- PRG IPCC
+    reference_ipcc VARCHAR(50)        -- ex: IPCC AR6
+);
 
 -- Table des régions
 CREATE TABLE IF NOT EXISTS t_provinces (
