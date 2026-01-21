@@ -123,6 +123,125 @@
       $g3_absorptions[] = round(abs(normalizeNumber($row['total_absorptions'] ?? 0)), 3);
     }
   }
+
+
+  // Registre GES
+  $register = new Register($db);
+  $registers = $register->read();
+  $grouped_registers = [];
+  foreach ($registers as $register) {
+    $grouped_registers[$register['secteur']][] = $register;
+  }
+
+  $gaz = new Gaz($db);
+  $gazs = $gaz->read();
+  $gaz_colors = [];
+  foreach ($gazs as $g) {
+    $gaz_colors[strtoupper($g['name'])] = $g['couleur'] ?: '#' . substr(md5($g['name']), 0, 6);
+  }
+
+  $secteur = new Secteur($db);
+  $data_secteurs = $secteur->read();
+  $secteurs = array_filter(array_reverse($data_secteurs), function ($secteur) {
+    return $secteur['parent'] == 0;
+  });
+
+  if (!empty($registers)) {
+    $global_ges_data = [];
+
+    // 1. Préparation des données par secteur
+    $sector_totals = [];
+    $sector_gaz_totals = [];
+    $sector_annual_totals = [];
+    $sector_names = [];
+
+    foreach ($data_secteurs as $s) {
+      if ($s['parent'] == 0) {
+        $sector_names[$s['id']] = $s['name'];
+      }
+    }
+
+    // 2. Agrégation des données globales
+    foreach ($registers as $row) {
+      $secteur_id = $row['secteur'];
+      $annee = $row['annee'];
+      $gaz_name = strtoupper(trim($row['gaz']));
+
+      $normalized_gaz = $gaz_name;
+      foreach ($gazs as $system_gaz) {
+        if (strpos($gaz_name, strtoupper($system_gaz['name'])) !== false) {
+          $normalized_gaz = strtoupper($system_gaz['name']);
+          break;
+        }
+      }
+
+      if (!isset($sector_totals[$secteur_id])) {
+        $sector_totals[$secteur_id] = 0;
+      }
+      $sector_totals[$secteur_id] += $row['emission_absolue'];
+
+      if (!isset($sector_gaz_totals[$secteur_id][$normalized_gaz])) {
+        $sector_gaz_totals[$secteur_id][$normalized_gaz] = 0;
+      }
+      $sector_gaz_totals[$secteur_id][$normalized_gaz] += $row['emission_absolue'];
+
+      if (!isset($sector_annual_totals[$secteur_id][$annee])) {
+        $sector_annual_totals[$secteur_id][$annee] = 0;
+      }
+      $sector_annual_totals[$secteur_id][$annee] += $row['emission_absolue'];
+    }
+
+    // a) Graphique secteur/année (colonnes groupées)
+    $global_column_categories = [];
+    $global_series_data = [];
+    $years = [];
+
+    foreach ($registers as $row) {
+      if (!in_array($row['annee'], $years)) {
+        $years[] = $row['annee'];
+      }
+    }
+    sort($years);
+    $global_column_categories = $years;
+
+    foreach ($sector_totals as $secteur_id => $total) {
+      if (isset($sector_names[$secteur_id])) {
+        $sector_data = [];
+        foreach ($years as $year) {
+          $sector_data[] = isset($sector_annual_totals[$secteur_id][$year]) ?
+            $sector_annual_totals[$secteur_id][$year] : 0;
+        }
+
+        $global_series_data[] = [
+          'name' => $sector_names[$secteur_id],
+          'data' => $sector_data
+        ];
+      }
+    }
+
+    // b) Graphique secteur/gaz (donut/stacked)
+    $gaz_global_totals = [];
+    foreach ($sector_gaz_totals as $secteur_gazs) {
+      foreach ($secteur_gazs as $gaz => $value) {
+        if (!isset($gaz_global_totals[$gaz])) {
+          $gaz_global_totals[$gaz] = 0;
+        }
+        $gaz_global_totals[$gaz] += $value;
+      }
+    }
+
+    foreach ($gaz_global_totals as $gaz => $total) {
+      if ($total > 0) {
+        $color = $gaz_colors[$gaz] ?? '#' . substr(md5($gaz), 0, 6);
+        $global_ges_data[] = [
+          'name' => $gaz,
+          'y' => $total,
+          'color' => $color
+        ];
+      }
+    }
+  }
+
   ?>
 </head>
 
@@ -433,6 +552,25 @@
         </div>
       </div>
 
+      <div class="row mx-n6 mb-3">
+        <div class="col-12 col-md-6 mb-3">
+          <div class="card rounded-1 shadow-sm h-100">
+            <div class="card-header rounded-top-1 py-2 px-3 bg-primary">
+              <h5 class="mb-0 text-white"><i class="fas fa-bar-chart me-2"></i> Émissions par type de gaz</h5>
+            </div>
+            <div class="card-body p-2" id="registreGlobalGaz" style="min-height: 350px;"></div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 mb-3">
+          <div class="card rounded-1 shadow-sm h-100">
+            <div class="card-header rounded-top-1 py-2 px-3 bg-primary">
+              <h5 class="mb-0 text-white"><i class="fas fa-bar-chart me-2"></i> Émissions par secteur et année</h5>
+            </div>
+            <div class="card-body p-2" id="registreGlobalSecteurAnnee" style="min-height: 350px;"></div>
+          </div>
+        </div>
+      </div>
+
       <!-- Section 6: Tableau des Projets -->
       <div class="row mx-n6 mb-3">
         <div class="col-12 mb-3">
@@ -566,6 +704,21 @@
         name: 'Absorptions',
         data: <?= json_encode($g3_absorptions ?? []) ?>
       }]
+    });
+
+    mrvDonutChart({
+      id: 'registreGlobalGaz',
+      title: 'Répartition globale des émissions par type de gaz',
+      unite: 'kt eq. CO₂',
+      data: <?= json_encode($global_ges_data ?? []) ?>,
+    });
+
+    mrvGroupedBarChart({
+      id: 'registreGlobalSecteurAnnee',
+      title: 'Émissions par secteur et année',
+      unite: 'kt eq. CO₂',
+      categories: <?= json_encode($global_column_categories ?? []) ?>,
+      series: <?= json_encode($global_series_data ?? []) ?>
     });
   </script>
 </body>

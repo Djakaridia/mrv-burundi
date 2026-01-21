@@ -37,16 +37,12 @@
     $secteurs = array_filter(array_reverse($data_secteurs), function ($secteur) {
         return $secteur['parent'] == 0;
     });
-    $sous_secteurs = array_filter($data_secteurs, function ($secteur) {
-        return $secteur['parent'] > 0;
-    });
 
     // Variables pour les données globales
     $global_mode = empty($sel_secteur) && !empty($registers);
     $global_data = [];
 
     if ($global_mode) {
-        // Données globales pour tous les secteurs
         $global_column_data = [];
         $global_ges_data = [];
         $global_trend_data = [];
@@ -60,7 +56,6 @@
         $sector_annual_totals = [];
         $sector_names = [];
 
-        // Récupérer les noms des secteurs
         foreach ($data_secteurs as $s) {
             if ($s['parent'] == 0) {
                 $sector_names[$s['id']] = $s['name'];
@@ -73,7 +68,6 @@
             $annee = $row['annee'];
             $gaz_name = strtoupper(trim($row['gaz']));
 
-            // Normalisation du nom du gaz
             $normalized_gaz = $gaz_name;
             foreach ($gazs as $system_gaz) {
                 if (strpos($gaz_name, strtoupper($system_gaz['name'])) !== false) {
@@ -82,19 +76,16 @@
                 }
             }
 
-            // Données par secteur
             if (!isset($sector_totals[$secteur_id])) {
                 $sector_totals[$secteur_id] = 0;
             }
             $sector_totals[$secteur_id] += $row['emission_absolue'];
 
-            // Données par secteur et gaz
             if (!isset($sector_gaz_totals[$secteur_id][$normalized_gaz])) {
                 $sector_gaz_totals[$secteur_id][$normalized_gaz] = 0;
             }
             $sector_gaz_totals[$secteur_id][$normalized_gaz] += $row['emission_absolue'];
 
-            // Données par secteur et année
             if (!isset($sector_annual_totals[$secteur_id][$annee])) {
                 $sector_annual_totals[$secteur_id][$annee] = 0;
             }
@@ -108,7 +99,6 @@
         $global_series_data = [];
         $years = [];
 
-        // Récupérer toutes les années
         foreach ($registers as $row) {
             if (!in_array($row['annee'], $years)) {
                 $years[] = $row['annee'];
@@ -117,7 +107,6 @@
         sort($years);
         $global_column_categories = $years;
 
-        // Préparer les données par secteur pour chaque année
         foreach ($sector_totals as $secteur_id => $total) {
             if (isset($sector_names[$secteur_id])) {
                 $sector_data = [];
@@ -137,7 +126,6 @@
         $global_gaz_labels = [];
         $global_gaz_series = [];
 
-        // Compter les totaux par gaz
         $gaz_global_totals = [];
         foreach ($sector_gaz_totals as $secteur_gazs) {
             foreach ($secteur_gazs as $gaz => $value) {
@@ -148,7 +136,6 @@
             }
         }
 
-        // Préparer les données pour le graphique donut
         foreach ($gaz_global_totals as $gaz => $total) {
             if ($total > 0) {
                 $color = $gaz_colors[$gaz] ?? '#' . substr(md5($gaz), 0, 6);
@@ -163,7 +150,6 @@
         // c) Performance par secteur (colonnes et ligne)
         foreach ($sector_totals as $secteur_id => $total) {
             if (isset($sector_names[$secteur_id])) {
-                // Calculer le niveau moyen pour ce secteur
                 $niveau_total = 0;
                 $count = 0;
                 foreach ($registers as $row) {
@@ -182,7 +168,6 @@
             }
         }
 
-        // Trier par émissions décroissantes
         usort($global_sector_performance, function ($a, $b) {
             return $b['emissions'] <=> $a['emissions'];
         });
@@ -191,7 +176,6 @@
         $global_table_data = [];
         foreach ($sector_totals as $secteur_id => $total) {
             if (isset($sector_names[$secteur_id])) {
-                // Calculer les totaux par année pour ce secteur
                 $annee_data = [];
                 if (isset($sector_annual_totals[$secteur_id])) {
                     foreach ($sector_annual_totals[$secteur_id] as $annee => $emission) {
@@ -199,7 +183,6 @@
                     }
                 }
 
-                // Répartition par gaz
                 $gaz_repartition = [];
                 if (isset($sector_gaz_totals[$secteur_id])) {
                     foreach ($sector_gaz_totals[$secteur_id] as $gaz => $value) {
@@ -217,12 +200,10 @@
             }
         }
 
-        // Trier le tableau par émissions décroissantes
         usort($global_table_data, function ($a, $b) {
             return $b['total_emissions'] <=> $a['total_emissions'];
         });
     } elseif ($sel_secteur && !empty($grouped_registers[$sel_secteur])) {
-        // Mode secteur spécifique (code existant)
         $column_categories = [];
         $column_data = [];
         $ges_data = [];
@@ -410,12 +391,10 @@
                 <div class="col-12">
                     <div class="mx-n4 px-1 pb-3 mx-lg-n6 bg-body-emphasis border-y">
                         <?php if ($global_mode || (!empty($sel_secteur) && !empty($grouped_registers[$sel_secteur]))) { ?>
-                            <!-- Graphisme principal -->
                             <h5 class="m-2 text-semibold"><i class="fas fa-chart-line me-2"></i>Visualisation des Données</h5>
 
                             <?php if ($global_mode) { ?>
-                                <!-- Section pour la vue globale -->
-                                <div class="row mx-0 mb-1 g-3">
+                                <div class="row mx-0 mb-3 g-3">
                                     <div class="col-lg-6 col-12 mb-1">
                                         <div class="card rounded-1 shadow-sm border h-100">
                                             <div class="card-header bg-light p-2">
@@ -434,8 +413,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Performance par secteur -->
-                                <div class="row mx-0 mb-1">
+                                <div class="row mx-0 mb-3 g-3">
                                     <div class="col-12">
                                         <div class="card rounded-1 shadow-sm border">
                                             <div class="card-header bg-light p-2">
@@ -446,7 +424,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Tableau des données globales -->
                                 <h5 class="m-2 text-semibold mt-4"><i class="fas fa-table me-2"></i>Synthèse par secteur</h5>
                                 <div class="mx-n1 mb-3 px-1 scrollbar">
                                     <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
@@ -497,8 +474,7 @@
                                 </div>
 
                             <?php } else { ?>
-                                <!-- Section pour la vue par secteur spécifique (code existant) -->
-                                <div class="row mx-0 mb-1 g-3">
+                                <div class="row mx-0 mb-3 g-3">
                                     <div class="col-lg-6 col-12 mb-1">
                                         <div class="card rounded-1 shadow-sm border h-100">
                                             <div class="card-header bg-light p-2">
@@ -517,7 +493,7 @@
                                     </div>
                                 </div>
 
-                                <div class="row mx-0 mb-1 g-3">
+                                <div class="row mx-0 mb-3 g-3">
                                     <div class="col-lg-6 col-12 mb-1">
                                         <div class="card rounded-1 shadow-sm border h-100">
                                             <div class="card-header bg-light p-2">
@@ -536,7 +512,7 @@
                                     </div>
                                 </div>
 
-                                <div class="row mx-0 mb-1">
+                                <div class="row mx-0 mb-3 g-3">
                                     <div class="col-12">
                                         <div class="card rounded-1 shadow-sm border">
                                             <div class="card-header bg-light p-2">
