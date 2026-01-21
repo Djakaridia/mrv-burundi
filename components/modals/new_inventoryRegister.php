@@ -55,12 +55,12 @@
 </div>
 
 <script>
-    let formRegisterId = null;
+    // let formRegisterId = null;
     $(document).ready(function() {
         $('#importRegisterModal').on('shown.bs.modal', async function(event) {
             const dataSecteurId = $(event.relatedTarget).data('secteur');
             const form = document.getElementById('FormRegister');
-            formRegisterId = dataSecteurId;
+            // formRegisterId = dataSecteurId;
         });
 
         $('#importRegisterModal').on('hide.bs.modal', function() {
@@ -78,8 +78,6 @@
             event.preventDefault();
 
             const formData = new FormData(this);
-            formData.append('secteur', formRegisterId || '');
-
             const submitBtn = $('#register_modbtn');
             submitBtn.prop('disabled', true).text('Envoi en cours...');
 

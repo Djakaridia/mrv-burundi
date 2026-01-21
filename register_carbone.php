@@ -24,6 +24,13 @@
     $unite = new Unite($db);
     $unites = $unite->read();
 
+    $gaz = new Gaz($db);
+    $gazs = $gaz->read();
+    $gaz_colors = [];
+    foreach ($gazs as $g) {
+        $gaz_colors[strtoupper($g['name'])] = $g['couleur'] ?: '#' . substr(md5($g['name']), 0, 6);
+    }
+
     $sel_secteur = isset($_GET['secteur']) ? $_GET['secteur'] : '';
     $secteur = new Secteur($db);
     $data_secteurs = $secteur->read();
@@ -34,104 +41,324 @@
         return $secteur['parent'] > 0;
     });
 
-    if (!empty($registers) && !$sel_secteur) {
-        $sel_secteur = array_pop($secteurs)['id'];
-    }
+    // Variables pour les données globales
+    $global_mode = empty($sel_secteur) && !empty($registers);
+    $global_data = [];
 
-    $column_categories = [];
-    $column_data = [];
-    $ges_data = [];
-    $js_detail_data = [];
+    if ($global_mode) {
+        // Données globales pour tous les secteurs
+        $global_column_data = [];
+        $global_ges_data = [];
+        $global_trend_data = [];
+        $global_category_data = [];
+        $global_sector_performance = [];
+        $global_sector_annual_data = [];
 
-    if ($sel_secteur && !empty($grouped_registers[$sel_secteur])) {
+        // 1. Préparation des données par secteur
+        $sector_totals = [];
+        $sector_gaz_totals = [];
+        $sector_annual_totals = [];
+        $sector_names = [];
+
+        // Récupérer les noms des secteurs
+        foreach ($data_secteurs as $s) {
+            if ($s['parent'] == 0) {
+                $sector_names[$s['id']] = $s['name'];
+            }
+        }
+
+        // 2. Agrégation des données globales
+        foreach ($registers as $row) {
+            $secteur_id = $row['secteur'];
+            $annee = $row['annee'];
+            $gaz_name = strtoupper(trim($row['gaz']));
+
+            // Normalisation du nom du gaz
+            $normalized_gaz = $gaz_name;
+            foreach ($gazs as $system_gaz) {
+                if (strpos($gaz_name, strtoupper($system_gaz['name'])) !== false) {
+                    $normalized_gaz = strtoupper($system_gaz['name']);
+                    break;
+                }
+            }
+
+            // Données par secteur
+            if (!isset($sector_totals[$secteur_id])) {
+                $sector_totals[$secteur_id] = 0;
+            }
+            $sector_totals[$secteur_id] += $row['emission_absolue'];
+
+            // Données par secteur et gaz
+            if (!isset($sector_gaz_totals[$secteur_id][$normalized_gaz])) {
+                $sector_gaz_totals[$secteur_id][$normalized_gaz] = 0;
+            }
+            $sector_gaz_totals[$secteur_id][$normalized_gaz] += $row['emission_absolue'];
+
+            // Données par secteur et année
+            if (!isset($sector_annual_totals[$secteur_id][$annee])) {
+                $sector_annual_totals[$secteur_id][$annee] = 0;
+            }
+            $sector_annual_totals[$secteur_id][$annee] += $row['emission_absolue'];
+        }
+
+        // 3. Préparation des données pour les graphiques globaux
+
+        // a) Graphique secteur/année (colonnes groupées)
+        $global_column_categories = [];
+        $global_series_data = [];
+        $years = [];
+
+        // Récupérer toutes les années
+        foreach ($registers as $row) {
+            if (!in_array($row['annee'], $years)) {
+                $years[] = $row['annee'];
+            }
+        }
+        sort($years);
+        $global_column_categories = $years;
+
+        // Préparer les données par secteur pour chaque année
+        foreach ($sector_totals as $secteur_id => $total) {
+            if (isset($sector_names[$secteur_id])) {
+                $sector_data = [];
+                foreach ($years as $year) {
+                    $sector_data[] = isset($sector_annual_totals[$secteur_id][$year]) ?
+                        $sector_annual_totals[$secteur_id][$year] : 0;
+                }
+
+                $global_series_data[] = [
+                    'name' => $sector_names[$secteur_id],
+                    'data' => $sector_data
+                ];
+            }
+        }
+
+        // b) Graphique secteur/gaz (donut/stacked)
+        $global_gaz_labels = [];
+        $global_gaz_series = [];
+
+        // Compter les totaux par gaz
+        $gaz_global_totals = [];
+        foreach ($sector_gaz_totals as $secteur_gazs) {
+            foreach ($secteur_gazs as $gaz => $value) {
+                if (!isset($gaz_global_totals[$gaz])) {
+                    $gaz_global_totals[$gaz] = 0;
+                }
+                $gaz_global_totals[$gaz] += $value;
+            }
+        }
+
+        // Préparer les données pour le graphique donut
+        foreach ($gaz_global_totals as $gaz => $total) {
+            if ($total > 0) {
+                $color = $gaz_colors[$gaz] ?? '#' . substr(md5($gaz), 0, 6);
+                $global_ges_data[] = [
+                    'name' => $gaz,
+                    'y' => $total,
+                    'color' => $color
+                ];
+            }
+        }
+
+        // c) Performance par secteur (colonnes et ligne)
+        foreach ($sector_totals as $secteur_id => $total) {
+            if (isset($sector_names[$secteur_id])) {
+                // Calculer le niveau moyen pour ce secteur
+                $niveau_total = 0;
+                $count = 0;
+                foreach ($registers as $row) {
+                    if ($row['secteur'] == $secteur_id) {
+                        $niveau_total += $row['emission_niveau'];
+                        $count++;
+                    }
+                }
+                $niveau_moyen = $count > 0 ? $niveau_total / $count : 0;
+
+                $global_sector_performance[] = [
+                    'name' => $sector_names[$secteur_id],
+                    'emissions' => $total,
+                    'niveau' => $niveau_moyen
+                ];
+            }
+        }
+
+        // Trier par émissions décroissantes
+        usort($global_sector_performance, function ($a, $b) {
+            return $b['emissions'] <=> $a['emissions'];
+        });
+
+        // 4. Préparation des données pour le tableau global
+        $global_table_data = [];
+        foreach ($sector_totals as $secteur_id => $total) {
+            if (isset($sector_names[$secteur_id])) {
+                // Calculer les totaux par année pour ce secteur
+                $annee_data = [];
+                if (isset($sector_annual_totals[$secteur_id])) {
+                    foreach ($sector_annual_totals[$secteur_id] as $annee => $emission) {
+                        $annee_data[$annee] = $emission;
+                    }
+                }
+
+                // Répartition par gaz
+                $gaz_repartition = [];
+                if (isset($sector_gaz_totals[$secteur_id])) {
+                    foreach ($sector_gaz_totals[$secteur_id] as $gaz => $value) {
+                        $gaz_repartition[] = $gaz . ': ' . number_format($value, 2);
+                    }
+                }
+
+                $global_table_data[] = [
+                    'secteur_id' => $secteur_id,
+                    'secteur_nom' => $sector_names[$secteur_id],
+                    'total_emissions' => $total,
+                    'annee_data' => $annee_data,
+                    'gaz_repartition' => implode(', ', $gaz_repartition)
+                ];
+            }
+        }
+
+        // Trier le tableau par émissions décroissantes
+        usort($global_table_data, function ($a, $b) {
+            return $b['total_emissions'] <=> $a['total_emissions'];
+        });
+    } elseif ($sel_secteur && !empty($grouped_registers[$sel_secteur])) {
+        // Mode secteur spécifique (code existant)
+        $column_categories = [];
+        $column_data = [];
+        $ges_data = [];
+        $trend_data = [];
+        $category_gaz_data = [];
+        $annual_data = [];
+        $cumulative_data = [];
+        $gaz_annual_data = [];
+        $sector_performance = [];
+
         $category_totals = [];
-        
+        $annual_totals = [];
+        $cumulative_totals = [];
+
         foreach ($grouped_registers[$sel_secteur] as $row) {
             $category = $row['categorie'];
-            
+            $annee = $row['annee'];
+            $gaz_name = strtoupper(trim($row['gaz']));
+            $normalized_gaz = $gaz_name;
+
+            foreach ($gazs as $system_gaz) {
+                if (strpos($gaz_name, strtoupper($system_gaz['name'])) !== false) {
+                    $normalized_gaz = strtoupper($system_gaz['name']);
+                    break;
+                }
+            }
+
             if (!isset($category_totals[$category])) {
                 $category_totals[$category] = 0;
                 $column_categories[] = $category;
             }
-            
-            // Utiliser soit emission_absolue soit emission_annee selon votre besoin
             $category_totals[$category] += $row['emission_absolue'];
+
+            if (!isset($annual_totals[$annee])) {
+                $annual_totals[$annee] = 0;
+            }
+            $annual_totals[$annee] += $row['emission_absolue'];
+
+            if (!isset($cumulative_totals[$annee])) {
+                $cumulative_totals[$annee] = 0;
+            }
+            $cumulative_totals[$annee] += $row['emission_cumulee'];
+
+            if (!isset($gaz_annual_data[$normalized_gaz])) {
+                $gaz_annual_data[$normalized_gaz] = [];
+            }
+            if (!isset($gaz_annual_data[$normalized_gaz][$annee])) {
+                $gaz_annual_data[$normalized_gaz][$annee] = 0;
+            }
+            $gaz_annual_data[$normalized_gaz][$annee] += $row['emission_absolue'];
+
+            if (!isset($category_gaz_data[$category])) {
+                $category_gaz_data[$category] = [];
+            }
+            if (!isset($category_gaz_data[$category][$normalized_gaz])) {
+                $category_gaz_data[$category][$normalized_gaz] = 0;
+            }
+            $category_gaz_data[$category][$normalized_gaz] += $row['emission_absolue'];
         }
-        
+
         $column_data = array_values($category_totals);
-        
-        // CORRECTION ICI : Meilleur regroupement par type de gaz
         $gaz_totals = [];
-        $detail_data = [];
-        
         foreach ($grouped_registers[$sel_secteur] as $row) {
-            $category = $row['categorie'];
-            $gaz = trim($row['gaz']);
-            // Utiliser emission_absolue ou emission_annee selon votre choix
-            $emission = $row['emission_absolue'];
-            
-            // Normaliser les noms de gaz (plus simple et plus efficace)
-            $gaz_upper = strtoupper($gaz);
-            
-            // Déterminer la clé de gaz normalisée
-            if (preg_match('/CO2|CO₂/', $gaz_upper)) {
-                $gaz_key = 'CO₂';
-            } elseif (preg_match('/CH4|CH₄/', $gaz_upper)) {
-                $gaz_key = 'CH₄';
-            } elseif (preg_match('/N2O|N₂O/', $gaz_upper)) {
-                $gaz_key = 'N₂O';
-            } elseif (preg_match('/SF6|SF₆/', $gaz_upper)) {
-                $gaz_key = 'SF₆';
-            } elseif (strpos($gaz_upper, 'HFC') !== false) {
-                $gaz_key = 'HFCs';
-            } elseif (strpos($gaz_upper, 'PFC') !== false) {
-                $gaz_key = 'PFCs';
-            } elseif (strpos($gaz_upper, 'NF3') !== false || strpos($gaz_upper, 'NF₃') !== false) {
-                $gaz_key = 'NF₃';
-            } else {
-                $gaz_key = $gaz; // Garder le nom original si non reconnu
-            }
-            
-            // Ajouter aux totaux par gaz
-            if (!isset($gaz_totals[$gaz_key])) {
-                $gaz_totals[$gaz_key] = 0;
-            }
-            $gaz_totals[$gaz_key] += $emission;
-            
-            // Préparer les données détaillées par catégorie
-            if (!isset($detail_data[$category])) {
-                $detail_data[$category] = [];
-            }
-            
-            if (!isset($detail_data[$category][$gaz_key])) {
-                $detail_data[$category][$gaz_key] = 0;
-            }
-            $detail_data[$category][$gaz_key] += $emission;
-        }
-        
-        // DEBUG: Afficher les totaux par gaz pour vérification
-        // echo "<!-- DEBUG - Totaux par gaz: " . print_r($gaz_totals, true) . " -->";
-        
-        // Filtrer les gaz avec des émissions > 0
-        $ges_data = [];
-        foreach ($gaz_totals as $gaz => $total) {
-            if ($total > 0) {
-                $ges_data[] = ['name' => $gaz, 'y' => $total];
-            }
-        }
-        
-        // Préparer les données détaillées pour JS
-        foreach ($detail_data as $category => $gaz_data) {
-            $category_data = [];
-            foreach ($gaz_data as $gaz => $value) {
-                if ($value > 0) {
-                    $category_data[] = ['name' => $gaz, 'y' => $value];
+            $gaz_name = strtoupper(trim($row['gaz']));
+            $normalized_gaz = $gaz_name;
+
+            foreach ($gazs as $system_gaz) {
+                if (strpos($gaz_name, strtoupper($system_gaz['name'])) !== false) {
+                    $normalized_gaz = strtoupper($system_gaz['name']);
+                    break;
                 }
             }
-            if (!empty($category_data)) {
-                $js_detail_data[$category] = $category_data;
+
+            if (!isset($gaz_totals[$normalized_gaz])) {
+                $gaz_totals[$normalized_gaz] = 0;
+            }
+            $gaz_totals[$normalized_gaz] += $row['emission_absolue'];
+        }
+
+        foreach ($gaz_totals as $gaz => $total) {
+            if ($total > 0) {
+                $color = $gaz_colors[$gaz] ?? '#' . substr(md5($gaz), 0, 6);
+                $ges_data[] = [
+                    'name' => $gaz,
+                    'y' => $total,
+                    'color' => $color
+                ];
             }
         }
+
+        ksort($annual_totals);
+        foreach ($annual_totals as $annee => $total) {
+            $trend_data[] = ['annee' => $annee, 'total' => $total];
+            $annual_data[] = ['name' => $annee, 'y' => $total];
+        }
+
+        ksort($cumulative_totals);
+        foreach ($cumulative_totals as $annee => $total) {
+            $cumulative_data[] = ['name' => $annee, 'y' => $total];
+        }
+
+        foreach ($category_totals as $category => $total) {
+            $niveau_total = 0;
+            $count = 0;
+            foreach ($grouped_registers[$sel_secteur] as $row) {
+                if ($row['categorie'] == $category) {
+                    $niveau_total += $row['emission_niveau'];
+                    $count++;
+                }
+            }
+            $niveau_moyen = $count > 0 ? $niveau_total / $count : 0;
+
+            $sector_performance[] = [
+                'name' => $category,
+                'emissions' => $total,
+                'niveau' => $niveau_moyen
+            ];
+        }
+
+        $stacked_gaz_series = [];
+        foreach ($gaz_annual_data as $gaz => $annual_values) {
+            $series_data = [];
+            ksort($annual_values);
+            foreach ($annual_values as $annee => $value) {
+                $series_data[] = $value;
+            }
+
+            $stacked_gaz_series[] = [
+                'name' => $gaz,
+                'data' => $series_data,
+                'color' => $gaz_colors[$gaz] ?? '#' . substr(md5($gaz), 0, 6)
+            ];
+        }
+
+        $stacked_years = array_keys($annual_totals);
+        sort($stacked_years);
     }
 
     ?>
@@ -157,7 +384,7 @@
                     <div class="col-lg-3 mb-2 mb-lg-0 text-center">
                         <form action="formNiveauResultat" method="post">
                             <select class="btn btn-phoenix-primary rounded-pill btn-sm form-select form-select-sm rounded-1" name="result" id="resultID" onchange="window.location.href = 'register_carbone.php?secteur=' + this.value">
-                                <option value="" class="text-center" selected disabled>---Sélectionner un secteur---</option>
+                                <option value="" class="text-center" <?php echo empty($sel_secteur) ? 'selected' : ''; ?>>---Tous les secteurs---</option>
                                 <?php foreach ($secteurs as $secteur) { ?>
                                     <option value="<?php echo $secteur['id']; ?>" <?php if ($sel_secteur == $secteur['id']) echo 'selected'; ?>><?php echo $secteur['name']; ?></option>
                                 <?php } ?>
@@ -166,9 +393,15 @@
                     </div>
 
                     <div class="col-lg-4 mb-2 mb-lg-0 d-flex gap-2 justify-content-lg-end">
-                        <button type="button" data-bs-toggle="modal" data-bs-target="#importRegisterModal" data-secteur="<?php echo $sel_secteur; ?>" class="btn btn-subtle-primary btn-sm">
-                            <span class="fa fa-database fs-9 me-2"></span>Importer Données
-                        </button>
+                        <?php if (empty($sel_secteur)) { ?>
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#importRegisterModal" data-secteur="<?php echo $sel_secteur; ?>" class="btn btn-subtle-primary btn-sm">
+                                <span class="fa fa-database fs-9 me-2"></span>Importer Données
+                            </button>
+                        <?php } else { ?>
+                            <button type="button" onclick="window.location.href=`<?= $_SERVER['PHP_SELF'] ?>`" class="btn btn-subtle-primary btn-sm">
+                                <span class="fa fa-arrow-left fs-9 me-2"></span>Vue globale
+                            </button>
+                        <?php } ?>
                     </div>
                 </div>
             </div>
@@ -176,109 +409,206 @@
             <div class="row mt-3">
                 <div class="col-12">
                     <div class="mx-n4 px-1 pb-3 mx-lg-n6 bg-body-emphasis border-y">
-                        <?php if (!empty($grouped_registers[$sel_secteur])) { ?>
-                            <!-- Tableau -->
-                            <h5 class="m-2 text-semibold"><i class="fas fa-table me-2"></i>Liste des Inventaires</h5>
-                            <div class="mx-n1 mb-3 px-1 scrollbar">
-                                <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
-                                    <thead class="bg-secondary-subtle">
-                                        <tr>
-                                            <th class="sort align-middle text-uppercase" style="width: 5%">Année</th>
-                                            <th class="sort align-middle text-uppercase" style="width: 40%">Catégorie</th>
-                                            <th class="sort align-middle text-uppercase" style="width: 5%">Gaz</th>
-                                            <th class="sort align-middle text-uppercase" style="width: 10%">Emission Année</th>
-                                            <th class="sort align-middle text-uppercase" style="width: 10%">Emission Absolue</th>
-                                            <th class="sort align-middle text-uppercase" style="width: 10%">Niveau Emission</th>
-                                            <th class="sort align-middle text-uppercase" style="width: 10%">Emission Cumulée</th>
-                                            <th class="sort align-middle text-uppercase" style="width: 10%">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="list" id="table-latest-review-body">
-                                        <?php 
-                                        // Afficher un résumé des gaz disponibles pour debug
-                                        $gaz_summary = [];
-                                        foreach ($grouped_registers[$sel_secteur] as $row) {
-                                            $gaz_summary[$row['gaz']] = ($gaz_summary[$row['gaz']] ?? 0) + 1;
-                                        }
-                                        ?>
-                                        <!-- DEBUG: Résumé des gaz -->
-                                        <!-- <div style="display:none;">
-                                            <pre><?php echo print_r($gaz_summary, true); ?></pre>
-                                            <pre>Ges Data: <?php echo print_r($ges_data, true); ?></pre>
-                                        </div> -->
-                                        
-                                        <?php foreach ($grouped_registers[$sel_secteur] as $row) { ?>
-                                            <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                                                <td class="align-middle px-2"> <?php echo $row['annee']; ?> </td>
-                                                <td class="align-middle px-2"> <?php echo $row['categorie']; ?> </td>
-                                                <td class="align-middle px-2"> 
-                                                    <?php echo $row['gaz']; ?>
-                                                    <!-- <small class="text-muted">(abs: <?php echo $row['emission_absolue']; ?>)</small> -->
-                                                </td>
-                                                <td class="align-middle px-2"> <?php echo $row['emission_annee']; ?> </td>
-                                                <td class="align-middle px-2"> <?php echo $row['emission_absolue']; ?> </td>
-                                                <td class="align-middle px-2"> <?php echo $row['emission_niveau']; ?> </td>
-                                                <td class="align-middle px-2"> <?php echo $row['emission_cumulee']; ?> </td>
-                                                <td class="align-middle review px-2">
-                                                    <div class="position-relative">
-                                                        <div class="d-flex gap-1">
-                                                            <?php if (checkPermis($db, 'update')) : ?>
-                                                                <button title="Modifier" class="btn btn-sm btn-phoenix-info fs-10 px-2 py-1" data-bs-toggle="modal"
-                                                                    data-bs-target="#addRegisterModal" data-id="<?php echo $row['id']; ?>">
-                                                                    <span class="uil-pen fs-8"></span>
-                                                                </button>
-                                                            <?php endif; ?>
-
-                                                            <?php if (checkPermis($db, 'update', 2)) : ?>
-                                                                <button title="Approuver/Désapprouver" onclick="updateState(<?php echo $row['id']; ?>, '<?php echo $row['status'] == 'approuve' ? 'non_approuve' : 'approuve'; ?>', 'Êtes-vous sûr de vouloir <?php echo $row['status'] == 'approuve' ? 'désapprouver' : 'approuver'; ?> ce register ?', 'registers')"
-                                                                    type="button" class="btn btn-sm btn-phoenix-warning fs-10 px-2 py-1">
-                                                                    <span class="uil-<?php echo $row['status'] == 'approuve' ? 'ban text-warning' : 'check-circle text-success'; ?> fs-8"></span>
-                                                                </button>
-                                                            <?php endif; ?>
-
-                                                            <?php if (checkPermis($db, 'delete')) : ?>
-                                                                <button title="Supprimer" onclick="deleteData(<?php echo $row['id']; ?>, 'Êtes-vous sûr de vouloir supprimer ce register ?', 'registers')"
-                                                                    type="button" class="btn btn-sm btn-phoenix-danger fs-10 px-2 py-1">
-                                                                    <span class="uil-trash-alt fs-8"></span>
-                                                                </button>
-                                                            <?php endif; ?>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        <?php } ?>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <!-- Graphisme  -->
+                        <?php if ($global_mode || (!empty($sel_secteur) && !empty($grouped_registers[$sel_secteur]))) { ?>
+                            <!-- Graphisme principal -->
                             <h5 class="m-2 text-semibold"><i class="fas fa-chart-line me-2"></i>Visualisation des Données</h5>
-                            <div class="row mx-0 mb-3">
-                                <div class="col-lg-6 col-12">
-                                    <div class="card rounded-1 shadow-sm border h-100" style="min-height: 400px;">
-                                        <div class="card-body p-2" id="chartRegistreSecteur"></div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-12">
-                                    <div class="card rounded-1 shadow-sm border h-100" style="min-height: 400px;">
-                                        <div class="card-body p-2" id="chartRegistreGaz"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Graphique détaillé par catégorie -->
-                            <?php if (!empty($js_detail_data) && count($ges_data) > 1) { ?>
-                            <div class="row mx-0 mb-3">
-                                <div class="col-12">
-                                    <div class="card rounded-1 shadow-sm border">
-                                        <div class="card-header bg-light">
-                                            <h6 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Détail des émissions par catégorie et type de gaz</h6>
+
+                            <?php if ($global_mode) { ?>
+                                <!-- Section pour la vue globale -->
+                                <div class="row mx-0 mb-1 g-3">
+                                    <div class="col-lg-6 col-12 mb-1">
+                                        <div class="card rounded-1 shadow-sm border h-100">
+                                            <div class="card-header bg-light p-2">
+                                                <h6 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Répartition globale par type de gaz</h6>
+                                            </div>
+                                            <div class="card-body p-2" id="chartGlobalGaz" style="min-height: 350px;"></div>
                                         </div>
-                                        <div class="card-body p-2" id="chartRegistreDetail"></div>
+                                    </div>
+                                    <div class="col-lg-6 col-12 mb-1">
+                                        <div class="card rounded-1 shadow-sm border h-100">
+                                            <div class="card-header bg-light p-2">
+                                                <h6 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Émissions par secteur et année</h6>
+                                            </div>
+                                            <div class="card-body p-2" id="chartGlobalSecteurAnnee" style="min-height: 350px;"></div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+
+                                <!-- Performance par secteur -->
+                                <div class="row mx-0 mb-1">
+                                    <div class="col-12">
+                                        <div class="card rounded-1 shadow-sm border">
+                                            <div class="card-header bg-light p-2">
+                                                <h6 class="mb-0"><i class="fas fa-chart-column me-2"></i>Performance globale par secteur</h6>
+                                            </div>
+                                            <div class="card-body p-2" id="chartGlobalPerformance" style="min-height: 400px;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Tableau des données globales -->
+                                <h5 class="m-2 text-semibold mt-4"><i class="fas fa-table me-2"></i>Synthèse par secteur</h5>
+                                <div class="mx-n1 mb-3 px-1 scrollbar">
+                                    <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
+                                        <thead class="bg-secondary-subtle">
+                                            <tr>
+                                                <th class="sort align-middle text-uppercase">Secteur</th>
+                                                <th class="sort align-middle text-uppercase">Émissions Totales (kt eq. CO₂)</th>
+                                                <th class="sort align-middle text-uppercase">Répartition par gaz</th>
+                                                <th class="sort align-middle text-uppercase">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="list" id="table-latest-review-body">
+                                            <?php foreach ($global_table_data as $sector) { ?>
+                                                <tr class="hover-actions-trigger btn-reveal-trigger position-static">
+                                                    <td class="align-middle px-2 fw-bold">
+                                                        <?php echo $sector['secteur_nom']; ?>
+                                                    </td>
+                                                    <td class="align-middle px-2">
+                                                        <div class="fw-bold"><?php echo number_format($sector['total_emissions'], 2); ?></div>
+                                                        <?php if (!empty($sector['annee_data'])) { ?>
+                                                            <div class="fs-10 text-muted">
+                                                                <?php
+                                                                foreach ($sector['annee_data'] as $annee => $emission) {
+                                                                    echo $annee . ': ' . number_format($emission, 2) . '<br>';
+                                                                }
+                                                                ?>
+                                                            </div>
+                                                        <?php } ?>
+                                                    </td>
+                                                    <td class="align-middle px-2">
+                                                        <?php echo $sector['gaz_repartition']; ?>
+                                                    </td>
+                                                    <td class="align-middle review px-2">
+                                                        <div class="position-relative">
+                                                            <div class="d-flex gap-1">
+                                                                <a href="register_carbone.php?secteur=<?php echo $sector['secteur_id']; ?>"
+                                                                    class="btn btn-sm btn-phoenix-primary fs-10 px-2 py-1"
+                                                                    title="Voir le détail">
+                                                                    <span class="uil-eye fs-8"></span> Détail
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            <?php } ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            <?php } else { ?>
+                                <!-- Section pour la vue par secteur spécifique (code existant) -->
+                                <div class="row mx-0 mb-1 g-3">
+                                    <div class="col-lg-6 col-12 mb-1">
+                                        <div class="card rounded-1 shadow-sm border h-100">
+                                            <div class="card-header bg-light p-2">
+                                                <h6 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Répartition par type de gaz</h6>
+                                            </div>
+                                            <div class="card-body p-2" id="chartRegistreGaz" style="min-height: 350px;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-12 mb-1">
+                                        <div class="card rounded-1 shadow-sm border h-100">
+                                            <div class="card-header bg-light p-2">
+                                                <h6 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Émissions par catégorie</h6>
+                                            </div>
+                                            <div class="card-body p-2" id="chartRegistreSecteur" style="min-height: 350px;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mx-0 mb-1 g-3">
+                                    <div class="col-lg-6 col-12 mb-1">
+                                        <div class="card rounded-1 shadow-sm border h-100">
+                                            <div class="card-header bg-light p-2">
+                                                <h6 class="mb-0"><i class="fas fa-chart-line me-2"></i>Tendance annuelle</h6>
+                                            </div>
+                                            <div class="card-body p-2" id="chartTendanceAnnuelle" style="min-height: 350px;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-12 mb-1">
+                                        <div class="card rounded-1 shadow-sm border h-100">
+                                            <div class="card-header bg-light p-2">
+                                                <h6 class="mb-0"><i class="fas fa-chart-area me-2"></i>Émissions cumulées</h6>
+                                            </div>
+                                            <div class="card-body p-2" id="chartCumulative" style="min-height: 350px;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mx-0 mb-1">
+                                    <div class="col-12">
+                                        <div class="card rounded-1 shadow-sm border">
+                                            <div class="card-header bg-light p-2">
+                                                <h6 class="mb-0"><i class="fas fa-chart-column me-2"></i>Performance par catégorie</h6>
+                                            </div>
+                                            <div class="card-body p-2" id="chartPerformance" style="min-height: 400px;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h5 class="m-2 text-semibold mt-4"><i class="fas fa-table me-2"></i>Liste des émissions</h5>
+                                <div class="mx-n1 mb-3 px-1 scrollbar">
+                                    <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
+                                        <thead class="bg-secondary-subtle">
+                                            <tr>
+                                                <th class="sort align-middle text-uppercase">Année</th>
+                                                <th class="sort align-middle text-uppercase">Catégorie</th>
+                                                <th class="sort align-middle text-uppercase">Gaz</th>
+                                                <th class="sort align-middle text-uppercase">Emission Année</th>
+                                                <th class="sort align-middle text-uppercase">Emission Absolue</th>
+                                                <th class="sort align-middle text-uppercase">Niveau Emission</th>
+                                                <th class="sort align-middle text-uppercase">Emission Cumulée</th>
+                                                <th class="sort align-middle text-uppercase">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="list" id="table-latest-review-body">
+                                            <?php foreach ($grouped_registers[$sel_secteur] as $row) { ?>
+                                                <tr class="hover-actions-trigger btn-reveal-trigger position-static">
+                                                    <td class="align-middle px-2"> <?php echo $row['annee']; ?> </td>
+                                                    <td class="align-middle px-2"> <?php echo $row['categorie']; ?> </td>
+                                                    <td class="align-middle px-2">
+                                                        <span class="badge" style="background-color: <?php echo $gaz_colors[strtoupper($row['gaz'])] ?? '#6c757d'; ?>; color: white;">
+                                                            <?php echo $row['gaz']; ?>
+                                                        </span>
+                                                    </td>
+                                                    <td class="align-middle px-2"> <?php echo number_format($row['emission_annee'], 2); ?> </td>
+                                                    <td class="align-middle px-2"> <?php echo number_format($row['emission_absolue'], 2); ?> </td>
+                                                    <td class="align-middle px-2"> <?php echo number_format($row['emission_niveau'], 2); ?> </td>
+                                                    <td class="align-middle px-2"> <?php echo number_format($row['emission_cumulee'], 2); ?> </td>
+                                                    <td class="align-middle review px-2">
+                                                        <div class="position-relative">
+                                                            <div class="d-flex gap-1">
+                                                                <?php if (checkPermis($db, 'update')) : ?>
+                                                                    <button title="Modifier" class="btn btn-sm btn-phoenix-info fs-10 px-2 py-1" data-bs-toggle="modal"
+                                                                        data-bs-target="#addRegisterModal" data-id="<?php echo $row['id']; ?>">
+                                                                        <span class="uil-pen fs-8"></span>
+                                                                    </button>
+                                                                <?php endif; ?>
+
+                                                                <?php if (checkPermis($db, 'update', 2)) : ?>
+                                                                    <button title="Approuver/Désapprouver" onclick="updateState(<?php echo $row['id']; ?>, '<?php echo $row['status'] == 'approuve' ? 'non_approuve' : 'approuve'; ?>', 'Êtes-vous sûr de vouloir <?php echo $row['status'] == 'approuve' ? 'désapprouver' : 'approuver'; ?> ce register ?', 'registers')"
+                                                                        type="button" class="btn btn-sm btn-phoenix-warning fs-10 px-2 py-1">
+                                                                        <span class="uil-<?php echo $row['status'] == 'approuve' ? 'ban text-warning' : 'check-circle text-success'; ?> fs-8"></span>
+                                                                    </button>
+                                                                <?php endif; ?>
+
+                                                                <?php if (checkPermis($db, 'delete')) : ?>
+                                                                    <button title="Supprimer" onclick="deleteData(<?php echo $row['id']; ?>, 'Êtes-vous sûr de vouloir supprimer ce register ?', 'registers')"
+                                                                        type="button" class="btn btn-sm btn-phoenix-danger fs-10 px-2 py-1">
+                                                                        <span class="uil-trash-alt fs-8"></span>
+                                                                    </button>
+                                                                <?php endif; ?>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            <?php } ?>
+                                        </tbody>
+                                    </table>
+                                </div>
                             <?php } ?>
+
                         <?php } else { ?>
                             <div class="text-center py-5 my-3" style="min-height: 350px;">
                                 <div class="d-flex justify-content-center mb-3">
@@ -286,11 +616,19 @@
                                         <path d="M12 8V12M12 16H12.01M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                     </svg>
                                 </div>
-                                <h4 class="text-800 mb-3">Aucune données trouvée</h4>
-                                <p class="text-600 mb-5">Veuillez ajouter des données pour afficher ses graphiques</p>
-                                <button type="button" data-bs-toggle="modal" data-bs-target="#importRegisterModal" data-secteur="<?php echo $sel_secteur; ?>" class="btn btn-subtle-primary btn-sm">
-                                    <span class="fa fa-database fs-9 me-2"></span>Importer des données
-                                </button>
+                                <h4 class="text-800 mb-3">Aucune donnée trouvée</h4>
+                                <p class="text-600 mb-5">
+                                    <?php if (empty($registers)) { ?>
+                                        Aucun registre n'a été importé. Veuillez sélectionner un secteur et importer des données.
+                                    <?php } else { ?>
+                                        Sélectionnez un secteur pour voir ses données détaillées.
+                                    <?php } ?>
+                                </p>
+                                <?php if (!empty($registers)) { ?>
+                                    <p class="text-600">
+                                        Vous pouvez aussi voir <a href="register_carbone.php" class="fw-bold">la vue globale de tous les secteurs</a>
+                                    </p>
+                                <?php } ?>
                             </div>
                         <?php } ?>
                     </div>
@@ -308,107 +646,99 @@
 </body>
 
 <script>
-    <?php if (!empty($grouped_registers[$sel_secteur])) { ?>
-        // Graphique des émissions par catégorie
-        mrvBarChart({
-            id: 'chartRegistreSecteur',
-            title: 'Émissions totales par catégorie (sous-secteur)',
+    <?php if ($global_mode) { ?>
+        mrvDonutChart({
+            id: 'chartGlobalGaz',
+            title: 'Répartition globale des émissions par type de gaz',
             unite: 'kt eq. CO₂',
-            categories: <?= json_encode($column_categories ?? []) ?>,
-            data: <?= json_encode($column_data ?? []) ?>,
-            desaggregate: true,
-            name: 'Catégorie',
-            name2: 'Gaz',
-            title2: 'Répartition par type de gaz',
-            detailData: <?= json_encode($js_detail_data ?? []) ?>
+            data: <?= json_encode($global_ges_data ?? []) ?>,
         });
 
-        // Graphique camembert par type de gaz
-        mrvPieChart({
+        mrvGroupedBarChart({
+            id: 'chartGlobalSecteurAnnee',
+            title: 'Émissions par secteur et année',
+            unite: 'kt eq. CO₂',
+            categories: <?= json_encode($global_column_categories ?? []) ?>,
+            series: <?= json_encode($global_series_data ?? []) ?>
+        });
+
+        mrvDualAxisChart({
+            id: 'chartGlobalPerformance',
+            title: 'Performance globale par secteur',
+            categories: <?= json_encode(array_column($global_sector_performance, 'name') ?? []) ?>,
+            series: [{
+                name: 'Émissions totales (kt eq. CO₂)',
+                type: 'column',
+                data: <?= json_encode(array_column($global_sector_performance, 'emissions') ?? []) ?>,
+                yAxis: 0,
+                color: '#3498db'
+            }, {
+                name: 'Niveau moyen d\'émission',
+                type: 'line',
+                data: <?= json_encode(array_column($global_sector_performance, 'niveau') ?? []) ?>,
+                yAxis: 1,
+                color: '#e74c3c'
+            }],
+            yAxisTitles: ['kt eq. CO₂', 'Niveau']
+        });
+
+    <?php } elseif (!empty($sel_secteur) && !empty($grouped_registers[$sel_secteur])) { ?>
+        mrvDonutChart({
             id: 'chartRegistreGaz',
             title: 'Répartition des émissions par type de gaz',
             unite: 'kt eq. CO₂',
             data: <?= json_encode($ges_data ?? []) ?>,
         });
-        
-        // Graphique détaillé par catégorie (si disponible et si plus d'un type de gaz)
-        <?php if (!empty($js_detail_data) && count($ges_data) > 1) { ?>
-        setTimeout(function() {
-            mrvStackedBarChart({
-                id: 'chartRegistreDetail',
-                title: 'Détail des émissions par catégorie',
-                unite: 'kt eq. CO₂',
-                categories: <?= json_encode(array_keys($js_detail_data)) ?>,
-                series: [
-                    <?php 
-                    // Préparer les séries par type de gaz
-                    $gaz_series = [];
-                    foreach ($ges_data as $gaz_item) {
-                        $gaz_name = $gaz_item['name'];
-                        $series_data = [];
-                        foreach ($js_detail_data as $category => $data) {
-                            $value = 0;
-                            foreach ($data as $item) {
-                                if ($item['name'] === $gaz_name) {
-                                    $value = $item['y'];
-                                    break;
-                                }
-                            }
-                            $series_data[] = $value;
-                        }
-                        $gaz_series[] = [
-                            'name' => $gaz_name,
-                            'data' => $series_data
-                        ];
-                    }
-                    echo json_encode($gaz_series);
-                    ?>
-                ]
-            });
-        }, 500);
-        <?php } ?>
-    <?php } ?>
 
-    // Fonction pour les graphiques à barres empilées
-    function mrvStackedBarChart(options) {
-        Highcharts.chart(options.id, {
-            chart: {
-                type: 'column'
-            },
-            title: {
-                text: options.title
-            },
-            xAxis: {
-                categories: options.categories,
-                crosshair: true
-            },
-            yAxis: {
-                min: 0,
-                title: {
-                    text: options.unite
-                },
-                stackLabels: {
-                    enabled: true,
-                    style: {
-                        fontWeight: 'bold'
-                    }
-                }
-            },
-            tooltip: {
-                headerFormat: '<b>{point.x}</b><br/>',
-                pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
-            },
-            plotOptions: {
-                column: {
-                    stacking: 'normal',
-                    dataLabels: {
-                        enabled: false
-                    }
-                }
-            },
-            series: options.series
+        mrvBarChart({
+            id: 'chartRegistreSecteur',
+            title: 'Émissions par catégorie (sous-secteur)',
+            unite: 'kt eq. CO₂',
+            categories: <?= json_encode($column_categories ?? []) ?>,
+            data: <?= json_encode($column_data ?? []) ?>,
         });
-    }
+
+        mrvLineChart({
+            id: 'chartTendanceAnnuelle',
+            title: 'Évolution des émissions annuelles',
+            unite: 'kt eq. CO₂',
+            categories: <?= json_encode(array_column($trend_data, 'annee') ?? []) ?>,
+            data: <?= json_encode(array_column($trend_data, 'total') ?? []) ?>,
+        });
+
+        mrvAreaChart({
+            id: 'chartCumulative',
+            title: 'Émissions cumulées au fil du temps',
+            unite: 'kt eq. CO₂',
+            categories: <?= json_encode(array_column($cumulative_data, 'name') ?? []) ?>,
+            series: [{
+                name: 'Émissions cumulées',
+                data: <?= json_encode(array_column($cumulative_data, 'y') ?? []) ?>,
+                color: '#27ae60'
+            }]
+        });
+
+        mrvDualAxisChart({
+            id: 'chartPerformance',
+            title: 'Performance par catégorie',
+            categories: <?= json_encode(array_column($sector_performance, 'name') ?? []) ?>,
+            series: [{
+                name: 'Émissions totales (kt eq. CO₂)',
+                type: 'column',
+                data: <?= json_encode(array_column($sector_performance, 'emissions') ?? []) ?>,
+                yAxis: 0,
+                color: '#3498db'
+            }, {
+                name: 'Niveau moyen d\'émission',
+                type: 'line',
+                data: <?= json_encode(array_column($sector_performance, 'niveau') ?? []) ?>,
+                yAxis: 1,
+                color: '#e74c3c'
+            }],
+            yAxisTitles: ['kt eq. CO₂', 'Niveau']
+        });
+    <?php } ?>
+    
 </script>
 
 </html>

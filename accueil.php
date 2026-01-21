@@ -554,7 +554,7 @@
       data: <?= json_encode($g2_values ?? []) ?>
     });
 
-    mrvColumnCompareChart({
+    mrvGroupedBarChart({
       id: 'emissionAbsorptionChart',
       title: 'Émissions et absorptions par année',
       unite: <?= json_encode($current_inventory['unite'] ?? "") ?>,

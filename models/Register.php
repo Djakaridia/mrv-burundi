@@ -62,6 +62,34 @@ class Register
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function readByCategorie()
+    {
+        $query = "SELECT categorie, SUM(emission_annee) as emission_annee,SUM(emission_absolue) as emission_absolue,SUM(emission_niveau) as emission_niveau,SUM(emission_cumulee) as emission_cumulee FROM " . $this->table . "  GROUP BY categorie
+        ORDER BY categorie DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $row;
+    }
+
+    public function readByGaz()
+    {
+        $query = "SELECT gaz, SUM(emission_annee) as emission_annee,SUM(emission_absolue) as emission_absolue,SUM(emission_niveau) as emission_niveau,SUM(emission_cumulee) as emission_cumulee FROM " . $this->table . "  GROUP BY gaz
+        ORDER BY gaz DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $row;
+    }
+    public function readByYear()
+    {
+        $query = "SELECT annee, SUM(emission_annee) as emission_annee,SUM(emission_absolue) as emission_absolue,SUM(emission_niveau) as emission_niveau,SUM(emission_cumulee) as emission_cumulee FROM " . $this->table . "  GROUP BY annee
+        ORDER BY annee DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $row;
+    }
     public function readById()
     {
         $query = "SELECT * FROM {$this->table} WHERE id = :id";

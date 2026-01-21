@@ -6,6 +6,7 @@ require_once $routePath . 'config/cors-access.php';
 require_once $routePath . 'config/jwt-token.php';
 require_once $routePath . 'config/database.php';
 require_once $routePath . 'models/Register.php';
+require_once $routePath . 'models/Secteur.php';
 require_once $routePath . 'config/functions.php';
 require_once $routePath . 'vendor/autoload.php';
 
@@ -77,7 +78,7 @@ switch ($requestMethod) {
 
                 /* ===== Mapping des colonnes ===== */
                 $headers = array_map('trim', $rows[1]);
-                $requiredHeaders = ['Sous-secteur', 'Gaz', 'Emissions Année', 'Emissions Absolues', 'Niveau Emissions', 'Total Comule'];
+                $requiredHeaders = ['Code', 'Sous-secteur', 'Gaz', 'Emissions Année', 'Emissions Absolues', 'Niveau Emissions', 'Total Comule'];
 
                 foreach ($requiredHeaders as $h) {
                     if (!in_array($h, $headers)) {
@@ -90,9 +91,23 @@ switch ($requestMethod) {
                 $db->beginTransaction();
                 $imported = 0;
 
+                $secteurModel = new Secteur($db);
+                $data_secteurs = $secteurModel->read();
+
+                $secteurMap = [];
+                foreach ($data_secteurs as $s) {
+                    if ((int)$s['parent'] === 0) $secteurMap[(string)$s['code']] = (int)$s['id'];
+                }
+
                 for ($i = 2; $i <= count($rows); $i++) {
                     $row = $rows[$i];
                     if (empty($row['A'])) continue;
+
+                    $codeSousSecteur = trim($row[array_search('Code', $headers)]);
+                    if (!preg_match('/^(\d+)/', $codeSousSecteur, $matches)) continue;
+
+                    $codeSecteur = $matches[1];
+                    if (!isset($secteurMap[$codeSecteur])) continue;
 
                     $register = new Register($db);
                     $register->categorie          = trim($row[array_search('Sous-secteur', $headers)]);
@@ -101,11 +116,10 @@ switch ($requestMethod) {
                     $register->emission_absolue   = floatval($row[array_search('Emissions Absolues', $headers)]);
                     $register->emission_niveau    = floatval($row[array_search('Niveau Emissions', $headers)]);
                     $register->emission_cumulee   = floatval($row[array_search('Total Comule', $headers)]);
-
+                    $register->secteur = $secteurMap[$codeSecteur];
+                    $register->file     = $fileDestination;
                     $register->annee    = $_POST['annee'];
                     $register->unite    = $_POST['unite'];
-                    $register->secteur  = $_POST['secteur'];
-                    $register->file     = $fileDestination;
                     $register->add_by   = $payload['user_id'];
 
                     if (!$register->create()) {
@@ -115,7 +129,6 @@ switch ($requestMethod) {
 
                     $imported++;
                 }
-
 
                 if (!move_uploaded_file($_FILES['file']['tmp_name'], $fileDestination)) {
                     echo json_encode(["status" => "error", "message" => "Impossible de déplacer le fichier téléchargé"]);

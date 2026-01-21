@@ -94,7 +94,7 @@
                                             <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
                                                 <thead class="bg-secondary-subtle">
                                                     <tr>
-                                                        <th class="sort align-middle" scope="col">Sigle</th>
+                                                        <th class="sort align-middle" scope="col">Symbole</th>
                                                         <th class="sort align-middle" scope="col">Description</th>
                                                         <th class="sort align-middle" scope="col" style="min-width:100px;">Actions</th>
                                                     </tr>
@@ -148,7 +148,7 @@
                                             <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable2">
                                                 <thead class="bg-secondary-subtle">
                                                     <tr>
-                                                        <th class="sort align-middle" scope="col" data-sort="product"> Nom</th>
+                                                        <th class="sort align-middle" scope="col" data-sort="product"> Formule</th>
                                                         <th class="sort align-middle" scope="col" data-sort="customer"> Couleur</th>
                                                         <th class="sort align-middle" scope="col" data-sort="description"> Description</th>
                                                         <th class="sort align-middle" scope="col" data-sort="time" style="min-width:100px;">Actions</th>

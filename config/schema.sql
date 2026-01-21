@@ -56,8 +56,9 @@ CREATE TABLE IF NOT EXISTS t_gaz (
     name VARCHAR(20) NOT NULL,        -- CO2, CH4, N2O
     couleur VARCHAR(20),
     description TEXT,
-    prg DECIMAL(10,2) NOT NULL,       -- PRG IPCC
-    reference_ipcc VARCHAR(50)        -- ex: IPCC AR6
+    add_by INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- Table des régions
