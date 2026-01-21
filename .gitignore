@@ -4,6 +4,7 @@
 /plugins
 /assets
 /fiches
+/fiches_build
 /documents
 
 /config/database.php
