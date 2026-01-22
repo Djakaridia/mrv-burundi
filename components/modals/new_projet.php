@@ -242,7 +242,7 @@
                                                                         <?php if (isset($project_curr) && in_array($secteur['id'], explode(',', str_replace('"', "", $project_curr['secteurs'] ?? "")))) : ?>
                                                                             <option value="<?= $secteur['id'] ?>" selected><?= $secteur['name'] ?></option>
                                                                         <?php else : ?>
-                                                                            <option value="<?= $secteur ?? $secteur['id'] ?>"><?= $secteur ?? $secteur['name'] ?></option>
+                                                                            <option value="<?= $secteur['id'] ?>"><?= $secteur['name'] ?></option>
                                                                         <?php endif; ?>
                                                                     <?php endforeach; ?>
                                                                 <?php endif; ?>
@@ -378,7 +378,6 @@
                     form.budget.value = result.data.budget || 0;
                     form.structure_id.value = result.data.structure_id || '';
                     form.action_type.value = result.data.action_type || '';
-                    form.gaz_type.value = result.data.gaz_type || '';
                     form.status.value = result.data.status || '';
 
                     const form2 = document.forms['wizProjetForm2'];

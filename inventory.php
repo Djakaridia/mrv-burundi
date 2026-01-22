@@ -31,14 +31,14 @@
         
         if (isset($current_inventory['viewtable'])) {
             $current_inventory_data = json_decode($inventory->readData($current_inventory['viewtable']), true);
-            $secteurs = ['agriculture' => 'Agriculture', 'fat' => 'FAT', 'energie' => 'Énergie', 'piup' => 'PIUP', 'dechets' => 'Déchets'];
+            $secteurs_inventory = ['agriculture' => 'Agriculture', 'fat' => 'FAT', 'energie' => 'Énergie', 'piup' => 'PIUP', 'dechets' => 'Déchets'];
 
             if (!empty($current_inventory_data['data'])) {
                 // ==================> Graphisme Par secteur
                 try {
                     $g1_column_categories = [];
                     $g1_column_data = [];
-                    foreach ($secteurs as $col => $label) {
+                    foreach ($secteurs_inventory as $col => $label) {
                         if ($col === 'piup') continue;
 
                         $total = 0;
@@ -97,7 +97,7 @@
                 // ==================> Contribution relative des secteurs
                 try {
                     $g4_sector_share = [];
-                foreach ($secteurs as $col => $label) {
+                foreach ($secteurs_inventory as $col => $label) {
                     $total = 0;
                     foreach ($current_inventory_data['data'] as $row) {
                         $total += normalizeNumber($row[$col] ?? 0);
