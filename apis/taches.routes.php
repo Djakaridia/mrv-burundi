@@ -84,10 +84,10 @@ switch ($requestMethod) {
             $tache->fin_prevue = sanitize_input($_POST['fin_prevue']);
             $tache->projet_id = sanitize_input($_POST['projet_id']);
             $tache->assigned_id = sanitize_input($_POST['assigned_id']);
-            $tache->priorites_id = sanitize_input($_POST['priorites_id']);
+            $tache->priorite = sanitize_input($_POST['priorite']);
             $tache->add_by = sanitize_input($payload['user_id']);
 
-            if (empty($tache->name) || empty($tache->code) || empty($tache->projet_id) || empty($tache->assigned_id) || empty($tache->priorites_id)) {
+            if (empty($tache->name) || empty($tache->code) || empty($tache->projet_id) || empty($tache->assigned_id)) {
                 echo json_encode(array('status' => 'warning', 'message' => 'Veuillez remplir tous les champs obligatoires !!!'));
                 exit();
             }
@@ -106,7 +106,7 @@ switch ($requestMethod) {
             $tache->fin_prevue = sanitize_input($_POST['fin_prevue']);
             $tache->projet_id = sanitize_input($_POST['projet_id']);
             $tache->assigned_id = sanitize_input($_POST['assigned_id']);
-            $tache->priorites_id = sanitize_input($_POST['priorites_id']);
+            $tache->priorite = sanitize_input($_POST['priorite']);
             $tache->add_by = sanitize_input($payload['user_id']);
 
             // Get projet data
@@ -124,7 +124,7 @@ switch ($requestMethod) {
             $assigned->id = $tache->assigned_id;
             $assigned_data = $assigned->readById();
 
-            if (empty($tache->name) || empty($tache->code) || empty($tache->projet_id) || empty($tache->assigned_id) || empty($tache->priorites_id)) {
+            if (empty($tache->name) || empty($tache->code) || empty($tache->projet_id) || empty($tache->assigned_id)) {
                 echo json_encode(array('status' => 'warning', 'message' => 'Veuillez remplir tous les champs obligatoires !!!'));
                 exit();
             }

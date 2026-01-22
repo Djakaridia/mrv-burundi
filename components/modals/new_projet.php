@@ -152,10 +152,10 @@
                                                                     <?php endforeach; ?>
                                                                 <?php endif; ?>
                                                             </select>
-                                                            <label for="projetManager">Gestionnaire*</label>
+                                                            <label for="projetManager">Entités de mise en œuvre *</label>
                                                         </div>
                                                     </div>
-                                                    <!-- Action -->
+                                                    <!-- Type de l'Action -->
                                                     <div class="col-md-6 mb-3">
                                                         <div class="form-floating">
                                                             <select class="form-select" name="action_type" id="projetAction" required>
@@ -164,21 +164,25 @@
                                                                     <option value="<?= $key ?>"><?= $value ?></option>
                                                                 <?php endforeach; ?>
                                                             </select>
-                                                            <label for="projetAction">Action type*</label>
+                                                            <label for="projetAction">Action type *</label>
                                                         </div>
                                                     </div>
-                                                    <!-- Priorité -->
+                                                    <!-- Type de Gaz -->
                                                     <div class="col-md-6 mb-3">
-                                                        <div class="form-floating">
-                                                            <select class="form-select" name="priorites_id" id="projetPriorite" required>
-                                                                <option value="" selected disabled>Sélectionner une priorité</option>
-                                                                <?php if ($priorites ?? []) : ?>
-                                                                    <?php foreach ($priorites as $priorite) : ?>
-                                                                        <option value="<?= $priorite['id'] ?>"><?= $priorite['name'] ?></option>
+                                                        <div class="form-floating form-floating-advance-select">
+                                                            <label for="MultipleSelectGaz">Type de gaz*</label>
+                                                            <select class="form-select" name="gaz_type" id="MultipleSelectGaz" data-choices="data-choices" multiple="multiple" data-options='{"removeItemButton":true,"placeholder":true}' required>
+                                                                <option value="" disabled>Sélectionner un type de gaz</option>
+                                                                <?php if ($gazs ?? []) : ?>
+                                                                    <?php foreach ($gazs as $gaze) : ?>
+                                                                        <?php if (in_array($gaze['name'], explode(',', str_replace('"', '', $project_curr['gaz_type'] ?? '')))) : ?>
+                                                                            <option value="<?= $gaze['name'] ?>" selected><?= $gaze['name'] ?></option>
+                                                                        <?php else : ?>
+                                                                            <option value="<?= $gaze['name'] ?>"><?= $gaze['name'] ?></option>
+                                                                        <?php endif; ?>
                                                                     <?php endforeach; ?>
                                                                 <?php endif; ?>
                                                             </select>
-                                                            <label for="projetPriorite">Priorité*</label>
                                                         </div>
                                                     </div>
                                                     <input type="hidden" name="status" id="projetStatus" value="Planifié">
@@ -231,14 +235,15 @@
                                                     <div class="col-md-12 mb-2">
                                                         <div class="form-floating form-floating-advance-select">
                                                             <label for="MultipleSelectSecteur">Secteur concerné*</label>
-                                                            <select class="form-select" name="secteurs_listID[]" id="MultipleSelectSecteur" data-choices="data-choices" multipledata-options='{"removeItemButton":true,"placeholder":true}' required>
+                                                            <select class="form-select" name="secteurs_listID" id="MultipleSelectSecteur" data-choices="data-choices" multiple data-options='{"removeItemButton":true,"placeholder":true}' required>
                                                                 <option value="" disabled>Sélectionner un secteur</option>
-                                                                <?php if (!empty($secteurs) && !empty($project_curr)) : ?>
+                                                                <?php if (isset($secteurs) && !empty($secteurs)) : ?>
                                                                     <?php foreach ($secteurs as $secteur) : ?>
-                                                                        <option value="<?= (int)$secteur['id'] ?>"
-                                                                            <?= in_array((int)$secteur['id'], $project_curr["secteurs"], true) ? 'selected' : '' ?>>
-                                                                            <?= htmlspecialchars($secteur['name']) ?>
-                                                                        </option>
+                                                                        <?php if (isset($project_curr) && in_array($secteur['id'], explode(',', str_replace('"', "", $project_curr['secteurs'] ?? "")))) : ?>
+                                                                            <option value="<?= $secteur['id'] ?>" selected><?= $secteur['name'] ?></option>
+                                                                        <?php else : ?>
+                                                                            <option value="<?= $secteur ?? $secteur['id'] ?>"><?= $secteur ?? $secteur['name'] ?></option>
+                                                                        <?php endif; ?>
                                                                     <?php endforeach; ?>
                                                                 <?php endif; ?>
                                                             </select>
@@ -373,7 +378,7 @@
                     form.budget.value = result.data.budget || 0;
                     form.structure_id.value = result.data.structure_id || '';
                     form.action_type.value = result.data.action_type || '';
-                    form.priorites_id.value = result.data.priorites_id || '';
+                    form.gaz_type.value = result.data.gaz_type || '';
                     form.status.value = result.data.status || '';
 
                     const form2 = document.forms['wizProjetForm2'];
@@ -415,7 +420,8 @@
             $('#projetImage').val('');
             $('#MultipleSelectSecteur').val('');
             $('#MultipleSelectGroupe').val('');
-            // $('#MultipleSelectProgramme').val('');
+            $('#MultipleSelectGaz').val('');
+            $('#MultipleSelectProgramme').val('');
 
             tinymce.get('projetObjectif')?.setContent('');
             tinymce.get('projetDescription')?.setContent('');
@@ -472,7 +478,8 @@
                 formData.append('status', $('#projetStatus').val());
                 formData.append('secteurs', $('#MultipleSelectSecteur').val());
                 formData.append('groupes', $('#MultipleSelectGroupe').val());
-                //formData.append('programmes', $('#MultipleSelectProgramme').val());
+                formData.append('gaz_type', $('#MultipleSelectGaz').val());
+                formData.append('programmes', $('#MultipleSelectProgramme').val());
 
                 const fileInput = document.getElementById('projetImage');
                 if (fileInput.files.length > 0) {

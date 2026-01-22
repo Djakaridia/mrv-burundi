@@ -80,13 +80,11 @@
                             <div class="col-lg-6 mt-1">
                                 <div class="mb-1">
                                     <label class="form-label">Priorité*</label>
-                                    <select class="form-select" name="priorites_id" required>
-                                        <option value="">Sélectionner une priorité</option>
-                                        <?php if ($priorites ?? []) : ?>
-                                            <?php foreach ($priorites as $priorite): ?>
-                                                <option value="<?= $priorite['id'] ?>"><?= $priorite['name'] ?></option>
-                                            <?php endforeach; ?>
-                                        <?php endif; ?>
+                                    <select class="form-select" name="priorite" required>
+                                        <option value="" selected disabled>Sélectionner une priorité</option>
+                                        <option value="urgent"> Urgent </option>
+                                        <option value="normal"> Normal </option>
+                                        <option value="faible"> Faible </option>
                                     </select>
                                 </div>
                             </div>
@@ -135,7 +133,7 @@
                     form.code.value = result.data.code;
                     form.description.value = result.data.description;
                     form.status.value = result.data.status;
-                    form.priorites_id.value = result.data.priorites_id;
+                    form.priorite.value = result.data.priorite;
                     form.debut_prevu.value = result.data.debut_prevu;
                     form.fin_prevue.value = result.data.fin_prevue;
                     form.assigned_id.value = result.data.assigned_id;

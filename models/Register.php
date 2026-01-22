@@ -7,6 +7,7 @@ class Register
     // Colonnes de la table
     public $id;
     public $secteur;
+    public $code;
     public $categorie;
     public $annee;
     public $unite;
@@ -29,16 +30,17 @@ class Register
     public function create()
     {
         $query = "INSERT INTO {$this->table}
-            (secteur, categorie, annee, unite, gaz,
+            (secteur, code, categorie, annee, unite, gaz,
              emission_annee, emission_absolue, emission_niveau, emission_cumulee,
              file, add_by)
             VALUES
-            (:secteur, :categorie, :annee, :unite, :gaz,
+            (:secteur, :code, :categorie, :annee, :unite, :gaz,
              :emission_annee, :emission_absolue, :emission_niveau, :emission_cumulee,
              :file, :add_by)";
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':secteur', $this->secteur);
+        $stmt->bindParam(':code', $this->code);
         $stmt->bindParam(':categorie', $this->categorie);
         $stmt->bindParam(':annee', $this->annee);
         $stmt->bindParam(':unite', $this->unite);

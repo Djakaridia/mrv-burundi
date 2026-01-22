@@ -542,7 +542,7 @@
                                             <?php foreach ($grouped_registers[$sel_secteur] as $row) { ?>
                                                 <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                                                     <td class="align-middle px-2"> <?php echo $row['annee']; ?> </td>
-                                                    <td class="align-middle px-2"> <?php echo $row['categorie']; ?> </td>
+                                                    <td class="align-middle px-2"> <strong><?php echo $row['code']; ?></strong> - <?php echo $row['categorie']; ?> </td>
                                                     <td class="align-middle px-2">
                                                         <span class="badge" style="background-color: <?php echo $gaz_colors[strtoupper($row['gaz'])] ?? '#6c757d'; ?>; color: white;">
                                                             <?php echo $row['gaz']; ?>

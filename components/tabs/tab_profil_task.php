@@ -111,17 +111,13 @@ $user_tasks = array_filter($tasks, function ($task) use ($userId) {
 
                                             <div class="d-flex justify-content-between align-items-center mb-2">
                                                 <span class="text-body">Statut:</span>
-                                                <span class="badge bg-<?= getBadgeClass($task['status']) ?>"><?= ($task['status']) ?></span>
+                                                <span class="badge bg-<?= getBadgeClass($task['status']) ?> text-capitalize"><?= ($task['status']) ?></span>
                                             </div>
 
                                             <div class="d-flex justify-content-between align-items-center mb-2">
                                                 <span class="text-body">Priorité:</span>
                                                 <span class="text-body-highlight">
-                                                    <?php foreach ($priorites as $priorite) {
-                                                        if ($priorite['id'] == $task['priorites_id']) {
-                                                            echo '<span class="badge" style="background-color: ' . $priorite['couleur'] . '">' . $priorite['name'] . '</span>';
-                                                        }
-                                                    } ?>
+                                                    <span class="badge bg-primary text-capitalize"><?= ($task['priorite']) ?></span>
                                                 </span>
                                             </div>
                                         </div>

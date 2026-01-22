@@ -29,8 +29,8 @@
     return $structure['state'] == 'actif';
   });
 
-  $priorite = new Priorite($db);
-  $priorites = $priorite->read();
+  $gaz = new Gaz($db);
+  $gazs = $gaz->read();
 
   $secteur = new Secteur($db);
   $data_secteurs = $secteur->read();

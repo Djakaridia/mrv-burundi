@@ -10,7 +10,7 @@
                     <span class="fa-solid fa-xmark text-body dark__text-gray-100"></span>
                 </button>
             </div>
-        
+
             <div class="modal-body p-4">
                 <!-- Loading Screen -->
                 <div id="projectLoadingScreen" class="text-center py-5">
@@ -20,7 +20,7 @@
                     <h4 class="mt-3 fw-bold text-primary">Chargement des données...</h4>
                     <p class="text-muted">Veuillez patienter pendant que nous préparons les informations</p>
                 </div>
-                
+
                 <!-- Content Container (initially hidden) -->
                 <div id="projectContentContainer" style="display: none;">
                     <div class="row g-3">
@@ -29,7 +29,7 @@
                             <img id="projectCoverView" class="rounded-1 w-100 border border-light shadow-sm d-none" src="" alt="" style="max-height: 150px;min-height: 100px;" />
                             <i id="projectCoverIcon" class="far fa-image text-body-tertiary" style="width: 100%; font-size:150px"></i>
                         </div>
-                        
+
                         <div class="col-12 col-md-9">
                             <div class="align-items-start align-items-md-center">
                                 <h3 class="fw-bolder mb-2" id="projetNameView"></h3>
@@ -118,7 +118,7 @@
             if (!dataId) return;
 
             ViewProjectID = dataId;
-            
+
             $('#projectLoadingScreen').show();
             $('#projectContentContainer').hide();
 
@@ -133,7 +133,7 @@
                 const data = result.data;
 
                 // Set basic info
-                if(data.logo){
+                if (data.logo) {
                     $('#projectCoverView').attr('src', data.logo.split("../").pop());
                     $('#projectCoverIcon').addClass('d-none');
                     $('#projectCoverView').removeClass('d-none');
@@ -147,13 +147,7 @@
                 $('#projetDatesView').text(`${data.start_date} → ${data.end_date}`);
 
                 // Fetch related data
-                const [projetPrioriteRes, projetTasksRes] = await Promise.all([
-                    fetch(`./apis/priorites.routes.php?id=${data.priorites_id}`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        },
-                        method: 'GET',
-                    }),
+                const [projetTasksRes] = await Promise.all([
                     fetch(`./apis/taches.routes.php?projet_id=${data.id}`, {
                         headers: {
                             'Authorization': `Bearer ${token}`
@@ -162,7 +156,6 @@
                     }),
                 ]);
 
-                const projetPriorite = await projetPrioriteRes.json();
                 const projetTasks = await projetTasksRes.json();
 
                 // Calculate progress percentage
@@ -213,7 +206,7 @@
                         </div>
                     </div>
                     
-                    <!-- Priorité -->
+                    <!-- Gaz -->
                     <div class="col-12">
                         <div class="card rounded-1 border border-warning border-opacity-10 hover-shadow-sm h-100">
                             <div class="card-body p-3">
@@ -222,14 +215,10 @@
                                         <i class="fas fa-exclamation-triangle text-primary"></i>
                                     </div>
                                     <div>
-                                        <h6 class="mb-1 text-primary">Priorité</h6>
-                                        <p class="mb-0 fw-semibold">${projetPriorite.data.name}</p>
-                                        <div class="d-flex align-items-center gap-1">
-                                            <span class="badge" style="background-color: ${projetPriorite.data.couleur}; width: 12px; height: 12px; border-radius: 50%;"></span>
-                                        </div>
+                                        <h6 class="mb-1 text-primary">Type de gaz</h6>
+                                        ${data.gaz_type ? data.gaz_type.split(',').map(gaz => `<span class="badge bg-warning-subtle text-dark">${gaz.trim()}</span>`).join(' ') : 'Non spécifié'}
                                     </div>
                                 </div>
-                                <p class="mt-2 mb-0 small text-muted">${projetPriorite.data.description}</p>
                             </div>
                         </div>
                     </div>
@@ -242,11 +231,11 @@
             }
         });
 
-        $('#projectsCardViewModal').on('hidden.bs.modal', function () {
+        $('#projectsCardViewModal').on('hidden.bs.modal', function() {
             ViewProjectID = null;
             $('#projectCoverView').addClass('d-none');
             $('#projectCoverIcon').removeClass('d-none');
-            
+
             $('#projectLoadingScreen').show();
             $('#projectContentContainer').hide();
         });

@@ -87,7 +87,7 @@ switch ($requestMethod) {
             $projet->miparcours_date = sanitize_input($_POST['miparcours_date'] ?? null);
             $projet->structure_id = sanitize_input($_POST['structure_id']);
             $projet->action_type = sanitize_input($_POST['action_type']);
-            $projet->priorites_id = sanitize_input($_POST['priorites_id']);
+            $projet->gaz_type = sanitize_input($_POST['gaz_type']);
             $projet->secteurs = isset($_POST['secteurs']) ? json_encode($_POST['secteurs']) : null;
             $projet->groupes = isset($_POST['groupes']) ? json_encode($_POST['groupes']) : null;
             $projet->programmes = isset($_POST['programmes']) ? json_encode($_POST['programmes']) : null;
@@ -123,7 +123,7 @@ switch ($requestMethod) {
             $projet->miparcours_date = sanitize_input($_POST['miparcours_date'] ?? null);
             $projet->structure_id = sanitize_input($_POST['structure_id']);
             $projet->action_type = sanitize_input($_POST['action_type']);
-            $projet->priorites_id = sanitize_input($_POST['priorites_id']);
+            $projet->gaz_type = sanitize_input($_POST['gaz_type']);
             $projet->secteurs = isset($_POST['secteurs']) ? json_encode($_POST['secteurs']) : null;
             $projet->groupes = isset($_POST['groupes']) ? json_encode($_POST['groupes']) : null;
             $projet->programmes = isset($_POST['programmes']) ? json_encode($_POST['programmes']) : null;

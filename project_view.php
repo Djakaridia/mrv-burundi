@@ -41,8 +41,8 @@
   $unite = new Unite($db);
   $unites = $unite->read();
 
-  $priorite = new Priorite($db);
-  $priorites = $priorite->read();
+  $gaz = new Gaz($db);
+  $gazs = $gaz->read();
 
   $user = new User($db);
   $users = $user->read();

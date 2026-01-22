@@ -44,11 +44,7 @@
                             </td>
                             <td class="text-center">
                                 <span class="text-body-highlight">
-                                    <?php foreach ($priorites as $priorite) {
-                                        if ($priorite['id'] == $tache['priorites_id']) {
-                                            echo '<span class="badge" style="background-color: ' . $priorite['couleur'] . '">' . $priorite['name'] . '</span>';
-                                        }
-                                    } ?>
+                                    <span class="badge bg-primary text-capitalize"><?= $tache['priorite'] ?></span>
                                 </span>
                             </td>
                             <td class="text-center">
@@ -108,17 +104,13 @@
 
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <span class="text-body">Statut:</span>
-                                            <span class="badge bg-<?= getBadgeClass($tache['status']) ?>"><?= ($tache['status']) ?></span>
+                                            <span class="badge bg-<?= getBadgeClass($tache['status']) ?> text-capitalize"><?= ($tache['status']) ?></span>
                                         </div>
 
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <span class="text-body">Priorité:</span>
                                             <span class="text-body-highlight">
-                                                <?php foreach ($priorites as $priorite) {
-                                                    if ($priorite['id'] == $tache['priorites_id']) {
-                                                        echo '<span class="badge" style="background-color: ' . $priorite['couleur'] . '">' . $priorite['name'] . '</span>';
-                                                    }
-                                                } ?>
+                                                <span class="badge bg-primary text-capitalize"><?= $tache['priorite'] ?></span>
                                             </span>
                                         </div>
                                     </div>

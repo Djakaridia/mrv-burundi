@@ -18,7 +18,7 @@
         <div id="cibleContentContainer" style="display: none;">
           <?php if (isset($project_curr)) : ?>
             <form action="" class="row-border" enctype="multipart/form-data" name="FormCible" id="FormCible">
-              <input type="hidden" name="cmr_id" id="cible_cmr_id" value="<?= $cmr_curr['id'] ?>">
+              <input type="hidden" name="cmr_id" id="cible_cmr_id" value="<?= $cmr_curr['id']??"" ?>">
               <input type="hidden" name="projet_id" id="cible_projet_id" value="<?= $project_curr['id'] ?>">
 
               <div class="overflow-auto" style="min-height: 300px; max-height: 400px;">
