@@ -186,7 +186,7 @@
                 $gaz_repartition = [];
                 if (isset($sector_gaz_totals[$secteur_id])) {
                     foreach ($sector_gaz_totals[$secteur_id] as $gaz => $value) {
-                        $gaz_repartition[] = $gaz . ': ' . number_format($value, 2);
+                        $gaz_repartition[] = '<span class="badge bg-warning-subtle text-dark rounded-0">' . $gaz . '</span> : ' . number_format($value, 2) . ' | ';
                     }
                 }
 
@@ -195,7 +195,7 @@
                     'secteur_nom' => $sector_names[$secteur_id],
                     'total_emissions' => $total,
                     'annee_data' => $annee_data,
-                    'gaz_repartition' => implode(', ', $gaz_repartition)
+                    'gaz_repartition' => implode('', $gaz_repartition)
                 ];
             }
         }
@@ -430,9 +430,9 @@
                                         <thead class="bg-secondary-subtle">
                                             <tr>
                                                 <th class="sort align-middle text-uppercase">Secteur</th>
-                                                <th class="sort align-middle text-uppercase">Émissions Totales (kt eq. CO₂)</th>
+                                                <th class="sort align-middle text-uppercase">Émissions Totales (Gg eq. CO₂)</th>
                                                 <th class="sort align-middle text-uppercase">Répartition par gaz</th>
-                                                <th class="sort align-middle text-uppercase">Actions</th>
+                                                <th class="sort align-middle text-uppercase" style="width: 100px;">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody class="list" id="table-latest-review-body">
@@ -444,10 +444,10 @@
                                                     <td class="align-middle px-2">
                                                         <div class="fw-bold"><?php echo number_format($sector['total_emissions'], 2); ?></div>
                                                         <?php if (!empty($sector['annee_data'])) { ?>
-                                                            <div class="fs-10 text-muted">
+                                                            <div class="fs-9 text-muted">
                                                                 <?php
                                                                 foreach ($sector['annee_data'] as $annee => $emission) {
-                                                                    echo $annee . ': ' . number_format($emission, 2) . '<br>';
+                                                                    echo '<span class="badge bg-primary-subtle text-dark rounded-0">' . $annee . '</span> : ' . number_format($emission, 2);
                                                                 }
                                                                 ?>
                                                             </div>
@@ -460,9 +460,9 @@
                                                         <div class="position-relative">
                                                             <div class="d-flex gap-1">
                                                                 <a href="register_carbone.php?secteur=<?php echo $sector['secteur_id']; ?>"
-                                                                    class="btn btn-sm btn-phoenix-primary fs-10 px-2 py-1"
-                                                                    title="Voir le détail">
-                                                                    <span class="uil-eye fs-8"></span> Détail
+                                                                    class="btn btn-sm btn-phoenix-primary px-2 py-1"
+                                                                    title="Voir les détails">
+                                                                    <span class="uil-eye fs-8"></span> Détails
                                                                 </a>
                                                             </div>
                                                         </div>
@@ -530,12 +530,12 @@
                                             <tr>
                                                 <th class="sort align-middle text-uppercase">Année</th>
                                                 <th class="sort align-middle text-uppercase">Catégorie</th>
-                                                <th class="sort align-middle text-uppercase">Gaz</th>
-                                                <th class="sort align-middle text-uppercase">Emission Année</th>
-                                                <th class="sort align-middle text-uppercase">Emission Absolue</th>
-                                                <th class="sort align-middle text-uppercase">Niveau Emission</th>
-                                                <th class="sort align-middle text-uppercase">Emission Cumulée</th>
-                                                <th class="sort align-middle text-uppercase">Actions</th>
+                                                <th class="sort align-middle text-uppercase" style="width: 5%;">Gaz</th>
+                                                <th class="sort align-middle text-uppercase" style="width: 8%;">Emission Année</th>
+                                                <th class="sort align-middle text-uppercase" style="width: 8%;">Emission Absolue</th>
+                                                <th class="sort align-middle text-uppercase" style="width: 8%;">Niveau Emission</th>
+                                                <th class="sort align-middle text-uppercase" style="width: 8%;">Emission Cumulée</th>
+                                                <th class="sort align-middle text-uppercase" style="width: 100px;">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody class="list" id="table-latest-review-body">
@@ -626,14 +626,14 @@
         mrvDonutChart({
             id: 'chartGlobalGaz',
             title: 'Répartition globale des émissions par type de gaz',
-            unite: 'kt eq. CO₂',
+            unite: 'Gg eq. CO₂',
             data: <?= json_encode($global_ges_data ?? []) ?>,
         });
 
         mrvGroupedBarChart({
             id: 'chartGlobalSecteurAnnee',
             title: 'Émissions par secteur et année',
-            unite: 'kt eq. CO₂',
+            unite: 'Gg eq. CO₂',
             categories: <?= json_encode($global_column_categories ?? []) ?>,
             series: <?= json_encode($global_series_data ?? []) ?>
         });
@@ -643,7 +643,7 @@
             title: 'Performance globale par secteur',
             categories: <?= json_encode(array_column($global_sector_performance, 'name') ?? []) ?>,
             series: [{
-                name: 'Émissions totales (kt eq. CO₂)',
+                name: 'Émissions totales (Gg eq. CO₂)',
                 type: 'column',
                 data: <?= json_encode(array_column($global_sector_performance, 'emissions') ?? []) ?>,
                 yAxis: 0,
@@ -655,21 +655,21 @@
                 yAxis: 1,
                 color: '#e74c3c'
             }],
-            yAxisTitles: ['kt eq. CO₂', 'Niveau']
+            yAxisTitles: ['Gg eq. CO₂', 'Niveau']
         });
 
     <?php } elseif (!empty($sel_secteur) && !empty($grouped_registers[$sel_secteur])) { ?>
         mrvDonutChart({
             id: 'chartRegistreGaz',
             title: 'Répartition des émissions par type de gaz',
-            unite: 'kt eq. CO₂',
+            unite: 'Gg eq. CO₂',
             data: <?= json_encode($ges_data ?? []) ?>,
         });
 
         mrvBarChart({
             id: 'chartRegistreSecteur',
             title: 'Émissions par catégorie (sous-secteur)',
-            unite: 'kt eq. CO₂',
+            unite: 'Gg eq. CO₂',
             categories: <?= json_encode($column_categories ?? []) ?>,
             data: <?= json_encode($column_data ?? []) ?>,
         });
@@ -677,7 +677,7 @@
         mrvLineChart({
             id: 'chartTendanceAnnuelle',
             title: 'Évolution des émissions annuelles',
-            unite: 'kt eq. CO₂',
+            unite: 'Gg eq. CO₂',
             categories: <?= json_encode(array_column($trend_data, 'annee') ?? []) ?>,
             data: <?= json_encode(array_column($trend_data, 'total') ?? []) ?>,
         });
@@ -685,7 +685,7 @@
         mrvAreaChart({
             id: 'chartCumulative',
             title: 'Émissions cumulées au fil du temps',
-            unite: 'kt eq. CO₂',
+            unite: 'Gg eq. CO₂',
             categories: <?= json_encode(array_column($cumulative_data, 'name') ?? []) ?>,
             series: [{
                 name: 'Émissions cumulées',
@@ -699,7 +699,7 @@
             title: 'Performance par catégorie',
             categories: <?= json_encode(array_column($sector_performance, 'name') ?? []) ?>,
             series: [{
-                name: 'Émissions totales (kt eq. CO₂)',
+                name: 'Émissions totales (Gg eq. CO₂)',
                 type: 'column',
                 data: <?= json_encode(array_column($sector_performance, 'emissions') ?? []) ?>,
                 yAxis: 0,
@@ -711,10 +711,9 @@
                 yAxis: 1,
                 color: '#e74c3c'
             }],
-            yAxisTitles: ['kt eq. CO₂', 'Niveau']
+            yAxisTitles: ['Gg eq. CO₂', 'Niveau']
         });
     <?php } ?>
-    
 </script>
 
 </html>
