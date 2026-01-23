@@ -79,7 +79,7 @@ switch ($requestMethod) {
             $projet->code = sanitize_input($_POST['code']);
             $projet->description = $_POST['description'] ?? '';
             $projet->objectif = $_POST['objectif'] ?? '';
-            $projet->status = sanitize_input($_POST['status'] ?? 'Planifié');
+            $projet->status = sanitize_input($_POST['status'] ?? 'planifie');
             $projet->budget = floatval($_POST['budget'] ?? 0);
             $projet->start_date = sanitize_input($_POST['start_date'] ?? null);
             $projet->end_date = sanitize_input($_POST['end_date'] ?? null);
@@ -115,7 +115,7 @@ switch ($requestMethod) {
             $projet->code = sanitize_input($_POST['code']);
             $projet->description = $_POST['description'] ?? '';
             $projet->objectif = $_POST['objectif'] ?? '';
-            $projet->status = sanitize_input($_POST['status'] ?? 'Planifié');
+            $projet->status = sanitize_input($_POST['status'] ?? 'planifie');
             $projet->budget = floatval($_POST['budget'] ?? 0);
             $projet->start_date = sanitize_input($_POST['start_date'] ?? null);
             $projet->end_date = sanitize_input($_POST['end_date'] ?? null);

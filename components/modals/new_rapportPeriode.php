@@ -93,7 +93,7 @@
             </div>
 
             <div class="modal-footer d-flex justify-content-between border-0 px-0 pb-0">
-              <input type="hidden" name="status" id="rapportStatus" value="Planifié">
+              <input type="hidden" name="status" id="rapportStatus" value="planifie">
               <button type="button" class="btn btn-secondary btn-sm px-3 my-0" data-bs-dismiss="modal" aria-label="Close">Annuler</button>
               <button type="submit" class="btn btn-primary btn-sm px-3 my-0" id="rapport_modbtn">Ajouter</button>
             </div>

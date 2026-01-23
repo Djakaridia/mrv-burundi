@@ -197,7 +197,6 @@
                                                             </select>
                                                         </div>
                                                     </div>
-                                                    <!-- <input type="hidden" name="status" id="projetStatus" value="Planifié"> -->
                                                 </div>
                                             </form>
                                         </div>

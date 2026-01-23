@@ -522,7 +522,9 @@ function listStatus()
     return [
         'planifie' => 'Planifié',
         'en_cours' => 'En cours',
-        'realise' => 'Réalisé'
+        'realise' => 'Réalisé',
+        'en_attente' => 'En attente',
+        'annule' => 'Annulé'
     ];
 }
 
