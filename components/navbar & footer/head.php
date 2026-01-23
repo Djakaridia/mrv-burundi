@@ -165,15 +165,14 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
     }
 
     #sidebarDefault .nav.parent .nav-link.active {
-        background: var(--bd-green-light) !important;
+        background: var(--bd-green-dark) !important;
         color: var(--bd-green-dark) !important;
     }
 
     #sidebarDefault .navbar-vertical-label {
-        background: var(--bd-gray) !important;
-        color: var(--bd-green-dark) !important;
+        background: linear-gradient(90deg, var(--bd-white), var(--bd-gray)) !important;
+        color: var(--bd-red) !important;
         border-left: 3px solid var(--bd-red);
-        border-radius: 0px 3px 3px 0px;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
@@ -209,11 +208,12 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
         box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
     }
 
-    #sidebarDefault .nav-link-text {
+    #sidebarDefault .nav-link-text,
+    #sidebarDefault .nav-link-icon {
         color: var(--bd-white) !important;
     }
 
-    #sidebarDefault .nav-link-icon:hover {
+    #sidebarDefault .nav-item-wrapper:hover .nav-link-icon {
         color: var(--bd-green-dark) !important;
     }
 </style>
