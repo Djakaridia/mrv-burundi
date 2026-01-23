@@ -217,12 +217,12 @@ function show_page($MENU_ITEMS, $MENU_TITLE, $page_interdite, $page_edit, $page_
 
             <div class="overflow-auto" style="min-height: 300px; max-height: 400px;">
               <table class="table table-sm fs-12 bordered table-striped-columns" align="center">
-                <thead class="bg-primary">
-                  <tr class="small">
-                    <td style="width:70%" class="fs-12 px-2 text-white">Pages</td>
-                    <td style="width:10%" align="center" class="fs-12 px-2 text-white">Edition</td>
-                    <td style="width:10%" align="center" class="fs-12 px-2 text-white">Suppression</td>
-                    <td style="width:10%" align="center" class="fs-12 px-2 text-white">Interdiction</td>
+                <thead class="bg-primary-subtle">
+                  <tr class="small fw-bold">
+                    <td style="width:70%" class="fs-12 px-2">Pages</td>
+                    <td style="width:10%" align="center" class="fs-12 px-2">Edition</td>
+                    <td style="width:10%" align="center" class="fs-12 px-2">Suppression</td>
+                    <td style="width:10%" align="center" class="fs-12 px-2">Interdiction</td>
                   </tr>
                 </thead>
 

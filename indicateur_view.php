@@ -257,7 +257,7 @@
                                 </div>
                                 <div class="card-body p-2">
                                     <table class="table table-sm table-hover table-striped fs-9 table-bordered border-emphasis" id="id-datatable">
-                                        <thead class="bg-light dark__bg-dark">
+                                        <thead class="bg-primary-subtle">
                                             <tr>
                                                 <th scope="col" class="px-2">Scénario</th>
                                                 <th scope="col" class="px-2">Année</th>
@@ -311,7 +311,7 @@
                                                                     <h5 class="mb-0">Données désagrégées</h5>
                                                                 </div>
                                                                 <table class="table table-sm table-hover table-striped fs-9 table-bordered border-emphasis">
-                                                                    <thead class="bg-light dark__bg-dark">
+                                                                    <thead class="bg-primary-subtle">
                                                                         <tr>
                                                                             <?php if (!empty($ref_curr['echelle']) && $ref_curr['echelle'] !== 'nationale') : ?>
                                                                                 <th scope="col" class="px-2 text-capitalize">

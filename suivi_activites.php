@@ -100,7 +100,7 @@
                         <?php if (!empty($all_projects)) { ?>
                             <div class="table-responsive mx-n1 px-1 scrollbar" style="min-height: 432px;">
                                 <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
-                                    <thead class="bg-secondary-subtle">
+                                    <thead class="bg-primary-subtle">
                                         <tr>
                                             <th class="align-middle">Code</th>
                                             <th class="align-middle" style="min-width:300px;">Libellé</th>

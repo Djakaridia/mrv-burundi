@@ -14,7 +14,7 @@
     <div class="todo-list mx-n3 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1">
         <div class="table-responsive p-1 scrollbar">
             <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
-                <thead class="bg-secondary-subtle text-nowrap">
+                <thead class="bg-primary-subtle text-nowrap">
                     <tr>
                         <th class="sort align-middle" scope="col">Code</th>
                         <th class="sort align-middle" scope="col">Intitule</th>

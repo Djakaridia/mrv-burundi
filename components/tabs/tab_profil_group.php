@@ -23,7 +23,7 @@ $structures = $structure->read();
 <div class="bg-white dark__bg-dark card rounded-1 mt-1" style="min-height: 300px;">
     <div class="card-body p-1 scrollbar">
         <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable3">
-            <thead class="bg-secondary-subtle">
+            <thead class="bg-primary-subtle">
                 <tr>
                     <th class="sort align-middle px-2 text-uppercase" style="width:3%; min-width:250px">Nom du groupe</th>
                     <th class="sort align-middle px-2 text-uppercase" style="width:30%; min-width:100px">Membrees</th>

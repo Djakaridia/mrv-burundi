@@ -18,7 +18,7 @@
                         <input type="hidden" id="suiviId">
 
                         <table class="table table-sm table-hover table-striped fs-12 table-bordered border-emphasis" align="center">
-                            <thead class="bg-light">
+                            <thead class="bg-primary-subtle">
                                 <tr>
                                     <th class="align-middle px-2" width="70%">Indicateur</th>
                                     <th class="align-middle px-2" width="30%">Valeur réalisée</th>
@@ -51,7 +51,7 @@
                         <div class="card-body p-1 table-responsive scrollbar" style="height: 300px; overflow-y: auto;">
                             <table class="table table-sm table-hover table-striped fs-9 table-bordered border-emphasis"
                                 align="center">
-                                <thead class="bg-light">
+                                <thead class="bg-primary-subtle">
                                     <tr>
                                         <th class="align-middle px-2" width="70%">Indicateur</th>
                                         <th class="align-middle px-2" width="30%">Valeur réalisée</th>

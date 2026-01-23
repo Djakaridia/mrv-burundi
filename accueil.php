@@ -580,7 +580,7 @@
             </div>
             <div class="card-body p-1 table-responsive scrollbar">
               <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
-                <thead class="bg-secondary-subtle">
+                <thead class="bg-primary-subtle">
                   <tr class="text-nowrap">
                     <th class="align-middle ps-2" scope="col" data-sort="code" style="width:10%;">CODE</th>
                     <th class="align-middle ps-2" scope="col" data-sort="name" style="width:30%;">NOM DU PROJET</th>

@@ -79,7 +79,7 @@
                         <div id="indicTaskTableContainer" class="card-body p-1 table-responsive scrollbar" style="min-height: 300px; max-height: 400px; overflow-y: auto;">
                             <table class="table table-sm table-hover table-striped fs-9 table-bordered border-emphasis"
                                 align="center">
-                                <thead class="bg-light">
+                                <thead class="bg-primary-subtle">
                                     <tr>
                                         <th class="align-middle px-2">Code</th>
                                         <th class="align-middle px-2">Libellé</th>

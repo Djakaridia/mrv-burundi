@@ -14,7 +14,7 @@
     <div class="todo-list px-3 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1">
         <div class="table-responsive scrollbar-overlay mx-n3">
             <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable2">
-                <thead class="bg-secondary-subtle">
+                <thead class="bg-primary-subtle">
                     <tr>
                         <th class="sort align-middle" scope="col">#</th>
                         <th class="sort align-middle" scope="col" data-sort="product">Code</th>

@@ -14,7 +14,7 @@ $user_documents = array_filter($documents, function ($document) use ($userId) {
 <div class="bg-white dark__bg-dark card rounded-1 mt-1" style="min-height: 300px;">
     <div class="card-body p-1 scrollbar">
         <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable4">
-            <thead class="bg-secondary-subtle">
+            <thead class="bg-primary-subtle">
                 <tr>
                     <th class="sort align-middle" scope="col">Nom</th>
                     <th class="sort align-middle" scope="col">Dossier</th>

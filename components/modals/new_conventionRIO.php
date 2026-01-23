@@ -26,7 +26,7 @@
                         </div>
                         <div class="card-body p-0" style="min-height: 300px; max-height: 400px; overflow-y: auto;">
                             <table class="table table-sm table-hover table-striped fs-9 table-bordered border-emphasis mb-0">
-                                <thead class="bg-secondary-subtle">
+                                <thead class="bg-primary-subtle">
                                     <tr>
                                         <th class="align-middle px-2">Code</th>
                                         <th class="align-middle px-2">Programme</th>

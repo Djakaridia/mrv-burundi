@@ -55,7 +55,7 @@
           <div class="mx-n4 p-1 mx-lg-n6 bg-body-emphasis border-y">
             <div class="table-responsive scrollbar" style="min-height: 432px;">
               <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
-                <thead class="bg-secondary-subtle">
+                <thead class="bg-primary-subtle">
                   <tr>
                     <th class="sort align-middle" scope="col" data-sort="name"> Nom & Prenoms</th>
                     <th class="sort align-middle" scope="col" data-sort="email"> Email</th>

@@ -427,7 +427,7 @@
                                 <h5 class="m-2 text-semibold mt-4"><i class="fas fa-table me-2"></i>Synthèse par secteur</h5>
                                 <div class="mx-n1 mb-3 px-1 scrollbar">
                                     <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
-                                        <thead class="bg-secondary-subtle">
+                                        <thead class="bg-primary-subtle">
                                             <tr>
                                                 <th class="sort align-middle text-uppercase">Secteur</th>
                                                 <th class="sort align-middle text-uppercase">Émissions Totales (Gg eq. CO₂)</th>
@@ -526,7 +526,7 @@
                                 <h5 class="m-2 text-semibold mt-4"><i class="fas fa-table me-2"></i>Liste des émissions</h5>
                                 <div class="mx-n1 mb-3 px-1 scrollbar">
                                     <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
-                                        <thead class="bg-secondary-subtle">
+                                        <thead class="bg-primary-subtle">
                                             <tr>
                                                 <th class="sort align-middle text-uppercase">Année</th>
                                                 <th class="sort align-middle text-uppercase">Catégorie</th>

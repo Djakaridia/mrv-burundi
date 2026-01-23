@@ -223,7 +223,7 @@
             <div class="mx-n4 p-1 mx-lg-n6 bg-body-emphasis border-y">
               <div class="table-responsive mx-n1 px-1 scrollbar" style="min-height: 432px;">
                 <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable2">
-                  <thead class="bg-secondary-subtle">
+                  <thead class="bg-primary-subtle">
                     <tr>
                       <th class="sort align-middle" scope="col"> Code</th>
                       <th class="sort align-middle" scope="col"> Intitulé</th>

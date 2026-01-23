@@ -129,7 +129,7 @@
                             <div class="mx-n4 p-1 mx-lg-n6 bg-body-emphasis border-y">
                                 <div class="table-responsive mx-n1 px-1 scrollbar" style="min-height: 432px;">
                                     <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
-                                        <thead class="bg-secondary-subtle">
+                                        <thead class="bg-primary-subtle">
                                             <tr>
                                                 <th class="align-middle px-2" scope="col"> Code</th>
                                                 <th class="align-middle px-2" scope="col" width="30%"> Intitulé</th>
@@ -178,7 +178,7 @@
                                 <div class="mx-n1 mb-3 px-1 scrollbar">
                                     <?php if (isset($columns_vw) && count($columns_vw) > 0) { ?>
                                         <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable2">
-                                            <thead class="bg-secondary-subtle">
+                                            <thead class="bg-primary-subtle">
                                                 <tr>
                                                     <?php foreach ($columns_vw as $column) { ?>
                                                         <th class="align-middle text-capitalize px-2" scope="col" style="width: 10%"><?php echo $column; ?></th>
@@ -218,7 +218,7 @@
                             <div class="mx-n4 p-1 mx-lg-n6 bg-body-emphasis border-y">
                                 <div class="table-responsive mx-n1 px-1 scrollbar" style="min-height: 432px;">
                                     <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable3">
-                                        <thead class="bg-secondary-subtle">
+                                        <thead class="bg-primary-subtle">
                                             <tr>
                                                 <th class="align-middle px-2" scope="col">Logo</th>
                                                 <th class="align-middle px-2" scope="col">Code</th>
@@ -270,7 +270,7 @@
                             <div class="mx-n4 p-1 mx-lg-n6 bg-body-emphasis border-y">
                                 <div class="table-responsive mx-n1 px-1 scrollbar" style="min-height: 432px;">
                                     <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable4">
-                                        <thead class="bg-secondary-subtle">
+                                        <thead class="bg-primary-subtle">
                                             <tr>
                                                 <th class="align-middle px-2">Logo</th>
                                                 <th class="align-middle px-2">Code</th>

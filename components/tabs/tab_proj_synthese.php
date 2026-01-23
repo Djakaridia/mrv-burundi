@@ -226,7 +226,7 @@
                                     <table
                                         class="table table-hover table-bordered small"
                                         border="1" style="width:100%; table-layout: fixed;">
-                                        <thead class="bg-secondary-subtle text-nowrap">
+                                        <thead class="bg-primary-subtle text-nowrap">
                                             <tr class="text-center">
                                                 <th style="width: 30%;" class="align-items-center" rowspan="3">Intitulé de l’indicateur</th>
                                                 <th style="width: 20%;" colspan="2">Référence</th>
@@ -283,7 +283,7 @@
                                     <table
                                         class="table table-hover table-bordered small"
                                         border="1" style="width:100%; table-layout: fixed;">
-                                        <thead class="bg-secondary-subtle text-nowrap">
+                                        <thead class="bg-primary-subtle text-nowrap">
                                             <tr class="text-center">
                                                 <th class="text-center" style="width: 5%;">Code</th>
                                                 <th class="text-center" style="width: 35%;">Activités</th>

@@ -26,7 +26,7 @@
                         </div>
                         <div class="card-body p-2" style="min-height: 300px; max-height: 400px; overflow-y: auto;">
                             <table class="table table-sm table-hover table-striped fs-9 table-bordered border-emphasis" align="center">
-                                <thead class="bg-light">
+                                <thead class="bg-primary-subtle">
                                     <tr>
                                         <th scope="col" class="text-center">Année</th>
                                         <th scope="col" class="text-center">Intitulé</th>

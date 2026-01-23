@@ -253,7 +253,7 @@
                         </div>
                         <div class="card-body p-2 scrollbar" style="max-height: 500px; overflow-y: auto;">
                             <table class="table fs-9 table-bordered mb-0 table-bordered table-striped">
-                                <thead class="text-nowrap">
+                                <thead class="bg-primary-subtle text-nowrap">
                                     <tr>
                                         <th class="sort align-middle text-center bg-light dark__bg-dark px-2" scope="col" rowspan="2">Intitulé de l'indicateur</th>
                                         <th class="sort align-middle text-center bg-light dark__bg-dark px-2" scope="col" rowspan="2">Type</th>

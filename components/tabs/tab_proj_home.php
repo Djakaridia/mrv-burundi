@@ -158,7 +158,7 @@ $logoParts = explode("../", $project_curr['logo'] ?? '');
                             <div class="chart-pie-container position-relative d-flex flex-center mb-sm-4 mb-xl-0 mt-sm-7 mt-lg-4 mt-xl-0">
                                 <div class="chart-pie-source" style="min-height: 245px; width: 100%"></div>
                                 <table class="d-none" data-source="data-source">
-                                    <thead>
+                                    <thead class="bg-primary-subtle">
                                         <tr>
                                             <th data-color="primary">Activités Planifiées</th>
                                             <th data-color="success">Activités En Cours</th>

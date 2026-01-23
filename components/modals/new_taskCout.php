@@ -24,7 +24,7 @@
                         <form id="coutTaskForm" class="card" style="min-height: 300px; max-height: 400px; overflow-y: auto;">
                             <input type="hidden" id="cout_tache_id" name="tache_id">
                             <table class="table table-sm table-hover table-striped fs-12 table-bordered border-emphasis" align="center">
-                                <thead class="bg-light">
+                                <thead class="bg-primary-subtle">
                                     <tr>
                                         <th scope="col" class="fs-12 px-2 text-center" width="40%">Convention</th>
                                         <th scope="col" class="fs-12 px-2 text-center" width="60%">Montant</th>

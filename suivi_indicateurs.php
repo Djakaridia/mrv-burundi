@@ -116,7 +116,7 @@
                         <?php if (!empty($all_projects) && $sel_id != '') { ?>
                             <div class="table-responsive mx-n1 px-1 scrollbar" style="min-height: 432px;">
                                 <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
-                                    <thead class="bg-secondary-subtle">
+                                    <thead class="bg-primary-subtle">
                                         <tr>
                                             <th class="sort align-middle" scope="col">Code</th>
                                             <th class="sort align-middle" scope="col">Intitule</th>

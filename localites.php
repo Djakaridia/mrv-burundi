@@ -225,7 +225,7 @@
                             <!-- Tableau des données -->
                             <table id="id-datatable" class="table table-bordered fs-9 mb-0 border-top border-translucent" style="width:100%;">
                                 <?php if (count($libelle) > 0 && $niveau < count($libelle)) { ?>
-                                    <thead class="bg-secondary-subtle">
+                                    <thead class="bg-primary-subtle">
                                         <tr>
                                             <td class="px-2" style="min-width:100px;"><strong>Code</strong></td>
 

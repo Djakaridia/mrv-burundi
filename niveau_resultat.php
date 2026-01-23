@@ -114,7 +114,7 @@
                             <div class="mx-n4 p-1 mx-lg-n6 bg-body-emphasis border-y">
                                 <div class="table-responsive mx-n1 px-1 scrollbar" style="min-height: 432px;">
                                     <table class="table fs-9 table-bordered mb-0 border-top border-translucent">
-                                        <thead class="bg-secondary-subtle">
+                                        <thead class="bg-primary-subtle">
                                             <tr>
                                                 <th class="sort align-middle">Résultat de niveau</th>
                                                 <th class="sort pe-0 align-middle" style="width: 100px;">Actions</th>
@@ -207,7 +207,7 @@
                             <div class="mx-n4 p-1 mx-lg-n6 bg-body-emphasis border-y">
                                 <div class="table-responsive mx-n1 px-1 scrollbar" style="min-height: 432px;">
                                     <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
-                                        <thead class="bg-secondary-subtle">
+                                        <thead class="bg-primary-subtle">
                                             <tr>
                                                 <th class="sort align-middle" scope="col">Code</th>
                                                 <th class="sort align-middle" scope="col" style="min-width:300px;">Résultat de niveau</th>
@@ -295,7 +295,7 @@
                             <div class="mx-n4 p-1 mx-lg-n6 bg-body-emphasis border-y">
                                 <div class="table-responsive mx-n1 px-1 scrollbar" style="min-height: 432px;">
                                     <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable2">
-                                        <thead class="bg-secondary-subtle">
+                                        <thead class="bg-primary-subtle">
                                             <tr>
                                                 <th class="sort align-middle" scope="col" data-sort="product">Niveau</th>
                                                 <th class="sort align-middle" scope="col" data-sort="customer" style="min-width:300px;">Intitulé</th>
