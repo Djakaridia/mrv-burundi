@@ -35,7 +35,7 @@
       return $projet['action_type'] == $action;
     });
   }
-  
+
   if (isset($_GET['status']) && !empty($_GET['status'])) {
     $status = $_GET['status'];
     $projets = array_filter($projets, function ($projet) use ($status) {
@@ -92,32 +92,9 @@
           </div>
 
           <div class="d-lg-flex flex-row">
-
-
-            <div class="search-box my-lg-0 my-2" style="width: 12rem !important; margin-right: 3px;">
+            <div class="search-box d-none d-lg-block my-lg-0 my-2 me-1" style="width: 10rem !important;">
               <form class="position-relative">
-                <input id="searchProjet" class="form-control form-control-sm search-input search" type="search"
-                  placeholder="Rechercher un projet" aria-label="Search" />
-                <span class="fas fa-search search-box-icon"></span>
-              </form>
-            </div>
-
-            <div class="search-box my-lg-0 my-2 mr-2" style="width: 9rem !important; margin-right: 3px;">
-              <form class="position-relative">
-                <select class="form-control form-control-sm" id="statusFilter">
-                  <option value="">Filtrer par status</option>
-                  <?php foreach (listStatus() as $key => $value): ?>
-                    <option value="<?= $key ?>" <?= ($currentStatus == $key) ? 'selected' : '' ?>>
-                      <?= $value ?>
-                    </option>
-                  <?php endforeach; ?>
-                </select>
-              </form>
-            </div>
-
-            <div class="search-box my-lg-0 my-2 mr-2" style="width: 9rem !important; margin-right: 3px;">
-              <form class="position-relative">
-                <select class="form-control form-control-sm" id="secteurFilter">
+                <select class="form-select form-select-sm bg-secondary-subtle px-2 rounded-1" id="secteurFilter">
                   <option value="">Filtrer par secteur</option>
                   <?php if (isset($secteurs) && !empty($secteurs)): ?>
                     <?php foreach ($secteurs as $secteur): ?>
@@ -129,10 +106,9 @@
                 </select>
               </form>
             </div>
-
-            <div class="search-box my-lg-0 my-2 mr-2" style="width: 9rem !important; margin-right: 3px;">
+            <div class="search-box d-none d-lg-block my-lg-0 my-2 me-1" style="width: 10rem !important;">
               <form class="position-relative">
-                <select class="form-control form-control-sm" id="actionFilter">
+                <select class="form-select form-select-sm bg-secondary-subtle px-2 rounded-1" id="actionFilter">
                   <option value="">Filtrer par action</option>
                   <?php foreach (listTypeAction() as $key => $value): ?>
                     <option value="<?= $key ?>" <?= ($currentAction == $key) ? 'selected' : '' ?>>
@@ -142,7 +118,27 @@
                 </select>
               </form>
             </div>
+            <div class="search-box d-none d-lg-block my-lg-0 my-2 me-1" style="width: 10rem !important;">
+              <form class="position-relative">
+                <select class="form-select form-select-sm bg-secondary-subtle px-2 rounded-1" id="statusFilter">
+                  <option value="">Filtrer par status</option>
+                  <?php foreach (listStatus() as $key => $value): ?>
+                    <option value="<?= $key ?>" <?= ($currentStatus == $key) ? 'selected' : '' ?>>
+                      <?= $value ?>
+                    </option>
+                  <?php endforeach; ?>
+                </select>
+              </form>
+            </div>
 
+
+            <div class="search-box ms-lg-1 my-lg-0 my-2">
+              <form class="position-relative">
+                <input id="searchProjet" class="form-control form-control-sm search-input search" type="search"
+                  placeholder="Rechercher un projet" aria-label="Search" />
+                <span class="fas fa-search search-box-icon"></span>
+              </form>
+            </div>
             <div class="ms-lg-2">
               <button title="Ajouter" class="btn btn-subtle-primary btn-sm" id="addBtn" data-bs-toggle="modal"
                 data-bs-target="#addProjetModal" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
@@ -187,7 +183,7 @@
                   return strtolower($tache['status']) === 'terminée';
                 }));
                 $progress = $totalTacheCount > 0 ? (round(($finishedTacheCount / $totalTacheCount), 2) * 100) : 0;
-                ?>
+              ?>
                 <div class="col-12 col-lg-4 col-xl-4 projet-item">
                   <div
                     class="card h-100 hover-actions-trigger rounded-top-0 border-0 border-top border-4 border-primary shadow-sm">
@@ -228,7 +224,7 @@
                                 <?= $projet['code'] ?? "NA"; ?></span></p>
                             <span class="mx-3">|</span>
                             <p class="mb-0 text-truncate">Status : <span
-                                <?php foreach(listStatus() as $key => $value) {
+                                <?php foreach (listStatus() as $key => $value) {
                                   if ($projet['status'] == $key) {
                                     $statusLabel = $value;
                                     break;
