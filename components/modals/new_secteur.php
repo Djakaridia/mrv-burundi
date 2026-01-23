@@ -173,9 +173,11 @@
 
       if (parent) {
         $('#sec_parent').removeClass('d-none');
+        $('#sub_data_container').removeClass('d-none');
         $('#sec_organism').addClass('d-none');
       } else {
         $('#sec_parent').addClass('d-none');
+        $('#sub_data_container').addClass('d-none');
         $('#sec_organism').removeClass('d-none');
       }
 

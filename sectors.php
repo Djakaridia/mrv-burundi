@@ -82,7 +82,7 @@
                       });
                       sort($sous_secteur_items)
                     ?>
-                      <tr class="bg-light">
+                      <tr class="bg-light fw-semibold">
                         <td class="align-middle px-2"><?= $secteur['code'] ?></td>
                         <td class="align-middle px-2"><?= $secteur['name'] ?></td>
                         <td class="align-middle px-2 text-center">
