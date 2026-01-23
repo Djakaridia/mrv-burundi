@@ -12,7 +12,7 @@
   <title>Détails du projet | MRV - Burundi</title>
 
   <?php
-  $project_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+  $project_id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
   $tab = isset($_GET['tab']) ? $_GET['tab'] : 'view';
 
   if (!in_array($tab, ['view', 'task', 'indicator', 'finance', 'synthese'])) {
@@ -46,7 +46,7 @@
 
   $user = new User($db);
   $users = $user->read();
-  
+
   $grouped_users = [];
   foreach ($users as $user) {
     $grouped_users[$user['id']] = $user;
@@ -55,8 +55,6 @@
   $users = array_filter($users, function ($user) {
     return $user['state'] == 'actif';
   });
-
-  
 
   $type_structure = new StructureType($db);
   $type_structures = $type_structure->read();
@@ -89,6 +87,8 @@
     header("Location: projects.php");
     exit();
   }
+
+  $projet_gaz = explode(',', $project_curr['gaz_type']);
 
   $tache = new Tache($db);
   $tache->projet_id = $project_id;
@@ -135,7 +135,7 @@
 
   $structures_project = [];
   foreach ($structures as $structure) {
-    if (in_array($structure['id'],  $arr_conventIds)) {
+    if (in_array($structure['id'], $arr_conventIds)) {
       array_push($structures_project, $structure);
     }
   }
@@ -167,32 +167,46 @@
 
     <div class="content">
       <ul class="nav nav-underline fs-9 mt-n4" id="myTab" role="tablist">
-        <li class="nav-item" role="presentation"><a class="nav-link <?php echo $tab == 'view' ? 'active' : ''; ?>" id="view-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=view'; ?>">Général</a></li>
-        <li class="nav-item" role="task"><a class="nav-link <?php echo $tab == 'task' ? 'active' : ''; ?>" id="task-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=task'; ?>">Activités</a></li>
-        <li class="nav-item" role="indicateur"><a class="nav-link <?php echo $tab == 'indicator' ? 'active' : ''; ?>" id="indicator-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=indicator'; ?>">Indicateurs</a></li>
+        <li class="nav-item" role="presentation"><a class="nav-link <?php echo $tab == 'view' ? 'active' : ''; ?>"
+            id="view-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=view'; ?>">Général</a>
+        </li>
+        <li class="nav-item" role="task"><a class="nav-link <?php echo $tab == 'task' ? 'active' : ''; ?>" id="task-tab"
+            href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=task'; ?>">Activités</a></li>
+        <li class="nav-item" role="indicateur"><a class="nav-link <?php echo $tab == 'indicator' ? 'active' : ''; ?>"
+            id="indicator-tab"
+            href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=indicator'; ?>">Indicateurs</a></li>
         <!-- <li class="nav-item" role="member"><a class="nav-link <php echo $tab == 'member' ? 'active' : ''; ?>" id="member-tab" data-bs-toggle="tab" href="#tab-member" role="tab" aria-controls="tab-member" aria-selected="true">Structures</a></li> -->
-        <li class="nav-item" role="finance"><a class="nav-link <?php echo $tab == 'finance' ? 'active' : ''; ?>" id="finance-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=finance'; ?>">Financements</a></li>
-        <li class="nav-item" role="synthese"><a class="nav-link <?php echo $tab == 'synthese' ? 'active' : ''; ?>" id="synthese-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=synthese'; ?>">Synthèse</a></li>
+        <li class="nav-item" role="finance"><a class="nav-link <?php echo $tab == 'finance' ? 'active' : ''; ?>"
+            id="finance-tab"
+            href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=finance'; ?>">Financements</a></li>
+        <li class="nav-item" role="synthese"><a class="nav-link <?php echo $tab == 'synthese' ? 'active' : ''; ?>"
+            id="synthese-tab"
+            href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=synthese'; ?>">Synthèse</a></li>
       </ul>
 
       <div class="mx-n4 mx-lg-n6 px-2 px-lg-3 bg-body-emphasis border">
         <div class="tab-content mt-2" id="myTabContent">
-          <div class="tab-pane fade <?php echo $tab == 'view' ? 'active show' : ''; ?>" id="tab-view" role="tabpanel" aria-labelledby="view-tab">
+          <div class="tab-pane fade <?php echo $tab == 'view' ? 'active show' : ''; ?>" id="tab-view" role="tabpanel"
+            aria-labelledby="view-tab">
             <?php include './components/tabs/tab_proj_home.php'; ?>
           </div>
-          <div class="tab-pane fade <?php echo $tab == 'task' ? 'active show' : ''; ?>" id="tab-task" role="tabpanel" aria-labelledby="task-tab">
+          <div class="tab-pane fade <?php echo $tab == 'task' ? 'active show' : ''; ?>" id="tab-task" role="tabpanel"
+            aria-labelledby="task-tab">
             <?php include './components/tabs/tab_proj_task.php'; ?>
           </div>
-          <div class="tab-pane fade <?php echo $tab == 'indicator' ? 'active show' : ''; ?>" id="tab-indicator" role="tabpanel" aria-labelledby="indicator-tab">
+          <div class="tab-pane fade <?php echo $tab == 'indicator' ? 'active show' : ''; ?>" id="tab-indicator"
+            role="tabpanel" aria-labelledby="indicator-tab">
             <?php include './components/tabs/tab_proj_indic.php'; ?>
           </div>
           <!-- <div class="tab-pane fade <php echo $tab == 'member' ? 'active show' : ''; ?>" id="tab-member" role="tabpanel" aria-labelledby="member-tab">
             <php include './components/tabs/tab_proj_struc.php'; ?>
           </div> -->
-          <div class="tab-pane fade <?php echo $tab == 'finance' ? 'active show' : ''; ?>" id="tab-finance" role="tabpanel" aria-labelledby="finance-tab">
+          <div class="tab-pane fade <?php echo $tab == 'finance' ? 'active show' : ''; ?>" id="tab-finance"
+            role="tabpanel" aria-labelledby="finance-tab">
             <?php include './components/tabs/tab_proj_finance.php'; ?>
           </div>
-          <div class="tab-pane fade <?php echo $tab == 'synthese' ? 'active show' : ''; ?>" id="tab-synthese" role="tabpanel" aria-labelledby="synthese-tab">
+          <div class="tab-pane fade <?php echo $tab == 'synthese' ? 'active show' : ''; ?>" id="tab-synthese"
+            role="tabpanel" aria-labelledby="synthese-tab">
             <?php include './components/tabs/tab_proj_synthese.php'; ?>
           </div>
         </div>

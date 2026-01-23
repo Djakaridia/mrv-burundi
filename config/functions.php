@@ -517,6 +517,14 @@ function listTypeAction()
         'adaptation' => 'Adaptation'
     ];
 }
+function listStatus()
+{
+    return [
+        'planifie' => 'Planifié',
+        'en_cours' => 'En cours',
+        'realise' => 'Réalisé'
+    ];
+}
 
 function listTypeScenario(){
     return [

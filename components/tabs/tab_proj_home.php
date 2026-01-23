@@ -70,19 +70,6 @@ $logoParts = explode("../", $project_curr['logo'] ?? '');
                                         <tr>
                                             <td class="align-top py-1">
                                                 <div class="d-flex">
-                                                    <span class="fa-solid fa-earth-americas me-2 text-body-tertiary fs-9"></span>
-                                                    <h5 class="text-body">Priorité</h5>
-                                                </div>
-                                            </td>
-                                            <td class="ps-1 py-1">
-                                                <span class="fw-semibold d-block lh-sm">
-                                                    <?php echo $project_curr['priorite_name'] ?? "NA"; ?>
-                                                </span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="align-top py-1">
-                                                <div class="d-flex">
                                                     <span class="fa-regular fa-credit-card me-2 text-body-tertiary fs-9"></span>
                                                     <h5 class="text-body mb-0 text-nowrap">Budget : </h5>
                                                 </div>
@@ -289,6 +276,15 @@ $logoParts = explode("../", $project_curr['logo'] ?? '');
                             <?php } ?>
                         </div>
                     </div>
+
+                    <div class="d-flex flex-column border-top border-top-light p-2 mb-1">
+                        <h5 class="text-body-emphasis mb-2">Type de gaz <span class="text-muted fs-9">(<?php echo count($projet_gaz); ?>)</span></h5>
+                        <div class="d-flex flex-wrap gap-2">
+                            <?php foreach ($projet_gaz as $gaz) { ?>
+                                <span class="badge badge-phoenix badge-phoenix-primary"><?php echo $gaz; ?></span>
+                            <?php } ?>
+                        </div>
+                    </div> 
                 </div>
             </div>
 

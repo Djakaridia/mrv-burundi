@@ -167,8 +167,20 @@
                                                             <label for="projetAction">Action type *</label>
                                                         </div>
                                                     </div>
-                                                    <!-- Type de Gaz -->
+
+                                                    <!-- Status -->
                                                     <div class="col-md-6 mb-3">
+                                                        <div class="form-floating">
+                                                            <select class="form-select" name="status" id="projetStatus" required>
+                                                                <?php foreach (listStatus() as $key => $value) : ?>
+                                                                    <option value="<?= $key ?>"><?= $value ?></option>
+                                                                <?php endforeach; ?>
+                                                            </select>
+                                                            <label for="projetStatus">Status *</label>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Type de Gaz -->
+                                                    <div class="col-md-12 mb-3">
                                                         <div class="form-floating form-floating-advance-select">
                                                             <label for="MultipleSelectGaz">Type de gaz*</label>
                                                             <select class="form-select" name="gaz_type" id="MultipleSelectGaz" data-choices="data-choices" multiple="multiple" data-options='{"removeItemButton":true,"placeholder":true}' required>
@@ -185,7 +197,7 @@
                                                             </select>
                                                         </div>
                                                     </div>
-                                                    <input type="hidden" name="status" id="projetStatus" value="Planifié">
+                                                    <!-- <input type="hidden" name="status" id="projetStatus" value="Planifié"> -->
                                                 </div>
                                             </form>
                                         </div>
