@@ -211,7 +211,7 @@ CREATE TABLE IF NOT EXISTS t_secteurs (
     code VARCHAR(50) NOT NULL,
     name VARCHAR(200) NOT NULL,
     organisme VARCHAR(200) NOT NULL,
-    domaine VARCHAR(200) NOT NULL,
+    nature TEXT,
     source TEXT,
     description TEXT,
     parent INT DEFAULT 0,

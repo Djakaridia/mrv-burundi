@@ -82,7 +82,7 @@
                                     <label for="eventDescription"
                                         class="form-label">Description</label>
                                     <textarea class="form-control" name="description" id="eventDescription"
-                                        placeholder="Entrer une description" style="height: 60px"></textarea>
+                                        placeholder="Entrer une description"></textarea>
                                 </div>
                             </div>
                         </div>

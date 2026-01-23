@@ -54,7 +54,7 @@
                 <div class="mb-1">
                   <label class="form-label">Description</label>
                   <textarea class="form-control" name="description" id="groupe_description"
-                    placeholder="Entrer une description" style="height: 60px"></textarea>
+                    placeholder="Entrer une description"></textarea>
                 </div>
               </div>
 

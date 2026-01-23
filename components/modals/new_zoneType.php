@@ -28,7 +28,7 @@
                             <div class="col-lg-12 mt-1">
                                 <div class="mb-1">
                                     <label class="form-label">Description</label>
-                                    <textarea class="form-control" name="description" id="typeZone_description" placeholder="Entrer la description" style="height: 60px"></textarea>
+                                    <textarea class="form-control" name="description" id="typeZone_description" placeholder="Entrer la description"></textarea>
                                 </div>
                             </div>
                         </div>

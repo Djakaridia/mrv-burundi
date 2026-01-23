@@ -1,7 +1,7 @@
 <!-- modal -->
 <div class="modal fade" id="addSecteurModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
   aria-labelledby="addSecteurModal" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-md">
+  <div class="modal-dialog modal-dialog-centered modal-lg"> <!-- Changé de modal-md à modal-lg -->
     <div class="modal-content bg-body-highlight p-4">
       <div class="modal-header justify-content-between border-0 p-0 mb-3">
         <h3 class="mb-0" id="secteur_modtitle">Ajouter un secteur</h3>
@@ -21,7 +21,7 @@
         <div id="secteurContentContainer" style="display: none;">
           <form action="" name="FormSecteur" id="FormSecteur" method="POST" enctype="multipart/form-data">
             <div class="row g-4">
-              <div class="row mt-1 mx-0 px-0">
+              <div class="row g-3 m-0 px-1">
                 <div class="col mb-1">
                   <label class="form-label">Code*</label>
                   <input oninput="checkColumns('code', 'secteur_code', 'secteur_codeFeedback', 'secteurs')" class="form-control" type="text" name="code" id="secteur_code" placeholder="Entrer le code"
@@ -35,7 +35,7 @@
                     <option value="0" selected disabled>Selectionnez le secteur</option>
                     <?php if (!empty($secteurs)) : ?>
                       <?php foreach ($secteurs as $secteur): ?>
-                        <option value="<?php echo $secteur['id']??"" ?>"><?php echo $secteur['name']??"" ?></option>
+                        <option value="<?php echo $secteur['id'] ?? "" ?>"><?php echo $secteur['name'] ?? "" ?></option>
                       <?php endforeach; ?>
                     <?php endif; ?>
                   </select>
@@ -50,39 +50,54 @@
                 </div>
               </div>
 
-              <div id="sec_organism" class="col-12 mt-1">
+              <div id="sec_organism" class="col-12 d-none mt-1">
                 <div class="mb-1">
-                  <label class="form-label">Organisme</label>
-                  <input class="form-control" type="text" name="organisme" id="secteur_organism" placeholder="Entrer l'organisme"/>
+                  <label class="form-label">Structure responsable</label>
+                  <input class="form-control" type="text" name="organisme" id="secteur_organism" placeholder="Entrer la structure responsable" />
                 </div>
               </div>
-
-              <!-- <div class="col-lg-6 mt-1">
-                <div class="mb-1">
-                  <label class="form-label">Domaine*</label>
-                  <input class="form-control" type="text" name="domaine" id="secteur_domaine" placeholder="Entrer le domaine"
-                     />
-                </div>
-              </div>
-
-              <div class="col-lg-6 mt-1">
-                <div class="mb-1">
-                  <label class="form-label">Source de données</label>
-                  <input class="form-control" type="text" name="source" id="secteur_source" placeholder="Entrer la source"
-                     />
-                </div>
-              </div> -->
 
               <div class="col-lg-12 mt-1">
                 <div class="mb-1">
                   <label class="form-label">Description</label>
                   <textarea class="form-control" name="description" id="secteur_description"
-                    placeholder="Entrer une description" style="height: 60px"></textarea>
+                    placeholder="Entrer une description"></textarea>
                 </div>
+              </div>
+
+              <div id="sub_data_container" class="my-2">
+                <div class="d-flex justify-content-between align-items-center border-bottom pb-1">
+                  <h5 class="mb-0 text-primary">Informations sur les données</h5>
+                  <button type="button" id="add_sub_data" class="btn btn-sm btn-subtle-primary">
+                    <span class="fas fa-plus"></span>
+                  </button>
+                </div>
+
+                <div id="sub_data_template" class="row g-3 m-n2 p-0 sub-data-item" style="display: none;">
+                  <div class="col-lg-5">
+                    <label class="form-label">Nature des données</label>
+                    <textarea class="form-control sub-data-nature" placeholder="Entrer la nature des données"></textarea>
+                  </div>
+
+                  <div class="col-lg-5">
+                    <label class="form-label">Source des données</label>
+                    <textarea class="form-control sub-data-source" placeholder="Entrer la source des données"></textarea>
+                  </div>
+
+                  <div class="col-lg-1 d-flex align-items-end">
+                    <button type="button" class="btn btn-sm btn-subtle-danger remove-sub-data w-100">
+                      <span class="fas fa-trash"></span>
+                    </button>
+                  </div>
+                </div>
+
+                <div id="sub_data_items"></div>
+                <input type="hidden" name="nature" id="combined_nature">
+                <input type="hidden" name="source" id="combined_source">
               </div>
             </div>
 
-            <div class="modal-footer d-flex justify-content-between border-0 pt-3 px-0 pb-0">
+            <div class="modal-footer d-flex justify-content-between border-0 pt-4 px-0 pb-0">
               <button type="button" class="btn btn-secondary btn-sm px-3 my-0" data-bs-dismiss="modal"
                 aria-label="Fermer">Annuler</button>
               <button type="submit" id="secteur_modbtn" class="btn btn-primary btn-sm px-3 my-0">Ajouter</button>
@@ -96,12 +111,63 @@
 
 <script>
   let formSecteurID = null;
+
   $(document).ready(function() {
+    function combineSubData() {
+      const natures = [];
+      const sources = [];
+
+      $('.sub-data-item').each(function() {
+        const nature = $(this).find('.sub-data-nature').val().trim();
+        const source = $(this).find('.sub-data-source').val().trim();
+
+        if (nature || source) {
+          natures.push(nature);
+          sources.push(source);
+        }
+      });
+
+      const natureStr = natures.join(' | ');
+      const sourceStr = sources.join(' | ');
+      $('#combined_nature').val(natureStr || 'N/A');
+      $('#combined_source').val(sourceStr || 'N/A');
+
+      return {
+        natures,
+        sources
+      };
+    }
+
+    function addSubDataItem(nature = '', source = '') {
+      const template = $('#sub_data_template').clone();
+      template.removeAttr('id').removeAttr('style');
+      template.find('.sub-data-nature').val(nature);
+      template.find('.sub-data-source').val(source);
+
+      template.find('.remove-sub-data').on('click', function() {
+        $(this).closest('.sub-data-item').remove();
+        combineSubData();
+      });
+
+      template.find('.sub-data-nature, .sub-data-source').on('input', function() {
+        combineSubData();
+      });
+
+      $('#sub_data_items').append(template);
+      template.show();
+      combineSubData();
+    }
+
+    $('#add_sub_data').on('click', function() {
+      addSubDataItem();
+    });
+
     $('#addSecteurModal').on('shown.bs.modal', async function(event) {
       const dataId = $(event.relatedTarget).data('id');
       const parent = $(event.relatedTarget).data('parent');
       const form = document.getElementById('FormSecteur');
-      // Show loading screen and hide content
+
+      $('#sub_data_items').empty();
       $('#secteurLoadingScreen').show();
       $('#secteurContentContainer').hide();
 
@@ -129,17 +195,29 @@
 
           const data = await response.json();
           const secteurData = data.data;
+
           form.code.value = secteurData.code;
           form.name.value = secteurData.name;
           form.organisme.value = secteurData.organisme;
-          // form.domaine.value = secteurData.domaine;
-          // form.source.value = secteurData.source;
           form.description.value = secteurData.description;
           form.parent.value = secteurData.parent;
+
+          if (secteurData.nature && secteurData.nature !== 'N/A') {
+            const natures = secteurData.nature.split(' | ');
+            const sources = secteurData.source && secteurData.source !== 'N/A' ? secteurData.source.split(' | ') : [];
+            const maxLength = Math.max(natures.length, sources.length);
+
+            for (let i = 0; i < maxLength; i++) {
+              addSubDataItem(
+                natures[i] || '',
+                sources[i] || ''
+              );
+            }
+          }
+
         } catch (error) {
           errorAction('Impossible de charger les données.');
         } finally {
-          // Hide loading screen and show content
           $('#secteurLoadingScreen').hide();
           $('#secteurContentContainer').show();
         }
@@ -162,11 +240,15 @@
         $('#secteurContentContainer').hide();
       }, 200);
       $('#FormSecteur')[0].reset();
+      $('#sub_data_items').empty();
+      $('#combined_nature').val('');
+      $('#combined_source').val('');
     });
 
     $('#FormSecteur').on('submit', async function(event) {
       event.preventDefault();
       const form = $(this);
+      combineSubData();
       const formData = new FormData(this);
       const url = formSecteurID ? `./apis/secteurs.routes.php?id=${formSecteurID}` : './apis/secteurs.routes.php';
       const submitBtn = $('#secteur_modbtn');
@@ -193,8 +275,9 @@
         errorAction('Erreur lors de la soumission du formulaire.');
       } finally {
         submitBtn.prop('disabled', false);
-        submitBtn.text('Enregistrer');
+        submitBtn.text(formSecteurID ? 'Modifier' : 'Ajouter');
       }
-    })
+    });
+    combineSubData();
   });
 </script>

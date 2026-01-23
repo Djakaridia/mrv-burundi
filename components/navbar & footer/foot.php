@@ -85,10 +85,6 @@ foreach (glob("$modalsDir/*.php") as $modalFile) {
     const newUrl = queryString ? '?' + queryString : '?';
     window.location.href = newUrl;
   }
-
-  document.getElementById('secteurFilter').addEventListener('change', updateFilters);
-  document.getElementById('actionFilter').addEventListener('change', updateFilters);
-  document.getElementById('statusFilter').addEventListener('change', updateFilters);
 </script>
 <script>
   searchFilterData('searchInput', '.navbar-item');

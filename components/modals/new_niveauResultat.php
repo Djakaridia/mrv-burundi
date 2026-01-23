@@ -63,7 +63,7 @@
                 <div class="mb-1">
                   <label class="form-label">Intitule*</label>
                   <textarea class="form-control" name="name" id="obj_niveau_name" placeholder="Entrer l'intitule"
-                    style="height: 60px" required></textarea>
+                    required></textarea>
                 </div>
               </div>
             </div>

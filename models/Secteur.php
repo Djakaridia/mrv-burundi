@@ -8,7 +8,7 @@ class Secteur
     public $code;
     public $name;
     public $organisme;
-    public $domaine;
+    public $nature;
     public $source;
     public $description;
     public $parent;
@@ -21,12 +21,12 @@ class Secteur
 
     public function create()
     {
-        $query = "INSERT INTO " . $this->table . " (code, name, organisme, domaine, source, description, parent, add_by) VALUES (:code, :name, :organisme, :domaine, :source, :description, :parent, :add_by)";
+        $query = "INSERT INTO " . $this->table . " (code, name, organisme, nature, source, description, parent, add_by) VALUES (:code, :name, :organisme, :nature, :source, :description, :parent, :add_by)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':code', $this->code);
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':organisme', $this->organisme);
-        $stmt->bindParam(':domaine', $this->domaine);
+        $stmt->bindParam(':nature', $this->nature);
         $stmt->bindParam(':source', $this->source);
         $stmt->bindParam(':description', $this->description);
         $stmt->bindParam(':parent', $this->parent);
@@ -60,13 +60,13 @@ class Secteur
 
     public function update()
     {
-        $query = "UPDATE " . $this->table . " SET code=:code, name=:name, organisme=:organisme, domaine=:domaine, source=:source, description=:description, parent=:parent, add_by=:add_by WHERE id=:id";
+        $query = "UPDATE " . $this->table . " SET code=:code, name=:name, organisme=:organisme, nature=:nature, source=:source, description=:description, parent=:parent, add_by=:add_by WHERE id=:id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $this->id);
         $stmt->bindParam(':code', $this->code);
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':organisme', $this->organisme);
-        $stmt->bindParam(':domaine', $this->domaine);
+        $stmt->bindParam(':nature', $this->nature);
         $stmt->bindParam(':source', $this->source);
         $stmt->bindParam(':description', $this->description);
         $stmt->bindParam(':parent', $this->parent);

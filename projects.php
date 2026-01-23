@@ -374,5 +374,10 @@
 
   <?php include './components/navbar & footer/foot.php'; ?>
 </body>
+<script>
+  document.getElementById('secteurFilter').addEventListener('change', updateFilters);
+  document.getElementById('actionFilter').addEventListener('change', updateFilters);
+  document.getElementById('statusFilter').addEventListener('change', updateFilters);
+</script>
 
 </html>
