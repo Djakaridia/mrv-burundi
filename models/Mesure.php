@@ -1,27 +1,23 @@
 <?php
-class Projet
+class Mesure
 {
     private $conn;
-    private $table = 't_projets';
+    private $table = 't_mesures';
 
     public $id;
-    public $logo;
     public $code;
     public $name;
-    public $description;
-    public $objectif;
-    public $status;
-    public $budget;
-    public $start_date;
-    public $end_date;
-    public $signature_date;
-    public $miparcours_date;
     public $structure_id;
     public $action_type;
+    public $status;
     public $gaz;
-    public $secteurs;
-    public $groupes;
-    public $programmes;
+    public $secteur_id;
+    public $annee_debut;
+    public $annee_fin;
+    public $valeur_realise;
+    public $valeur_cible;
+    public $description;
+    public $objectif;
     public $add_by;
 
     public function __construct($db)
@@ -31,27 +27,23 @@ class Projet
 
     public function create()
     {
-        $query = "INSERT INTO " . $this->table . " (logo, code, name, description, objectif, status, budget, start_date, end_date, signature_date, miparcours_date, structure_id, secteurs, groupes, programmes, action_type, gaz, add_by) VALUES 
-                  (:logo, :code, :name, :description, :objectif, :status, :budget, :start_date, :end_date, :signature_date, :miparcours_date, :structure_id, :secteurs, :groupes, :programmes, :action_type, :gaz, :add_by)";
+        $query = "INSERT INTO " . $this->table . " (code, name, structure_id, action_type, status, gaz, secteur_id, annee_debut, annee_fin, valeur_realise, valeur_cible, description, objectif, add_by) VALUES 
+                  (:code, :name, :structure_id, :action_type, :status, :gaz, :secteur_id, :annee_debut, :annee_fin, :valeur_realise, :valeur_cible, :description, :objectif, :add_by)";
 
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':logo', $this->logo);
         $stmt->bindParam(':code', $this->code);
         $stmt->bindParam(':name', $this->name);
+        $stmt->bindParam(':structure_id', $this->structure_id);
+        $stmt->bindParam(':action_type', $this->action_type);
+        $stmt->bindParam(':status', $this->status);
+        $stmt->bindParam(':gaz', $this->gaz);
+        $stmt->bindParam(':secteur_id', $this->secteur_id);
+        $stmt->bindParam(':annee_debut', $this->annee_debut);
+        $stmt->bindParam(':annee_fin', $this->annee_fin);
+        $stmt->bindParam(':valeur_realise', $this->valeur_realise);
+        $stmt->bindParam(':valeur_cible', $this->valeur_cible);
         $stmt->bindParam(':description', $this->description);
         $stmt->bindParam(':objectif', $this->objectif);
-        $stmt->bindParam(':status', $this->status);
-        $stmt->bindParam(':budget', $this->budget);
-        $stmt->bindParam(':start_date', $this->start_date);
-        $stmt->bindParam(':end_date', $this->end_date);
-        $stmt->bindParam(':signature_date', $this->signature_date);
-        $stmt->bindParam(':miparcours_date', $this->miparcours_date);
-        $stmt->bindParam(':structure_id', $this->structure_id);
-        $stmt->bindParam(':secteurs', $this->secteurs);
-        $stmt->bindParam(':groupes', $this->groupes);
-        $stmt->bindParam(':programmes', $this->programmes);
-        $stmt->bindParam(':action_type', $this->action_type);
-        $stmt->bindParam(':gaz', $this->gaz);
         $stmt->bindParam(':add_by', $this->add_by);
 
         if ($stmt->execute()) {
@@ -62,8 +54,7 @@ class Projet
 
     public function read()
     {
-        $query = "SELECT p.*, 
-                        s.sigle as structure_sigle
+        $query = "SELECT p.*, s.sigle as structure_sigle
                   FROM " . $this->table . " p 
                   LEFT JOIN t_structures s ON p.structure_id = s.id
                   ORDER BY p.id ASC";
@@ -75,8 +66,7 @@ class Projet
 
     public function readAll()
     {
-        $query = "SELECT p.*, 
-                s.sigle as structure_sigle
+        $query = "SELECT p.*, s.sigle as structure_sigle
           FROM " . $this->table . " p 
           LEFT JOIN t_structures s ON p.structure_id = s.id
           WHERE p.state='actif'
@@ -110,8 +100,7 @@ class Projet
 
     public function readById()
     {
-        $query = "SELECT p.*,
-                        s.sigle as structure_sigle
+        $query = "SELECT p.*, s.sigle as structure_sigle
                   FROM " . $this->table . " p 
                   LEFT JOIN t_structures s ON p.structure_id = s.id
                   WHERE p.id = :id";
@@ -125,32 +114,25 @@ class Projet
     public function update()
     {
         $query = "UPDATE " . $this->table . " SET 
-      logo=:logo, code=:code, name=:name, description=:description, objectif=:objectif,
-      status=:status, budget=:budget, start_date=:start_date, end_date=:end_date, 
-      signature_date=:signature_date, miparcours_date=:miparcours_date, 
-      structure_id=:structure_id, secteurs=:secteurs, groupes=:groupes, programmes=:programmes, action_type=:action_type,
-      gaz=:gaz, add_by=:add_by 
+      code=:code, name=:name, structure_id=:structure_id, action_type=:action_type, status=:status, gaz=:gaz, secteur_id=:secteur_id, annee_debut=:annee_debut, annee_fin=:annee_fin, 
+      valeur_realise=:valeur_realise, valeur_cible=:valeur_cible, description=:description, objectif=:objectif, add_by=:add_by 
       WHERE id=:id";
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $this->id);
-        $stmt->bindParam(':logo', $this->logo);
         $stmt->bindParam(':code', $this->code);
         $stmt->bindParam(':name', $this->name);
+        $stmt->bindParam(':structure_id', $this->structure_id);
+        $stmt->bindParam(':action_type', $this->action_type);
+        $stmt->bindParam(':status', $this->status);
+        $stmt->bindParam(':gaz', $this->gaz);
+        $stmt->bindParam(':secteur_id', $this->secteur_id);
+        $stmt->bindParam(':annee_debut', $this->annee_debut);
+        $stmt->bindParam(':annee_fin', $this->annee_fin);
+        $stmt->bindParam(':valeur_realise', $this->valeur_realise);
+        $stmt->bindParam(':valeur_cible', $this->valeur_cible);
         $stmt->bindParam(':description', $this->description);
         $stmt->bindParam(':objectif', $this->objectif);
-        $stmt->bindParam(':status', $this->status);
-        $stmt->bindParam(':budget', $this->budget);
-        $stmt->bindParam(':start_date', $this->start_date);
-        $stmt->bindParam(':end_date', $this->end_date);
-        $stmt->bindParam(':signature_date', $this->signature_date);
-        $stmt->bindParam(':miparcours_date', $this->miparcours_date);
-        $stmt->bindParam(':structure_id', $this->structure_id);
-        $stmt->bindParam(':secteurs', $this->secteurs);
-        $stmt->bindParam(':groupes', $this->groupes);
-        $stmt->bindParam(':programmes', $this->programmes);
-        $stmt->bindParam(':action_type', $this->action_type);
-        $stmt->bindParam(':gaz', $this->gaz);
         $stmt->bindParam(':add_by', $this->add_by);
 
         if ($stmt->execute()) {
@@ -184,20 +166,20 @@ class Projet
         return false;
     }
 
-    public function createOrUpdateFromSync($data, $secteur, $typeAction)
+    public function createOrUpdateFromSync($data, $secteur_id, $typeAction)
     {
         $id_ref = $data['id'] ?? null;
         if (!$id_ref)
             return;
 
-        $check = $this->conn->prepare("SELECT id FROM projet WHERE id_ref = :id_ref AND secteur = :secteur");
-        $check->execute([':id_ref' => $id_ref, ':secteur' => $secteur]);
+        $check = $this->conn->prepare("SELECT id FROM projet WHERE id_ref = :id_ref AND secteur_id = :secteur_id");
+        $check->execute([':id_ref' => $id_ref, ':secteur_id' => $secteur_id]);
 
         if ($check->rowCount() > 0) {
-            $sql = "UPDATE projet SET intitule=:intitule, cout=:cout, updated_at=NOW() WHERE id_ref=:id_ref AND secteur=:secteur";
+            $sql = "UPDATE projet SET intitule=:intitule, cout=:cout, updated_at=NOW() WHERE id_ref=:id_ref AND secteur_id=:secteur_id";
         } else {
-            $sql = "INSERT INTO projet (id_ref, intitule, cout, secteur, type_action, created_at)
-                VALUES (:id_ref, :intitule, :cout, :secteur, :type_action, NOW())";
+            $sql = "INSERT INTO projet (id_ref, intitule, cout, secteur_id, type_action, created_at)
+                valeurS (:id_ref, :intitule, :cout, :secteur_id, :type_action, NOW())";
         }
 
         $stmt = $this->conn->prepare($sql);
@@ -205,7 +187,7 @@ class Projet
             ':id_ref' => $id_ref,
             ':intitule' => $data['intitule'] ?? '',
             ':cout' => $data['cout'] ?? 0,
-            ':secteur' => $secteur,
+            ':secteur_id' => $secteur_id,
             ':type_action' => $typeAction
         ]);
     }

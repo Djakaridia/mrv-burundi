@@ -183,11 +183,11 @@
                                                     <div class="col-md-12 mb-3">
                                                         <div class="form-floating form-floating-advance-select">
                                                             <label for="MultipleSelectGaz">Type de gaz*</label>
-                                                            <select class="form-select" name="gaz_type" id="MultipleSelectGaz" data-choices="data-choices" multiple="multiple" data-options='{"removeItemButton":true,"placeholder":true}' required>
+                                                            <select class="form-select" name="gaz" id="MultipleSelectGaz" data-choices="data-choices" multiple="multiple" data-options='{"removeItemButton":true,"placeholder":true}' required>
                                                                 <option value="" disabled>Sélectionner un type de gaz</option>
                                                                 <?php if ($gazs ?? []) : ?>
                                                                     <?php foreach ($gazs as $gaze) : ?>
-                                                                        <?php if (in_array($gaze['name'], explode(',', str_replace('"', '', $project_curr['gaz_type'] ?? '')))) : ?>
+                                                                        <?php if (in_array($gaze['name'], explode(',', str_replace('"', '', $project_curr['gaz'] ?? '')))) : ?>
                                                                             <option value="<?= $gaze['name'] ?>" selected><?= $gaze['name'] ?></option>
                                                                         <?php else : ?>
                                                                             <option value="<?= $gaze['name'] ?>"><?= $gaze['name'] ?></option>
@@ -488,7 +488,7 @@
                 formData.append('status', $('#projetStatus').val());
                 formData.append('secteurs', $('#MultipleSelectSecteur').val());
                 formData.append('groupes', $('#MultipleSelectGroupe').val());
-                formData.append('gaz_type', $('#MultipleSelectGaz').val());
+                formData.append('gaz', $('#MultipleSelectGaz').val());
                 formData.append('programmes', $('#MultipleSelectProgramme').val());
 
                 const fileInput = document.getElementById('projetImage');

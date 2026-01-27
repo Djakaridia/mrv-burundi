@@ -514,7 +514,8 @@ function listTypeAction()
 {
     return [
         'attenuation' => 'Atténuation',
-        'adaptation' => 'Adaptation'
+        'adaptation' => 'Adaptation',
+        'transversale' => 'Transversale'
     ];
 }
 function listStatus()
@@ -530,6 +531,7 @@ function listStatus()
 
 function listTypeScenario(){
     return [
+        'bau' => 'Business as Usual',
         'conditionnel' => 'Conditionnel',
         'inconditionnel' => 'Inconditionnel'
     ];

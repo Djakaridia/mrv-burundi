@@ -166,6 +166,8 @@
                     <div class="mx-n4 px-1 pb-3 mx-lg-n6 bg-body-emphasis border-y">
                         <?php if (!empty($inventories)) { ?>
                             <?php if (!empty($current_inventory_data)) { ?>
+                                <h5 class="m-2 text-semibold"><i class="fas fa-chart-line me-2"></i>Description (IGES page 27)</h5>
+
                                 <!-- Graphisme  -->
                                 <h5 class="m-2 text-semibold"><i class="fas fa-chart-line me-2"></i>Visualisation des Données</h5>
                                 <div class="row mx-0 mb-3 g-3">

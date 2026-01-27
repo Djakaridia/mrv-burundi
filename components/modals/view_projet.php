@@ -216,7 +216,7 @@
                                     </div>
                                     <div>
                                         <h6 class="mb-1 text-primary">Type de gaz</h6>
-                                        ${data.gaz_type ? data.gaz_type.split(',').map(gaz => `<span class="badge bg-warning-subtle text-dark">${gaz.trim()}</span>`).join(' ') : 'Non spécifié'}
+                                        ${data.gaz ? data.gaz.split(',').map(gaz => `<span class="badge bg-warning-subtle text-dark">${gaz.trim()}</span>`).join(' ') : 'Non spécifié'}
                                     </div>
                                 </div>
                             </div>

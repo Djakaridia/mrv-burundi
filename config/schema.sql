@@ -298,6 +298,29 @@ CREATE TABLE IF NOT EXISTS t_programmes (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Table des mesures
+CREATE TABLE IF NOT EXISTS t_mesures (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(50) NOT NULL,
+    name VARCHAR(200) NOT NULL,
+    secteur_id INT,
+    structure_id INT,
+    action_type VARCHAR(50),
+    status VARCHAR(50),
+    gaz VARCHAR(200),
+    annee_debut VARCHAR(4),
+    annee_fin VARCHAR(4),
+    valeur_realise VARCHAR(50),
+    valeur_cible VARCHAR(50),
+    valeur_estimee VARCHAR(50),
+    description TEXT,
+    objectif TEXT,
+    state VARCHAR(20) DEFAULT 'actif',
+    add_by INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- Table des projets
 CREATE TABLE IF NOT EXISTS t_projets (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -317,8 +340,8 @@ CREATE TABLE IF NOT EXISTS t_projets (
     programmes VARCHAR(200),
     add_by INT,
     structure_id INT,
-    gaz_type VARCHAR(200),
-    action_id INT,
+    gaz VARCHAR(200),
+    action_type VARCHAR(50),
     state VARCHAR(20) DEFAULT 'actif',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

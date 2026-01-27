@@ -88,7 +88,7 @@
     exit();
   }
 
-  $projet_gaz = explode(',', $project_curr['gaz_type']);
+  $projet_gaz = explode(',', $project_curr['gaz']);
 
   $tache = new Tache($db);
   $tache->projet_id = $project_id;
