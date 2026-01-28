@@ -9,6 +9,7 @@ class Role {
     public $description;
     public $page_edit;
     public $page_delete;
+    public $page_validate;
     public $page_interdite;
     public $add_by;
 
@@ -47,13 +48,14 @@ class Role {
     }
 
     public function update() {
-        $query = "UPDATE " . $this->table . " SET name=:name, niveau=:niveau, description=:description, page_edit=:page_edit, page_delete=:page_delete, page_interdite=:page_interdite WHERE id=:id";
+        $query = "UPDATE " . $this->table . " SET name=:name, niveau=:niveau, description=:description, page_edit=:page_edit, page_delete=:page_delete, page_validate=:page_validate, page_interdite=:page_interdite WHERE id=:id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':niveau', $this->niveau);
         $stmt->bindParam(':description', $this->description);
         $stmt->bindParam(':page_edit', $this->page_edit);
         $stmt->bindParam(':page_delete', $this->page_delete);
+        $stmt->bindParam(':page_validate', $this->page_validate);
         $stmt->bindParam(':page_interdite', $this->page_interdite);
         $stmt->bindParam(':id', $this->id);
         if($stmt->execute()){

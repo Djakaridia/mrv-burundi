@@ -59,10 +59,12 @@ switch ($requestMethod) {
 
             $pageEdit = $_POST['page_edit'] ?? [];
             $pageDelete = $_POST['page_delete'] ?? [];
+            $pageValidate = $_POST['page_validate'] ?? [];
             $pageInterdite = $_POST['page_interdite'] ?? [];
 
             $role->page_edit = implode("|", $pageEdit);
             $role->page_delete = implode("|", $pageDelete);
+            $role->page_validate = implode("|", $pageValidate);
             $role->page_interdite = implode("|", $pageInterdite);
 
             if ($role->update()) {

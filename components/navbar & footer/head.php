@@ -123,12 +123,6 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
         --bd-gray: #dddddd;
     }
 
-    /* @media screen and (min-width: 768px) {
-        #navbarDefault .navbar-logo {
-            background: linear-gradient(0deg, var(--bd-green), var(--bd-green-dark)) !important;
-        }
-    } */
-
     #sidebarDefault {
         background: linear-gradient(90deg, var(--bd-green), var(--bd-green-dark)) !important;
         border-right: 5px solid var(--bd-green-light) !important;
@@ -137,6 +131,10 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
     #sidebarDefault .nav-link {
         color: var(--bd-white) !important;
         transition: all 0.25s ease;
+    }
+
+    #sidebarDefault .dropdown-indicator {
+        padding: 3px;
     }
 
     #sidebarDefault .nav-link .dropdown-indicator-icon {
@@ -159,7 +157,6 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
         color: var(--bd-white) !important;
     }
 
-
     #sidebarDefault .nav.parent .nav-link {
         color: var(--bd-white) !important;
     }
@@ -170,11 +167,12 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
     }
 
     #sidebarDefault .navbar-vertical-label {
-        background: linear-gradient(90deg, var(--bd-white), var(--bd-gray)) !important;
+        background: var(--bd-gray) !important;
         color: var(--bd-red) !important;
         border-left: 3px solid var(--bd-red);
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        padding: 3px;
     }
 
     #sidebarDefault .navbar-vertical-footer {
@@ -215,5 +213,17 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
 
     #sidebarDefault .nav-item-wrapper:hover .nav-link-icon {
         color: var(--bd-green-dark) !important;
+    }
+
+    #sidebarDefault .nav-items-count {
+        font-size: 8px;
+        font-weight: 600;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        margin-left: -18px;
+        margin-right: 5px;
+        border-radius: 100%;
+        background: var(--bd-green-light);
+        color: var(--bd-white);
     }
 </style>

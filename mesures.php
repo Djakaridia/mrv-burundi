@@ -169,7 +169,7 @@
                                         <div class="search-box d-none d-lg-block my-lg-0" style="width: 8rem !important;">
                                             <form class="position-relative">
                                                 <select class="form-select form-select-sm bg-secondary-subtle px-2 rounded-1" id="secteurFilter">
-                                                    <option value="">Par secteur</option>
+                                                    <option value="">Tous secteurs</option>
                                                     <?php if (isset($secteurs_mesure) && !empty($secteurs_mesure)): ?>
                                                         <?php foreach ($secteurs_mesure as $secteur): ?>
                                                             <option value="<?= $secteur['id'] ?>" <?= ($currMesSecteur == $secteur['id']) ? 'selected' : '' ?>>
@@ -183,7 +183,7 @@
                                         <div class="search-box d-none d-lg-block my-lg-0" style="width: 8rem !important;">
                                             <form class="position-relative">
                                                 <select class="form-select form-select-sm bg-secondary-subtle px-2 rounded-1" id="actionFilter">
-                                                    <option value="">Par action</option>
+                                                    <option value="">Toutes actions</option>
                                                     <?php foreach (listTypeAction() as $key => $value): ?>
                                                         <option value="<?= $key ?>" <?= ($currMesAction == $key) ? 'selected' : '' ?>>
                                                             <?= $value ?>
@@ -195,7 +195,7 @@
                                         <div class="search-box d-none d-lg-block my-lg-0" style="width: 8rem !important;">
                                             <form class="position-relative">
                                                 <select class="form-select form-select-sm bg-secondary-subtle px-2 rounded-1" id="statusFilter">
-                                                    <option value="">Par status</option>
+                                                    <option value="">Tous status</option>
                                                     <?php foreach (listStatus() as $key => $value): ?>
                                                         <option value="<?= $key ?>" <?= ($currMesStatus == $key) ? 'selected' : '' ?>>
                                                             <?= $value ?>
@@ -241,7 +241,7 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <span class="badge badge-phoenix fs-10 badge-phoenix-info rounded-pill">
+                                                <span class="badge badge-phoenix fs-10 py-1 badge-phoenix-info rounded-pill">
                                                     <?php foreach ($secteurs_mesure as $secteur) {
                                                         if ($secteur['id'] == $mesure['secteur_id']) {
                                                             echo $secteur['name'];
@@ -251,12 +251,12 @@
                                                 </span>
                                             </td>
                                             <td class="text-center">
-                                                <span class="badge badge-phoenix fs-10 badge-phoenix-warning rounded-pill">
+                                                <span class="badge badge-phoenix fs-10 py-1 badge-phoenix-warning rounded-pill">
                                                     <?= $mesure['annee_debut'] ?> - <?= $mesure['annee_fin'] ?>
                                                 </span>
                                             </td>
                                             <td>
-                                                <span class="badge badge-phoenix fs-10 badge-phoenix-primary rounded-pill">
+                                                <span class="badge badge-phoenix fs-10 py-1 badge-phoenix-primary rounded-pill">
                                                     <?= $mesure['status'] ?>
                                                 </span>
                                             </td>

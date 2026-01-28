@@ -8,20 +8,23 @@ $database = new Database();
 $db = $database->getConnection();
 
 
-function show_page($MENU_ITEMS, $MENU_TITLE, $page_interdite, $page_edit, $page_delete, $i)
+function show_page($MENU_ITEMS, $MENU_TITLE, $page_interdite, $page_edit, $page_delete, $page_validate, $i)
 {
   $resultat = '';
-  $page_interdite = explode('|', $page_interdite);
-  $page_delete = explode('|', $page_delete);
   $page_edit = explode('|', $page_edit);
+  $page_delete = explode('|', $page_delete);
+  $page_validate = explode('|', $page_validate);
+  $page_interdite = explode('|', $page_interdite);
   $index = 0;
 
   if (is_array($MENU_ITEMS)) {
-    $resultat .= '<tr><td class="bg-secondary-subtle"><a href="javascript:void(0);" class="mx-2 small" > <i class="' . ((is_array($MENU_TITLE)) ? $MENU_TITLE[1] : '') . '"></i> <b>' . ((is_array($MENU_TITLE)) ? $MENU_TITLE[0] : '') . '</b> </a></td>';
+    $resultat .= '<tr><td class="bg-secondary-subtle"><a href="javascript:void(0);" class="mx-2 small my-0" > <i class="' . ((is_array($MENU_TITLE)) ? $MENU_TITLE[1] : '') . '"></i> <b>' . ((is_array($MENU_TITLE)) ? $MENU_TITLE[0] : '') . '</b> </a></td>';
     $resultat .= '
     <td class="bg-secondary-subtle" align="center"><input id="checkId_edit' . $i . '" type="checkbox" class="btn" /></td>
     <td class="bg-secondary-subtle" align="center"><input id="checkId_del' . $i . '" type="checkbox" class="btn" /></td>
-    <td class="bg-secondary-subtle" align="center"><input id="checkId_inter' . $i . '" type="checkbox" class="btn" /></td>';
+    <td class="bg-secondary-subtle" align="center"><input id="checkId_valid' . $i . '" type="checkbox" class="btn" /></td>
+    <td class="bg-secondary-subtle" align="center"><input id="checkId_inter' . $i . '" type="checkbox" class="btn" /></td>
+    ';
     foreach ($MENU_ITEMS as $key => $value) {
       if (is_array($value)) {
         foreach ($value as $i => $k1) {
@@ -31,10 +34,12 @@ function show_page($MENU_ITEMS, $MENU_TITLE, $page_interdite, $page_edit, $page_
         unset($value);
         $value = $k2;
       }
-      $resultat .= '<tr id="' . substr($key, 0, 4) . '"><td class="fs-10"><i class="mx-2"></i> ' . ((!is_array($value)) ? $value : "ND") . '</td>
-      <td align="center" class="edit_' . $i . '"><input name="page_edit[]" id="edit_' . $i . $index . '" type="checkbox" ' . ((is_array($page_edit) && in_array($key, $page_edit) ? "checked='checked'" : "")) . ' class="btn small" value="' . $key . '" /></td>
-      <td align="center" class="dele_' . $i . '"><input name="page_delete[]" id="dele_' . $i . $index . '" type="checkbox" ' . ((is_array($page_delete) && in_array($key, $page_delete) ? "checked='checked'" : "")) . ' class="btn small" value="' . $key . '" /></td>
-      <td align="center" class="inter_' . $i . '"><input name="page_interdite[]" id="inter_' . $i . $index . '" type="checkbox" ' . ((is_array($page_interdite) && in_array($key, $page_interdite) ? "checked='checked'" : "")) . ' class="btn small" value="' . $key . '" /></td> </tr>';
+      $resultat .= '<tr id="' . substr($key, 0, 5) . '"><td class="fs-10"><i class="mx-2"></i> ' . ((!is_array($value)) ? $value : "ND") . '</td>
+      <td align="center" class="edit_' . $i . ' bg-info-subtle"><input name="page_edit[]" id="edit_' . $i . $index . '" type="checkbox" ' . ((is_array($page_edit) && in_array($key, $page_edit) ? "checked='checked'" : "")) . ' class="btn small" value="' . $key . '" /></td>
+      <td align="center" class="dele_' . $i . ' bg-warning-subtle"><input name="page_delete[]" id="dele_' . $i . $index . '" type="checkbox" ' . ((is_array($page_delete) && in_array($key, $page_delete) ? "checked='checked'" : "")) . ' class="btn small" value="' . $key . '" /></td>
+      <td align="center" class="valid_' . $i . ' bg-success-subtle"><input name="page_validate[]" id="valid_' . $i . $index . '" type="checkbox" ' . ((is_array($page_validate) && in_array($key, $page_validate) ? "checked='checked'" : "")) . ' class="btn small" value="' . $key . '" /></td>
+      <td align="center" class="inter_' . $i . ' bg-danger-subtle"><input name="page_interdite[]" id="inter_' . $i . $index . '" type="checkbox" ' . ((is_array($page_interdite) && in_array($key, $page_interdite) ? "checked='checked'" : "")) . ' class="btn small" value="' . $key . '" /></td>
+      </tr>';
       $index++;
     }
   }
@@ -52,6 +57,7 @@ function show_page($MENU_ITEMS, $MENU_TITLE, $page_interdite, $page_edit, $page_
     const checkAllEdit = document.querySelectorAll('[id^="checkId_edit"]');
     const checkAllDel = document.querySelectorAll('[id^="checkId_del"]');
     const checkAllInter = document.querySelectorAll('[id^="checkId_inter"]');
+    const checkAllValid = document.querySelectorAll('[id^="checkId_valid"]');
 
     checkAllEdit.forEach((checkbox, index) => {
       checkbox.addEventListener('click', function() {
@@ -68,6 +74,12 @@ function show_page($MENU_ITEMS, $MENU_TITLE, $page_interdite, $page_edit, $page_
     checkAllInter.forEach((checkbox, index) => {
       checkbox.addEventListener('click', function() {
         toggleCheckboxes(this, `inter_${index + 2}`);
+      });
+    });
+
+    checkAllValid.forEach((checkbox, index) => {
+      checkbox.addEventListener('click', function() {
+        toggleCheckboxes(this, `valid_${index + 2}`);
       });
     });
 
@@ -106,6 +118,7 @@ function show_page($MENU_ITEMS, $MENU_TITLE, $page_interdite, $page_edit, $page_
 
           const pageEdit = result.data.page_edit ? result.data.page_edit.split('|') : [];
           const pageDelete = result.data.page_delete ? result.data.page_delete.split('|') : [];
+          const pageValidate = result.data.page_validate ? result.data.page_validate.split('|') : [];
           const pageInterdite = result.data.page_interdite ? result.data.page_interdite.split('|') : [];
 
           pageEdit.forEach(pageId => {
@@ -116,6 +129,11 @@ function show_page($MENU_ITEMS, $MENU_TITLE, $page_interdite, $page_edit, $page_
           pageDelete.forEach(pageId => {
             const deleteCheckbox = document.querySelector(`input[name="page_delete[]"][value="${pageId}"]`);
             if (deleteCheckbox) deleteCheckbox.checked = true;
+          });
+
+          pageValidate.forEach(pageId => {
+            const validateCheckbox = document.querySelector(`input[name="page_validate[]"][value="${pageId}"]`);
+            if (validateCheckbox) validateCheckbox.checked = true;
           });
 
           pageInterdite.forEach(pageId => {
@@ -210,28 +228,25 @@ function show_page($MENU_ITEMS, $MENU_TITLE, $page_interdite, $page_edit, $page_
             <input type="hidden" name="niveau" value="" />
             <input type="hidden" name="description" value="" />
 
-            <div class="form-check form-switch pb-2 border-bottom">
+            <div class="form-check form-switch pb-1">
               <input class="form-check-input" id="checkAdminPermi" type="checkbox" />
               <label class="form-check-label" for="checkAdminPermi">Permission Administrateur</label>
             </div>
 
-            <div class="overflow-auto" style="min-height: 300px; max-height: 400px;">
-              <table class="table table-sm fs-12 bordered table-striped-columns" align="center">
+            <div class="overflow-auto bg-body-emphasis border" style="min-height: 300px; max-height: 400px;">
+              <table class="table table-sm fs-12 bordered table-striped-columns small" align="center">
                 <thead class="bg-primary-subtle">
                   <tr class="small fw-bold">
-                    <td style="width:70%" class="fs-12 px-2">Pages</td>
+                    <td style="width:60%" class="fs-12 px-2">Pages</td>
                     <td style="width:10%" align="center" class="fs-12 px-2">Edition</td>
                     <td style="width:10%" align="center" class="fs-12 px-2">Suppression</td>
+                    <td style="width:10%" align="center" class="fs-12 px-2">Validation</td>
                     <td style="width:10%" align="center" class="fs-12 px-2">Interdiction</td>
                   </tr>
                 </thead>
 
                 <tbody>
-                  <?php if (is_array($MENU_ITEMS)) {
-                    foreach ($MENU_ITEMS as $key => $value) {
-                      echo show_page($value, $MENU_TITLE[$key], "|", "|", "|", $key);
-                    }
-                  } ?>
+                  <?php if (is_array($MENU_ITEMS)) foreach ($MENU_ITEMS as $key => $value) echo show_page($value, $MENU_TITLE[$key], "|", "|", "|", "|", $key); ?>
                 </tbody>
               </table>
             </div>

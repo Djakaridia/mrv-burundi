@@ -18,6 +18,12 @@
     $inventory = new Inventory($db);
     $inventories = $inventory->read();
 
+    $secteur = new Secteur($db);
+    $secteurs = $secteur->read();
+    $secteurs = array_filter($secteurs, function ($secteur) {
+        return $secteur['parent'] == 0;
+    });
+
     $unite = new Unite($db);
     $unites = $unite->read();
 
@@ -28,7 +34,7 @@
     if ($sel_inventory) {
         $inventory->id = $sel_inventory;
         $current_inventory = $inventory->readById();
-        
+
         if (isset($current_inventory['viewtable'])) {
             $current_inventory_data = json_decode($inventory->readData($current_inventory['viewtable']), true);
             $secteurs_inventory = ['agriculture' => 'Agriculture', 'fat' => 'FAT', 'energie' => 'Énergie', 'piup' => 'PIUP', 'dechets' => 'Déchets'];
@@ -78,17 +84,17 @@
                 // ==================> Graphisme Evolution vs Absorption
                 try {
                     $g3_years = [];
-                $g3_emissions = [];
-                $g3_absorptions = [];
+                    $g3_emissions = [];
+                    $g3_absorptions = [];
 
-                foreach ($current_inventory_data['data'] as $row) {
-                    $year = (int)$row['annee'];
-                    if (!$year) continue;
+                    foreach ($current_inventory_data['data'] as $row) {
+                        $year = (int)$row['annee'];
+                        if (!$year) continue;
 
-                    $g3_years[] = $year;
-                    $g3_emissions[] = round(normalizeNumber($row['total_emissions'] ?? 0), 3);
-                    $g3_absorptions[] = round(abs(normalizeNumber($row['total_absorptions'] ?? 0)), 3);
-                }
+                        $g3_years[] = $year;
+                        $g3_emissions[] = round(normalizeNumber($row['total_emissions'] ?? 0), 3);
+                        $g3_absorptions[] = round(abs(normalizeNumber($row['total_absorptions'] ?? 0)), 3);
+                    }
                 } catch (\Throwable $th) {
                     var_dump($th);
                     die();
@@ -97,18 +103,18 @@
                 // ==================> Contribution relative des secteurs
                 try {
                     $g4_sector_share = [];
-                foreach ($secteurs_inventory as $col => $label) {
-                    $total = 0;
-                    foreach ($current_inventory_data['data'] as $row) {
-                        $total += normalizeNumber($row[$col] ?? 0);
+                    foreach ($secteurs_inventory as $col => $label) {
+                        $total = 0;
+                        foreach ($current_inventory_data['data'] as $row) {
+                            $total += normalizeNumber($row[$col] ?? 0);
+                        }
+                        if ($total > 0) {
+                            $g4_sector_share[] = [
+                                'name' => $label,
+                                'y' => round($total, 3)
+                            ];
+                        }
                     }
-                    if ($total > 0) {
-                        $g4_sector_share[] = [
-                            'name' => $label,
-                            'y' => round($total, 3)
-                        ];
-                    }
-                }
                 } catch (\Throwable $th) {
                     var_dump($th);
                     die();
@@ -166,7 +172,24 @@
                     <div class="mx-n4 px-1 pb-3 mx-lg-n6 bg-body-emphasis border-y">
                         <?php if (!empty($inventories)) { ?>
                             <?php if (!empty($current_inventory_data)) { ?>
-                                <h5 class="m-2 text-semibold"><i class="fas fa-chart-line me-2"></i>Description (IGES page 27)</h5>
+                                <!-- <h5 class="m-2 text-semibold"><i class="fas fa-info me-2"></i>Description</h5>
+                                <div class="row mx-0 mb-3 g-3">
+                                    <div class="col-12">
+                                        <div class="card rounded-1 shadow-sm border h-100 p-3">
+                                            <p>Conformément à ses engagements au titre de l’article 13 de l’Accord de Paris sur le climat,
+                                                qui établit le cadre d’une transparence renforcée, le Burundi produit son 5ème rapport
+                                                d’inventaire des gaz à effet de serre (GES) dans les cinq (5) secteurs : </p>
+                                            <ul class="list-unstyled mb-0">
+                                                <?php foreach ($secteurs as $secteur): ?>
+                                                    <li class="d-flex align-items-start gap-3 pb-1">
+                                                        <span class="fa fa-check-circle text-primary mt-1"></span>
+                                                        <span class="text-body"><?= $secteur['description']? $secteur['description']." (".$secteur['name'].")": $secteur['name'] ?></span>
+                                                    </li>
+                                                <?php endforeach; ?>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div> -->
 
                                 <!-- Graphisme  -->
                                 <h5 class="m-2 text-semibold"><i class="fas fa-chart-line me-2"></i>Visualisation des Données</h5>

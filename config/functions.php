@@ -427,12 +427,15 @@ function checkPermis($db, $action, $level = 3)
     $page_curr = basename($_SERVER['PHP_SELF']);
     $edit_permission = isset($role_data['page_edit']) ? explode('|', $role_data['page_edit']) : [];
     $delete_permission = isset($role_data['page_delete']) ? explode('|', $role_data['page_delete']) : [];
+    $validate_permission = isset($role_data['page_validate']) ? explode('|', $role_data['page_validate']) : [];
 
     switch ($action) {
         case 'update':
             return in_array($page_curr, $edit_permission);
         case 'delete':
             return in_array($page_curr, $delete_permission);
+        case 'validate':
+            return in_array($page_curr, $validate_permission);
         default:
             return false;
     }
@@ -531,9 +534,9 @@ function listStatus()
 
 function listTypeScenario(){
     return [
-        'bau' => 'Business as Usual',
-        'conditionnel' => 'Conditionnel',
-        'inconditionnel' => 'Inconditionnel'
+        'bau' => 'Business as Usual (BAU)',   // Sans mesures - Business as Usual
+        'wem' => 'Inonditionnel (WEM)',        // Avec mesures - Inconditionnel
+        'wam' => 'Conditionnel (WAM)'       // Avec mesures supplémentaires - Conditionnel
     ];
 }
 

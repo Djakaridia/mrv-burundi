@@ -52,6 +52,24 @@ CREATE TABLE IF NOT EXISTS t_registres (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Table des projections
+CREATE TABLE IF NOT EXISTS t_projections (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    secteur_id INT NOT NULL,
+    scenario VARCHAR(20) NOT NULL,
+    annee INT NOT NULL,
+    valeur VARCHAR(50) NOT NULL,
+    unite VARCHAR(20),
+    source VARCHAR(255),
+    description TEXT,
+    state VARCHAR(20) DEFAULT 'actif',
+    add_by INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT uq_proj UNIQUE (secteur_id, scenario, annee)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
 CREATE TABLE IF NOT EXISTS t_gaz (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(20) NOT NULL,        -- CO2, CH4, N2O
@@ -166,6 +184,7 @@ CREATE TABLE IF NOT EXISTS t_roles (
     niveau VARCHAR(5) DEFAULT '4', -- 1: Super Admin, 2: Admin, 3: Editeur, 4: Visiteur
     page_edit TEXT,
     page_delete TEXT,
+    page_validate TEXT,
     page_interdite TEXT,
     description TEXT,
     add_by INT,

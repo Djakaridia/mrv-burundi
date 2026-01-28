@@ -75,25 +75,6 @@ class Mesure
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        foreach ($data as &$row) {
-            if (isset($row['description'])) {
-                $description = html_entity_decode($row['description'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
-                $description = strip_tags($description);
-                $description = str_replace(["\xc2\xa0", "\u{00A0}", "&nbsp;"], ' ', $description);
-                $description = trim(preg_replace('/\s+/', ' ', $description));
-                $row['description'] = $description;
-            }
-
-            if (isset($row['objectif'])) {
-                $objectif = html_entity_decode($row['objectif'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
-                $objectif = strip_tags($objectif);
-                $objectif = str_replace(["\xc2\xa0", "\u{00A0}", "&nbsp;"], ' ', $objectif);
-                $objectif = trim(preg_replace('/\s+/', ' ', $objectif));
-                $row['objectif'] = $objectif;
-            }
-        }
-
         return $data;
     }
 

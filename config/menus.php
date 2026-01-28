@@ -1,53 +1,62 @@
 <?php
 /* Menu Titles */
 $MENU_TITLE = [
-    1 => ["Utilisateurs", "fas fa-user", "users.php"],
-    2 => ["Paramétrages", "fas fa-tools", "parametrage.php"],
-    3 => ["Inventaire", "fas fa-server", "inventory.php"],
-    4 => ["Projets", "fas fa-briefcase", "projects.php"],
-    5 => ["Suivi des résultats", "fas fa-database", "data.php"],
-    6 => ["Analyse budgétaire", "fas fa-pie-chart", "analyse_budgetaire.php"],
-    7 => ["Rapports", "fas fa-pie-chart", "rapports.php"],
-    8 => ["Documentation", "fas fa-folder", "documents.php"],
+    2 => ["Utilisateurs", "fas fa-user", "users.php"],
+    3 => ["Paramétrages", "fas fa-tools", "parametrage.php"],
+    4 => ["Inventaire", "fas fa-wind", "inventory.php"],
+    5 => ["Mise en œuvre de la CDN", "fas fa-briefcase", "referentiels.php"],
+    6 => ["Suivi des résultats", "fas fa-database", "resultats_obtenus.php"],
+    7 => ["Cartographie", "fas fa-map", "cartographie.php"],
+    8 => ["Analyse budgétaire", "fas fa-pie-chart", "analyse_budgetaire.php"],
+    9 => ["Rapports", "fas fa-pie-chart", "rapports.php"],
+    10 => ["Documentation", "fas fa-folder", "documents.php"],
 ];
 
 /* Menu Definitions */
 $MENU_ITEMS = [
-    1 => [
+    2 => [
         "users.php" => "Utilisateurs",
         "roles.php" => "Rôles & Permissions",
         "acteurs.php" => "Acteurs",
     ],
-    2 => [
+    3 => [
         "localites.php" => "Localités",
+        "sectors.php" => "Secteurs",
         "groups.php" => "Groupes de travail",
-        "referentiels.php" => "Dictionnaire des indicateurs",
         "autres_parametres.php" => "Autres paramètres",
     ],
-    3 => [
-        "inventory.php" => "Registre des inventaires",
-    ],
     4 => [
-        "projects.php" => "Projets",
+        "inventory.php" => "Registre des inventaires",
+        "register_carbone.php" => "Registre carbone",
+        "projections.php" => "Projections",
+    ],
+    5 => [
+        "referentiels.php" => "Dictionnaire des indicateurs",
+        "mesures.php" => "Actions & Mesures",
+        "programmes.php" => "Programmes",
+        "projects.php" => "Projets climatiques",
+        "niveau_resultat.php" => "Niveaux de résultats",
         "cadre_resultat_cr.php" => "Cadre de résultat",
+        "fiches_dynamiques.php" => "Fiches dynamiques",
+    ],
+    6 => [
+        "suivi_activites.php" => "Suivi activités",
+        "suivi_indicateurs.php" => "Suivi indicateurs",
+        "resultats_obtenus.php" => "Résultats obtenus",
+    ],
+    7 => [
         "cartographie.php" => "Cartographie",
         "zones_collecte.php" => "Zones de collecte",
     ],
-    5 => [
-        "suivi_activites.php" => "Suivi activités",
-        "suivi_indicateurs.php" => "Suivi indicateurs",
-        // "fiche_dynamique.php" => "Fiches Dynamiques",
-        "resultats_obtenus.php" => "Résultats obtenus",
-    ],
-    6 => [
+    8 => [
         "analyse_budgetaire.php" => "Analyse budgétaire",
     ],
-    7 => [
+    9 => [
+        "rapport_dynamique.php" => "Rapports Dynamiques",
         "rapport_periodique.php" => "Rapports Periodiques",
         "rapport_sectoriel.php" => "Données sectorielles",
-        // "rapport_dynamique.php" => "Rapports Dynamiques",
     ],
-    8 => [
+    10 => [
         "documents.php" => "Documents",
     ],
 ];
