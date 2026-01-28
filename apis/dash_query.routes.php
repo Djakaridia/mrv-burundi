@@ -44,7 +44,7 @@ switch ($requestMethod) {
 
         $requete->name = $_POST['intitule'];
         $requete->projet_id = $_POST['projet_id'];
-        $requete->cmr_id = null;
+        $requete->indicateur_id = null;
         $requete->query = $sql;
         $requete->add_by = $payload['id'];
 

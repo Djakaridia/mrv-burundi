@@ -137,8 +137,8 @@
 
                                             // Recupérer les données des suivis
                                             $suivi = new Suivi($db);
-                                            $suivi->cmr_id = $indicateur['id'];
-                                            $suivis_cmr = $suivi->readByCMR();
+                                            $suivi->indicateur_id = $indicateur['id'];
+                                            $suivis_cmr = $suivi->readByIndicateur();
 
                                             // Regrouper les données des suivis par année
                                             $suivis_cmr_grouped = array();
@@ -164,11 +164,11 @@
                                                 <td class="align-middle review d-flex gap-2">
                                                     <button title="Suivre" type="button" class="btn btn-subtle-primary rounded-pill btn-sm fw-bold fs-9 px-2 py-1" data-bs-toggle="modal"
                                                         data-bs-target="#newIndicateurSuiviModal" aria-haspopup="true" aria-expanded="false"
-                                                        data-cmr_id="<?php echo $indicateur['id']; ?>" data-projet_id="<?php echo $project_curr['id']; ?>" data-referentiel_id="<?php echo $indicateur['referentiel_id']; ?>">
+                                                        data-indicateur_id="<?php echo $indicateur['id']; ?>" data-projet_id="<?php echo $project_curr['id']; ?>">
                                                         Suivre
                                                     </button>
                                                     <button title="Voir" type="button" class="btn btn-sm fw-bold fs-9 px-2 py-1 btn-phoenix-success" onclick="window.location.href = 'indicateur_view.php?id=<?= $indicateur['referentiel_id'] ?>';">
-                                                        <span class="uil-arrow-right fs-8"></span>
+                                                        <span class="uil-eye fs-8"></span>
                                                     </button>
                                                 </td>
                                             </tr>

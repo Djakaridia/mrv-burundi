@@ -170,7 +170,7 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                     </div>
 
                     <div class="nav-item-wrapper">
-                        <?php $subModIndic = ['referentiels', 'projections']; ?>
+                        <?php $subModIndic = ['referentiels', 'referentiel_view', 'projections']; ?>
                         <a class="nav-link dropdown-indicator label-1 rounded-0 m-0" href="#nv-indicators" role="button" data-bs-toggle="collapse" aria-expanded="<?= in_array($pageCurr, $subModIndic) ? 'true' : 'false'; ?>" aria-controls="nv-indicators">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center">
@@ -186,7 +186,7 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                             <ul class="nav collapse parent rounded-1 ms-1 <?= in_array($pageCurr, $subModIndic) ? 'show' : ''; ?>" data-bs-parent="#navbarVerticalCollapse" id="nv-indicators">
                                 <li class="collapsed-nav-item-title d-none">Indicateurs de la CDN</li>
                                 <li class="nav-item overflow-hidden">
-                                    <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo in_array($pageCurr, ['referentiels']) ? 'active' : '' ?>" href="referentiels.php">
+                                    <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo in_array($pageCurr, ['referentiels', 'referentiel_view']) ? 'active' : '' ?>" href="referentiels.php">
                                         <div class="d-flex align-items-center">
                                             <span class="fas fa-chevron-right fs-11"></span>
                                             <span class="nav-link-text ms-lg-0 ms-1">Dictionnaire d'indicateur</span>
@@ -298,7 +298,7 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                                     </a>
                                 </li>
                                 <li class="nav-item overflow-hidden">
-                                    <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'suivi_indicateurs' ? 'active' : '' ?>" href="suivi_indicateurs.php">
+                                    <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo in_array($pageCurr, ['suivi_indicateurs', 'indicateur_view']) ? 'active' : '' ?>" href="suivi_indicateurs.php">
                                         <div class="d-flex align-items-center">
                                             <span class="fas fa-chevron-right fs-11"></span>
                                             <span class="nav-link-text ms-lg-0 ms-1">Suivi indicateurs</span>

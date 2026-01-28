@@ -42,14 +42,14 @@
                 });
 
                 $suivi = new Suivi($db);
-                $suivi->cmr_id = $indicateurs[0]['id'];
-                $suivis_raw = $suivi->readByCMR();
+                $suivi->indicateur_id = $indicateurs[0]['id'];
+                $suivis_raw = $suivi->readByIndicateur();
                 $suivis_par_secteur = [];
                 foreach ($suivis_raw as $suivi) {
-                    if (!isset($suivis_par_secteur[$suivi['secteur_id']])) {
-                        $suivis_par_secteur[$suivi['secteur_id']] = 0;
+                    if (!isset($suivis_par_secteur[$suivi['secteur_id']??""])) {
+                        $suivis_par_secteur[$suivi['secteur_id']??""] = 0;
                     }
-                    $suivis_par_secteur[$suivi['secteur_id']] += (float)$suivi['valeur'];
+                    $suivis_par_secteur[$suivi['secteur_id']??""] += (float)$suivi['valeur'];
                 }
 
                 $chart_data = [];
@@ -65,7 +65,7 @@
                     id: "<?= $id_chart ?>",
                     data: <?= json_encode($chart_data) ?>,
                     unite: "<?= $unite_grouped[$referentiel['id']] ?? 'Unité' ?>",
-                    title: "<?= ($referentiel['intitule']) . " (" . $unite_grouped[$referentiel['id']] . ")" ?>"
+                    title: "<?= ($referentiel['intitule']) ?>"
                 },
             <?php endforeach; ?>
         ];

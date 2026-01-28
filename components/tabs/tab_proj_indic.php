@@ -31,8 +31,8 @@
                 <tbody class="list" id="table-latest-review-body">
                     <?php foreach ($indicateurs_project as $indic_cmr) {
                         $cible = new Cible($db);
-                        $cible->cmr_id = $indic_cmr['id'];
-                        $cibles_cmr = $cible->readByCMR();
+                        $cible->indicateur_id = $indic_cmr['id'];
+                        $cibles_cmr = $cible->readByIndicateur();
 
                         // Regrouper les cibles par année
                         $ciblesGroupedAnnee = [];
@@ -72,7 +72,7 @@
                             <td class="align-middle px-2 py-0 text-center">
                                 <button title="Modifier" type="button" class="btn btn-subtle-primary rounded-pill btn-sm fw-bold fs-9 px-2 py-1" data-bs-toggle="modal"
                                     data-bs-target="#newIndicateurCibleModal" aria-haspopup="true" aria-expanded="false"
-                                    data-id="<?php echo $indic_cmr['id']; ?>">Modifier
+                                    data-indicateur_id="<?php echo $indic_cmr['id']; ?>" data-projet_id="<?php echo $project_curr['id']; ?>">Modifier
                                 </button>
                             </td>
 

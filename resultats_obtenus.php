@@ -90,8 +90,8 @@
                                                     $cmr_tab_prevu[$cmr['id']] = $cmr['valeur_cible'];
 
                                                     $suivi = new Suivi($db);
-                                                    $suivi->cmr_id = $cmr['id'];
-                                                    $suivis_cmr = $suivi->readByCMR();
+                                                    $suivi->indicateur_id = $cmr['id'];
+                                                    $suivis_cmr = $suivi->readByIndicateur();
                                                     $suivis_cmr_grouped = array();
                                                     $suivis_calcul = 0;
                                                     foreach ($suivis_cmr as $suivi) {

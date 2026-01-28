@@ -44,8 +44,8 @@ $indicateur_cmr = array_filter($indicateurs, function ($indicateur) {
 $suivis_assoc = [];
 foreach ($indicateur_cmr as $cmr) {
     $suivi = new Suivi($db);
-    $suivi->cmr_id = $cmr['id'];
-    $suivis_cmr = $suivi->readByCMR();
+    $suivi->indicateur_id = $cmr['id'];
+    $suivis_cmr = $suivi->readByIndicateur();
     $suivis_cmr_grouped = array();
     $suivis_calcul = 0;
 

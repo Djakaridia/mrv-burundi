@@ -103,7 +103,7 @@
             <div class="col-md-6">
               <div class="form-floating">
                 <select class="form-select" name="action" id="referentielAction">
-                  <option value="" selected disabled>Sélectionner une action prioritaire</option>
+                  <option value="" selected disabled>Sélectionner un sous secteur</option>
                   <?php if ($sous_secteurs ?? []) : ?>
                     <?php foreach ($sous_secteurs as $sous_sec): ?>
                       <option value="<?= $sous_sec['id'] ?>" data-parent="<?= $sous_sec['parent'] ?>">
@@ -112,7 +112,7 @@
                     <?php endforeach; ?>
                   <?php endif; ?>
                 </select>
-                <label for="referentielAction">Action prioritaire</label>
+                <label for="referentielAction">Sous secteur</label>
               </div>
             </div>
 

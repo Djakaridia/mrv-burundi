@@ -54,8 +54,8 @@
                 });
 
                 $suivi = new Suivi($db);
-                $suivi->cmr_id = $indicateurs[0]['id'];
-                $suivis_raw = $suivi->readByCMR();
+                $suivi->indicateur_id = $indicateurs[0]['id'];
+                $suivis_raw = $suivi->readByIndicateur();
                 
                 $series_data = [];
                 foreach ($projet_secteurs as $secteur) {
@@ -66,7 +66,7 @@
                     foreach ($annees as $annee) {
                         $valeur = 0;
                         foreach ($suivis_raw as $suivi) {
-                            if ($suivi['secteur_id'] == $secteur['id'] && $suivi['annee'] == $annee) {
+                            if ($suivi['secteur_id']??'' == $secteur['id'] && $suivi['annee'] == $annee) {
                                 $valeur += (float)$suivi['valeur'];
                             }
                         }
@@ -79,7 +79,7 @@
                 categories: <?= json_encode($annees) ?>,
                 series: <?= json_encode($series_data) ?>,
                 unite: "<?= ($unite_grouped[$referentiel['id']] ?? 'Unité') ?>",
-                title: "<?= ($referentiel['intitule']) . " (" . $unite_grouped[$referentiel['id']] . ")" ?>"
+                title: "<?= ($referentiel['intitule']) ?>"
             },
             <?php endforeach; ?>
         ];

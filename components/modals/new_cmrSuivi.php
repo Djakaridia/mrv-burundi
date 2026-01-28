@@ -44,8 +44,9 @@
 
           <div id="suiviCMRFormContent" class="d-none">
             <form action="" class="row" enctype="multipart/form-data" name="FormSuiviCRM" id="FormSuiviCRM">
-              <input type="hidden" name="projet_id" id="suivi_projet_id" value="">
-              <input type="hidden" name="cmr_id" id="suivi_cmr_id" value="">
+              <input type="hidden" name="indicateur_id" id="suivi_cmr_id">
+              <input type="hidden" name="mesure_id" id="suivi_mesure_id">
+              <input type="hidden" name="projet_id" id="suivi_projet_id">
 
               <div class="col-12 mt-1">
                 <div class="row">
@@ -59,9 +60,9 @@
                   <label class="form-label">Scénario suivie*</label>
                   <select class="form-select" name="scenario" id="suivi_scenario" required>
                     <option value="" disabled selected>Sélectionner un scénario</option>
-                      <?php foreach (listTypeScenario() as $key => $scenario) { ?>
-                        <option value="<?php echo $key; ?>"><?php echo $scenario; ?></option>
-                      <?php } ?>
+                    <?php foreach (listTypeScenario() as $key => $scenario) { ?>
+                      <option value="<?php echo $key; ?>"><?php echo $scenario; ?></option>
+                    <?php } ?>
                   </select>
                 </div>
               </div>
@@ -111,27 +112,28 @@
 </div>
 
 <script>
-  let suiviCMRId = null;
-  let indicCMRId = null;
-  const suiviScenarios = <?php echo json_encode(listTypeScenario() ?? []); ?>;
-  const suiviProvinces = Object.values(<?php echo json_encode($provinces ?? []); ?>);
-  const suiviZones = Object.values(<?php echo json_encode($zones ?? []); ?>);
-  const suiviTypologies = Object.values(<?php echo json_encode($typologies ?? []); ?>);
+  let suiviDataID = null;
+  let suiviIndicID = null;
+  let suiviProjetID = null
+  const suiviScenarios = <?= json_encode(listTypeScenario() ?? []); ?>;
+  const suiviProvinces = Object.values(<?= json_encode($provinces ?? []); ?>);
+  const suiviZones = Object.values(<?= json_encode($zones ?? []); ?>);
+  const suiviTypologies = Object.values(<?= json_encode($typologies ?? []); ?>);
 
   $(document).ready(function() {
     $('#newIndicateurSuiviModal').on('shown.bs.modal', async function(event) {
-      const cmrId = $(event.relatedTarget).data('cmr_id');
+      const indicateurId = $(event.relatedTarget).data('indicateur_id');
+      const mesureId = $(event.relatedTarget).data('mesure_id');
       const projetId = $(event.relatedTarget).data('projet_id');
-      const referentielId = $(event.relatedTarget).data('referentiel_id');
       const form = document.getElementById('FormSuiviCRM');
 
-      form.cmr_id.value = cmrId || "";
-      form.projet_id.value = projetId || "";
-      indicCMRId = cmrId || "";
+      form.indicateur_id = indicateurId || "";
+      form.projet_id = projetId || "";
+      suiviIndicID = indicateurId || "";
+      suiviProjetID = projetId || "";
 
-      await loadSuivisCMR();
-      await loadProjetCMR(projetId);
-      await loadReferentielCMR(referentielId);
+      await loadDataSuivis(suiviIndicID);
+      suiviProjetID ? await loadProjetSuivis(suiviProjetID) : await loadReferentielSuivis(suiviIndicID)
     })
 
     $('#newIndicateurSuiviModal').on('hidden.bs.modal', function() {
@@ -139,7 +141,6 @@
       $('#viewSuiviCMRBody').html('');
       $('#suiviCMRLoadingScreen').show();
       $('#suiviCMRContentContainer').hide();
-      indicCMRId = null;
       cancelSuiviForm()
     });
 
@@ -147,7 +148,7 @@
       e.preventDefault();
 
       const formData = new FormData(this);
-      await saveCMRSuivi(suiviCMRId, formData, 'no-reload');
+      await saveCMRSuivi(suiviDataID, formData, 'no-reload');
     });
 
     $('.FormEditSuiviCMR').on('submit', async function(e) {
@@ -159,17 +160,17 @@
     });
   })
 
-  async function loadSuivisCMR() {
+  async function loadDataSuivis(indicateur_id) {
     const tbody = $('#viewSuiviCMRBody');
     tbody.html('');
 
-    if (indicCMRId) {
+    if (indicateur_id) {
       $('#suiviCMRLoadingScreen').show();
       $('#suiviCMRContentContainer').hide();
       $('#suiviCMRLoadingText').text("Chargement des typologies...");
 
       try {
-        const response = await fetch(`./apis/suivis.routes.php?crm_id=${indicCMRId}`, {
+        const response = await fetch(`./apis/suivis.routes.php?indicateur=${indicateur_id}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           },
@@ -220,53 +221,70 @@
     }
   }
 
-  async function loadProjetCMR(projetId) {
-    const selectAnnee = document.getElementById('suivi_annee');
-    selectAnnee.innerHTML = '';
-    try {
-      const response = await fetch(`./apis/projets.routes.php?id=${projetId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        method: 'GET',
-      });
+  async function loadProjetSuivis(projetId) {
+    if (projetId) {
+      const selectAnnee = document.getElementById('suivi_annee');
+      selectAnnee.innerHTML = '';
+      try {
+        const response = await fetch(`./apis/projets.routes.php?id=${projetId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          method: 'GET',
+        });
 
-      const result = await response.json();
-      if (result.status === 'success') {
-        const start_date = result.data.start_date;
-        const end_date = result.data.end_date;
-        const start_year = new Date(start_date).getFullYear();
-        const end_year = new Date(end_date).getFullYear();
-        for (let i = start_year; i <= end_year; i++) {
-          const option = document.createElement('option');
-          option.value = i;
-          option.textContent = i;
-          selectAnnee.appendChild(option);
+        const result = await response.json();
+        if (result.status === 'success') {
+          const start_date = result.data.start_date;
+          const end_date = result.data.end_date;
+          const start_year = new Date(start_date).getFullYear();
+          const end_year = new Date(end_date).getFullYear();
+          for (let i = start_year; i <= end_year; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            selectAnnee.appendChild(option);
+          }
         }
+      } catch (error) {
+        selectAnnee.innerHTML = '<option value="" disabled selected>Impossible de charger les données.</option>';
       }
-    } catch (error) {
-      selectAnnee.innerHTML = '<option value="" disabled selected>Impossible de charger les données.</option>';
     }
   }
 
-  async function loadReferentielCMR(referentielId) {
-    try {
-      const response = await fetch(`./apis/referentiels.routes.php?id=${referentielId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        method: 'GET',
-      });
+  async function loadReferentielSuivis(referentielId) {
+    if (referentielId) {
+      const selectAnnee = document.getElementById('suivi_annee');
+      selectAnnee.innerHTML = '';
+      try {
+        const response = await fetch(`./apis/referentiels.routes.php?id=${referentielId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          method: 'GET',
+        });
 
-      const result = await response.json();
-      if (result.status === 'success') {
-        configEchelle(result.data.echelle);
-        configTypologie(result.data.modele, result.data.id);
+        const result = await response.json();
+        if (result.status === 'success') {
+          const start_date = result.data.annee_debut;
+          const end_date = result.data.annee_fin;
+          const start_year = new Date(start_date).getFullYear();
+          const end_year = new Date(end_date).getFullYear();
+          for (let i = start_year; i <= end_year; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            selectAnnee.appendChild(option);
+          }
+
+          configEchelle(result.data.echelle);
+          configTypologie(result.data.modele, result.data.id);
+        }
+      } catch (error) {
+        console.error(error);
+        configEchelle('nationale');
+        configTypologie('valeur_relative', null);
       }
-    } catch (error) {
-      console.error(error);
-      configEchelle('nationale');
-      configTypologie('valeur_relative', null);
     }
   }
 
@@ -274,7 +292,7 @@
     $('#suiviCMRLoadingScreen').show();
     $('#suiviCMRContentContainer').hide();
     const form = document.getElementById('FormSuiviCRM');
-    suiviCMRId = dataId;
+    suiviDataID = dataId;
 
     if (dataId) {
       $('#suivi_modtitle').text('Modifier les valeurs suivies annuelles');
@@ -297,7 +315,7 @@
           form.valeur.value = result.data.valeur;
           form.observation.value = result.data.observation;
           form.scenario.value = result.data.scenario;
-          form.cmr_id.value = result.data.cmr_id;
+          form.indicateur_id.value = result.data.indicateur_id;
           form.projet_id.value = result.data.projet_id;
           if (form.echelle) form.echelle.value = result.data.echelle;
           if (form.classe) form.classe.value = result.data.classe;
@@ -317,6 +335,8 @@
   async function saveCMRSuivi(suiviId, formData, action) {
     const url = suiviId ? './apis/suivis.routes.php?id=' + suiviId : './apis/suivis.routes.php';
 
+    formData.append("indicateur_id", suiviIndicID)
+    formData.append("projet_id", suiviProjetID)
     try {
       const response = await fetch(url, {
         headers: {
@@ -342,7 +362,7 @@
   async function deleteCMRSuivi(id) {
     deleteData(id, 'Êtes-vous sûr de vouloir supprimer ce suivi ?', 'suivis', 'none')
       .then(() => {
-        loadSuivisCMR();
+        loadDataSuivis(suiviIndicID);
       })
       .catch(error => {
         errorAction('Erreur lors de la suppression');
@@ -418,8 +438,8 @@
     $('#suiviCMRTableContent').removeClass('d-none');
     $('#suivi_modtitle').text('Valeurs suivies annuelles');
     $('#suivi_modbtn').text('Ajouter');
-    suiviCMRId = null;
-    loadSuivisCMR();
+    suiviDataID = null;
+    loadDataSuivis(suiviIndicID);
   }
 
   function showSuiviForm() {

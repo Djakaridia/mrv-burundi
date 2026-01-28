@@ -23,8 +23,8 @@
                                 $first_indicateur = reset($indicateur_cmr);
 
                                 $cible = new Cible($db);
-                                $cible->cmr_id = $first_indicateur['id'];
-                                $cibles_raw = $cible->readByCMR();
+                                $cible->indicateur_id = $first_indicateur['id'];
+                                $cibles_raw = $cible->readByIndicateur();
                                 $cibles_map = [];
                                 foreach ($cibles_raw as $item) {
                                     $year = $item['annee'];
@@ -35,8 +35,8 @@
                                 $cibles_sum = array_sum($cibles_map);
 
                                 $suivi = new Suivi($db);
-                                $suivi->cmr_id = $first_indicateur['id'];
-                                $suivis_raw = $suivi->readByCMR();
+                                $suivi->indicateur_id = $first_indicateur['id'];
+                                $suivis_raw = $suivi->readByIndicateur();
                                 $suivis_map = [];
                                 foreach ($suivis_raw as $item) {
                                     $year = $item['annee'];

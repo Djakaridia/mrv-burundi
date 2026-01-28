@@ -8,7 +8,7 @@ class Cible
     public $valeur;
     public $annee;
     public $scenario;
-    public $cmr_id;
+    public $indicateur_id;
     public $projet_id;
     public $add_by;
 
@@ -19,13 +19,13 @@ class Cible
 
     public function create()
     {
-        $query = "INSERT INTO " . $this->table . " (valeur, annee, scenario, cmr_id, projet_id, add_by) VALUES 
-             (:valeur, :annee, :scenario, :cmr_id, :projet_id, :add_by)";
+        $query = "INSERT INTO " . $this->table . " (valeur, annee, scenario, indicateur_id, projet_id, add_by) VALUES 
+             (:valeur, :annee, :scenario, :indicateur_id, :projet_id, :add_by)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':valeur', $this->valeur);
         $stmt->bindParam(':annee', $this->annee);
         $stmt->bindParam(':scenario', $this->scenario);
-        $stmt->bindParam(':cmr_id', $this->cmr_id);
+        $stmt->bindParam(':indicateur_id', $this->indicateur_id);
         $stmt->bindParam(':projet_id', $this->projet_id);
         $stmt->bindParam(':add_by', $this->add_by);
 
@@ -54,11 +54,11 @@ class Cible
         return $row;
     }
 
-    public function readByCMR()
+    public function readByIndicateur()
     {
-        $query = "SELECT * FROM " . $this->table . " WHERE cmr_id=:cmr_id ORDER BY id DESC";
+        $query = "SELECT * FROM " . $this->table . " WHERE indicateur_id=:indicateur_id ORDER BY id DESC";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':cmr_id', $this->cmr_id);
+        $stmt->bindParam(':indicateur_id', $this->indicateur_id);
         $stmt->execute();
         $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $row;
@@ -76,9 +76,9 @@ class Cible
 
     public function delete()
     {
-        $query = "DELETE FROM " . $this->table . " WHERE cmr_id=:cmr_id";
+        $query = "DELETE FROM " . $this->table . " WHERE indicateur_id=:indicateur_id";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':cmr_id', $this->cmr_id);
+        $stmt->bindParam(':indicateur_id', $this->indicateur_id);
 
         if ($stmt->execute()) {
             return true;

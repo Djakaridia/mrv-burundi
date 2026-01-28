@@ -7,7 +7,7 @@ class RequeteFiche
     public $id;
     public $name;
     public $projet_id;
-    public $cmr_id;
+    public $indicateur_id;
     public $query;
     public $add_by;
 
@@ -18,12 +18,12 @@ class RequeteFiche
 
     public function create()
     {
-        $query = "INSERT INTO " . $this->table . " (name, projet_id, cmr_id, query, add_by) VALUES 
-             (:name, :projet_id, :cmr_id, :query, :add_by)";
+        $query = "INSERT INTO " . $this->table . " (name, projet_id, indicateur_id, query, add_by) VALUES 
+             (:name, :projet_id, :indicateur_id, :query, :add_by)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':projet_id', $this->projet_id);
-        $stmt->bindParam(':cmr_id', $this->cmr_id);
+        $stmt->bindParam(':indicateur_id', $this->indicateur_id);
         $stmt->bindParam(':query', $this->query);
         $stmt->bindParam(':add_by', $this->add_by);
 
@@ -54,11 +54,11 @@ class RequeteFiche
 
     public function update()
     {
-        $query = "UPDATE " . $this->table . " SET name=:name, projet_id=:projet_id, cmr_id=:cmr_id, query=:query, add_by=:add_by WHERE id=:id";
+        $query = "UPDATE " . $this->table . " SET name=:name, projet_id=:projet_id, indicateur_id=:indicateur_id, query=:query, add_by=:add_by WHERE id=:id";
         $stmt = $this->conn->prepare($query);   
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':projet_id', $this->projet_id);
-        $stmt->bindParam(':cmr_id', $this->cmr_id);
+        $stmt->bindParam(':indicateur_id', $this->indicateur_id);
         $stmt->bindParam(':query', $this->query);
         $stmt->bindParam(':add_by', $this->add_by);
         $stmt->bindParam(':id', $this->id);

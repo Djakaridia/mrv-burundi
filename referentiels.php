@@ -164,7 +164,7 @@
 
                       <td class="align-middle px-2 py-0 text-center">
                         <button title="Modifier" type="button" class="btn btn-subtle-warning rounded-pill btn-sm fw-bold fs-9 px-2 py-1"
-                          onclick="window.location.href = 'referentiel_view.php?id=<?php echo $referentiel['id']; ?>';">Voir
+                          onclick="window.location.href = 'referentiel_view.php?id=<?php echo $referentiel['id']; ?>';">Consulter
                         </button>
                       </td>
 

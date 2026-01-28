@@ -287,8 +287,8 @@
 
                                         // ############################################### Valeurs cibles de l'indicateur
                                         $cible = new Cible($db);
-                                        $cible->cmr_id = $indicateur['id'];
-                                        $cibles_cmr = $cible->readByCMR();
+                                        $cible->indicateur_id = $indicateur['id'];
+                                        $cibles_cmr = $cible->readByIndicateur();
 
                                         $cibles_grouped = [];
                                         foreach ($cibles_cmr as $cible) {
@@ -302,8 +302,8 @@
 
                                         // ############################################### Valeurs réalisées de l'indicateur
                                         $suivi = new Suivi($db);
-                                        $suivi->cmr_id = $indicateur['id'];
-                                        $suivis_cmr = $suivi->readByCMR();
+                                        $suivi->indicateur_id = $indicateur['id'];
+                                        $suivis_cmr = $suivi->readByIndicateur();
 
                                         $suivis_grouped = array();
                                         foreach ($suivis_cmr as $suivi) {

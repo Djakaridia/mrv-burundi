@@ -80,8 +80,8 @@
         }
 
         $cible = new Cible($db);
-        $cible->cmr_id = $first_cmr['id'];
-        $cibles_raw = $cible->readByCMR();
+        $cible->indicateur_id = $first_cmr['id'];
+        $cibles_raw = $cible->readByIndicateur();
         usort($cibles_raw, fn($a, $b) => $a['annee'] - $b['annee']);
         $cibles_map = [];
         foreach ($cibles_raw as $item) {
@@ -95,8 +95,8 @@
         $cibles_sum = array_sum($cibles_map);
 
         $suivi = new Suivi($db);
-        $suivi->cmr_id = $first_cmr['id'];
-        $suivis_raw = $suivi->readByCMR();
+        $suivi->indicateur_id = $first_cmr['id'];
+        $suivis_raw = $suivi->readByIndicateur();
         usort($suivis_raw, fn($a, $b) => $a['annee'] - $b['annee']);
         $suivis_map = [];
         foreach ($suivis_raw as $item) {
@@ -251,7 +251,7 @@
 
                                     <button title="Nouvelle valeur" type="button" class="btn btn-sm btn-phoenix-primary fs-9 p-2 rounded-1" data-bs-toggle="modal"
                                         data-bs-target="#newIndicateurSuiviModal" aria-haspopup="true" aria-expanded="false"
-                                        data-cmr_id="<?php echo $first_cmr['id']; ?>" data-projet_id="<?php echo $project_cmr['id']; ?>" data-referentiel_id="<?php echo $ref_curr['id']; ?>">
+                                        data-indicateur_id="<?php echo $first_cmr['id']; ?>" data-projet_id="<?php echo $project_cmr['id']; ?>" data-referentiel_id="<?php echo $ref_curr['id']; ?>">
                                         <span class="uil-plus"></span> Nouvelle valeur
                                     </button>
                                 </div>
