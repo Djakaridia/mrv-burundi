@@ -846,12 +846,12 @@ function calculSuiviData(array $suivis, string $modeCalcul)
                 if ($count >= 2 && $numericValues[$count - 2] != 0) {
                     $result = $numericValues[$count - 1] / $numericValues[$count - 2];
                 } else {
-                    return '<span class="text-warning">N/A</span>';
+                    return 0;
                 }
                 break;
 
             default:
-                return '<span class="text-warning">N/A</span>';
+                return 0;
         }
 
         return number_format($result, 2);

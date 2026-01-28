@@ -73,6 +73,8 @@ switch ($requestMethod) {
             $referentiel->sens_evolution = sanitize_input($_POST['sens_evolution']);
             $referentiel->seuil_min = sanitize_input($_POST['seuil_min'] ?? "");
             $referentiel->seuil_max = sanitize_input($_POST['seuil_max'] ?? "");
+            $referentiel->annee_debut = sanitize_input($_POST['annee_debut'] ?? "");
+            $referentiel->annee_fin = sanitize_input($_POST['annee_fin'] ?? "");
             $referentiel->norme = sanitize_input($_POST['norme'] ?? "");
             $referentiel->in_dashboard = sanitize_input($_POST['in_dashboard'] ?? 0);
             $referentiel->add_by = sanitize_input($payload['user_id']);
@@ -98,6 +100,8 @@ switch ($requestMethod) {
             $referentiel->sens_evolution = sanitize_input($_POST['sens_evolution']);
             $referentiel->seuil_min = sanitize_input($_POST['seuil_min']??"");
             $referentiel->seuil_max = sanitize_input($_POST['seuil_max']??"");
+            $referentiel->annee_debut = sanitize_input($_POST['annee_debut']??"");
+            $referentiel->annee_fin = sanitize_input($_POST['annee_fin']??"");
             $referentiel->norme = sanitize_input($_POST['norme']??"");
             $referentiel->in_dashboard = sanitize_input($_POST['in_dashboard'] ?? 0);
             $referentiel->add_by = sanitize_input($payload['user_id']);

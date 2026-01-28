@@ -55,6 +55,7 @@ CREATE TABLE IF NOT EXISTS t_registres (
 -- Table des projections
 CREATE TABLE IF NOT EXISTS t_projections (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    referentiel_id INT NOT NULL,
     secteur_id INT NOT NULL,
     scenario VARCHAR(20) NOT NULL,
     annee YEAR NOT NULL,
@@ -66,7 +67,7 @@ CREATE TABLE IF NOT EXISTS t_projections (
     add_by INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT uq_proj UNIQUE (secteur_id, scenario, annee)
+    UNIQUE (referentiel_id, secteur_id, scenario, annee),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
@@ -505,6 +506,8 @@ CREATE TABLE IF NOT EXISTS t_referentiel_indicateur (
     autre_responsable VARCHAR(50),
     seuil_min DOUBLE PRECISION DEFAULT 0,
     seuil_max DOUBLE PRECISION DEFAULT 0,
+    annee_debut VARCHAR(4),
+    annee_fin VARCHAR(4),
     sens_evolution VARCHAR(50),
     in_dashboard TINYINT(1) DEFAULT false,
     state VARCHAR(20) DEFAULT 'actif',

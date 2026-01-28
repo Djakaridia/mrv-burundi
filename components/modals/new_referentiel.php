@@ -41,7 +41,7 @@
             <div class="col-12">
               <div class="form-floating">
                 <textarea class="form-control" name="description" id="referentielDescription"
-                  placeholder="Description du réferentiel" style="height: 70px"></textarea>
+                  placeholder="Description du réferentiel" style="height: 50px"></textarea>
                 <label for="referentielDescription">Description</label>
               </div>
             </div>
@@ -102,7 +102,7 @@
             <!-- Action prioritaire -->
             <div class="col-md-6">
               <div class="form-floating">
-                <select class="form-select" name="action" id="referentielAction" required>
+                <select class="form-select" name="action" id="referentielAction">
                   <option value="" selected disabled>Sélectionner une action prioritaire</option>
                   <?php if ($sous_secteurs ?? []) : ?>
                     <?php foreach ($sous_secteurs as $sous_sec): ?>
@@ -112,7 +112,7 @@
                     <?php endforeach; ?>
                   <?php endif; ?>
                 </select>
-                <label for="referentielAction">Action prioritaire*</label>
+                <label for="referentielAction">Action prioritaire</label>
               </div>
             </div>
 
@@ -147,7 +147,7 @@
             </div>
 
             <!-- Echelle -->
-            <div class="col-6">
+            <div class="col-4">
               <div class="form-floating">
                 <select class="form-select" name="echelle" id="referentielEchelle" required>
                   <option value="" selected disabled>Sélectionner une échelle</option>
@@ -163,7 +163,7 @@
               </div>
             </div>
             <!-- Modele -->
-            <div class="col-6">
+            <div class="col-4">
               <div class="form-floating">
                 <select class="form-select" name="modele" id="referentielModele" required>
                   <option value="" selected disabled>Sélectionner un modèle</option>
@@ -187,8 +187,26 @@
                 <label for="referentielFonctionAgregation">Fonction d'agregation*</label>
               </div>
             </div>
+
             <!-- Seuil minimum -->
-            <div class="col-md-4">
+            <div class="col-md-3">
+              <div class="form-floating">
+                <input class="form-control" name="annee_debut" id="referentielAnneeDebut" type="number"
+                  placeholder="annee de debut">
+                <label for="referentielAnneeDebut">Année de début</label>
+              </div>
+            </div>
+            <!-- Seuil maximum -->
+            <div class="col-md-3">
+              <div class="form-floating">
+                <input class="form-control" name="annee_fin" id="referentielAnneeFin" type="number"
+                  placeholder="annee de fin">
+                <label for="referentielAnneeFin">Année de fin</label>
+              </div>
+            </div>
+
+            <!-- Seuil minimum -->
+            <div class="col-md-3">
               <div class="form-floating">
                 <input class="form-control" name="seuil_min" id="referentielSeuilMin" type="number"
                   placeholder="seuil minimum">
@@ -196,14 +214,13 @@
               </div>
             </div>
             <!-- Seuil maximum -->
-            <div class="col-md-4">
+            <div class="col-md-3">
               <div class="form-floating">
                 <input class="form-control" name="seuil_max" id="referentielSeuilMax" type="number"
                   placeholder="seuil maximum">
                 <label for="referentielSeuilMax">Seuil maximum</label>
               </div>
             </div>
-
             <!-- Normes -->
             <div class="col-md-6">
               <div class="form-floating">
@@ -213,7 +230,7 @@
               </div>
             </div>
             <!-- In dashboard -->
-            <div class="col-md-4">
+            <div class="col-md-6">
               <div class="form-check form-switch mt-2">
                 <input class="form-check-input" name="in_dashboard" type="checkbox" id="referentielInDashboard">
                 <label class="form-check-label" for="referentielInDashboard">Afficher l'indicateur sur l'accueil</label>
@@ -276,6 +293,8 @@
           form.fonction_agregation.value = result.data.fonction_agregation;
           form.seuil_min.value = result.data.seuil_min;
           form.seuil_max.value = result.data.seuil_max;
+          form.annee_debut.value = result.data.annee_debut;
+          form.annee_fin.value = result.data.annee_fin;
           form.norme.value = result.data.norme;
           form.in_dashboard.checked = result.data.in_dashboard == 1 ? true : false;
 

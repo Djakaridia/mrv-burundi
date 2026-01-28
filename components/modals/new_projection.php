@@ -2,7 +2,7 @@
 <div class="modal fade" id="addProjectionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addProjectionModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content bg-body-highlight p-4">
-            <div class="modal-header justify-content-between border-0 p-0 mb-3">
+            <div class="modal-header justify-content-between border-0 p-0 mb-1">
                 <h3 class="mb-0" id="Projection_modtitle">Ajouter une projection</h3>
                 <button class="btn btn-sm btn-phoenix-secondary" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times text-danger"></span></button>
             </div>
@@ -21,8 +21,19 @@
                         <input type="hidden" id="projection_id" name="id">
 
                         <div class="row">
-                            <!-- Secteur -->
-                            <div class="col-md-6 mb-3">
+                            <!-- Indicateur -->
+                            <div class="col-md-12 mb-1">
+                                <label for="referentiel_id" class="form-label">Indicateur Référentiel <span class="text-danger">*</span></label>
+                                <select class="form-select" id="referentiel_id" name="referentiel_id" required>
+                                    <option value="" selected disabled>Sélectionner un indicateur</option>
+                                    <?php foreach ($referentiels_projection ?? [] as $indicateur): ?>
+                                        <option value="<?= $indicateur['id'] ?>"><?= htmlspecialchars($indicateur['intitule'] ?? $indicateur['name'] ?? '') ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                             <!-- Secteur -->
+                            <div class="col-md-6 mb-1">
                                 <label for="secteur_id" class="form-label">Secteur <span class="text-danger">*</span></label>
                                 <select class="form-select" id="secteur_id" name="secteur_id" required>
                                     <option value="" selected disabled>Sélectionner un secteur</option>
@@ -33,7 +44,7 @@
                             </div>
 
                             <!-- Scénario -->
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-6 mb-1">
                                 <label for="scenario" class="form-label">Scénario <span class="text-danger">*</span></label>
                                 <select class="form-select" id="scenario" name="scenario" required>
                                     <option value="" selected disabled>Sélectionner un scénario</option>
@@ -44,7 +55,7 @@
                             </div>
 
                             <!-- Année -->
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-4 mb-1">
                                 <label for="annee" class="form-label">Année <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="annee" name="annee"
                                     min="2000" max="2100" step="1"
@@ -52,14 +63,14 @@
                             </div>
 
                             <!-- Valeur -->
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-4 mb-1">
                                 <label for="valeur" class="form-label">Valeur <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="valeur" name="valeur"
                                     placeholder="Ex: 1234.56" required>
                             </div>
 
                             <!-- Unité -->
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-4 mb-1">
                                 <label for="unite" class="form-label">Unité</label>
                                 <select class="form-select" id="unite" name="unite">
                                     <option value="">Sélectionner une unité</option>
@@ -70,13 +81,13 @@
                             </div>
 
                             <!-- Source -->
-                            <div class="col-12 mb-3">
+                            <div class="col-12 mb-1">
                                 <label for="source" class="form-label">Source</label>
                                 <input type="text" class="form-control" id="source" name="source" placeholder="Ex: Rapport XYZ, Étude ABC...">
                             </div>
 
                             <!-- Description -->
-                            <div class="col-12 mb-3">
+                            <div class="col-12 mb-1">
                                 <label for="description" class="form-label">Description</label>
                                 <textarea class="form-control" id="description" name="description" rows="3" placeholder="Détails supplémentaires sur la projection..."></textarea>
                             </div>
@@ -138,6 +149,7 @@
                     if (result.status === 'success') {
                         const data = result.data;
                         $('#projection_id').val(data.id);
+                        $('#referentiel_id').val(data.referentiel_id);
                         $('#secteur_id').val(data.secteur_id);
                         $('#scenario').val(data.scenario);
                         $('#annee').val(data.annee);

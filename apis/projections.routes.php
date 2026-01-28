@@ -69,6 +69,7 @@ switch ($requestMethod) {
 
         if ($id) {
             $projection->id = $id;
+            $projection->referentiel_id = sanitize_input($_POST['referentiel_id']);
             $projection->secteur_id = sanitize_input($_POST['secteur_id']);
             $projection->scenario = sanitize_input($_POST['scenario']);
             $projection->annee = sanitize_input($_POST['annee']);
@@ -90,6 +91,7 @@ switch ($requestMethod) {
                 echo json_encode(array('status' => 'danger', 'message' => 'Erreur lors de la modification de la projection.'));
             }
         } else {
+            $projection->referentiel_id = sanitize_input($_POST['referentiel_id']);
             $projection->secteur_id = sanitize_input($_POST['secteur_id']);
             $projection->scenario = sanitize_input($_POST['scenario']);
             $projection->annee = sanitize_input($_POST['annee']);

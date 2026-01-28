@@ -84,10 +84,10 @@
                     <th class="sort align-middle" scope="col"> Code</th>
                     <th class="sort align-middle" scope="col"> Intitulé</th>
                     <th class="sort align-middle" scope="col"> Unité</th>
-                    <th class="sort align-middle" scope="col"> Agrégat</th>
                     <th class="sort align-middle" scope="col"> Catégorie</th>
                     <th class="sort align-middle" scope="col"> Responsables</th>
                     <th class="sort align-middle" scope="col"> Métadonnées</th>
+                    <th class="sort align-middle" scope="col"> Détails</th>
                     <th class="sort align-middle" scope="col" style="min-width:100px;">Actions</th>
                   </tr>
                 </thead>
@@ -114,10 +114,6 @@
                       <td class="align-middle px-2"><?php echo $referentiel['unite']; ?></td>
 
                       <td class="align-middle px-2">
-                        <?php echo listModeAggregation()[$referentiel['fonction_agregation']]; ?>
-                      </td>
-
-                      <td class="align-middle px-2">
                         <?php echo strtoupper($referentiel['categorie']); ?>
                         <br>
                         <?php if (in_array($referentiel['modele'], $modeles_typologie)) : ?>
@@ -142,27 +138,33 @@
                       </td>
 
                       <!-- <td class="align-middle text-start px-2">
-                        <?php if (!empty($conventionRioRef)) : ?>
-                          <?php foreach ($conventionRioRef as $conventionRio): ?>
-                            <?php foreach ($programmes as $programme): ?>
-                              <?php if ($programme['id'] == $conventionRio['programme']): ?>
-                                <?php echo $programme['sigle'] . (count($conventionRioRef) > 1 ? " / " : ""); ?>
-                              <?php endif; ?>
-                            <?php endforeach; ?>
-                          <?php endforeach; ?>
+                        <php if (!empty($conventionRioRef)) : ?>
+                          <php foreach ($conventionRioRef as $conventionRio): ?>
+                            <php foreach ($programmes as $programme): ?>
+                              <php if ($programme['id'] == $conventionRio['programme']): ?>
+                                <php echo $programme['sigle'] . (count($conventionRioRef) > 1 ? " / " : ""); ?>
+                              <php endif; ?>
+                            <php endforeach; ?>
+                          <php endforeach; ?>
                           <br>
-                        <?php endif; ?>
+                        <php endif; ?>
 
                         <button title="Modifier" type="button" class="btn btn-sm btn-link text-primary fs-10 p-0 m-0" data-bs-toggle="modal" data-bs-target="#addConventionRioModal"
-                          data-referentiel_id="<?php echo $referentiel['id']; ?>">
+                          data-referentiel_id="<php echo $referentiel['id']; ?>">
                           (Modifier)
                         </button>
                       </td> -->
 
                       <td class="align-middle px-2">
-                        <button title="Métadonnées" type="button" class="btn btn-sm btn-link text-primary p-0 m-0" data-bs-toggle="modal" data-bs-target="#addMetadataModal"
+                        <button title="Métadonnées" type="button" class="btn btn-subtle-info rounded-pill btn-sm fw-bold fs-9 px-2 py-1" data-bs-toggle="modal" data-bs-target="#addMetadataModal"
                           data-referentiel_id="<?php echo $referentiel['id']; ?>">
                           Métadonnées
+                        </button>
+                      </td>
+
+                      <td class="align-middle px-2 py-0 text-center">
+                        <button title="Modifier" type="button" class="btn btn-subtle-warning rounded-pill btn-sm fw-bold fs-9 px-2 py-1"
+                          onclick="window.location.href = 'referentiel_view.php?id=<?php echo $referentiel['id']; ?>';">Voir
                         </button>
                       </td>
 

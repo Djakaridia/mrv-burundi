@@ -21,6 +21,8 @@ class Referentiel
     public $fonction_agregation;
     public $seuil_min;
     public $seuil_max;
+    public $annee_debut;
+    public $annee_fin;
     public $sens_evolution;
     public $in_dashboard;
     public $state;
@@ -35,9 +37,9 @@ class Referentiel
     public function create()
     {
         $query = "INSERT INTO " . $this->table . " 
-                 (code, intitule, description, categorie, norme, unite, echelle, modele, domaine, action, responsable, autre_responsable, fonction_agregation, seuil_min, seuil_max, sens_evolution, in_dashboard, add_by) 
+                 (code, intitule, description, categorie, norme, unite, echelle, modele, domaine, action, responsable, autre_responsable, fonction_agregation, seuil_min, seuil_max, annee_debut, annee_fin, sens_evolution, in_dashboard, add_by) 
                   VALUES 
-                 (:code, :intitule, :description, :categorie, :norme, :unite, :echelle, :modele, :domaine, :action, :responsable, :autre_responsable, :fonction_agregation, :seuil_min, :seuil_max, :sens_evolution, :in_dashboard, :add_by)";
+                 (:code, :intitule, :description, :categorie, :norme, :unite, :echelle, :modele, :domaine, :action, :responsable, :autre_responsable, :fonction_agregation, :seuil_min, :seuil_max, :annee_debut, :annee_fin, :sens_evolution, :in_dashboard, :add_by)";
 
         $stmt = $this->conn->prepare($query);
 
@@ -57,6 +59,8 @@ class Referentiel
         $stmt->bindParam(':fonction_agregation', $this->fonction_agregation);
         $stmt->bindParam(':seuil_min', $this->seuil_min);
         $stmt->bindParam(':seuil_max', $this->seuil_max);
+        $stmt->bindParam(':annee_debut', $this->annee_debut);
+        $stmt->bindParam(':annee_fin', $this->annee_fin);
         $stmt->bindParam(':sens_evolution', $this->sens_evolution);
         $stmt->bindParam(':in_dashboard', $this->in_dashboard);
         $stmt->bindParam(':add_by', $this->add_by);
@@ -106,6 +110,8 @@ class Referentiel
                      fonction_agregation = :fonction_agregation,
                      seuil_min = :seuil_min,
                      seuil_max = :seuil_max,
+                     annee_debut = :annee_debut,
+                     annee_fin = :annee_fin,
                      sens_evolution = :sens_evolution,
                      in_dashboard = :in_dashboard,
                      add_by = :add_by,
@@ -128,6 +134,8 @@ class Referentiel
         $stmt->bindParam(':fonction_agregation', $this->fonction_agregation);
         $stmt->bindParam(':seuil_min', $this->seuil_min);
         $stmt->bindParam(':seuil_max', $this->seuil_max);
+        $stmt->bindParam(':annee_debut', $this->annee_debut);
+        $stmt->bindParam(':annee_fin', $this->annee_fin);
         $stmt->bindParam(':sens_evolution', $this->sens_evolution);
         $stmt->bindParam(':in_dashboard', $this->in_dashboard);
         $stmt->bindParam(':add_by', $this->add_by);
