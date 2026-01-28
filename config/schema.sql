@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS t_section_dash (
 CREATE TABLE IF NOT EXISTS t_inventaires (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
-    annee INT NOT NULL UNIQUE,
+    annee YEAR NOT NULL UNIQUE,
     unite VARCHAR(50),
     methode_ipcc VARCHAR(200),
     source_donnees TEXT,
@@ -34,10 +34,10 @@ CREATE TABLE IF NOT EXISTS t_inventaires (
 -- Table des resgistre carbone
 CREATE TABLE IF NOT EXISTS t_registres (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    secteur VARCHAR(50) NOT NULL,
+    secteur_id INT NOT NULL,
     code VARCHAR(20) NOT NULL,
     categorie VARCHAR(200) NOT NULL,
-    annee INT NOT NULL,
+    annee YEAR NOT NULL,
     unite VARCHAR(50),
     gaz VARCHAR(20),
     emission_annee DECIMAL(15,2),
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS t_projections (
     id INT AUTO_INCREMENT PRIMARY KEY,
     secteur_id INT NOT NULL,
     scenario VARCHAR(20) NOT NULL,
-    annee INT NOT NULL,
+    annee YEAR NOT NULL,
     valeur VARCHAR(50) NOT NULL,
     unite VARCHAR(20),
     source VARCHAR(255),
@@ -613,7 +613,7 @@ CREATE TABLE IF NOT EXISTS t_indicateur_cmr (
 CREATE TABLE IF NOT EXISTS t_cible_annuelle (
     id INT AUTO_INCREMENT PRIMARY KEY,
     valeur VARCHAR(50),
-    annee VARCHAR(4),
+    annee YEAR NOT NULL,
     scenario VARCHAR(20),
     cmr_id INT,
     projet_id INT,
@@ -626,7 +626,7 @@ CREATE TABLE IF NOT EXISTS t_cible_annuelle (
 CREATE TABLE IF NOT EXISTS t_suivi_annuelle (
     id INT AUTO_INCREMENT PRIMARY KEY,
     valeur VARCHAR(50),
-    annee VARCHAR(4),
+    annee YEAR NOT NULL,
     echelle VARCHAR(50),
     classe VARCHAR(50),
     date_suivie DATE,

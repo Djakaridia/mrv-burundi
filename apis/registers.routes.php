@@ -110,7 +110,7 @@ switch ($requestMethod) {
                     if (!isset($secteurMap[$codeSecteur])) continue;
 
                     $register = new Register($db);
-                    $register->secteur = $secteurMap[$codeSecteur];
+                    $register->secteur_id = $secteurMap[$codeSecteur];
                     $register->code = $codeSousSecteur;
                     $register->categorie          = trim($row[array_search('Sous-secteur', $headers)]);
                     $register->gaz                = trim($row[array_search('Gaz', $headers)]);

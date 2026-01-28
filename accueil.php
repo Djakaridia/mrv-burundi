@@ -130,7 +130,7 @@
   $registers = $register->read();
   $grouped_registers = [];
   foreach ($registers as $register) {
-    $grouped_registers[$register['secteur']][] = $register;
+    $grouped_registers[$register['secteur_id']][] = $register;
   }
 
   $gaz = new Gaz($db);
@@ -163,7 +163,7 @@
 
     // 2. Agrégation des données globales
     foreach ($registers as $row) {
-      $secteur_id = $row['secteur'];
+      $secteur_id = $row['secteur_id'];
       $annee = $row['annee'];
       $gaz_name = strtoupper(trim($row['gaz']));
 

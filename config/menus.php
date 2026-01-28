@@ -28,10 +28,10 @@ $MENU_ITEMS = [
     4 => [
         "inventory.php" => "Registre des inventaires",
         "register_carbone.php" => "Registre carbone",
-        "projections.php" => "Projections",
     ],
     5 => [
         "referentiels.php" => "Dictionnaire des indicateurs",
+        "projections.php" => "Projections",
         "mesures.php" => "Actions & Mesures",
         "programmes.php" => "Programmes",
         "projects.php" => "Projets climatiques",

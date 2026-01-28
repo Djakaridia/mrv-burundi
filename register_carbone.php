@@ -18,7 +18,7 @@
     $registers = $register->read();
     $grouped_registers = [];
     foreach ($registers as $register) {
-        $grouped_registers[$register['secteur']][] = $register;
+        $grouped_registers[$register['secteur_id']][] = $register;
     }
 
     $unite = new Unite($db);
@@ -64,7 +64,7 @@
 
         // 2. Agrégation des données globales
         foreach ($registers as $row) {
-            $secteur_id = $row['secteur'];
+            $secteur_id = $row['secteur_id'];
             $annee = $row['annee'];
             $gaz_name = strtoupper(trim($row['gaz']));
 
@@ -153,7 +153,7 @@
                 $niveau_total = 0;
                 $count = 0;
                 foreach ($registers as $row) {
-                    if ($row['secteur'] == $secteur_id) {
+                    if ($row['secteur_id'] == $secteur_id) {
                         $niveau_total += $row['emission_niveau'];
                         $count++;
                     }

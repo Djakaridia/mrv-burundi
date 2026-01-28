@@ -79,7 +79,7 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
 
                 <li class="nav-item">
                     <div class="nav-item-wrapper">
-                        <?php $subModParam = ['localites',  'sectors', 'groups', 'group_view', 'autres_parametres'];?>
+                        <?php $subModParam = ['localites',  'sectors', 'groups', 'group_view', 'autres_parametres']; ?>
                         <a class="nav-link dropdown-indicator label-1 rounded-0 m-0" href="#nv-parametrage" role="button" data-bs-toggle="collapse" aria-expanded="<?= in_array($pageCurr, $subModParam) ? 'true' : 'false'; ?>" aria-controls="nv-parametrage">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center">
@@ -162,19 +162,6 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                             </div>
                         </a>
                     </div>
-                    <div class="nav-item-wrapper cursor-pointer" onclick="window.location.href = 'projections.php'">
-                        <a class="nav-link dropdown-indicator label-1 rounded-0 m-0 <?php echo $pageCurr === 'projections' ? 'active' : '' ?>" href="projections.php" role="button" aria-expanded="<?= $pageCurr === 'projections' ? 'true' : 'false'; ?>">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div class="d-flex align-items-center">
-                                    <span class="nav-link-icon ms-2 my-1"><span data-feather="cloud"></span></span>
-                                    <span class="nav-link-text">Projections</span>
-                                </div>
-                                <div class="dropdown-indicator-icon-wrapper">
-                                    <span class="fas fa-chevron-right dropdown-indicator-icon"></span>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
                 </li>
 
                 <li class="nav-item">
@@ -183,17 +170,39 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                     </div>
 
                     <div class="nav-item-wrapper">
-                        <a class="nav-link dropdown-indicator label-1 rounded-0 m-0 <?php echo in_array($pageCurr, ['referentiels']) ? 'active' : '' ?>" href="referentiels.php" role="button" aria-expanded="<?= in_array($pageCurr, ['referentiels']) ? 'true' : 'false'; ?>">
+                        <?php $subModIndic = ['referentiels', 'projections']; ?>
+                        <a class="nav-link dropdown-indicator label-1 rounded-0 m-0" href="#nv-indicators" role="button" data-bs-toggle="collapse" aria-expanded="<?= in_array($pageCurr, $subModIndic) ? 'true' : 'false'; ?>" aria-controls="nv-indicators">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center">
                                     <span class="nav-link-icon ms-2 my-1"><span data-feather="airplay"></span></span>
-                                    <span class="nav-link-text">Dictionnaire d'indicateur</span>
+                                    <span class="nav-link-text">Indicateurs de la CDN</span>
                                 </div>
                                 <div class="dropdown-indicator-icon-wrapper">
                                     <span class="fas fa-chevron-right dropdown-indicator-icon"></span>
                                 </div>
                             </div>
                         </a>
+                        <div class="parent-wrapper label-1">
+                            <ul class="nav collapse parent rounded-1 ms-1 <?= in_array($pageCurr, $subModIndic) ? 'show' : ''; ?>" data-bs-parent="#navbarVerticalCollapse" id="nv-indicators">
+                                <li class="collapsed-nav-item-title d-none">Indicateurs de la CDN</li>
+                                <li class="nav-item overflow-hidden">
+                                    <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo in_array($pageCurr, ['referentiels']) ? 'active' : '' ?>" href="referentiels.php">
+                                        <div class="d-flex align-items-center">
+                                            <span class="fas fa-chevron-right fs-11"></span>
+                                            <span class="nav-link-text ms-lg-0 ms-1">Dictionnaire d'indicateur</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="nav-item overflow-hidden">
+                                    <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'projections' ? 'active' : '' ?>" href="projections.php">
+                                        <div class="d-flex align-items-center">
+                                            <span class="fas fa-chevron-right fs-11"></span>
+                                            <span class="nav-link-text ms-lg-0 ms-1">Projections</span>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
 
                     <div class="nav-item-wrapper">

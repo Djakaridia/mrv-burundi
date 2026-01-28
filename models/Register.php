@@ -6,7 +6,7 @@ class Register
 
     // Colonnes de la table
     public $id;
-    public $secteur;
+    public $secteur_id;
     public $code;
     public $categorie;
     public $annee;
@@ -30,16 +30,16 @@ class Register
     public function create()
     {
         $query = "INSERT INTO {$this->table}
-            (secteur, code, categorie, annee, unite, gaz,
+            (secteur_id, code, categorie, annee, unite, gaz,
              emission_annee, emission_absolue, emission_niveau, emission_cumulee,
              file, add_by)
             VALUES
-            (:secteur, :code, :categorie, :annee, :unite, :gaz,
+            (:secteur_id, :code, :categorie, :annee, :unite, :gaz,
              :emission_annee, :emission_absolue, :emission_niveau, :emission_cumulee,
              :file, :add_by)";
 
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':secteur', $this->secteur);
+        $stmt->bindParam(':secteur_id', $this->secteur_id);
         $stmt->bindParam(':code', $this->code);
         $stmt->bindParam(':categorie', $this->categorie);
         $stmt->bindParam(':annee', $this->annee);
@@ -114,7 +114,7 @@ class Register
     public function update()
     {
         $query = "UPDATE {$this->table} SET
-            secteur = :secteur,
+            secteur_id = :secteur_id,
             categorie = :categorie,
             unite = :unite,
             gaz = :gaz,
@@ -129,7 +129,7 @@ class Register
 
         $stmt = $this->conn->prepare($query);
 
-        $stmt->bindParam(':secteur', $this->secteur);
+        $stmt->bindParam(':secteur_id', $this->secteur_id);
         $stmt->bindParam(':categorie', $this->categorie);
         $stmt->bindParam(':unite', $this->unite);
         $stmt->bindParam(':gaz', $this->gaz);

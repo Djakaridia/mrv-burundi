@@ -134,7 +134,8 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
     }
 
     #sidebarDefault .dropdown-indicator {
-        padding: 3px;
+        padding-top: 4px;
+        padding-bottom: 4px;
     }
 
     #sidebarDefault .nav-link .dropdown-indicator-icon {
@@ -213,17 +214,5 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
 
     #sidebarDefault .nav-item-wrapper:hover .nav-link-icon {
         color: var(--bd-green-dark) !important;
-    }
-
-    #sidebarDefault .nav-items-count {
-        font-size: 8px;
-        font-weight: 600;
-        padding-top: 5px;
-        padding-bottom: 5px;
-        margin-left: -18px;
-        margin-right: 5px;
-        border-radius: 100%;
-        background: var(--bd-green-light);
-        color: var(--bd-white);
     }
 </style>
