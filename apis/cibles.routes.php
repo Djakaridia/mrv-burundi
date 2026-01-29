@@ -93,7 +93,7 @@ switch ($requestMethod) {
                 echo json_encode(['status' => 'success', 'message' => "$successCount cibles créées, mais avec certaines erreurs", 'count' => $successCount, 'errors' => $errors]);
             }
         } catch (Exception $e) {
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            echo json_encode(['status' => 'error', 'message' => "Erreur lors de la création des cibles"]);
         }
         break;
 
