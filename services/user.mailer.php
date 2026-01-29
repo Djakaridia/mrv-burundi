@@ -50,7 +50,7 @@ class UserMailer
 
     //#############################################################
     // a.	Création d'un compte.
-    public function sendAccountCreate($to, $username, $login)
+    public function sendAccountCreate($to, $username, $login, $password)
     {
         $subject = "Confirmation de votre inscription";
         $message = "
@@ -78,7 +78,7 @@ class UserMailer
                 <p>Vous pouvez vous connecter en utilisant vos identifiants:</p>
                 <ul>
                     <li>Identifiant: $login</li>
-                    <li>Mot de passe: [Mot de passe fourni lors de la création du compte]</li>
+                    <li>Mot de passe: $password</li>
                 </ul>
                 <p>Si vous avez besoin d'aide, contactez-nous à info@mrv-burundi.com</p>
                 <p>Cordialement,<br>L'équipe de support MRV - Burundi</p>

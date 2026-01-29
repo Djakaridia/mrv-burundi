@@ -58,9 +58,9 @@ switch ($requestMethod) {
             }
 
             if ($user->create()) {
-                $sendmailer->sendAccountCreate($user->email, $user->nom, $user->username);
+                $sendmailer->sendAccountCreate($user->email, $user->nom, $user->username, $user->password);
                 $sendgreen->sendCreateAccount($user->phone, $user->username, $user->email);
-                
+
                 http_response_code(200);
                 echo json_encode(array('status' => 'success', 'message' => 'Utilisateur ajouté avec succès.'));
             } else {
@@ -162,4 +162,4 @@ switch ($requestMethod) {
 
 // Close database connection
 $db = null;
-exit(); 
+exit();
