@@ -71,8 +71,8 @@ switch ($requestMethod) {
             $referentiel->autre_responsable = sanitize_input($_POST['autre_responsable'] ?? "");
             $referentiel->fonction_agregation = sanitize_input($_POST['fonction_agregation']);
             $referentiel->sens_evolution = sanitize_input($_POST['sens_evolution']);
-            $referentiel->seuil_min = sanitize_input($_POST['seuil_min'] ?? 0);
-            $referentiel->seuil_max = sanitize_input($_POST['seuil_max'] ?? 0);
+            $referentiel->seuil_min = sanitize_input($_POST['seuil_min'] ?? "");
+            $referentiel->seuil_max = sanitize_input($_POST['seuil_max'] ?? "");
             $referentiel->annee_debut = sanitize_input($_POST['annee_debut'] ?? "");
             $referentiel->annee_fin = sanitize_input($_POST['annee_fin'] ?? "");
             $referentiel->norme = sanitize_input($_POST['norme'] ?? "");
@@ -98,8 +98,8 @@ switch ($requestMethod) {
             $referentiel->autre_responsable = sanitize_input($_POST['autre_responsable'] ?? "");
             $referentiel->fonction_agregation = sanitize_input($_POST['fonction_agregation']);
             $referentiel->sens_evolution = sanitize_input($_POST['sens_evolution']);
-            $referentiel->seuil_min = sanitize_input($_POST['seuil_min'] ?? 0);
-            $referentiel->seuil_max = sanitize_input($_POST['seuil_max'] ?? 0);
+            $referentiel->seuil_min = sanitize_input($_POST['seuil_min'] ?? "");
+            $referentiel->seuil_max = sanitize_input($_POST['seuil_max'] ?? "");
             $referentiel->annee_debut = sanitize_input($_POST['annee_debut'] ?? "");
             $referentiel->annee_fin = sanitize_input($_POST['annee_fin'] ?? "");
             $referentiel->norme = sanitize_input($_POST['norme'] ?? "");
