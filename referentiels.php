@@ -87,7 +87,7 @@
                     <th class="sort align-middle" scope="col"> Catégorie</th>
                     <th class="sort align-middle" scope="col"> Responsables</th>
                     <th class="sort align-middle" scope="col"> Métadonnées</th>
-                    <th class="sort align-middle" scope="col"> Détails</th>
+                    <th class="sort align-middle" scope="col"> Suivis</th>
                     <th class="sort align-middle" scope="col" style="min-width:100px;">Actions</th>
                   </tr>
                 </thead>
@@ -163,9 +163,13 @@
                       </td>
 
                       <td class="align-middle px-2 py-0 text-center">
-                        <button title="Modifier" type="button" class="btn btn-subtle-warning rounded-pill btn-sm fw-bold fs-9 px-2 py-1"
-                          onclick="window.location.href = 'referentiel_view.php?id=<?php echo $referentiel['id']; ?>';">Consulter
-                        </button>
+                        <?php if ($referentiel['categorie'] == 'impact') { ?>
+                          <button title="Suivre" type="button" class="btn btn-subtle-warning rounded-pill btn-sm fw-bold fs-9 px-2 py-1"
+                            onclick="window.location.href = 'referentiel_view.php?id=<?php echo $referentiel['id']; ?>';">Suivre
+                          </button>
+                        <?php } else {
+                          echo '-';
+                        } ?>
                       </td>
 
                       <td class="align-middle review px-2">

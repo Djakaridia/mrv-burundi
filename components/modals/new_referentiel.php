@@ -84,6 +84,47 @@
               </div>
             </div>
 
+            <!-- Echelle -->
+            <div class="col-4">
+              <div class="form-floating">
+                <select class="form-select" name="echelle" id="referentielEchelle" required>
+                  <option value="" selected disabled>Sélectionner une échelle</option>
+                  <option value="nationale">Nationale</option>
+                  <option value="provincial">Provincial</option>
+                  <?php if ($zone_types ?? []) : ?>
+                    <?php foreach ($zone_types as $zone_type): ?>
+                      <option value="<?= $zone_type['id'] ?>"><?= $zone_type['name'] ?></option>
+                    <?php endforeach; ?>
+                  <?php endif; ?>
+                </select>
+                <label for="referentielEchelle">Echelle*</label>
+              </div>
+            </div>
+            <!-- Modele -->
+            <div class="col-4">
+              <div class="form-floating">
+                <select class="form-select" name="modele" id="referentielModele" required>
+                  <option value="" selected disabled>Sélectionner un modèle</option>
+                  <?php foreach (listModeleTypologie() as $key => $value) : ?>
+                    <option value="<?= $key ?>"><?= $value ?></option>
+                  <?php endforeach; ?>
+                </select>
+                <label for="referentielModele">Modèle*</label>
+              </div>
+            </div>
+            <!-- Fonction d'agregation -->
+            <div class="col-md-4">
+              <div class="form-floating">
+                <select class="form-select" name="fonction_agregation" id="referentielFonctionAgregation" required>
+                  <option value="" selected disabled>Sélectionner une fonction</option>
+                  <?php foreach (listModeAggregation() as $key => $value) : ?>
+                    <option value="<?= $key ?>"><?= $value ?></option>
+                  <?php endforeach; ?>
+                </select>
+                <label for="referentielFonctionAgregation">Fonction d'agregation*</label>
+              </div>
+            </div>
+
             <!-- Domaine -->
             <div class="col-md-6">
               <div class="form-floating">
@@ -98,7 +139,6 @@
                 <label for="referentielDomaine">Secteur*</label>
               </div>
             </div>
-
             <!-- Action prioritaire -->
             <div class="col-md-6">
               <div class="form-floating">
@@ -130,7 +170,6 @@
                 <label for="referentielResponsable">Responsable*</label>
               </div>
             </div>
-
             <!-- Autre Responsable -->
             <div class="col-md-6">
               <div class="d-flex flex-column">
@@ -143,48 +182,6 @@
                     <?php endforeach; ?>
                   <?php endif; ?>
                 </select>
-              </div>
-            </div>
-
-            <!-- Echelle -->
-            <div class="col-4">
-              <div class="form-floating">
-                <select class="form-select" name="echelle" id="referentielEchelle" required>
-                  <option value="" selected disabled>Sélectionner une échelle</option>
-                  <option value="nationale">Nationale</option>
-                  <option value="provincial">Provincial</option>
-                  <?php if ($zone_types ?? []) : ?>
-                    <?php foreach ($zone_types as $zone_type): ?>
-                      <option value="<?= $zone_type['id'] ?>"><?= $zone_type['name'] ?></option>
-                    <?php endforeach; ?>
-                  <?php endif; ?>
-                </select>
-                <label for="referentielEchelle">Echelle*</label>
-              </div>
-            </div>
-            <!-- Modele -->
-            <div class="col-4">
-              <div class="form-floating">
-                <select class="form-select" name="modele" id="referentielModele" required>
-                  <option value="" selected disabled>Sélectionner un modèle</option>
-                  <?php foreach (listModeleTypologie() as $key => $value) : ?>
-                    <option value="<?= $key ?>"><?= $value ?></option>
-                  <?php endforeach; ?>
-                </select>
-                <label for="referentielModele">Modèle*</label>
-              </div>
-            </div>
-
-            <!-- Fonction d'agregation -->
-            <div class="col-md-4">
-              <div class="form-floating">
-                <select class="form-select" name="fonction_agregation" id="referentielFonctionAgregation" required>
-                  <option value="" selected disabled>Sélectionner une fonction d'agregation</option>
-                  <?php foreach (listModeAggregation() as $key => $value) : ?>
-                    <option value="<?= $key ?>"><?= $value ?></option>
-                  <?php endforeach; ?>
-                </select>
-                <label for="referentielFonctionAgregation">Fonction d'agregation*</label>
               </div>
             </div>
 
