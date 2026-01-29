@@ -115,7 +115,7 @@
                                             <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                                                 <td class="align-middle px-2 py-0"> <?php echo $referentiel['code']; ?> </td>
                                                 <td class="align-middle px-2"> <?php echo $referentiel['intitule']; ?> </td>
-                                                <td class="align-middle px-2 py-0"><?php echo $referentiel['unite']; ?></td>
+                                                <td class="align-middle px-2 py-0 text-nowrap"><?php echo $referentiel['unite']; ?></td>
 
                                                 <td class="align-middle px-2 py-0"> <?php echo strtoupper($referentiel['categorie'] ?? '-'); ?> </td>
                                                 <td class="align-middle px-2 py-0">

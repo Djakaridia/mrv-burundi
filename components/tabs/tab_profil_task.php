@@ -21,10 +21,10 @@ $user_tasks = array_filter($tasks, function ($task) use ($userId) {
             </div>
         </div>
 
-        <div class="todo-list bg-body-emphasis position-relative top-1" style="min-height: 300px;">
+        <div class="todo-list bg-body-emphasis position-relative top-1" style="min-height: 200px;">
             <div class="todo-list">
                 <?php if (empty($user_tasks)) { ?>
-                    <div class="text-center py-5 my-5" style="min-height: 300px;">
+                    <div class="text-center py-5 my-5" style="min-height: 200px;">
                         <div class="d-flex justify-content-center mb-3">
                             <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-warning">
                                 <path d="M12 8V12M12 16H12.01M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -32,8 +32,6 @@ $user_tasks = array_filter($tasks, function ($task) use ($userId) {
                         </div>
                         <h4 class="text-800 mb-3">Aucune activité trouvée</h4>
                         <p class="text-600 mb-5">Il semble que vous n'ayez pas encore d'activités. Commencez par en créer une.</p>
-                        <button title="Ajouter une activité" class="btn btn-primary px-5 fs-8" id="addBtn" data-bs-toggle="modal" data-bs-target="#addTacheModal" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
-                            <i class="fas fa-plus"></i> Ajouter une activité</button>
                     </div>
                 <?php } else { ?>
                     <?php foreach ($user_tasks as $task) { ?>

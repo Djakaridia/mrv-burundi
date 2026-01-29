@@ -21,7 +21,7 @@
             <input type="hidden" name="projet_id" id="cible_projet_id">
 
             <div class="overflow-auto" style="min-height: 300px; max-height: 400px;">
-              <table class="table table-sm table-hover table-striped fs-12 table-bordered border-emphasis small" align="center">
+              <table id="cibleModalTable" class="table table-sm table-hover table-striped fs-12 table-bordered border-emphasis small" align="center">
                
               </table>
             </div>
@@ -55,7 +55,6 @@
       cibleIndicID = indicateurId || "";
       cibleProjetID = projetId || "";
 
-      await loadDataCible(indicateurId);
       cibleProjetID ? await loadProjetCible(cibleProjetID) : await loadReferentielCible(cibleIndicID)
     });
 
@@ -149,7 +148,6 @@
         });
 
         const result = await response.json();
-
         if (result.status === 'success' && result.data?.length) {
           result.data.forEach(item => {
             $(`#cible-${item.scenario}-${item.annee}`).val(item.valeur);
@@ -159,7 +157,6 @@
         console.error('Erreur:', error);
         errorAction('Impossible de charger les données.');
       } finally {
-        // Hide loading screen and show content
         $('#cibleLoadingScreen').hide();
         $('#cibleContentContainer').show();
       }
@@ -176,10 +173,8 @@
 
   async function loadProjetCible(projetId) {
     const selectAnnee = document.getElementById('suivi_annee');
-    const tableBody = document.querySelector('table tbody');
-
     selectAnnee.innerHTML = '';
-    tableBody.innerHTML = '';
+
     try {
       const response = await fetch(`./apis/projets.routes.php?id=${projetId}`, {
         headers: {
@@ -206,16 +201,13 @@
     } catch (error) {
       console.error('Erreur lors du chargement du projet:', error);
       selectAnnee.innerHTML = '<option value="" disabled selected>Impossible de charger les données.</option>';
-      tableBody.innerHTML = '<tr><td colspan="100%" class="text-center text-muted">Erreur de chargement</td></tr>';
     }
   }
 
   async function loadReferentielCible(referentielId) {
     const selectAnnee = document.getElementById('suivi_annee');
-    const tableBody = document.querySelector('table tbody');
-    
     selectAnnee.innerHTML = '';
-    tableBody.innerHTML = '';
+    
     try {
         const response = await fetch(`./apis/referentiels.routes.php?id=${referentielId}`, {
             headers: {
@@ -257,13 +249,11 @@
     } catch (error) {
         console.error('Erreur lors du chargement du référentiel:', error);
         selectAnnee.innerHTML = '<option value="" disabled selected>Impossible de charger les données.</option>';
-        tableBody.innerHTML = '<tr><td colspan="100%" class="text-center text-muted">Erreur de chargement</td></tr>';
     }
-}
+  }
 
-
-  function rebuildTable(startYear, endYear) {
-    const table = document.querySelector('.overflow-auto table');
+  async function rebuildTable(startYear, endYear) {
+    const table = document.querySelector('#cibleModalTable');
     table.innerHTML = `
       <thead class="bg-primary-subtle">
           <tr>
@@ -279,5 +269,7 @@
         <input type="text" class="form-control py-2 px-1 rounded-1" name="cible[${key}][${startYear + i}]" style="min-width: 100px" id="cible-${key}-${startYear + i}" placeholder= "—">
         </td>`).join('')}</tr>`).join('')}
       </tbody>`;
+
+      await loadDataCible(cibleIndicID);
   }
 </script>

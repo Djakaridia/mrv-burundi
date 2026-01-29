@@ -52,7 +52,15 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                                     <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'users' ? 'active' : '' ?>" href="users.php">
                                         <div class="d-flex align-items-center">
                                             <span class="fas fa-chevron-right fs-11"></span>
-                                            <span class="nav-link-text ms-lg-0 ms-1">Aperçu</span>
+                                            <span class="nav-link-text ms-lg-0 ms-1">Comptes utilisateurs</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="nav-item overflow-hidden">
+                                    <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'acteurs' ? 'active' : '' ?>" href="acteurs.php">
+                                        <div class="d-flex align-items-center">
+                                            <span class="fas fa-chevron-right fs-11"></span>
+                                            <span class="nav-link-text ms-lg-0 ms-1">Institutions responsables</span>
                                         </div>
                                     </a>
                                 </li>
@@ -61,14 +69,6 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                                         <div class="d-flex align-items-center">
                                             <span class="fas fa-chevron-right fs-11"></span>
                                             <span class="nav-link-text ms-lg-0 ms-1">Rôles & Permissions</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item overflow-hidden">
-                                    <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'acteurs' ? 'active' : '' ?>" href="acteurs.php">
-                                        <div class="d-flex align-items-center">
-                                            <span class="fas fa-chevron-right fs-11"></span>
-                                            <span class="nav-link-text ms-lg-0 ms-1">Acteurs</span>
                                         </div>
                                     </a>
                                 </li>
