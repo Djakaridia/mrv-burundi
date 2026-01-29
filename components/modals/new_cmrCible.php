@@ -56,8 +56,7 @@
       cibleProjetID = projetId || "";
 
       await loadDataCible(indicateurId);
-      await loadProjetCible(projetId);
-      await loadReferentielCible(indicateurId);
+      cibleProjetID ? await loadProjetCible(cibleProjetID) : await loadReferentielCible(cibleIndicID)
     });
 
     $('#newIndicateurCibleModal').on('hidden.bs.modal', function() {
