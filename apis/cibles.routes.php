@@ -45,7 +45,7 @@ switch ($requestMethod) {
 
             // Nettoyage des données
             $indicateur_id = sanitize_input($_POST['indicateur_id']);
-            $projet_id = sanitize_input($_POST['projet_id']);
+            $projet_id = isset($_POST['projet_id']) && $_POST['projet_id'] !== '' ? (int) $_POST['projet_id'] : null;
             $add_by = sanitize_input($payload['user_id']);
             $ciblesData = json_decode($_POST['valeur_cibles'], true);
 

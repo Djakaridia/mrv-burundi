@@ -234,7 +234,7 @@
 
                     <h5 class="mb-2 text-primary"><i class="fas fa-info-circle me-2"></i>Informations générale sur l'indicateur</h5>
                     <div class="row g-3 mb-3">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="card rounded-1 shadow-sm border h-100">
                                 <div class="card-header d-flex justify-content-between align-items-center bg-light dark__bg-dark rounded-0 py-1 px-2">
                                     <h5 class="mb-0">Informations de l'indicateur</h5>
@@ -247,136 +247,141 @@
                                     <?php endif; ?>
                                 </div>
                                 <div class="card-body p-3">
-                                    <dl class="row g-0 mb-0 small">
-                                        <dt class="col-sm-4 text-muted">Code</dt>
-                                        <dd class="col-sm-8 fw-semibold"><?= htmlspecialchars($ref_curr['code']) ?></dd>
+                                    <dl class="row mb-0 px-3 small">
+                                        <div class="col-6 row border rounded-1 p-3 mx-0">
+                                            <dt class="col-sm-4 text-muted">Code</dt>
+                                            <dd class="col-sm-8 fw-semibold"><?= htmlspecialchars($ref_curr['code']) ?></dd>
 
-                                        <dt class="col-sm-4 text-muted">Intitulé</dt>
-                                        <dd class="col-sm-8"><?= htmlspecialchars($ref_curr['intitule']) ?></dd>
+                                            <dt class="col-sm-4 text-muted">Intitulé</dt>
+                                            <dd class="col-sm-8"><?= htmlspecialchars($ref_curr['intitule']) ?></dd>
 
-                                        <?php if (!empty($ref_curr['description'])) : ?>
-                                            <dt class="col-sm-4 text-muted">Description</dt>
-                                            <dd class="col-sm-8"><?= nl2br(htmlspecialchars($ref_curr['description'])) ?></dd>
-                                        <?php endif; ?>
+                                            <?php if (!empty($ref_curr['description'])) : ?>
+                                                <dt class="col-sm-4 text-muted">Description</dt>
+                                                <dd class="col-sm-8"><?= nl2br(htmlspecialchars($ref_curr['description'])) ?></dd>
+                                            <?php endif; ?>
 
-                                        <hr class="mb-2">
-                                        <dt class="col-sm-4 text-muted">Catégorie</dt>
-                                        <dd class="col-sm-8">
-                                            <span class="badge bg-info text-uppercase">
-                                                <?= htmlspecialchars($ref_curr['categorie']) ?>
-                                            </span>
-                                        </dd>
+                                            <hr class="mb-2">
+                                            <dt class="col-sm-4 text-muted">Catégorie</dt>
+                                            <dd class="col-sm-8">
+                                                <span class="badge bg-info text-uppercase">
+                                                    <?= htmlspecialchars($ref_curr['categorie']) ?>
+                                                </span>
+                                            </dd>
 
-                                        <dt class="col-sm-4 text-muted">Norme</dt>
-                                        <dd class="col-sm-8">
-                                            <span class="badge bg-secondary">
-                                                <?= htmlspecialchars($ref_curr['norme']) ?>
-                                            </span>
-                                        </dd>
+                                            <dt class="col-sm-4 text-muted">Norme</dt>
+                                            <dd class="col-sm-8">
+                                                <span class="badge bg-secondary">
+                                                    <?= htmlspecialchars($ref_curr['norme']) ?>
+                                                </span>
+                                            </dd>
 
-                                        <dt class="col-sm-4 text-muted">Unité</dt>
-                                        <dd class="col-sm-8"><?= htmlspecialchars($ref_curr['unite']) ?></dd>
+                                            <dt class="col-sm-4 text-muted">Unité</dt>
+                                            <dd class="col-sm-8"><?= htmlspecialchars($ref_curr['unite']) ?></dd>
 
-                                        <dt class="col-sm-4 text-muted">Fonction d’agrégation</dt>
-                                        <dd class="col-sm-8">
-                                            <?= listModeAggregation()[$ref_curr['fonction_agregation']] ?? htmlspecialchars($ref_curr['fonction_agregation']) ?>
-                                        </dd>
+                                            <dt class="col-sm-4 text-muted">Fonction d’agrégation</dt>
+                                            <dd class="col-sm-8">
+                                                <?= listModeAggregation()[$ref_curr['fonction_agregation']] ?? htmlspecialchars($ref_curr['fonction_agregation']) ?>
+                                            </dd>
 
-                                        <hr class="mb-2">
-                                        <dt class="col-sm-4 text-muted">Secteur</dt>
-                                        <dd class="col-sm-8">
-                                            <?php foreach ($secteurs as $secteur): ?>
-                                                <?php if ($secteur['id'] == $ref_curr['domaine']): ?>
-                                                    <?= htmlspecialchars($secteur['name']) ?>
-                                                <?php endif; ?>
-                                            <?php endforeach; ?>
-                                        </dd>
+                                            <hr class="mb-2">
+                                            <dt class="col-sm-4 text-muted">Secteur</dt>
+                                            <dd class="col-sm-8">
+                                                <?php foreach ($secteurs as $secteur): ?>
+                                                    <?php if ($secteur['id'] == $ref_curr['domaine']): ?>
+                                                        <?= htmlspecialchars($secteur['name']) ?>
+                                                    <?php endif; ?>
+                                                <?php endforeach; ?>
+                                            </dd>
 
-                                        <dt class="col-sm-4 text-muted">Sous secteur</dt>
-                                        <dd class="col-sm-8">
-                                            <?php foreach ($sous_secteurs as $secteur): ?>
-                                                <?php if ($secteur['id'] == $ref_curr['action']): ?>
-                                                    <?= htmlspecialchars($secteur['name']) ?>
-                                                <?php endif; ?>
-                                            <?php endforeach; ?>
-                                        </dd>
+                                            <dt class="col-sm-4 text-muted">Sous secteur</dt>
+                                            <dd class="col-sm-8">
+                                                <?php foreach ($sous_secteurs as $secteur): ?>
+                                                    <?php if ($secteur['id'] == $ref_curr['action']): ?>
+                                                        <?= htmlspecialchars($secteur['name']) ?>
+                                                    <?php endif; ?>
+                                                <?php endforeach; ?>
+                                            </dd>
 
-                                        <dt class="col-sm-4 text-muted">Échelle</dt>
-                                        <dd class="col-sm-8">
-                                            <?= $echelles[$ref_curr['echelle']] ?? htmlspecialchars($ref_curr['echelle']) ?>
-                                        </dd>
+                                            <dt class="col-sm-4 text-muted">Échelle</dt>
+                                            <dd class="col-sm-8">
+                                                <?= $echelles[$ref_curr['echelle']] ?? htmlspecialchars($ref_curr['echelle']) ?>
+                                            </dd>
 
-                                        <dt class="col-sm-4 text-muted">Modèle</dt>
-                                        <dd class="col-sm-8">
-                                            <?= listModeleTypologie()[$ref_curr['modele']] ?? htmlspecialchars($ref_curr['modele']) ?>
-                                        </dd>
+                                            <dt class="col-sm-4 text-muted">Modèle</dt>
+                                            <dd class="col-sm-8">
+                                                <?= listModeleTypologie()[$ref_curr['modele']] ?? htmlspecialchars($ref_curr['modele']) ?>
+                                            </dd>
+                                        </div>
 
-                                        <hr class="mb-2">
-                                        <dt class="col-sm-4 text-muted">Responsables</dt>
-                                        <dd class="col-sm-8">
-                                            <?php
-                                            $responsables = [];
+                                        <div class="col-6 row border rounded-1 p-3 mx-0">
+                                            <dt class="col-sm-4 text-muted">Responsables</dt>
+                                            <dd class="col-sm-8">
+                                                <?php
+                                                $responsables = [];
 
-                                            if (!empty($ref_curr['responsable'])) {
-                                                foreach ($structures as $s) {
-                                                    if ($s['id'] == $ref_curr['responsable']) {
-                                                        $responsables[] = "<span class='badge bg-primary'>{$s['sigle']}</span>";
-                                                    }
-                                                }
-                                            }
-
-                                            if (!empty($ref_curr['autre_responsable'])) {
-                                                foreach (explode(',', str_replace('"', '', $ref_curr['autre_responsable'])) as $id) {
+                                                if (!empty($ref_curr['responsable'])) {
                                                     foreach ($structures as $s) {
-                                                        if ($s['id'] == trim($id)) {
-                                                            $responsables[] = "<span class='badge bg-outline-secondary'>{$s['sigle']}</span>";
+                                                        if ($s['id'] == $ref_curr['responsable']) {
+                                                            $responsables[] = "<span class='badge bg-primary'>{$s['sigle']}</span>";
                                                         }
                                                     }
                                                 }
-                                            }
 
-                                            echo $responsables ? implode(' ', $responsables) : '<em class="text-muted">Non défini</em>';
-                                            ?>
-                                        </dd>
+                                                if (!empty($ref_curr['autre_responsable'])) {
+                                                    foreach (explode(',', str_replace('"', '', $ref_curr['autre_responsable'])) as $id) {
+                                                        foreach ($structures as $s) {
+                                                            if ($s['id'] == trim($id)) {
+                                                                $responsables[] = "<span class='badge bg-outline-secondary'>{$s['sigle']}</span>";
+                                                            }
+                                                        }
+                                                    }
+                                                }
 
-                                        <hr class="mb-2">
-                                        <?php if ($ref_curr['seuil_min'] > 0 || $ref_curr['seuil_max'] > 0) : ?>
-                                            <dt class="col-sm-4 text-muted">Seuils</dt>
-                                            <dd class="col-sm-8">
-                                                <?= $ref_curr['seuil_min'] > 0 ? "Min : {$ref_curr['seuil_min']}" : '' ?>
-                                                <?= $ref_curr['seuil_max'] > 0 ? " | Max : {$ref_curr['seuil_max']}" : '' ?>
+                                                echo $responsables ? implode(' ', $responsables) : '<em class="text-muted">Non défini</em>';
+                                                ?>
                                             </dd>
-                                        <?php endif; ?>
 
-                                        <dt class="col-sm-4 text-muted">Période</dt>
-                                        <dd class="col-sm-8">
-                                            <?= $ref_curr['annee_debut'] ?: '?' ?> – <?= $ref_curr['annee_fin'] ?: '?' ?>
-                                        </dd>
+                                            <hr class="mb-2">
+                                            <?php if ($ref_curr['seuil_min'] > 0 || $ref_curr['seuil_max'] > 0) : ?>
+                                                <dt class="col-sm-4 text-muted">Seuils</dt>
+                                                <dd class="col-sm-8">
+                                                    <?= $ref_curr['seuil_min'] > 0 ? "Min : {$ref_curr['seuil_min']}" : '' ?>
+                                                    <?= $ref_curr['seuil_max'] > 0 ? " | Max : {$ref_curr['seuil_max']}" : '' ?>
+                                                </dd>
+                                            <?php endif; ?>
 
-                                        <dt class="col-sm-4 text-muted">Sens d’évolution</dt>
-                                        <dd class="col-sm-8">
-                                            <?= $sens_evolutions[$ref_curr['sens_evolution']] ?? htmlspecialchars($ref_curr['sens_evolution']) ?>
-                                        </dd>
+                                            <dt class="col-sm-4 text-muted">Période</dt>
+                                            <dd class="col-sm-8">
+                                                <?= $ref_curr['annee_debut'] ?: '?' ?> – <?= $ref_curr['annee_fin'] ?: '?' ?>
+                                            </dd>
 
-                                        <hr class="mb-2">
-                                        <dt class="col-sm-4 text-muted">Tableau de bord</dt>
-                                        <dd class="col-sm-8">
-                                            <span class="badge bg-<?= $ref_curr['in_dashboard'] ? 'success' : 'secondary' ?>">
-                                                <?= $ref_curr['in_dashboard'] ? 'Visible' : 'Masqué' ?>
-                                            </span>
-                                        </dd>
+                                            <dt class="col-sm-4 text-muted">Sens d’évolution</dt>
+                                            <dd class="col-sm-8">
+                                                <?= $sens_evolutions[$ref_curr['sens_evolution']] ?? htmlspecialchars($ref_curr['sens_evolution']) ?>
+                                            </dd>
 
-                                        <dt class="col-sm-4 text-muted">Dernière mise à jour</dt>
-                                        <dd class="col-sm-8">
-                                            <i class="bi bi-clock"></i>
-                                            <?= date('d/m/Y H:i', strtotime($ref_curr['updated_at'])) ?>
-                                        </dd>
+                                            <hr class="mb-2">
+                                            <dt class="col-sm-4 text-muted">Tableau de bord</dt>
+                                            <dd class="col-sm-8">
+                                                <span class="badge bg-<?= $ref_curr['in_dashboard'] ? 'success' : 'secondary' ?>">
+                                                    <?= $ref_curr['in_dashboard'] ? 'Visible' : 'Masqué' ?>
+                                                </span>
+                                            </dd>
+
+                                            <dt class="col-sm-4 text-muted">Dernière mise à jour</dt>
+                                            <dd class="col-sm-8">
+                                                <i class="bi bi-clock"></i>
+                                                <?= date('d/m/Y H:i', strtotime($ref_curr['updated_at'])) ?>
+                                            </dd>
+                                        </div>
                                     </dl>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="col-md-6">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-12">
                             <div class="card rounded-1 shadow-sm border">
                                 <div class="card-header d-flex justify-content-between align-items-center bg-light dark__bg-dark rounded-0 py-1 px-2">
                                     <h5 class="mb-0">Valeurs cibles de l'indicateur</h5>
@@ -539,7 +544,7 @@
                                                         <td class="px-2"><?= $suivi['annee'] ?></td>
                                                         <td class="px-2 fw-bold"><?= number_format($suivi['valeur'], 2) ?></td>
                                                         <td class="px-2">
-                                                                <?= listTypeScenario()[$suivi['scenario']] ?? $suivi['scenario'] ?>
+                                                            <?= listTypeScenario()[$suivi['scenario']] ?? $suivi['scenario'] ?>
                                                         </td>
                                                         <?php if ($ref_curr['echelle'] !== 'nationale') : ?>
                                                             <td class="px-2">

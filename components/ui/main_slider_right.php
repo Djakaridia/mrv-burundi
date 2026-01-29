@@ -1,7 +1,7 @@
 <!-- Récupération des indicateurs [referentiels_dash] dans le dashboard -->
 <div class="swiper-section4-container">
-    <div class="swiper section4-right-slider swiper-initialized swiper-horizontal swiper-backface-hidden" 
-         data-swiper='{"autoplay":true,"spaceBetween":5,"loop":false,"slideToClickedSlide":true}'>
+    <div class="swiper section4-right-slider swiper-initialized swiper-horizontal swiper-backface-hidden"
+        data-swiper='{"autoplay":true,"spaceBetween":5,"loop":false,"slideToClickedSlide":true}'>
         <div class="swiper-wrapper" id="swiper-wrapper-dashboard" aria-live="off" style="max-height: 430px;">
             <?php foreach ($referentiels_dash as $referentiel) { ?>
                 <div class="swiper-slide" role="group" data-swiper-slide-index="<?= $referentiel['id'] ?>">
@@ -11,12 +11,12 @@
         </div>
     </div>
     <div class="mt-2 d-flex justify-content-between">
-        <button class="slider-section4-right-prev bg-body text-center p-1 rounded-circle shadow border border-light" 
-                style="width: 30px; height: 30px;"> <span class="fas fa-chevron-left nav-icon text-info"></span>
+        <button class="slider-section4-right-prev bg-body text-center p-1 rounded-circle shadow border border-light"
+            style="width: 30px; height: 30px;"> <span class="fas fa-chevron-left nav-icon text-info"></span>
         </button>
         <div class="swiper-pagination section4-right-pagination"></div>
-        <button class="slider-section4-right-next bg-body text-center p-1 rounded-circle shadow border border-light" 
-                style="width: 30px; height: 30px;"> <span class="fas fa-chevron-right nav-icon text-info"></span>
+        <button class="slider-section4-right-next bg-body text-center p-1 rounded-circle shadow border border-light"
+            style="width: 30px; height: 30px;"> <span class="fas fa-chevron-right nav-icon text-info"></span>
         </button>
     </div>
 </div>
@@ -56,7 +56,7 @@
                 $suivi = new Suivi($db);
                 $suivi->indicateur_id = $indicateurs[0]['id'];
                 $suivis_raw = $suivi->readByIndicateur();
-                
+
                 $series_data = [];
                 foreach ($projet_secteurs as $secteur) {
                     $secteur_data = [
@@ -66,7 +66,7 @@
                     foreach ($annees as $annee) {
                         $valeur = 0;
                         foreach ($suivis_raw as $suivi) {
-                            if ($suivi['secteur_id']??'' == $secteur['id'] && $suivi['annee'] == $annee) {
+                            if ($suivi['secteur_id'] ?? '' == $secteur['id'] && $suivi['annee'] == $annee) {
                                 $valeur += (float)$suivi['valeur'];
                             }
                         }
@@ -74,13 +74,13 @@
                     }
                     $series_data[] = $secteur_data;
                 }
-            ?>{
-                id: "<?= $id_chart ?>",
-                categories: <?= json_encode($annees) ?>,
-                series: <?= json_encode($series_data) ?>,
-                unite: "<?= ($unite_grouped[$referentiel['id']] ?? 'Unité') ?>",
-                title: "<?= ($referentiel['intitule']) ?>"
-            },
+            ?> {
+                    id: "<?= $id_chart ?>",
+                    categories: <?= json_encode($annees ?? []) ?>,
+                    series: <?= json_encode($series_data ?? []) ?>,
+                    unite: "<?= $referentiel['unite'] ?? '' ?>",
+                    title: "<?= $referentiel['intitule'] ?? '' ?>"
+                },
             <?php endforeach; ?>
         ];
 

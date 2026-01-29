@@ -153,7 +153,7 @@
                 ?> {
                         id: "<?= $id_chart ?>",
                         title: "<?= $referentiel['intitule'] ?>",
-                        unite: "<?= $unite_grouped[$referentiel['id']] ?? 'Unité' ?>",
+                        unite: "<?= $referentiel['unite'] ?? '' ?>",
                         categories: <?= json_encode($annees ?? []) ?>,
                         cibles: <?= json_encode($cibles ?? []) ?>,
                         suivis: <?= json_encode($suivis ?? []) ?>

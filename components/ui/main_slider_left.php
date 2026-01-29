@@ -10,11 +10,11 @@
         </div>
     </div>
     <div class="mt-2 d-flex justify-content-between align-items-start">
-        <div class="slider-section4-left-prev bg-body text-center p-1 rounded-circle shadow border border-light" 
+        <div class="slider-section4-left-prev bg-body text-center p-1 rounded-circle shadow border border-light"
             style="width: 30px; height: 30px;"> <span class="fas fa-chevron-left nav-icon text-info"></span>
         </div>
         <div class="swiper-pagination section4-left-pagination"></div>
-        <div class="slider-section4-left-next bg-body text-center p-1 rounded-circle shadow border border-light" 
+        <div class="slider-section4-left-next bg-body text-center p-1 rounded-circle shadow border border-light"
             style="width: 30px; height: 30px;"> <span class="fas fa-chevron-right nav-icon text-info"></span>
         </div>
     </div>
@@ -46,10 +46,10 @@
                 $suivis_raw = $suivi->readByIndicateur();
                 $suivis_par_secteur = [];
                 foreach ($suivis_raw as $suivi) {
-                    if (!isset($suivis_par_secteur[$suivi['secteur_id']??""])) {
-                        $suivis_par_secteur[$suivi['secteur_id']??""] = 0;
+                    if (!isset($suivis_par_secteur[$suivi['secteur_id'] ?? ""])) {
+                        $suivis_par_secteur[$suivi['secteur_id'] ?? ""] = 0;
                     }
-                    $suivis_par_secteur[$suivi['secteur_id']??""] += (float)$suivi['valeur'];
+                    $suivis_par_secteur[$suivi['secteur_id'] ?? ""] += (float)$suivi['valeur'];
                 }
 
                 $chart_data = [];
@@ -63,9 +63,9 @@
                 }
             ?> {
                     id: "<?= $id_chart ?>",
-                    data: <?= json_encode($chart_data) ?>,
-                    unite: "<?= $unite_grouped[$referentiel['id']] ?? 'Unité' ?>",
-                    title: "<?= ($referentiel['intitule']) ?>"
+                    data: <?= json_encode($chart_data ?? []) ?>,
+                    unite: "<?= $referentiel['unite'] ?? '' ?>",
+                    title: "<?= $referentiel['intitule'] ?? '' ?>"
                 },
             <?php endforeach; ?>
         ];

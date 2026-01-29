@@ -76,14 +76,6 @@
 
   $unite = new Unite($db);
   $unites = $unite->read();
-  $unite_grouped = array();
-  foreach ($referentiels_dash as $referentiel) {
-    foreach ($unites as $unite) {
-      if ($unite['id'] == $referentiel['unite']) {
-        $unite_grouped[$referentiel['id']] = $unite['name'];
-      }
-    }
-  }
 
   // Inventaires GES
   $currentYear = date('Y');
