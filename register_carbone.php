@@ -398,7 +398,7 @@
                                     <div class="col-lg-6 col-12 mb-1">
                                         <div class="card rounded-1 shadow-sm border h-100">
                                             <div class="card-header bg-light p-2">
-                                                <h6 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Répartition globale par type de gaz</h6>
+                                                <h6 class="mb-0 text-dark"><i class="fas fa-chart-pie me-2"></i>Répartition globale par type de gaz</h6>
                                             </div>
                                             <div class="card-body p-2" id="chartGlobalGaz" style="min-height: 350px;"></div>
                                         </div>
@@ -406,7 +406,7 @@
                                     <div class="col-lg-6 col-12 mb-1">
                                         <div class="card rounded-1 shadow-sm border h-100">
                                             <div class="card-header bg-light p-2">
-                                                <h6 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Émissions par secteur et année</h6>
+                                                <h6 class="mb-0 text-dark"><i class="fas fa-chart-bar me-2"></i>Émissions par secteur et année</h6>
                                             </div>
                                             <div class="card-body p-2" id="chartGlobalSecteurAnnee" style="min-height: 350px;"></div>
                                         </div>
@@ -417,7 +417,7 @@
                                     <div class="col-12">
                                         <div class="card rounded-1 shadow-sm border">
                                             <div class="card-header bg-light p-2">
-                                                <h6 class="mb-0"><i class="fas fa-chart-column me-2"></i>Performance globale par secteur</h6>
+                                                <h6 class="mb-0 text-dark"><i class="fas fa-chart-column me-2"></i>Performance globale par secteur</h6>
                                             </div>
                                             <div class="card-body p-2" id="chartGlobalPerformance" style="min-height: 400px;"></div>
                                         </div>
@@ -478,7 +478,7 @@
                                     <div class="col-lg-6 col-12 mb-1">
                                         <div class="card rounded-1 shadow-sm border h-100">
                                             <div class="card-header bg-light p-2">
-                                                <h6 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Répartition par type de gaz</h6>
+                                                <h6 class="mb-0 text-dark"><i class="fas fa-chart-pie me-2"></i>Répartition par type de gaz</h6>
                                             </div>
                                             <div class="card-body p-2" id="chartRegistreGaz" style="min-height: 350px;"></div>
                                         </div>
@@ -486,7 +486,7 @@
                                     <div class="col-lg-6 col-12 mb-1">
                                         <div class="card rounded-1 shadow-sm border h-100">
                                             <div class="card-header bg-light p-2">
-                                                <h6 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Émissions par catégorie</h6>
+                                                <h6 class="mb-0 text-dark"><i class="fas fa-chart-bar me-2"></i>Émissions par catégorie</h6>
                                             </div>
                                             <div class="card-body p-2" id="chartRegistreSecteur" style="min-height: 350px;"></div>
                                         </div>
@@ -497,7 +497,7 @@
                                     <div class="col-lg-6 col-12 mb-1">
                                         <div class="card rounded-1 shadow-sm border h-100">
                                             <div class="card-header bg-light p-2">
-                                                <h6 class="mb-0"><i class="fas fa-chart-line me-2"></i>Tendance annuelle</h6>
+                                                <h6 class="mb-0 text-dark"><i class="fas fa-chart-line me-2"></i>Tendance annuelle</h6>
                                             </div>
                                             <div class="card-body p-2" id="chartTendanceAnnuelle" style="min-height: 350px;"></div>
                                         </div>
@@ -505,7 +505,7 @@
                                     <div class="col-lg-6 col-12 mb-1">
                                         <div class="card rounded-1 shadow-sm border h-100">
                                             <div class="card-header bg-light p-2">
-                                                <h6 class="mb-0"><i class="fas fa-chart-area me-2"></i>Émissions cumulées</h6>
+                                                <h6 class="mb-0 text-dark"><i class="fas fa-chart-area me-2"></i>Émissions cumulées</h6>
                                             </div>
                                             <div class="card-body p-2" id="chartCumulative" style="min-height: 350px;"></div>
                                         </div>
@@ -516,7 +516,7 @@
                                     <div class="col-12">
                                         <div class="card rounded-1 shadow-sm border">
                                             <div class="card-header bg-light p-2">
-                                                <h6 class="mb-0"><i class="fas fa-chart-column me-2"></i>Performance par catégorie</h6>
+                                                <h6 class="mb-0 text-dark"><i class="fas fa-chart-column me-2"></i>Performance par catégorie</h6>
                                             </div>
                                             <div class="card-body p-2" id="chartPerformance" style="min-height: 400px;"></div>
                                         </div>
