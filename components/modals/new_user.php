@@ -135,11 +135,8 @@ $roles = $role->read();
       const dataId = $(event.relatedTarget).data('id');
       const form = document.getElementById('FormUser');
       
-      // Show loading screen and hide content
       $('#userLoadingScreen').show();
       $('#userContentContainer').hide();
-      
-      // Reset form in case it was previously used
       form.reset();
 
       if (dataId) {
@@ -169,7 +166,6 @@ $roles = $role->read();
             form.structure_id.value = result.data.structure_id;
             form.fonction.value = result.data.fonction;
             
-            // Hide password fields for edit mode
             $('#password').removeAttr('required');
             $('#confirm_password').removeAttr('required');
             $('#password').closest('.mb-1').hide();
@@ -181,7 +177,6 @@ $roles = $role->read();
           console.error('Error loading user data:', error);
           errorAction('Impossible de charger les données utilisateur.');
         } finally {
-          // Hide loading screen and show content
           $('#userLoadingScreen').hide();
           $('#userContentContainer').show();
         }
@@ -191,19 +186,16 @@ $roles = $role->read();
         $('#FormUser-btn').text('Ajouter');
         $('#userLoadingText').text("Préparation du formulaire...");
         
-        // Show username and email fields for add mode
         $('#username_user').attr('readonly', false);
         $('#username_user').attr('required', true);
         $('#email_user').attr('readonly', false);
         $('#email_user').attr('required', true);
 
-        // Show password fields for add mode
         $('#password').attr('required', true);
         $('#confirm_password').attr('required', true);
         $('#password').closest('.mb-1').show();
         $('#confirm_password').closest('.mb-1').show();
         
-        // Hide loading screen and show content faster for add mode
         setTimeout(() => {
           $('#userLoadingScreen').hide();
           $('#userContentContainer').show();
@@ -219,7 +211,6 @@ $roles = $role->read();
       }, 200);
     });
 
-    // Handle form submissions for both create and update
     $('#FormUser').on('submit', async function(e) {
       e.preventDefault();
       const form = this;
@@ -250,7 +241,6 @@ $roles = $role->read();
         if (result.status === 'success') {
           successAction(formUserID ? "Utilisateur modifié avec succès." : "Utilisateur ajouté avec succès.");
           $('#addUserModal').modal('hide');
-          // Refresh user list or perform other actions as needed
         } else {
           errorAction(result.message || "Une erreur est survenue. Veuillez réessayer.");
         }
