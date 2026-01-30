@@ -9,21 +9,21 @@
             <div class="modal-body px-0">
                 <form action="" name="FormRegister" id="FormRegister" method="POST" enctype="multipart/form-data">
                     <div class="row">
-                        <div class="col-lg-6">
+                        <div class="col-lg-3">
                             <div class="mb-1">
                                 <label class="form-label">Année*</label>
                                 <input class="form-control" type="number" min="2000" max="2100" name="annee" id="register_annee" value="<?= date('Y') ?>" placeholder="Entrer l'année" required />
                                 <div class="invalid-feedback" id="register_annee_feedback"></div>
                             </div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-9">
                             <div class="mb-1">
-                                <label class="form-label">Unité*</label>
-                                <select class="form-select" name="unite" id="register_unite" required>
-                                    <option value="" selected disabled>Sélectionner une unité</option>
-                                    <?php if ($unites ?? []) : ?>
-                                        <?php foreach ($unites as $unite) : ?>
-                                            <option value="<?= $unite['name'] ?>"><?= $unite['description'] ?></option>
+                                <label class="form-label">Inventaire*</label>
+                                <select class="form-select" name="inventaire_id" id="register_inventaires" required>
+                                    <option value="" selected disabled>Sélectionner un inventaire</option>
+                                    <?php if ($inventaires ?? []) : ?>
+                                        <?php foreach ($inventaires as $inventaire) : ?>
+                                            <option value="<?= $inventaire['id'] ?>"><?= $inventaire['name'] ?></option>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
                                 </select>
@@ -55,25 +55,21 @@
 </div>
 
 <script>
-    // let formRegisterId = null;
     $(document).ready(function() {
         $('#importRegisterModal').on('shown.bs.modal', async function(event) {
             const dataSecteurId = $(event.relatedTarget).data('secteur');
             const form = document.getElementById('FormRegister');
-            // formRegisterId = dataSecteurId;
         });
 
         $('#importRegisterModal').on('hide.bs.modal', function() {
             $('#FormRegister')[0].reset();
         });
 
-        // Afficher le nom du fichier sélectionné
         $('#file_register').on('change', function() {
             const fileName = this.files[0]?.name || '';
             $('#file_register_name').text(fileName);
         });
 
-        // Gestion de l'import
         $('#FormRegister').on('submit', async function(event) {
             event.preventDefault();
 
@@ -106,5 +102,4 @@
         });
 
     });
-</script>
 </script>

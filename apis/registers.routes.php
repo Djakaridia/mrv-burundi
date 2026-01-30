@@ -118,10 +118,10 @@ switch ($requestMethod) {
                     $register->emission_absolue   = floatval($row[array_search('Emissions Absolues', $headers)]);
                     $register->emission_niveau    = floatval($row[array_search('Niveau Emissions', $headers)]);
                     $register->emission_cumulee   = floatval($row[array_search('Total Comule', $headers)]);
-                    $register->file     = $fileDestination;
-                    $register->annee    = $_POST['annee'];
-                    $register->unite    = $_POST['unite'];
-                    $register->add_by   = $payload['user_id'];
+                    $register->file             = $fileDestination;
+                    $register->annee            = $_POST['annee'];
+                    $register->inventaire_id    = $_POST['inventaire_id'];
+                    $register->add_by           = $payload['user_id'];
 
                     if (!$register->create()) {
                         echo json_encode(["status"  => "danger", "message" => "Erreur insertion ligne $i"]);

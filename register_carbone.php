@@ -21,8 +21,8 @@
         $grouped_registers[$register['secteur_id']][] = $register;
     }
 
-    $unite = new Unite($db);
-    $unites = $unite->read();
+    $inventaire = new Inventory($db);
+    $inventaires = $inventaire->read();
 
     $gaz = new Gaz($db);
     $gazs = $gaz->read();

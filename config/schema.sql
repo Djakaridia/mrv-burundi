@@ -34,11 +34,11 @@ CREATE TABLE IF NOT EXISTS t_inventaires (
 -- Table des resgistre carbone
 CREATE TABLE IF NOT EXISTS t_registres (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    annee YEAR NOT NULL,
     secteur_id INT NOT NULL,
+    inventaire_id INT NOT NULL,
     code VARCHAR(20) NOT NULL,
     categorie VARCHAR(200) NOT NULL,
-    annee YEAR NOT NULL,
-    unite VARCHAR(50),
     gaz VARCHAR(20),
     emission_annee DECIMAL(15,2),
     emission_absolue DECIMAL(15,2),

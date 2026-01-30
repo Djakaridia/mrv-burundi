@@ -148,7 +148,7 @@
                             <select class="btn btn-phoenix-primary rounded-pill btn-sm form-select form-select-sm rounded-1" name="result" id="resultID" onchange="window.location.href = 'inventory.php?inventory=' + this.value">
                                 <option value="" class="text-center" selected disabled>---Sélectionner un inventaire---</option>
                                 <?php foreach ($inventories as $inventory) { ?>
-                                    <option value="<?php echo $inventory['id']; ?>" <?php if ($sel_inventory == $inventory['id']) echo 'selected'; ?>>Inventaire <?php echo $inventory['annee']; ?></option>
+                                    <option value="<?php echo $inventory['id']; ?>" <?php if ($sel_inventory == $inventory['id']) echo 'selected'; ?>><?php echo $inventory['name']; ?></option>
                                 <?php } ?>
                             </select>
                         </form>

@@ -10,7 +10,7 @@ class Register
     public $code;
     public $categorie;
     public $annee;
-    public $unite;
+    public $inventaire_id;
     public $gaz;
     public $emission_annee;
     public $emission_absolue;
@@ -30,11 +30,11 @@ class Register
     public function create()
     {
         $query = "INSERT INTO {$this->table}
-            (secteur_id, code, categorie, annee, unite, gaz,
+            (secteur_id, code, categorie, annee, inventaire_id, gaz,
              emission_annee, emission_absolue, emission_niveau, emission_cumulee,
              file, add_by)
             VALUES
-            (:secteur_id, :code, :categorie, :annee, :unite, :gaz,
+            (:secteur_id, :code, :categorie, :annee, :inventaire_id, :gaz,
              :emission_annee, :emission_absolue, :emission_niveau, :emission_cumulee,
              :file, :add_by)";
 
@@ -43,7 +43,7 @@ class Register
         $stmt->bindParam(':code', $this->code);
         $stmt->bindParam(':categorie', $this->categorie);
         $stmt->bindParam(':annee', $this->annee);
-        $stmt->bindParam(':unite', $this->unite);
+        $stmt->bindParam(':inventaire_id', $this->inventaire_id);
         $stmt->bindParam(':gaz', $this->gaz);
         $stmt->bindParam(':emission_annee', $this->emission_annee);
         $stmt->bindParam(':emission_absolue', $this->emission_absolue);
@@ -131,7 +131,7 @@ class Register
 
         $stmt->bindParam(':secteur_id', $this->secteur_id);
         $stmt->bindParam(':categorie', $this->categorie);
-        $stmt->bindParam(':unite', $this->unite);
+        $stmt->bindParam(':inventaire_id', $this->inventaire_id);
         $stmt->bindParam(':gaz', $this->gaz);
         $stmt->bindParam(':emission_annee', $this->emission_annee);
         $stmt->bindParam(':emission_absolue', $this->emission_absolue);

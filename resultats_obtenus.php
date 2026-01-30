@@ -72,6 +72,7 @@
                                             <th class="sort align-middle px-2" scope="col">Total prévu</th>
                                             <th class="sort align-middle px-2" scope="col">Total réalisé</th>
                                             <th class="sort align-middle px-2" scope="col">Taux réalisation</th>
+                                            <th class="sort align-middle px-2" scope="col">Suivis</th>
                                         </tr>
                                     </thead>
                                     <tbody class="list" id="table-latest-review-body">
@@ -143,6 +144,15 @@
                                                 <td class="align-middle bg-secondary-subtle px-2 py-0"> <?php echo strtoupper($total_prevu ?? '-'); ?> </td>
                                                 <td class="align-middle bg-secondary-subtle px-2 py-0"> <?php echo strtoupper($total_realise ?? '-'); ?> </td>
                                                 <td class="align-middle bg-secondary-subtle px-2 py-0"> <?php echo round($taux_progress, 2) . ' %' ?? '-'; ?> </td>
+                                                <td class="align-middle px-2 py-0">
+                                                    <?php if ($referentiel['categorie'] == 'impact') { ?>
+                                                        <button title="Suivre" type="button" class="btn btn-subtle-warning rounded-pill btn-sm fw-bold fs-9 px-2 py-1"
+                                                            onclick="window.location.href = 'referentiel_view.php?id=<?php echo $referentiel['id']; ?>';">Suivre
+                                                        </button>
+                                                    <?php } else {
+                                                        echo '-';
+                                                    } ?>
+                                                </td>
                                             </tr>
                                         <?php endforeach; ?>
                                     </tbody>
