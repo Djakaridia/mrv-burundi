@@ -78,10 +78,12 @@
   $unites = $unite->read();
 
   // Inventaires GES
-  $currentYear = date('Y');
   $inventory = new Inventory($db);
-  $inventory->annee = $currentYear;
-  $current_inventory = $inventory->readByAnnee();
+  $current_inventory = $inventory->read();
+  $current_inventory = array_filter($current_inventory, function ($inventory) {
+    return $inventory['afficher'] == 'oui';
+  });
+  $current_inventory = array_pop($current_inventory);
   $current_inventory_data = json_decode(!empty($current_inventory) ? $inventory->readData($current_inventory['viewtable']) : '', true);
 
   if (!empty($current_inventory_data['data'])) {
@@ -120,8 +122,15 @@
   // Registre GES
   $register = new Register($db);
   $registers = $register->read();
+  $registre_inventory = [];
+  if($current_inventory){
+    $registre_inventory = array_filter($registers, function ($register) use ($current_inventory) {
+      return $register['inventaire_id'] == $current_inventory['id'];
+    });
+  }
+
   $grouped_registers = [];
-  foreach ($registers as $register) {
+  foreach ($registre_inventory as $register) {
     $grouped_registers[$register['secteur_id']][] = $register;
   }
 
@@ -138,7 +147,7 @@
     return $secteur['parent'] == 0;
   });
 
-  if (!empty($registers)) {
+  if (!empty($registre_inventory)) {
     $global_ges_data = [];
 
     // 1. Préparation des données par secteur
@@ -154,7 +163,7 @@
     }
 
     // 2. Agrégation des données globales
-    foreach ($registers as $row) {
+    foreach ($registre_inventory as $row) {
       $secteur_id = $row['secteur_id'];
       $annee = $row['annee'];
       $gaz_name = strtoupper(trim($row['gaz']));
@@ -188,7 +197,7 @@
     $global_series_data = [];
     $years = [];
 
-    foreach ($registers as $row) {
+    foreach ($registre_inventory as $row) {
       if (!in_array($row['annee'], $years)) {
         $years[] = $row['annee'];
       }
@@ -498,7 +507,7 @@
             </div>
             <div class="card-body p-2">
               <?php if (!empty($current_inventory_data['data'])) { ?>
-                <div id="emissionsNettesChart" style="height: 400px;"></div>
+                <div id="emissionsNettesChart" style="height: 350px;"></div>
               <?php } else { ?>
                 <div class="text-center py-5 my-3" style="min-height: 300px;">
                   <div class="d-flex justify-content-center mb-3">
@@ -506,11 +515,8 @@
                       <path d="M12 8V12M12 16H12.01M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                   </div>
-                  <h4 class="text-800 mb-3">Aucune données trouvée</h4>
-                  <p class="text-600 mb-5">Veuillez ajouter des données pour afficher ses graphiques</p>
-                  <a href="inventory.php" class="btn btn-subtle-primary rounded-1 btn-sm px-5">
-                    <span class="fa fa-plus fs-9 me-2"></span>Ajouter un inventaire
-                  </a>
+                  <h4 class="text-800 mb-3">Aucune inventaire actif trouvé</h4>
+                  <p class="text-600 mb-5">Veuillez ajouter un inventaire pour afficher ses graphiques</p>
                 </div>
               <?php } ?>
             </div>
@@ -524,7 +530,7 @@
             </div>
             <div class="card-body p-2">
               <?php if (!empty($current_inventory_data['data'])) { ?>
-                <div id="emissionAbsorptionChart" style="height: 400px;"></div>
+                <div id="emissionAbsorptionChart" style="height: 350px;"></div>
               <?php } else { ?>
                 <div class="text-center py-5 my-3" style="min-height: 300px;">
                   <div class="d-flex justify-content-center mb-3">
@@ -532,11 +538,8 @@
                       <path d="M12 8V12M12 16H12.01M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                   </div>
-                  <h4 class="text-800 mb-3">Aucune données trouvée</h4>
-                  <p class="text-600 mb-5">Veuillez ajouter des données pour afficher ses graphiques</p>
-                  <a href="inventory.php" class="btn btn-subtle-primary rounded-1 btn-sm px-5">
-                    <span class="fa fa-plus fs-9 me-2"></span>Ajouter un inventaire
-                  </a>
+                  <h4 class="text-800 mb-3">Aucune inventaire actif trouvé</h4>
+                  <p class="text-600 mb-5">Veuillez ajouter un inventaire pour afficher ses graphiques</p>
                 </div>
               <?php } ?>
             </div>
@@ -550,7 +553,21 @@
             <div class="card-header rounded-top-1 py-2 px-3 bg-primary">
               <h5 class="mb-0 text-white"><i class="fas fa-bar-chart me-2"></i> Émissions par type de gaz</h5>
             </div>
-            <div class="card-body p-2" id="registreGlobalGaz" style="min-height: 350px;"></div>
+            <div class="card-body p-2">
+              <?php if (!empty($registre_inventory)) { ?>
+                <div id="registreGlobalGaz" style="height: 350px;"></div>
+              <?php } else { ?>
+                <div class="text-center py-5 my-3" style="min-height: 300px;">
+                  <div class="d-flex justify-content-center mb-3">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-warning">
+                      <path d="M12 8V12M12 16H12.01M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </div>
+                  <h4 class="text-800 mb-3">Aucun inventaire actif trouvé</h4>
+                  <p class="text-600 mb-5">Veuillez ajouter un inventaire pour afficher ses graphiques</p>
+                </div>
+              <?php } ?>
+            </div>
           </div>
         </div>
         <div class="col-12 col-md-6 mb-3">
@@ -558,7 +575,21 @@
             <div class="card-header rounded-top-1 py-2 px-3 bg-primary">
               <h5 class="mb-0 text-white"><i class="fas fa-bar-chart me-2"></i> Émissions par secteur et année</h5>
             </div>
-            <div class="card-body p-2" id="registreGlobalSecteurAnnee" style="min-height: 350px;"></div>
+            <div class="card-body p-2">
+              <?php if (!empty($registre_inventory)) { ?>
+                <div id="registreGlobalSecteurAnnee" style="height: 350px;"></div>
+              <?php } else { ?>
+                <div class="text-center py-5 my-3" style="min-height: 300px;">
+                  <div class="d-flex justify-content-center mb-3">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-warning">
+                      <path d="M12 8V12M12 16H12.01M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </div>
+                  <h4 class="text-800 mb-3">Aucun inventaire actif trouvé</h4>
+                  <p class="text-600 mb-5">Veuillez ajouter un inventaire pour afficher ses graphiques</p>
+                </div>
+              <?php } ?>
+            </div>
           </div>
         </div>
       </div>

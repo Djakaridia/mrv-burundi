@@ -24,8 +24,8 @@ class Inventory
 
     public function create()
     {
-        $query = "INSERT INTO " . $this->table . " (name, annee, unite, methode_ipcc, source_donnees, description, viewtable, file, add_by) VALUES 
-             (:name, :annee, :unite, :methode_ipcc, :source_donnees, :description, :viewtable, :file, :add_by)";
+        $query = "INSERT INTO " . $this->table . " (name, annee, unite, methode_ipcc, source_donnees, description, viewtable, afficher, add_by) VALUES 
+             (:name, :annee, :unite, :methode_ipcc, :source_donnees, :description, :viewtable, :afficher, :add_by)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':annee', $this->annee);
@@ -34,7 +34,7 @@ class Inventory
         $stmt->bindParam(':source_donnees', $this->source_donnees);
         $stmt->bindParam(':description', $this->description);
         $stmt->bindParam(':viewtable', $this->viewtable);
-        $stmt->bindParam(':file', $this->file);
+        $stmt->bindParam(':afficher', $this->afficher);
         $stmt->bindParam(':add_by', $this->add_by);
 
         if ($stmt->execute()) {
@@ -89,6 +89,16 @@ class Inventory
             return true;
         }
         return false;
+    }
+
+    public function updateAffichage($afficher)
+    {
+        $query = "UPDATE " . $this->table . " SET afficher = CASE WHEN id = :id THEN :afficher ELSE 'non' END";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':afficher', $afficher);
+        $stmt->bindParam(':id', $this->id);
+
+        return $stmt->execute();
     }
 
     public function updateFile()
@@ -170,7 +180,6 @@ class Inventory
             }
 
             return $result;
-
         } catch (Throwable $th) {
             return false;
         }
@@ -209,7 +218,6 @@ class Inventory
             }
 
             return $result;
-
         } catch (Throwable $th) {
             return false;
         }

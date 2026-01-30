@@ -17,6 +17,9 @@
     $sel_inventory = isset($_GET['inventory']) ? $_GET['inventory'] : null;
     $inventory = new Inventory($db);
     $inventories = $inventory->read();
+    $active_inventory = array_filter($inventories, function ($inventory) {
+        return $inventory['afficher'] == 'oui';
+    });
 
     $secteur = new Secteur($db);
     $secteurs = $secteur->read();
@@ -28,7 +31,7 @@
     $unites = $unite->read();
 
     if (!empty($inventories) && !$sel_inventory) {
-        $sel_inventory = $inventories[0]['id'];
+        $sel_inventory = array_pop($active_inventory)['id'];
     }
 
     if ($sel_inventory) {

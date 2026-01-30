@@ -14,8 +14,19 @@
     <?php
     include './components/navbar & footer/head.php';
 
+    $inventory = new Inventory($db);
+    $inventories = $inventory->read();
+    $inventories = array_filter($inventories, function ($inventory) {
+        return $inventory['afficher'] == 'oui';
+    });
+    $active_inventory = array_pop($inventories);
+
     $register = new Register($db);
     $registers = $register->read();
+    $registers = array_filter($registers, function ($register) use ($active_inventory) {
+        return $register['inventaire_id'] == $active_inventory['id'];
+    });
+
     $grouped_registers = [];
     foreach ($registers as $register) {
         $grouped_registers[$register['secteur_id']][] = $register;
@@ -375,7 +386,8 @@
 
                     <div class="col-lg-4 mb-2 mb-lg-0 d-flex gap-2 justify-content-lg-end">
                         <?php if (empty($sel_secteur)) { ?>
-                            <button type="button" data-bs-toggle="modal" data-bs-target="#importRegisterModal" data-secteur="<?php echo $sel_secteur; ?>" class="btn btn-subtle-primary btn-sm">
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#importRegisterModal" class="btn btn-subtle-primary btn-sm"
+                                data-inventory="<?php echo $active_inventory['id']; ?>">
                                 <span class="fa fa-database fs-9 me-2"></span>Importer Données
                             </button>
                         <?php } else { ?>

@@ -20,7 +20,7 @@
                             <div class="mb-1">
                                 <label class="form-label">Inventaire*</label>
                                 <select class="form-select" name="inventaire_id" id="register_inventaires" required>
-                                    <option value="" selected disabled>Sélectionner un inventaire</option>
+                                    <option value="" disabled>Sélectionner un inventaire</option>
                                     <?php if ($inventaires ?? []) : ?>
                                         <?php foreach ($inventaires as $inventaire) : ?>
                                             <option value="<?= $inventaire['id'] ?>"><?= $inventaire['name'] ?></option>
@@ -57,8 +57,9 @@
 <script>
     $(document).ready(function() {
         $('#importRegisterModal').on('shown.bs.modal', async function(event) {
-            const dataSecteurId = $(event.relatedTarget).data('secteur');
+            const inventaireId = $(event.relatedTarget).data('inventory');
             const form = document.getElementById('FormRegister');
+            form.inventaire_id = inventaireId || "";
         });
 
         $('#importRegisterModal').on('hide.bs.modal', function() {

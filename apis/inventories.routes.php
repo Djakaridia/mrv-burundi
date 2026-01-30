@@ -266,6 +266,7 @@ switch ($requestMethod) {
                 $inventory->source_donnees = sanitize_input($_POST['source_donnees']);
                 $inventory->description = sanitize_input($_POST['description']);
                 $inventory->viewtable = "vw_" . uniqid();
+                $inventory->afficher = "non";
                 $inventory->add_by = sanitize_input($payload['user_id']);
 
                 if (empty($inventory->annee) || empty($inventory->viewtable)) {
@@ -336,6 +337,18 @@ switch ($requestMethod) {
         }
         break;
 
+    case 'PUT':
+        $inventory->id = isset($_GET['id']) ? sanitize_input($_GET['id']) : die(json_encode(['error' => 'ID manquant']));
+        $afficher = sanitize_input($_GET['state']);
+
+        if ($inventory->updateAffichage($afficher)) {
+            http_response_code(200);
+            echo json_encode(array('status' => 'success', 'message' => 'Inventaire modifié avec succès.'));
+        } else {
+            http_response_code(503);
+            echo json_encode(array('status' => 'danger', 'message' => 'Erreur lors de la modification de l\'inventaire.'));
+        }
+        break;
     default:
         echo json_encode(array("message" => "Method not allowed."));
         break;

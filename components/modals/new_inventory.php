@@ -32,6 +32,7 @@
                                         <th scope="col" class="text-center">Intitulé</th>
                                         <th scope="col" class="text-center">Unité</th>
                                         <th scope="col" class="text-center">Méthode IPCC</th>
+                                        <th scope="col" class="text-center">Statut</th>
                                         <th scope="col" class="text-center">Actions</th>
                                     </tr>
                                 </thead>
@@ -177,7 +178,18 @@
                                 <td class="text-center px-2">${element.name}</td>
                                 <td class="text-center px-2">${element.unite}</td>
                                 <td class="text-center px-2">${element.methode_ipcc}</td>
+                                <td class="text-center px-2">
+                                    <span class="badge rounded-pill badge-phoenix fs-10 py-1 badge-phoenix-${ element.afficher == 'oui' ? 'success' : 'danger' }">
+                                    <span class="badge-label">${element.afficher == 'oui' ? 'Actif' : 'Inactif'}</span>
+                                    </span>
+                                </td>
                                 <td class="text-center px-2 d-flex justify-content-center align-items-center gap-2">
+                                <?php if (checkPermis($db, 'update', 2)) : ?>
+                                    <button title="${element.afficher == 'oui' ? 'Désactiver' : 'Activer'}" onclick="updateState('${element.id}', '${element.afficher == 'oui' ? 'non' : 'oui'}', 'Êtes-vous sûr de vouloir ${element.afficher == 'oui' ? 'désactiver' : 'activer'} cet inventaire ?', 'inventories')"
+                                        type="button" class="btn btn-sm btn-phoenix-warning fs-10 px-2 py-1">
+                                        <span class="uil-${element.afficher == 'oui' ? 'check-circle text-success' : 'ban text-warning'} fs-8"></span>
+                                    </button>
+                                <?php endif; ?>
                                 <?php if (checkPermis($db, 'update')) : ?>
                                     <button type="button" onclick="editInventory('${element.id}')" 
                                     class="btn btn-icon btn-phoenix-primary btn-sm fs-9">
