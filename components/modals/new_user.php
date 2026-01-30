@@ -146,8 +146,10 @@ $roles = $role->read();
         $('#userLoadingText').text("Chargement des données utilisateur...");
         $('#username_user').attr('readonly', true);
         $('#username_user').attr('required', false);
+        $('#username_user').addClass('bg-warning-subtle');
         $('#email_user').attr('readonly', true);
         $('#email_user').attr('required', false);
+        $('#email_user').addClass('bg-warning-subtle');
 
         try {
           const response = await fetch(`./apis/users.routes.php?id=${dataId}`, {
@@ -188,8 +190,11 @@ $roles = $role->read();
         
         $('#username_user').attr('readonly', false);
         $('#username_user').attr('required', true);
+        $('#username_user').removeClass('bg-warning-subtle');
+        
         $('#email_user').attr('readonly', false);
         $('#email_user').attr('required', true);
+        $('#email_user').removeClass('bg-warning-subtle');
 
         $('#password').attr('required', true);
         $('#confirm_password').attr('required', true);
