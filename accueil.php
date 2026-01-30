@@ -161,7 +161,7 @@
 
       $normalized_gaz = $gaz_name;
       foreach ($gazs as $system_gaz) {
-        if (strpos($gaz_name, strtoupper($system_gaz['name'])) !== false) {
+        if ($gaz_name === strtoupper($system_gaz['name'])) {
           $normalized_gaz = strtoupper($system_gaz['name']);
           break;
         }
