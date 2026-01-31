@@ -251,7 +251,7 @@ $nav_resultats = count($nav_projets) + count($nav_groupes) + count($nav_rapports
                         </div>
                         <div class="border-top border-translucent overflow-auto scrollbar">
                             <ul class="nav d-flex flex-column my-2">
-                                <li class="nav-item"><a class="nav-link px-3 d-block" href="./profil.php"> <span class="me-2 align-bottom" data-feather="user"></span><span>Profil & Tableau de bord</span></a></li>
+                                <li class="nav-item"><a class="nav-link px-3 d-block" href="./profil.php"> <span class="me-2 align-bottom" data-feather="user"></span><span>Espace personnel</span></a></li>
                                 <li class="nav-item"><a class="nav-link px-3 d-block" href="./faq.php"> <span class="me-2 align-bottom" data-feather="help-circle"></span>Centre d'aide</a></li>
                                 <li class="nav-item"><a class="nav-link px-3 d-block" href="./contact.php"> <span class="me-2 align-bottom" data-feather="mail"></span>Contactez-nous</a></li>
                             </ul>

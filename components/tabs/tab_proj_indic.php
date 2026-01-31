@@ -49,13 +49,7 @@
                         <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                             <td class="align-middle px-2 py-0"><?php echo $indic_cmr['code']; ?></td>
                             <td class="align-middle px-2"><?php echo $indic_cmr['intitule']; ?></td>
-                            <td class="align-middle px-2 py-0">
-                                <?php foreach ($unites as $unite) { ?>
-                                        <?php if ($unite['id'] == $indic_cmr['unite']) { ?>
-                                            <?php echo $unite['name']; ?>
-                                        <?php } ?>
-                                    <?php } ?>
-                            </td>
+                            <td class="align-middle px-2 py-0"><?php echo $indic_cmr['unite']; ?></td>
                             <td class="align-middle px-2 py-0 text-center"><?php echo $indic_cmr['valeur_reference']; ?></td>
 
                             <?php for ($year = date('Y', strtotime($project_curr['start_date'])); $year <= date('Y', strtotime($project_curr['end_date'])); $year++) : ?>

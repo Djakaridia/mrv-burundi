@@ -65,6 +65,7 @@ switch ($requestMethod) {
             $mesure->status = sanitize_input($_POST['status'] ?? 'planifie');
             $mesure->structure_id = sanitize_input($_POST['structure_id']);
             $mesure->action_type = sanitize_input($_POST['action_type']);
+            $mesure->instrument = sanitize_input($_POST['instrument']);
             $mesure->gaz = sanitize_input($_POST['gaz']);
             $mesure->annee_debut = sanitize_input($_POST['annee_debut'] ?? null);
             $mesure->annee_fin = sanitize_input($_POST['annee_fin'] ?? null);
@@ -91,6 +92,7 @@ switch ($requestMethod) {
             $mesure->status = sanitize_input($_POST['status'] ?? 'planifie');
             $mesure->structure_id = sanitize_input($_POST['structure_id']);
             $mesure->action_type = sanitize_input($_POST['action_type']);
+            $mesure->instrument = sanitize_input($_POST['instrument']);
             $mesure->gaz = sanitize_input($_POST['gaz']);
             $mesure->annee_debut = sanitize_input($_POST['annee_debut'] ?? null);
             $mesure->annee_fin = sanitize_input($_POST['annee_fin'] ?? null);

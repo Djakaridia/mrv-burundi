@@ -81,7 +81,7 @@
           <div class="col-12">
             <div class="row align-items-center justify-content-between g-3">
               <div class="col-12 col-md-auto">
-                <h4 class="my-1 fw-black">Profil détails</h4>
+                <h4 class="my-1 fw-black">Espace personnel</h4>
               </div>
             </div>
           </div>
@@ -261,14 +261,14 @@
                           <div class="input-group">
                             <input type="password" name="password-new" class="form-control form-control-sm rounded-start-1"
                               placeholder="Entrez votre nouveau mot de passe" required
-                              pattern="^(?=.*[A-Za-z])(?=.*\d).{5,}$">
+                              pattern="^(?=.*[A-Za-z])(?=.*\d).{6,}$">
                             <button class="btn btn-sm rounded-end-1 btn-light border toggle-password" type="button">
                               <span class="uil uil-eye"></span>
                             </button>
                           </div>
-                          <div class="form-text text-warning">Minimum 5 caractères avec chiffres et lettres</div>
+                          <div class="form-text text-warning">Minimum 6 caractères avec chiffres et lettres</div>
                           <div class="invalid-feedback">
-                            Le mot de passe doit contenir au moins 5 caractères avec des chiffres et des lettres.
+                            Le mot de passe doit contenir au moins 6 caractères avec des chiffres et des lettres.
                           </div>
                         </div>
 

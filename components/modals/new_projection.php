@@ -21,17 +21,6 @@
                         <input type="hidden" id="projection_id" name="id">
 
                         <div class="row">
-                            <!-- Indicateur -->
-                            <div class="col-md-12 mb-1">
-                                <label for="referentiel_id" class="form-label">Indicateur Référentiel <span class="text-danger">*</span></label>
-                                <select class="form-select" id="referentiel_id" name="referentiel_id" required>
-                                    <option value="" selected disabled>Sélectionner un indicateur</option>
-                                    <?php foreach ($referentiels_projection ?? [] as $indicateur): ?>
-                                        <option value="<?= $indicateur['id'] ?>"><?= htmlspecialchars($indicateur['intitule'] ?? $indicateur['name'] ?? '') ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-
                              <!-- Secteur -->
                             <div class="col-md-6 mb-1">
                                 <label for="secteur_id" class="form-label">Secteur <span class="text-danger">*</span></label>
@@ -42,7 +31,6 @@
                                     <?php endforeach; ?>
                                 </select>
                             </div>
-
                             <!-- Scénario -->
                             <div class="col-md-6 mb-1">
                                 <label for="scenario" class="form-label">Scénario <span class="text-danger">*</span></label>
@@ -54,6 +42,17 @@
                                 </select>
                             </div>
 
+                            <!-- Indicateur -->
+                            <div class="col-md-12 mb-1">
+                                <label for="referentiel_id" class="form-label">Indicateur Référentiel <span class="text-danger">*</span></label>
+                                <select class="form-select" id="referentiel_id" name="referentiel_id" required>
+                                    <option value="" selected disabled>Sélectionner un indicateur</option>
+                                    <?php foreach ($referentiels_projection ?? [] as $indicateur): ?>
+                                        <option value="<?= $indicateur['id'] ?>"><?= htmlspecialchars($indicateur['intitule'] ?? $indicateur['name'] ?? '') ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
                             <!-- Année -->
                             <div class="col-md-4 mb-1">
                                 <label for="annee" class="form-label">Année <span class="text-danger">*</span></label>
@@ -61,14 +60,12 @@
                                     min="2000" max="2100" step="1"
                                     value="<?= date('Y') ?>" required>
                             </div>
-
                             <!-- Valeur -->
                             <div class="col-md-4 mb-1">
                                 <label for="valeur" class="form-label">Valeur <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="valeur" name="valeur"
                                     placeholder="Ex: 1234.56" required>
                             </div>
-
                             <!-- Unité -->
                             <div class="col-md-4 mb-1">
                                 <label for="unite" class="form-label">Unité</label>
@@ -85,7 +82,6 @@
                                 <label for="source" class="form-label">Source</label>
                                 <input type="text" class="form-control" id="source" name="source" placeholder="Ex: Rapport XYZ, Étude ABC...">
                             </div>
-
                             <!-- Description -->
                             <div class="col-12 mb-1">
                                 <label for="description" class="form-label">Description</label>

@@ -2,6 +2,7 @@
 require_once __DIR__ . '/config/jwt-token.php';
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/models/User.php';
+require_once __DIR__ . '/models/Connexion.php';
 
 // Configuration sécurisée de la session
 session_start([
@@ -14,6 +15,7 @@ session_start([
 $database = new Database();
 $db = $database->getConnection();
 $user = new User($db);
+$connexion = new Connexion($db);
 
 try {
     // Vérifier le token dans l'URL (nettoyé)
@@ -80,8 +82,13 @@ try {
         ],
         'ip_address' => $_SERVER['REMOTE_ADDR'],
         'user_agent' => $_SERVER['HTTP_USER_AGENT'],
-        'csp_nonce' => bin2hex(random_bytes(16))
+        'csp_nonce' => bin2hex(random_bytes(16)),
     ];
+
+    // Check if first connexion
+    $connexion->user_id = $user_data['id'];
+    $connexion_data = $connexion->readByUser();
+    $_SESSION['init_pwd'] = count($connexion_data) === 1 ? $token : null;
 
     // Configurer le cookie sécurisé
     $cookieParams = [
@@ -105,17 +112,17 @@ try {
             <script nonce="{$_SESSION['csp_nonce']}">
                 try {
                     localStorage.setItem('authtkmrv', '{$token}');
-                    window.location.href = 'accueil.php';
-                    window.history.replaceState({}, document.title, 'accueil.php');
+                    window.location.href = 'initialize.php';
+                    window.history.replaceState({}, document.title, 'initialize.php');
                 } catch(e) {
                     console.error("Erreur", e);
-                    window.location.href = 'accueil.php';
-                    window.history.replaceState({}, document.title, 'accueil.php');
+                    window.location.href = 'initialize.php';
+                    window.history.replaceState({}, document.title, 'initialize.php');
                 }
             </script>
         </head>
         <body>
-            <noscript><p>Redirection en cours... <a href="accueil.php">Cliquez ici</a></p></noscript>
+            <noscript><p>Redirection en cours... <a href="initialize.php">Cliquez ici</a></p></noscript>
         </body>
         </html>
         HTML;

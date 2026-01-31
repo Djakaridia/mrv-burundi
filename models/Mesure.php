@@ -9,6 +9,7 @@ class Mesure
     public $name;
     public $structure_id;
     public $action_type;
+    public $instrument;
     public $status;
     public $gaz;
     public $secteur_id;
@@ -27,14 +28,15 @@ class Mesure
 
     public function create()
     {
-        $query = "INSERT INTO " . $this->table . " (code, name, structure_id, action_type, status, gaz, secteur_id, annee_debut, annee_fin, valeur_realise, valeur_cible, description, objectif, add_by) VALUES 
-                  (:code, :name, :structure_id, :action_type, :status, :gaz, :secteur_id, :annee_debut, :annee_fin, :valeur_realise, :valeur_cible, :description, :objectif, :add_by)";
+        $query = "INSERT INTO " . $this->table . " (code, name, structure_id, action_type, instrument, status, gaz, secteur_id, annee_debut, annee_fin, valeur_realise, valeur_cible, description, objectif, add_by) VALUES 
+                  (:code, :name, :structure_id, :action_type, :instrument, :status, :gaz, :secteur_id, :annee_debut, :annee_fin, :valeur_realise, :valeur_cible, :description, :objectif, :add_by)";
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':code', $this->code);
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':structure_id', $this->structure_id);
         $stmt->bindParam(':action_type', $this->action_type);
+        $stmt->bindParam(':instrument', $this->instrument);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':gaz', $this->gaz);
         $stmt->bindParam(':secteur_id', $this->secteur_id);
@@ -95,7 +97,7 @@ class Mesure
     public function update()
     {
         $query = "UPDATE " . $this->table . " SET 
-      code=:code, name=:name, structure_id=:structure_id, action_type=:action_type, status=:status, gaz=:gaz, secteur_id=:secteur_id, annee_debut=:annee_debut, annee_fin=:annee_fin, 
+      code=:code, name=:name, structure_id=:structure_id, action_type=:action_type, instrument=:instrument, status=:status, gaz=:gaz, secteur_id=:secteur_id, annee_debut=:annee_debut, annee_fin=:annee_fin, 
       valeur_realise=:valeur_realise, valeur_cible=:valeur_cible, description=:description, objectif=:objectif, add_by=:add_by 
       WHERE id=:id";
 
@@ -105,6 +107,7 @@ class Mesure
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':structure_id', $this->structure_id);
         $stmt->bindParam(':action_type', $this->action_type);
+        $stmt->bindParam(':instrument', $this->instrument);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':gaz', $this->gaz);
         $stmt->bindParam(':secteur_id', $this->secteur_id);

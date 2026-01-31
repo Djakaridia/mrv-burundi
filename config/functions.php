@@ -521,6 +521,16 @@ function listTypeAction()
         'transversale' => 'Transversale'
     ];
 }
+
+function listTypeInstrument()
+{
+    return [
+        'politique' => 'Politique',
+        'economique' => 'Économique',
+        'reglementaire' => 'Réglementaire'
+    ];
+}
+
 function listStatus()
 {
     return [

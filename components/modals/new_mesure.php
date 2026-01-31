@@ -110,7 +110,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-6 mb-3">
+                                            <div class="col-md-4 mb-3">
                                                 <div class="form-floating">
                                                     <select class="form-select" name="action_type" id="mesureAction" required>
                                                         <option value="" selected disabled>Sélectionner un type</option>
@@ -121,7 +121,18 @@
                                                     <label for="mesureAction">Action type *</label>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6 mb-3">
+                                            <div class="col-md-4 mb-3">
+                                                <div class="form-floating">
+                                                    <select class="form-select" name="instrument" id="mesureInstrument" required>
+                                                        <option value="" selected disabled>Sélectionner d'instrument</option>
+                                                        <?php foreach (listTypeInstrument() as $key => $value) : ?>
+                                                            <option value="<?= $key ?>"><?= $value ?></option>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                    <label for="mesureInstrument">Instrument *</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
                                                 <div class="form-floating">
                                                     <select class="form-select" name="status" id="mesureStatus" required>
                                                         <?php foreach (listStatus() as $key => $value) : ?>

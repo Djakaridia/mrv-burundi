@@ -104,7 +104,10 @@
                 </div>
                 <div class="col-auto"><a class="fs-9 fw-semibold" href="forget_password.php">Mot de passe oublié ?</a></div>
               </div>
-              <button title="Se connecter" type="submit" class="btn btn-subtle-primary w-100 mb-3">Se connecter</button>
+              <button title="Se connecter" type="submit" class="btn btn-subtle-primary w-100 mb-3 d-flex align-items-center gap-3 justify-content-center">
+                <span class="py-1">Se connecter</span>
+                <div id="spinnerLogin" class="spinner-border spinner-border-sm d-none" role="status"></div>
+              </button>
             </form>
           </div>
         </div>
