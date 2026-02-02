@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Profil | MRV - Burundi</title>
+  <title>Initialisation du mot de passe | MRV - Burundi</title>
   <?php
   include './components/navbar & footer/head.php';
 
@@ -27,7 +27,7 @@
   $updatedAt = new DateTime($user_info['updated_at']);
   $now = new DateTime();
   $interval = $now->diff($updatedAt);
-  $last_connexion = (int) $interval->format('%r%a');
+  $last_connexion = abs($interval->format('%r%a'));
 
   if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['changePasswordForm'])) {
     $password = $_POST['password-current'];

@@ -43,9 +43,11 @@
             <h4 class="my-1 fw-black">Liste des utilisateurs</h4>
           </div>
           <div class="ms-lg-2">
-            <button title="Ajouter" class="btn btn-subtle-primary btn-sm" id="addBtn" data-bs-toggle="modal"
-              data-bs-target="#addUserModal" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
-              <i class="fas fa-plus"></i> Ajouter utilisateur</button>
+            <?php if (checkPermis($db, 'update', 1)) : ?>
+              <button title="Ajouter" class="btn btn-subtle-primary btn-sm" id="addBtn" data-bs-toggle="modal"
+                data-bs-target="#addUserModal" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
+                <i class="fas fa-plus"></i> Ajouter utilisateur</button>
+            <?php endif; ?>
           </div>
         </div>
       </div>
@@ -105,21 +107,21 @@
 
                       <td class="align-middle review">
                         <div class="position-relative d-flex gap-1">
-                          <?php if ((checkPermis($db, 'update', 2) && $user['username'] != 'admin') || ($user['id'] == $_SESSION['user-data']['user-id'])) : ?>
+                          <?php if ((checkPermis($db, 'update', 1) && $user['username'] != 'admin')) : ?>
                             <button title="Modifier" class="btn btn-sm btn-phoenix-info fs-10 px-2 py-1" data-bs-toggle="modal"
                               data-bs-target="#addUserModal" data-id="<?php echo $user['id']; ?>">
                               <span class="uil-pen fs-8"></span>
                             </button>
                           <?php endif; ?>
 
-                          <?php if ((checkPermis($db, 'update', 2) && $user['username'] != 'admin') || ($user['id'] == $_SESSION['user-data']['user-id'])) : ?>
+                          <?php if ((checkPermis($db, 'update', 1) && $user['username'] != 'admin')) : ?>
                             <button title="Activer/Désactiver" onclick="updateState(<?php echo $user['id']; ?>, '<?php echo $user['state'] == 'actif' ? 'inactif' : 'actif'; ?>', 'Êtes-vous sûr de vouloir <?php echo $user['state'] == 'actif' ? 'désactiver' : 'activer'; ?> cet acteur ?', 'users')"
                               type="button" class="btn btn-sm btn-phoenix-warning fs-10 px-2 py-1">
                               <span class="uil-<?php echo $user['state'] == 'actif' ? 'ban text-warning' : 'check-circle text-success'; ?> fs-8"></span>
                             </button>
                           <?php endif; ?>
 
-                          <?php if ((checkPermis($db, 'delete', 2) && $user['username'] != 'admin') || ($user['id'] == $_SESSION['user-data']['user-id'])) : ?>
+                          <?php if ((checkPermis($db, 'delete', 1) && $user['username'] != 'admin')) : ?>
                             <button title="Supprimer" onclick="deleteData(<?php echo $user['id']; ?>, 'Êtes-vous sûr de vouloir supprimer cet utilisateur ?', 'users')"
                               type="button" class="btn btn-sm btn-phoenix-danger fs-10 px-2 py-1">
                               <span class="uil-trash-alt fs-8"></span>

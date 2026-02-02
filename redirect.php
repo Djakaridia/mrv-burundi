@@ -88,7 +88,7 @@ try {
     // Check if first connexion
     $connexion->user_id = $user_data['id'];
     $connexion_data = $connexion->readByUser();
-    $_SESSION['init_pwd'] = count($connexion_data) === 1 ? $token : null;
+    $_SESSION['init_pwd'] = count($connexion_data) === 1 ? true : null;
 
     // Configurer le cookie sécurisé
     $cookieParams = [

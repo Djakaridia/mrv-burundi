@@ -77,16 +77,6 @@
           </div>
         <?php endif; ?>
 
-        <div class="row">
-          <div class="col-12">
-            <div class="row align-items-center justify-content-between g-3">
-              <div class="col-12 col-md-auto">
-                <h4 class="my-1 fw-black">Espace personnel</h4>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div class="row g-3">
           <div class="col-md-4 col-lg-4 col-xl-4">
             <div class="sticky-leads-sidebar">
@@ -314,12 +304,12 @@
 
           <div class="col-md-8 col-lg-8 col-xl-8">
             <div class="lead-details-container">
-              <nav class="navbar p-3 px-0 sticky-top bg-body nav-underline-scrollspy" id="navbar-deals-detail">
+              <nav class="navbar sticky-top bg-body nav-underline-scrollspy mb-3 pt-1" id="navbar-deals-detail">
                 <ul class="nav nav-underline fs-9">
-                  <li class="nav-item"><a class="nav-link me-2" href="#scrollspyTask">Activités</a></li>
                   <li class="nav-item"><a class="nav-link me-2" href="#scrollspyDeals">Projets</a></li>
+                  <li class="nav-item"><a class="nav-link me-2" href="#scrollspyTask">Activités</a></li>
                   <li class="nav-item"><a class="nav-link me-2" href="#scrollspyGroup">Groupes de travail</a></li>
-                  <li class="nav-item"><a class="nav-link" href="#scrollspyDocs">Documents </a></li>
+                  <li class="nav-item"><a class="nav-link me-2" href="#scrollspyDocs">Documents </a></li>
                 </ul>
               </nav>
 
@@ -328,22 +318,22 @@
                 tabindex="0">
 
                 <div class="mb-3">
-                  <h4 class="mb-0 w-100 px-3" id="scrollspyTask">Activités assignées</h4>
-                  <?php include 'components/tabs/tab_profil_task.php'; ?>
-                </div>
-
-                <div class="mb-3">
-                  <h4 class="mb-0 w-100 px-3" id="scrollspyDeals">Projets associés</h4>
+                  <h4 class="mb-0 w-100 px-2" id="scrollspyDeals">Projets associés</h4>
                   <?php include 'components/tabs/tab_profil_project.php'; ?>
                 </div>
 
                 <div class="mb-3">
-                  <h4 class="mb-0 w-100 px-3" id="scrollspyGroup">Groupes de travail</h4>
+                  <h4 class="mb-0 w-100 px-2" id="scrollspyTask">Activités assignées</h4>
+                  <?php include 'components/tabs/tab_profil_task.php'; ?>
+                </div>
+
+                <div class="mb-3">
+                  <h4 class="mb-0 w-100 px-2" id="scrollspyGroup">Groupes de travail</h4>
                   <?php include 'components/tabs/tab_profil_group.php'; ?>
                 </div>
 
                 <div class="mb-3">
-                  <h4 class="mb-0 w-100 px-3" id="scrollspyDocs">Documents ajoutés</h4>
+                  <h4 class="mb-0 w-100 px-2" id="scrollspyDocs">Documents ajoutés</h4>
                   <?php include 'components/tabs/tab_profil_docs.php'; ?>
                 </div>
               </div>
