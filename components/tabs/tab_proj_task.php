@@ -1,7 +1,7 @@
 <div class="mb-9">
     <div class="mb-2 d-lg-flex flex-row justify-content-between align-items-center">
         <div class="col-auto">
-            <h4 class="fw-black">Liste des activités</h4>
+            <h4 class="my-1 fw-black fs-8">Liste des activités</h4>
         </div>
 
         <div class="col-auto d-flex gap-2">

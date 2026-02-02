@@ -1,8 +1,8 @@
-<div class="row mt-3">
+<div class="row">
     <div class="col-12">
         <!-- Titre et bouton d'ajout -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="mb-0 text-body-emphasis">Liste des Membres du groupe</h3>
+        <div class="d-flex justify-content-between align-items-center mb-3 px-3">
+            <h4 class="my-1 fw-black fs-8">Liste des Membres du groupe</h4>
             <div class="ms-lg-2">
                 <button title="Ajouter un membre" class="btn btn-subtle-primary btn-sm" id="addBtn" data-bs-toggle="modal"
                     data-bs-target="#addGroupMenbre" aria-haspopup="true" aria-expanded="false"
@@ -13,7 +13,7 @@
         </div>
 
         <!-- Liste des membres -->
-        <div class="row g-4 mb-9">
+        <div class="row bg-body-emphasis p-3 border-top g-2">
             <?php if (empty($users_group)) { ?>
                 <div class="text-center py-5 my-5" style="min-height: 300px;">
                     <div class="d-flex justify-content-center mb-3">

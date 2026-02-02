@@ -109,8 +109,8 @@
             href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $group_id . '&tab=project'; ?>">Projets</a></li>
       </ul>
 
-      <div class="mx-n4 mx-lg-n6 px-2 px-lg-3 bg-body-emphasis border">
-        <div class="tab-content mt-3" id="myTabContent">
+      <div class="mx-n4 mx-lg-n6 px-0 bg-body-emphasis border">
+        <div class="tab-content mt-2" id="myTabContent">
           <div class="tab-pane fade <?php echo $tab == 'view' ? 'active show' : ''; ?>" id="tab-view" role="tabpanel"
             aria-labelledby="view-tab">
             <?php include './components/tabs/tab_group_home.php'; ?>

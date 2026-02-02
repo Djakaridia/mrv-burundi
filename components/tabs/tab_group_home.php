@@ -1,8 +1,8 @@
 <div class="content px-0 py-0 pt-navbar">
     <div class="row g-0">
-        <div class="col-12 col-xxl-12 px-0 pb-9">
+        <div class="col-12 col-xxl-12 px-3 pb-9">
             <div class="d-flex justify-content-between align-items-start">
-                <h3 class="text-body-emphasis fw-bolder mb-2"><?php echo $group_curr['name']; ?></h3>
+                <h4 class="my-1 fw-black fs-8"><?php echo $group_curr['name']; ?></h4>
 
                 <div class="btn-reveal-trigger gap-1">
                     <?php if (checkPermis($db, 'update')): ?>

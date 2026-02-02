@@ -1,14 +1,14 @@
-<div class="row mt-3">
+<div class="row">
     <div class="col-12">
         <!-- Titre ajouté ici -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="mb-0 text-body-emphasis">Liste des Projets du groupe </h3>
-            <div>
+        <div class="d-flex justify-content-between align-items-center mb-3 px-3">
+            <h4 class="my-1 fw-black fs-8">Liste des Projets du groupe </h4>
+            <div class="my-1">
                 <span class="badge bg-primary rounded-pill fs-9"><?php echo count($projets); ?> projet(s)</span>
             </div>
         </div>
         
-        <div class="row bg-body-emphasis py-3 border-y">
+        <div class="row bg-body-emphasis p-3 border-top g-2">
             <?php if (empty($projets)) { ?>
                 <div class="text-center py-5 my-5" style="min-height: 300px;">
                     <div class="d-flex justify-content-center mb-3">

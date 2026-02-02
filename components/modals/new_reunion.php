@@ -71,7 +71,7 @@
                             <div class="col-lg-6 mt-1">
                                 <div class="mb-1">
                                     <label for="eventColor" class="form-label">Couleur</label>
-                                    <input class="form-control" type="color" name="couleur" id="couleur-reunion"
+                                    <input class="form-control" style="height: 36px;" type="color" name="couleur" id="couleur-reunion"
                                         placeholder="Entrer la couleur" />
 
                                 </div>

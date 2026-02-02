@@ -44,7 +44,7 @@
             <div class="mx-n4 mt-n5 px-0 mx-lg-n6 px-lg-0 bg-body-emphasis border border-start-0">
                 <div class="card-body p-2 d-lg-flex flex-row justify-content-between align-items-center g-3">
                     <div class="col-lg-6 mb-2 mb-lg-0">
-                        <h4 class="my-1 fw-black">Résultats obtenus sur les indicateurs de la CDN</h4>
+                        <h4 class="my-1 fw-black fs-8">Résultats obtenus sur les indicateurs de la CDN</h4>
                     </div>
 
                     <div class="col-lg-6 mb-2 mb-lg-0 text-lg-end">

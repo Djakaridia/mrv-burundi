@@ -41,7 +41,7 @@
             <div class="mx-n4 mt-n5 px-0 mx-lg-n6 px-lg-0 bg-body-emphasis border border-start-0">
                 <div class="card-body p-2 d-lg-flex flex-row justify-content-between align-items-center">
                     <div class="col-auto">
-                        <h4 class="my-1 fw-black">Liste des programmes</h4>
+                        <h4 class="my-1 fw-black fs-8">Liste des programmes</h4>
                     </div>
 
                     <div class="ms-lg-2">

@@ -1,7 +1,7 @@
 <div class="mb-9 mt-2">
     <div class="row g-3 mb-3 d-flex flex-row justify-content-between align-items-center">
         <div class="col-auto">
-            <h4 class="my-1 fw-black">Liste des acteurs</h4>
+            <h4 class="my-1 fw-black fs-8">Liste des acteurs</h4>
         </div>
 
         <div class="col-auto">

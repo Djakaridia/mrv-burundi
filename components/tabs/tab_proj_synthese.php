@@ -1,7 +1,7 @@
 <div class="mb-9 mt-2">
     <div class="row g-3 mb-2 d-flex flex-row justify-content-between align-items-center">
         <div class="col-auto">
-            <h4 class="fw-black">Rapport de synthèse des données</h4>
+            <h4 class="my-1 fw-black fs-8">Rapport de synthèse des données</h4>
         </div>
 
         <div class="col-auto">

@@ -67,7 +67,7 @@
       <div class="mx-n4 mt-n5 px-0 mx-lg-n6 px-lg-0 bg-body-emphasis border border-start-0">
         <div class="card-body p-2 d-lg-flex flex-row justify-content-between align-items-center">
           <div class="col-lg-4 mb-2 mb-lg-0">
-            <h4 class="my-1 fw-black">Indicateurs du CMR</h4>
+            <h4 class="my-1 fw-black fs-8">Indicateurs du CMR</h4>
           </div>
 
           <div class="col-lg-3 mb-2 mb-lg-0 text-center">

@@ -63,7 +63,7 @@
       <div class="mx-n4 mt-n5 px-0 mx-lg-n6 px-lg-0 bg-body-emphasis border border-start-0">
         <div class="card-body p-2 d-lg-flex flex-row justify-content-between align-items-center g-3">
           <div class="col-auto">
-            <h4 class="my-1 fw-black">Liste des indicateurs de la CDN</h4>
+            <h4 class="my-1 fw-black fs-8">Liste des indicateurs de la CDN</h4>
           </div>
           <div class="ms-lg-2">
             <button title="Ajouter" class="btn btn-subtle-primary btn-sm" id="addBtn" data-bs-toggle="modal"

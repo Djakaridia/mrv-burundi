@@ -52,7 +52,7 @@
 
             <div class="mx-n4 mt-n5 px-2 mx-lg-n6 bg-body-emphasis border border-start-0">
                 <div class="card-body p-2 d-lg-flex flex-row justify-content-between align-items-center">
-                    <h4 class="my-1 fw-black d-flex align-items-center gap-2">
+                    <h4 class="my-1 fw-black fs-8 d-flex align-items-center gap-2">
                         Liste des dossiers
                         <button title="Aide" class="btn btn-icon btn-subtle-primary btn-sm rounded-circle" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvaDocumentd" aria-controls="offcanvaDocumentd">
                             <i class="far fa-question-circle align-bottom fs-8"></i>
@@ -141,7 +141,7 @@
 
                 <div class="card-body p-2 border-top border-top-1 border-top-light mb-9">
                     <div class="d-flex align-items-center mb-2">
-                        <h4 class="my-1 fw-black flex-grow-1 fs-16 mb-0" id="filetype-title">Fichiers récents</h4>
+                        <h4 class="my-1 fw-black fs-8 flex-grow-1 mb-0" id="filetype-title">Fichiers récents</h4>
                         <div class="d-flex flex-row justify-content-end gap-2">
                             <button title="Ajouter" class="btn btn-subtle-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addDocumentModal"><i class="fas fa-plus align-bottom me-1"></i> Ajouter un fichier</button>
                         </div>
