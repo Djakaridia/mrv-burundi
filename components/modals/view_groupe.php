@@ -244,8 +244,8 @@
 
                                 // Determine status color
                                 let statusColor = 'bg-warning';
-                                if (reunion.status === 'terminée') statusColor = 'bg-success';
-                                if (reunion.status === 'annulée') statusColor = 'bg-danger';
+                                if (reunion.status === 'realise') statusColor = 'bg-success';
+                                if (reunion.status === 'annule') statusColor = 'bg-danger';
 
                                 reunionsList.append(`
                                     <div class="list-group-item border-0 px-0 py-2">
@@ -258,7 +258,7 @@
                                                 <small class="text-muted"><i class="far fa-clock me-1"></i>${dateReunion}</small>
                                                 ${reunion.lieu ? `<small class="text-muted d-block"><i class="fas fa-map-marker-alt me-1"></i>${reunion.lieu}</small>` : ''}
                                             </div>
-                                            <span class="badge ${statusColor} fs-10 text-white text-capitalize">${reunion.status || 'planifiée'}</span>
+                                            <span class="badge ${statusColor} fs-10 text-white text-capitalize">${reunion.status || 'planifie'}</span>
                                         </div>
                                     </div>
                                 `);

@@ -72,7 +72,7 @@ switch ($requestMethod) {
             $reunions->horaire = sanitize_input($_POST['horaire']);
             $reunions->couleur = sanitize_input($_POST['couleur']);
             $reunions->lieu = sanitize_input($_POST['lieu']);
-            $reunions->status = "planifiée";
+            $reunions->status = "planifie";
             $reunions->add_by = sanitize_input($payload['user_id']);
 
             // Get Groupe Data

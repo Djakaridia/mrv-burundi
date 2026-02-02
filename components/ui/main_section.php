@@ -80,28 +80,28 @@
                             $tasks = $task->readByProjet();
 
                             $active_tasks = array_filter($tasks, fn($t) => ($t['state'] ?? '') === 'actif');
-                            $status_counts = ['terminée' => 0, 'annulée' => 0];
+                            $status_counts = ['realise' => 0, 'annule' => 0];
 
                             $badge_parts = [];
                             if (!empty($active_tasks)) {
                                 foreach ($active_tasks as $task) {
-                                    $status = $task['status'] ?? 'planifiée';
+                                    $status = $task['status'] ?? 'planifie';
                                     if (array_key_exists($status, $status_counts)) {
                                         $status_counts[$status]++;
                                     }
                                 }
 
-                                if ($status_counts['terminée'] > 0 || $status_counts['annulée'] > 0) {
-                                    if ($status_counts['terminée'] > 0) {
+                                if ($status_counts['realise'] > 0 || $status_counts['annule'] > 0) {
+                                    if ($status_counts['realise'] > 0) {
                                         $badge_parts[] = sprintf(
                                             '<span class="badge bg-success-subtle text-success">%d Terminées</span>',
-                                            $status_counts['terminée']
+                                            $status_counts['realise']
                                         );
                                     }
-                                    if ($status_counts['annulée'] > 0) {
+                                    if ($status_counts['annule'] > 0) {
                                         $badge_parts[] = sprintf(
                                             '<span class="badge bg-danger-subtle text-danger">%d Annulées</span>',
-                                            $status_counts['annulée']
+                                            $status_counts['annule']
                                         );
                                     }
                                 } else {

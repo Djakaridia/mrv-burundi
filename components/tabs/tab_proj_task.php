@@ -50,7 +50,7 @@
                             <td class="text-center">
                                 <a class="btn btn-link fw-bold p-0 m-0" data-bs-toggle="modal" data-bs-target="#IndicateurTaskModal" aria-haspopup="true" aria-expanded="false"
                                     data-id="<?php echo $tache['id']; ?>">
-                                    <?= ($nbre_indicateurs > 0) ? "(" . $nbre_indicateurs . ") planifiée" : "Ajouter" ?>
+                                    <?= ($nbre_indicateurs > 0) ? "(" . $nbre_indicateurs . ") planifié" : "Ajouter" ?>
                                 </a>
                             </td>
                             <td class="text-center">

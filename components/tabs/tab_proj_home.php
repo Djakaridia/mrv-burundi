@@ -2,17 +2,17 @@
 $task_planifiee = $task_en_cours = $task_en_attente = $task_terminee = $task_annulee = $task_autre = 0;
 
 foreach ($taches_project as $tache) {
-    if (strtolower($tache['status']) === 'planifiée') {
+    if (strtolower($tache['status']) === 'planifie') {
         $task_planifiee++;
-    } elseif (strtolower($tache['status']) === 'annulée') {
+    } elseif (strtolower($tache['status']) === 'annule') {
         $task_annulee++;
     } elseif (strtolower($tache['status']) === 'autre') {
         $task_autre++;
-    } elseif (strtolower($tache['status']) === 'en cours') {
+    } elseif (strtolower($tache['status']) === 'en_cours') {
         $task_en_cours++;
-    } elseif (strtolower($tache['status']) === 'en attente') {
+    } elseif (strtolower($tache['status']) === 'en_attente') {
         $task_en_attente++;
-    } elseif (strtolower($tache['status']) === 'terminée') {
+    } elseif (strtolower($tache['status']) === 'realise') {
         $task_terminee++;
     }
 }

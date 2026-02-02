@@ -478,11 +478,11 @@ function getNotifyIcon($type)
 function getBadgeClass($status)
 {
     return match (strtolower($status)) {
-        'planifiée' => 'info',
-        'en cours' => 'warning',
-        'en attente' => 'light',
-        'terminée' => 'success',
-        'annulée' => 'danger',
+        'planifie' => 'info',
+        'en_cours' => 'warning',
+        'en_attente' => 'light',
+        'realise' => 'success',
+        'annule' => 'danger',
         default => 'secondary',
     };
 }
@@ -490,11 +490,11 @@ function getBadgeClass($status)
 function getBadgeFaIcon($status)
 {
     return match (strtolower($status)) {
-        'planifiée' => 'fa-calendar',
-        'en cours' => 'fa-calendar-minus',
-        'en attente' => 'fa-clock',
-        'terminée' => 'fa-check',
-        'annulée' => 'fa-times',
+        'planifie' => 'fa-calendar',
+        'en_cours' => 'fa-calendar-minus',
+        'en_attente' => 'fa-clock',
+        'realise' => 'fa-check',
+        'annule' => 'fa-times',
         default => 'fa-info',
     };
 }

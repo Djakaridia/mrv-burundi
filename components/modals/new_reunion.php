@@ -52,7 +52,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-lg-6 mt-1">
+                            <div class="col-lg-4 mt-1">
                                 <div class="mb-1">
                                     <label for="eventGroupe" class="form-label">Groupe de
                                         travail*</label>
@@ -67,13 +67,24 @@
                                     </select>
                                 </div>
                             </div>
-
-                            <div class="col-lg-6 mt-1">
+                            <div class="col-lg-4 mt-1">
                                 <div class="mb-1">
                                     <label for="eventColor" class="form-label">Couleur</label>
                                     <input class="form-control" style="height: 36px;" type="color" name="couleur" id="couleur-reunion"
                                         placeholder="Entrer la couleur" />
 
+                                </div>
+                            </div>
+                            <div class="col-lg-4 mt-1">
+                                <div class="mb-1">
+                                    <label for="eventStatus" class="form-label">Statut*</label>
+                                    <select class="form-select" name="status" id="eventStatus" required>
+                                        <option value="">Sélectionner un statut</option>
+                                            <?php foreach (listStatus() as $key => $status) { ?>
+                                                <option value="<?php echo $key; ?>"><?php echo $status; ?>
+                                                </option>
+                                            <?php } ?>
+                                    </select>
                                 </div>
                             </div>
 
@@ -88,7 +99,6 @@
                         </div>
 
                         <div class="modal-footer d-flex justify-content-between border-0 pt-3 px-0 pb-0">
-                            <input type="hidden" name="status" value="planifiée">
                             <button type="button" class="btn btn-secondary btn-sm px-3 my-0" data-bs-dismiss="modal"
                                 aria-label="Close">Annuler</button>
                             <button type="submit" class="btn btn-primary btn-sm px-3 my-0"
@@ -210,6 +220,7 @@
 
 <script>
     $(document).ready(function() {
+        const listStatus = <?= json_encode(listStatus()) ?>;
         $('#eventDetailsModal').on('shown.bs.modal', async function(event) {
             let reunionId = null;
 
@@ -249,7 +260,7 @@
                             </div>
                             <div class="d-flex flex-column align-items-end gap-2">
                                 <span class="badge bg-${getBadgeClass(data.status)} text-capitalize py-2 px-3">
-                                    ${data.status}
+                                    ${listStatus[data.status]}
                                 </span>
                                 <span class="text-muted mb-0">
                                     <i class="far fa-clock me-2 text-primary"></i> ${formatDate(data.horaire, 'DD/MM/YYYY [à] HH:mm')}
@@ -328,13 +339,13 @@
 
     function getBadgeClass(status) {
         switch ((status || '').toLowerCase()) {
-            case 'planifiée':
+            case 'planifie':
                 return 'info';
-            case 'en cours':
+            case 'en_cours':
                 return 'warning';
-            case 'terminée':
+            case 'realise':
                 return 'success';
-            case 'annulée':
+            case 'annule':
                 return 'danger';
             default:
                 return 'secondary';
