@@ -18,6 +18,12 @@ loadVarEnv();
 $database = new Database();
 $db = $database->getConnection();
 
+// Vérification des permissions
+if(checkPermis($db, 'interdite')){
+    header("Location: interdite.php");
+    exit();
+}
+
 //Importation de tous les models
 $modelsDir = 'models';
 foreach (glob("$modelsDir/*.php") as $modelFile) {

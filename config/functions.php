@@ -416,8 +416,12 @@ function checkPermis($db, $action, $level = 3)
         return false;
     }
 
-    if ($role_data['niveau'] == 1) {
+    if ($role_data['niveau'] == 1 && $action != 'interdite') {
         return true;
+    }
+
+    if ($role_data['niveau'] == 1 && $action == 'interdite') {
+        return false;
     }
 
     if ($role_data['niveau'] > $level) {
@@ -428,6 +432,7 @@ function checkPermis($db, $action, $level = 3)
     $edit_permission = isset($role_data['page_edit']) ? explode('|', $role_data['page_edit']) : [];
     $delete_permission = isset($role_data['page_delete']) ? explode('|', $role_data['page_delete']) : [];
     $validate_permission = isset($role_data['page_validate']) ? explode('|', $role_data['page_validate']) : [];
+    $interdite_permission = isset($role_data['page_interdite']) ? explode('|', $role_data['page_interdite']) : [];
 
     switch ($action) {
         case 'update':
@@ -436,6 +441,8 @@ function checkPermis($db, $action, $level = 3)
             return in_array($page_curr, $delete_permission);
         case 'validate':
             return in_array($page_curr, $validate_permission);
+        case 'interdite':
+            return in_array($page_curr, $interdite_permission);
         default:
             return false;
     }
