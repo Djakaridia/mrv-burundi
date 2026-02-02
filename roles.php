@@ -35,9 +35,11 @@
             <h4 class="my-1 fw-black">Liste des rôles</h4>
           </div>
           <div class="ms-lg-2">
-            <button title="Ajouter" class="btn btn-subtle-primary btn-sm" id="addBtn" data-bs-toggle="modal"
-              data-bs-target="#addRoleModal" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
-              <i class="fas fa-plus"></i> Ajouter un rôle</button>
+            <?php if (checkPermis($db, 'update', 1)) : ?>
+              <button title="Ajouter" class="btn btn-subtle-primary btn-sm" id="addBtn" data-bs-toggle="modal"
+                data-bs-target="#addRoleModal" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
+                <i class="fas fa-plus"></i> Ajouter un rôle</button>
+            <?php endif; ?>
           </div>
         </div>
       </div>
