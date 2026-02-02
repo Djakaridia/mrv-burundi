@@ -21,22 +21,6 @@
                         <div class="row g-4">
                             <div class="col-lg-6 mt-1">
                                 <div class="mb-1">
-                                    <label for="eventCode" class="form-label">Code*</label>
-                                    <input oninput="checkColumns('code', 'eventCode', 'eventCodeFeedback', 'reunions')" class="form-control" type="text" name="code" id="eventCode"
-                                        placeholder="Entrer le code" required />
-                                    <div id="eventCodeFeedback" class="invalid-feedback"></div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 mt-1">
-                                <div class="mb-1">
-                                    <label for="eventTitle" class="form-label">Libellé*</label>
-                                    <input class="form-control" type="text" name="name" id="eventTitle"
-                                        placeholder="Entrer le libellé" required />
-                                </div>
-                            </div>
-
-                            <div class="col-lg-6 mt-1">
-                                <div class="mb-1">
                                     <label for="eventStartDate" class="form-label">Date*</label>
                                     <input class="form-control datetimepicker" id="eventStartDate" type="text"
                                         name="horaire" placeholder="YYYY-MM-DD HH:MM"
@@ -49,6 +33,22 @@
                                     <label for="eventLieu" class="form-label">Lieu*</label>
                                     <input class="form-control" type="text" name="lieu" id="eventLieu"
                                         placeholder="Entrer le lieu" required />
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 mt-1">
+                                <div class="mb-1">
+                                    <label for="eventCode" class="form-label">Code*</label>
+                                    <input oninput="checkColumns('code', 'eventCode', 'eventCodeFeedback', 'reunions')" class="form-control" type="text" name="code" id="eventCode"
+                                        placeholder="Entrer le code" required />
+                                    <div id="eventCodeFeedback" class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 mt-1">
+                                <div class="mb-1">
+                                    <label for="eventTitle" class="form-label">Libellé*</label>
+                                    <input class="form-control" type="text" name="name" id="eventTitle"
+                                        placeholder="Entrer le libellé" required />
                                 </div>
                             </div>
 
