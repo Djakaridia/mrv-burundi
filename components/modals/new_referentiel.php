@@ -172,8 +172,8 @@
             </div>
             <!-- Autre Responsable -->
             <div class="col-md-6">
-              <div class="d-flex flex-column">
-                <select class="form-control select2" style="padding-left: 10px;" id="MultipleRefResponsable" name="autre_responsable" multiple="multiple"
+              <div class="form-floating form-floating-advance-select">
+                <select class="form-control" style="padding-left: 10px;" id="MultipleRefResponsable" name="autre_responsable" multiple="multiple"
                   data-placeholder="Autres responsables">
                   <option value="" disabled>Sélectionner les autres responsables</option>
                   <?php if ($structures ?? []) : ?>
@@ -252,7 +252,7 @@
   var allSubSectors = [];
 
   $(document).ready(function() {
-    initSelect2("#addReferentielModal");
+    initSelect2("#addReferentielModal", "MultipleRefResponsable");
 
     $('#addReferentielModal').on('shown.bs.modal', async function(event) {
       const dataId = $(event.relatedTarget).data('id');

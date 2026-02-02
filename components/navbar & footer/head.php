@@ -102,15 +102,6 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
         linkRTL.setAttribute("disabled", true);
         userLinkRTL.setAttribute("disabled", true);
     }
-
-    function initSelect2(modalId) {
-        $('.select2').select2({
-            dropdownParent: modalId,
-            allowClear: true,
-            theme: "classic",
-            width: '100%',
-        });
-    }
 </script>
 
 <link href="vendors/leaflet/leaflet.css" rel="stylesheet" />

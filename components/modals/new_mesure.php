@@ -151,16 +151,12 @@
                                         <div class="row g-3">
                                             <div class="col-md-12 mb-3">
                                                 <div class="form-floating form-floating-advance-select">
-                                                    <label for="MultipleMesureGaz">Type de gaz*</label>
-                                                    <select class="form-select" name="gaz" id="MultipleMesureGaz" data-choices="data-choices" multiple="multiple" data-options='{"removeItemButton":true,"placeholder":true}' required>
-                                                        <option value="" disabled>Sélectionner un type de gaz</option>
+                                                    <select class="form-select" style="padding-left: 10px;" id="MultipleMesureGaz" name="gaz" multiple="multiple"
+                                                        data-placeholder="Type de gaz">
+                                                        <option value="" disabled>Sélectionner les autres responsables</option>
                                                         <?php if ($gazs ?? []) : ?>
-                                                            <?php foreach ($gazs as $gaze) : ?>
-                                                                <?php if (in_array($gaze['name'], explode(',', str_replace('"', '', $mesure_curr['gaz'] ?? '')))) : ?>
-                                                                    <option value="<?= $gaze['name'] ?>" selected><?= $gaze['name'] ?></option>
-                                                                <?php else : ?>
-                                                                    <option value="<?= $gaze['name'] ?>"><?= $gaze['name'] ?></option>
-                                                                <?php endif; ?>
+                                                            <?php foreach ($gazs as $gaz): ?>
+                                                                <option value="<?= $gaz['name'] ?>"><?= $gaz['name'] ?></option>
                                                             <?php endforeach; ?>
                                                         <?php endif; ?>
                                                     </select>
@@ -258,6 +254,7 @@
 <script>
     let formMesureID = null;
     $(document).ready(function() {
+        initSelect2("#addMesureModal", "MultipleMesureGaz");
         $('#addMesureModal').on('shown.bs.modal', async function(event) {
             const dataId = $(event.relatedTarget).data('id');
 
@@ -287,14 +284,16 @@
                     form.secteur_id.value = result.data.secteur_id || '';
                     form.structure_id.value = result.data.structure_id || '';
                     form.action_type.value = result.data.action_type || '';
+                    form.instrument.value = result.data.instrument || '';
                     form.status.value = result.data.status || '';
 
                     const form2 = document.forms['wizMesureForm2'];
-                    form2.gaz.value = result.data.gaz || '';
                     form2.annee_debut.value = result.data.annee_debut || '';
                     form2.annee_fin.value = result.data.annee_fin || '';
                     form2.valeur_realise.value = result.data.valeur_realise || '';
                     form2.valeur_cible.value = result.data.valeur_cible || '';
+                    $('#MultipleMesureGaz').val(result.data.gaz.split(','));
+                    $('#MultipleMesureGaz').trigger('change');
 
                     const form3 = document.forms['wizMesureForm3'];
                     form3.objectif.value = result.data.objectif || '';
@@ -318,11 +317,6 @@
         });
 
         $('#addMesureModal').on('hide.bs.modal', function() {
-            $('#wizMesureForm1')[0].reset();
-            $('#wizMesureForm2')[0].reset();
-            $('#wizMesureForm3')[0].reset();
-            $('#MultipleMesureGaz').val('');
-
             resetWizard();
             setTimeout(() => {
                 $('#mesureLoadingScreen').show();
@@ -382,11 +376,7 @@
         $('#wizMesureForm1')[0].reset();
         $('#wizMesureForm2')[0].reset();
         $('#wizMesureForm3')[0].reset();
-        $('#MultipleMesureGaz').val('');
-
-        $('.nav-link').removeClass('active');
-        $('.nav-link[href="#phoenix-wizard-tab1"]').addClass('active');
-        $('.tab-pane').removeClass('active show');
-        $('#phoenix-wizard-tab1').addClass('active show');
+        $('#MultipleMesureGaz').val([]);
+        $('#MultipleMesureGaz').trigger('change');
     }
 </script>

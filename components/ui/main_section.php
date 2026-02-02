@@ -15,11 +15,11 @@
                             $referentiel->id = $section['entity_id'];
                             $referentiel_ref = $referentiel->readById();
 
-                            $indicateur = new Indicateur($db);
-                            $indicateur->referentiel_id = $referentiel_ref['id'] ?? null;
-                            $indicateur_cmr = array_filter($indicateur->readByReferentiel(), fn($i) => $i['state'] == 'actif');
+                            if ($referentiel_ref['categorie'] != 'impact') {
+                                $indicateur = new Indicateur($db);
+                                $indicateur->referentiel_id = $referentiel_ref['id'] ?? null;
+                                $indicateur_cmr = array_filter($indicateur->readByReferentiel(), fn($i) => $i['state'] == 'actif');
 
-                            if (!empty($referentiel_ref) && !empty($indicateur_cmr)) {
                                 $first_indicateur = reset($indicateur_cmr);
 
                                 $cible = new Cible($db);
@@ -61,6 +61,46 @@
                                     abs(round($percentage))
                                 );
                                 $link = 'indicateur_view.php?id=' . $section['entity_id'];
+                            } else {
+                                $cible_referentiel = new Cible($db);
+                                $cible_referentiel->indicateur_id = $referentiel_ref['id'];
+                                $cibles_raw = $cible_referentiel->readByIndicateur();
+                                $cibles_map = [];
+                                foreach ($cibles_raw as $item) {
+                                    $year = $item['annee'];
+                                    $value = (float)$item['valeur'];
+                                    if (!isset($cibles_map[$year])) $cibles_map[$year] = 0;
+                                    $cibles_map[$year] += $value;
+                                }
+                                $cibles_sum = array_sum($cibles_map);
+
+                                $suivi_referentiel = new Suivi($db);
+                                $suivi_referentiel->indicateur_id = $referentiel_ref['id'];
+                                $suivis_raw = $suivi_referentiel->readByIndicateur();
+                                $suivis_map = [];
+                                foreach ($suivis_raw as $item) {
+                                    $year = $item['annee'];
+                                    $value = (float)$item['valeur'];
+                                    if (!isset($suivis_map[$year])) $suivis_map[$year] = 0;
+                                    $suivis_map[$year] += $value;
+                                }
+                                $suivis_sum = array_sum($suivis_map);
+
+                                $percentage = $cibles_sum != 0 ? (($suivis_sum - $cibles_sum) / $cibles_sum) * 100 : 0;
+                                $sens_evolution = $referentiel_ref['sens_evolution'] ?? 'asc';
+                                $is_positive = $sens_evolution == 'asc' ? $suivis_sum >= $cibles_sum : $suivis_sum <= $cibles_sum;
+
+                                $value = number_format($suivis_sum);
+                                $unit = $referentiel_ref['unite'] ?? 'N/A';
+                                $badge = sprintf(
+                                    '<span class="badge bg-%s-subtle text-%s"> <i class="fas fa-sort-amount-%s me-1"></i>%s %d%% vs cible</span>',
+                                    $is_positive ? 'success' : 'warning',
+                                    $is_positive ? 'success' : 'warning',
+                                    $sens_evolution == 'asc' ? 'up' : 'down',
+                                    $sens_evolution == 'asc' ? 'Augmenté de' : 'Diminué de',
+                                    abs(round($percentage))
+                                );
+                                $link = 'referentiel_view.php?id=' . $section['entity_id'];
                             }
                         } catch (Exception $e) {
                             error_log("Erreur dans la section indicateur: " . $e->getMessage());

@@ -40,6 +40,11 @@
                 <tbody id="viewSuiviCMRBody"></tbody>
               </table>
             </div>
+
+            <div class="modal-footer d-flex justify-content-between border-0 p-1">
+                <button type="button" class="btn btn-subtle-secondary btn-sm px-3" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-subtle-primary btn-sm px-3" onclick="window.location.reload()"> Terminer</button>
+              </div>
           </div>
 
           <div id="suiviCMRFormContent" class="d-none">
