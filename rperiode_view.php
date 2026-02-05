@@ -40,8 +40,7 @@
     $secteur = new Secteur($db);
     $secteurs = $secteur->read();
     $secteurs_project = array_filter($secteurs, function ($secteur) use ($project_rapport) {
-        $secteurs_ids = explode(',', str_replace('"', '', $project_rapport['secteurs']));
-        return $secteur['state'] == 'actif' && $secteur['parent'] == 0 && in_array($secteur['id'], $secteurs_ids);
+        return $secteur['state'] == 'actif' && $secteur['parent'] == 0 && $project_rapport['secteur_id'] == $secteur['id'];
     });
 
     //##################################################

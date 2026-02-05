@@ -46,8 +46,8 @@
                 }
 
                 $secteur_ids = [];
-                if (!empty($projet_ref['secteurs'])) {
-                    $secteur_ids = array_map('intval', explode(',', str_replace('"', '', $projet_ref['secteurs'])));
+                if (!empty($projet_ref['secteur_id'])) {
+                    $secteur_ids = array_map('intval', $projet_ref['secteur_id']);
                 }
                 $projet_secteurs = array_filter($secteurs, function ($s) use ($secteur_ids) {
                     return in_array($s['id'], $secteur_ids);

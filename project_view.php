@@ -141,8 +141,7 @@
   }
 
   $secteurs_project = array_filter($secteurs, function ($s) use ($project_curr) {
-    $secteurs_ids = explode(',', str_replace('"', '', $project_curr['secteurs'] ?? ""));
-    return in_array($s['id'], $secteurs_ids);
+    return $project_curr['secteur_id'] == $s['id'];
   });
 
   $groupes_travail_project = array_filter($groupes_travail, function ($g) use ($project_curr) {

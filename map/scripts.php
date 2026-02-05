@@ -359,7 +359,7 @@
                 $start_date = !empty($projet_info['start_date']) ? date('d/m/Y', strtotime($projet_info['start_date'])) : 'Non définie';
                 $end_date = !empty($projet_info['end_date']) ? date('d/m/Y', strtotime($projet_info['end_date'])) : 'Non définie';
                 $budget = !empty($projet_info['budget']) ? number_format($projet_info['budget'], 0, ',', ' ') . ' USD' : 'Non défini';
-                $sectors = explode(',', str_replace('"', '', $projet_info['secteurs'] ?? ""));
+                $sectors = $projet_info['secteur_id'] ?? "";
                 $sectors_names = array_map(function ($sector_id) use ($secteurs_assoc) {
                     return $secteurs_assoc[$sector_id] ?? 'Non défini';
                 }, $sectors);

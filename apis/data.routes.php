@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 $result = $projet->readById();
 
                 if ($result) {
-                    $result['secteurs'] = getSecteurs(explode(',', str_replace('"', '', $result['secteurs'] ?? "")));
+                    $result['secteurs'] = getSecteurs($result['secteur_id'] ?? "");
                     $result['groupes'] = getGroupes(explode(',', str_replace('"', '', $result['groupes'] ?? "")));
 
                     echo json_encode(array('status' => 'success', 'message' => 'Données du projet', 'data' => $result));
@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             } else {
                 $result = $projet->read();
                 foreach ($result as $key => $value) {
-                    $result[$key]['secteurs'] = getSecteurs(explode(',', str_replace('"', '', $value['secteurs'] ?? "")));
+                    $result[$key]['secteurs'] = getSecteurs($value['secteur_id'] ?? "");
                     $result[$key]['groupes'] = getGroupes(explode(',', str_replace('"', '', $value['groupes'] ?? "")));
                 }
 

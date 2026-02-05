@@ -39,7 +39,7 @@
         $projet = new Projet($db);
         $projets = $projet->read();
         $projets = array_filter($projets, function ($projet) use ($secteur_curr) {
-            return $projet['state'] == 'actif' && in_array($secteur_curr['id'], explode(',', str_replace('"', '', $projet['secteurs'])));
+            return $projet['state'] == 'actif' && $projet['secteur_id'] == $secteur_curr['id'];
         });
 
         // Inventaires
