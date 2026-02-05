@@ -45,12 +45,8 @@
                     }
                 }
 
-                $secteur_ids = [];
-                if (!empty($projet_ref['secteur_id'])) {
-                    $secteur_ids = array_map('intval', $projet_ref['secteur_id']);
-                }
-                $projet_secteurs = array_filter($secteurs, function ($s) use ($secteur_ids) {
-                    return in_array($s['id'], $secteur_ids);
+                $projet_secteurs = array_filter($secteurs, function ($s) use ($projet_ref) {
+                    return $s['id'] == $projet_ref['secteur_id'];
                 });
 
                 $suivi = new Suivi($db);
