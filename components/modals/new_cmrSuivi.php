@@ -42,9 +42,9 @@
             </div>
 
             <div class="modal-footer d-flex justify-content-between border-0 p-1">
-                <button type="button" class="btn btn-subtle-secondary btn-sm px-3" data-bs-dismiss="modal">Annuler</button>
-                <button type="button" class="btn btn-subtle-primary btn-sm px-3" onclick="window.location.reload()"> Terminer</button>
-              </div>
+              <button type="button" class="btn btn-subtle-secondary btn-sm px-3" data-bs-dismiss="modal">Annuler</button>
+              <button type="button" class="btn btn-subtle-primary btn-sm px-3" onclick="window.location.reload()"> Terminer</button>
+            </div>
           </div>
 
           <div id="suiviCMRFormContent" class="d-none">
@@ -119,6 +119,7 @@
 <script>
   let suiviDataID = null;
   let suiviIndicID = null;
+  let suiviMesureID = null;
   let suiviProjetID = null
   const suiviScenarios = <?= json_encode(listTypeScenario() ?? []); ?>;
   const suiviProvinces = Object.values(<?= json_encode($provinces ?? []); ?>);
@@ -130,15 +131,13 @@
       const indicateurId = $(event.relatedTarget).data('indicateur_id');
       const mesureId = $(event.relatedTarget).data('mesure_id');
       const projetId = $(event.relatedTarget).data('projet_id');
-      const form = document.getElementById('FormSuiviCRM');
 
-      form.indicateur_id = indicateurId || "";
-      form.projet_id = projetId || "";
       suiviIndicID = indicateurId || "";
+      suiviMesureID = mesureId || "";
       suiviProjetID = projetId || "";
 
-      await loadDataSuivis(suiviIndicID);
-      suiviProjetID ? await loadProjetSuivis(suiviProjetID) : await loadReferentielSuivis(suiviIndicID)
+      await loadDataSuivis(suiviIndicID, suiviMesureID, suiviProjetID);
+      suiviProjetID ? await loadProjetSuivis(suiviProjetID) : (suiviMesureID ? await loadMesureSuivis(suiviMesureID) : await loadReferentielSuivis(suiviIndicID))
     })
 
     $('#newIndicateurSuiviModal').on('hidden.bs.modal', function() {
@@ -165,7 +164,7 @@
     });
   })
 
-  async function loadDataSuivis(indicateur_id) {
+  async function loadDataSuivis(indicateur_id, mesure_id, projet_id) {
     const tbody = $('#viewSuiviCMRBody');
     tbody.html('');
 
@@ -185,6 +184,8 @@
         const result = await response.json();
         if (result.status === 'success' && result.data.length > 0) {
           result.data
+            .filter(element => mesure_id && mesure_id !==0 ? element.mesure_id == mesure_id : true)
+            .filter(element => projet_id && projet_id !==0 ? element.projet_id == projet_id : true)
             .sort((a, b) => b.annee - a.annee)
             .forEach(element => {
               tbody.append(`
@@ -286,9 +287,41 @@
           configTypologie(result.data.modele, result.data.id);
         }
       } catch (error) {
-        console.error(error);
+        errorAction('Impossible de charger les données.');
         configEchelle('nationale');
         configTypologie('valeur_relative', null);
+      }
+    }
+  }
+
+  async function loadMesureSuivis(mesureId) {
+    if (mesureId) {
+      const selectAnnee = document.getElementById('suivi_annee');
+      selectAnnee.innerHTML = '';
+      try {
+        const response = await fetch(`./apis/mesures.routes.php?id=${mesureId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          method: 'GET',
+        });
+
+        const result = await response.json();
+        if (result.status === 'success') {
+          const start_date = result.data.annee_debut;
+          const end_date = result.data.annee_fin;
+          const start_year = new Date(start_date).getFullYear();
+          const end_year = new Date(end_date).getFullYear();
+          for (let i = start_year; i <= end_year; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            selectAnnee.appendChild(option);
+          }
+
+        }
+      } catch (error) {
+        errorAction('Impossible de charger les données.');
       }
     }
   }
@@ -321,6 +354,7 @@
           form.observation.value = result.data.observation;
           form.scenario.value = result.data.scenario;
           form.indicateur_id.value = result.data.indicateur_id;
+          form.mesure_id.value = result.data.mesure_id;
           form.projet_id.value = result.data.projet_id;
           if (form.echelle) form.echelle.value = result.data.echelle;
           if (form.classe) form.classe.value = result.data.classe;
@@ -341,6 +375,7 @@
     const url = suiviId ? './apis/suivis.routes.php?id=' + suiviId : './apis/suivis.routes.php';
 
     formData.append("indicateur_id", suiviIndicID)
+    formData.append("mesure_id", suiviMesureID)
     formData.append("projet_id", suiviProjetID)
     try {
       const response = await fetch(url, {
@@ -367,7 +402,7 @@
   async function deleteCMRSuivi(id) {
     deleteData(id, 'Êtes-vous sûr de vouloir supprimer ce suivi ?', 'suivis', 'none')
       .then(() => {
-        loadDataSuivis(suiviIndicID);
+        loadDataSuivis(suiviIndicID, suiviMesureID, suiviProjetID);
       })
       .catch(error => {
         errorAction('Erreur lors de la suppression');
@@ -444,12 +479,11 @@
     $('#suivi_modtitle').text('Valeurs suivies annuelles');
     $('#suivi_modbtn').text('Ajouter');
     suiviDataID = null;
-    loadDataSuivis(suiviIndicID);
+    loadDataSuivis(suiviIndicID, suiviMesureID, suiviProjetID);
   }
 
   function showSuiviForm() {
     $('#suiviCMRTableContent').addClass('d-none');
     $('#suiviCMRFormContent').removeClass('d-none');
   }
-</script>
 </script>

@@ -184,29 +184,29 @@ class Projet
         return false;
     }
 
-    public function createOrUpdateFromSync($data, $secteur, $typeAction)
-    {
-        $id_ref = $data['id'] ?? null;
-        if (!$id_ref)
-            return;
+    // public function createOrUpdateFromSync($data, $secteur, $typeAction)
+    // {
+    //     $id_ref = $data['id'] ?? null;
+    //     if (!$id_ref)
+    //         return;
 
-        $check = $this->conn->prepare("SELECT id FROM projet WHERE id_ref = :id_ref AND secteur = :secteur");
-        $check->execute([':id_ref' => $id_ref, ':secteur' => $secteur]);
+    //     $check = $this->conn->prepare("SELECT id FROM projet WHERE id_ref = :id_ref AND secteur = :secteur");
+    //     $check->execute([':id_ref' => $id_ref, ':secteur' => $secteur]);
 
-        if ($check->rowCount() > 0) {
-            $sql = "UPDATE projet SET intitule=:intitule, cout=:cout, updated_at=NOW() WHERE id_ref=:id_ref AND secteur=:secteur";
-        } else {
-            $sql = "INSERT INTO projet (id_ref, intitule, cout, secteur, type_action, created_at)
-                VALUES (:id_ref, :intitule, :cout, :secteur, :type_action, NOW())";
-        }
+    //     if ($check->rowCount() > 0) {
+    //         $sql = "UPDATE projet SET intitule=:intitule, cout=:cout, updated_at=NOW() WHERE id_ref=:id_ref AND secteur=:secteur";
+    //     } else {
+    //         $sql = "INSERT INTO projet (id_ref, intitule, cout, secteur, type_action, created_at)
+    //             VALUES (:id_ref, :intitule, :cout, :secteur, :type_action, NOW())";
+    //     }
 
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([
-            ':id_ref' => $id_ref,
-            ':intitule' => $data['intitule'] ?? '',
-            ':cout' => $data['cout'] ?? 0,
-            ':secteur' => $secteur,
-            ':type_action' => $typeAction
-        ]);
-    }
+    //     $stmt = $this->conn->prepare($sql);
+    //     $stmt->execute([
+    //         ':id_ref' => $id_ref,
+    //         ':intitule' => $data['intitule'] ?? '',
+    //         ':cout' => $data['cout'] ?? 0,
+    //         ':secteur' => $secteur,
+    //         ':type_action' => $typeAction
+    //     ]);
+    // }
 }

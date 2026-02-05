@@ -18,6 +18,7 @@
         <div id="cibleContentContainer" style="display: none;">
           <form action="" class="row-border" enctype="multipart/form-data" name="FormCibleCMR" id="FormCibleCMR">
             <input type="hidden" name="indicateur_id" id="cible_indicateur_id">
+            <input type="hidden" name="mesure_id" id="cible_mesure_id">
             <input type="hidden" name="projet_id" id="cible_projet_id">
 
             <div class="overflow-auto" style="min-height: 300px; max-height: 400px;">
@@ -40,6 +41,7 @@
 <script>
   let cibleDataID = null;
   let cibleIndicID = null;
+  let cibleMesureID = null;
   let cibleProjetID = null;
   const cibleScenarios = <?= json_encode(listTypeScenario() ?? []); ?>;
 
@@ -51,11 +53,13 @@
       const form = document.getElementById('FormCibleCMR');
 
       form.indicateur_id = indicateurId || "";
+      form.mesure_id = mesureId || "";
       form.projet_id = projetId || "";
       cibleIndicID = indicateurId || "";
+      cibleMesureID = mesureId || "";
       cibleProjetID = projetId || "";
 
-      cibleProjetID ? await loadProjetCible(cibleProjetID) : await loadReferentielCible(cibleIndicID)
+      cibleProjetID ? await loadProjetCible(cibleProjetID) : (cibleMesureID ? await loadMesureCible(cibleMesureID) : await loadReferentielCible(cibleIndicID))
     });
 
     $('#newIndicateurCibleModal').on('hidden.bs.modal', function() {
@@ -250,6 +254,11 @@
         console.error('Erreur lors du chargement du référentiel:', error);
         selectAnnee.innerHTML = '<option value="" disabled selected>Impossible de charger les données.</option>';
     }
+  }
+
+
+  async function loadMesureCible(mesureId) {
+
   }
 
   async function rebuildTable(startYear, endYear) {

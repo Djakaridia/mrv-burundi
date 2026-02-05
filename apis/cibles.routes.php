@@ -44,8 +44,9 @@ switch ($requestMethod) {
             }
 
             // Nettoyage des données
-            $indicateur_id = sanitize_input($_POST['indicateur_id']);
-            $projet_id = isset($_POST['projet_id']) && $_POST['projet_id'] !== '' ? (int) $_POST['projet_id'] : null;
+            $indicateur_id = (int)sanitize_input($_POST['indicateur_id'] ?? 0);
+            $mesure_id = (int)sanitize_input($_POST['mesure_id'] ?? 0);
+            $projet_id = (int)sanitize_input($_POST['projet_id'] ?? 0);
             $add_by = sanitize_input($payload['user_id']);
             $ciblesData = json_decode($_POST['valeur_cibles'], true);
 
@@ -56,6 +57,8 @@ switch ($requestMethod) {
 
             // Suppression des anciennes cibles
             $cible->indicateur_id = $indicateur_id;
+            $cible->mesure_id = $mesure_id;
+            $cible->projet_id = $projet_id;
             if (!$cible->delete()) {
                 echo json_encode(['status' => 'danger', 'message' => "Erreur lors de la suppression des anciennes cibles"]);
                 exit();
@@ -76,6 +79,7 @@ switch ($requestMethod) {
                     $cible->annee = sanitize_input($annee);
                     $cible->scenario = sanitize_input($scenario);
                     $cible->indicateur_id = $indicateur_id;
+                    $cible->mesure_id = $mesure_id;
                     $cible->projet_id = $projet_id;
                     $cible->add_by = $add_by;
 

@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 $routePath = '../';
 
@@ -37,15 +41,16 @@ switch ($requestMethod) {
 
         if ($id) {
             $suivi->id = $id;
-            $suivi->indicateur_id = sanitize_input($_POST['indicateur_id']);
-            $suivi->projet_id = sanitize_input($_POST['projet_id']);
-            $suivi->scenario = sanitize_input($_POST['scenario']);
+            $suivi->indicateur_id = (int)sanitize_input($_POST['indicateur_id'] ?? 0);
+            $suivi->mesure_id = (int)sanitize_input($_POST['mesure_id'] ?? 0);
+            $suivi->projet_id = (int)sanitize_input($_POST['projet_id'] ?? 0);
+            $suivi->scenario = sanitize_input($_POST['scenario'] ?? '');
             $suivi->echelle = sanitize_input($_POST['echelle'] ?? '');
             $suivi->classe = sanitize_input($_POST['classe'] ?? '');
             $suivi->annee = sanitize_input($_POST['annee']);
             $suivi->date_suivie = sanitize_input($_POST['date_suivie']);
             $suivi->valeur = sanitize_input($_POST['valeur']);
-            $suivi->observation = sanitize_input($_POST['observation']);
+            $suivi->observation = sanitize_input($_POST['observation'] ?? '');
             $suivi->add_by = sanitize_input($payload['user_id']);
 
             if (empty($suivi->indicateur_id) || empty($suivi->annee) || empty($suivi->date_suivie) || empty($suivi->valeur)) {
@@ -59,15 +64,16 @@ switch ($requestMethod) {
                 echo json_encode(array('status' => 'warning', 'message' => 'Erreur lors de la modification de la suivi.'));
             }
         } else {
-            $suivi->indicateur_id = sanitize_input($_POST['indicateur_id']);
-            $suivi->projet_id = sanitize_input($_POST['projet_id']);
-            $suivi->scenario = sanitize_input($_POST['scenario']);
+            $suivi->indicateur_id = (int)sanitize_input($_POST['indicateur_id'] ?? 0);
+            $suivi->mesure_id = (int)sanitize_input($_POST['mesure_id'] ?? 0);
+            $suivi->projet_id = (int)sanitize_input($_POST['projet_id'] ?? 0);
+            $suivi->scenario = sanitize_input($_POST['scenario'] ?? '');
             $suivi->echelle = sanitize_input($_POST['echelle'] ?? '');
             $suivi->classe = sanitize_input($_POST['classe'] ?? '');
             $suivi->annee = sanitize_input($_POST['annee']);
             $suivi->date_suivie = sanitize_input($_POST['date_suivie']);
             $suivi->valeur = sanitize_input($_POST['valeur']);
-            $suivi->observation = sanitize_input($_POST['observation']);
+            $suivi->observation = sanitize_input($_POST['observation'] ?? '');
             $suivi->add_by = sanitize_input($payload['user_id']);
 
             if (empty($suivi->indicateur_id) || empty($suivi->annee) || empty($suivi->date_suivie) || empty($suivi->valeur)) {
@@ -96,6 +102,7 @@ switch ($requestMethod) {
     case 'GET':
         $id = isset($_GET['id']) ? sanitize_input($_GET['id']) : null;
         $indicateur_id = isset($_GET['indicateur']) ? sanitize_input($_GET['indicateur']) : null;
+        $mesure_id = isset($_GET['mesure']) ? sanitize_input($_GET['mesure']) : null;
 
         if ($id) {
             $suivi->id = $id;
@@ -109,6 +116,15 @@ switch ($requestMethod) {
         } else if ($indicateur_id) {
             $suivi->indicateur_id = $indicateur_id;
             $data = $suivi->readByIndicateur();
+
+            if ($data) {
+                echo json_encode(array('status' => 'success', 'message' => 'Détails de la valeur suivi', 'data' => $data));
+            } else {
+                echo json_encode(array('status' => 'warning', 'message' => 'Suivi non trouvée'));
+            }
+        } else if ($mesure_id) {
+            $suivi->mesure_id = $mesure_id;
+            $data = $suivi->readByMesure();
 
             if ($data) {
                 echo json_encode(array('status' => 'success', 'message' => 'Détails de la valeur suivi', 'data' => $data));

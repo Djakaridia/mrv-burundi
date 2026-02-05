@@ -42,7 +42,7 @@ $nav_resultats = count($nav_projets) + count($nav_groupes) + count($nav_rapports
 <nav class="navbar navbar-top fixed-top navbar-expand shadow-sm px-0" id="navbarDefault">
     <div class="collapse navbar-collapse justify-content-between">
         <!-- <div class="d-flex align-items-center"> -->
-        <div class="navbar-logo d-flex justify-content-center px-2 py-lg-2 py-3">
+        <div class="navbar-logo d-flex justify-content-center px-2 py-lg-2 py-3 bg-white dark__bg-light">
             <button class="btn navbar-toggler navbar-toggler-humburger-icon hover-bg-transparent ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarVerticalCollapse" aria-controls="navbarVerticalCollapse" aria-expanded="false" aria-label="Toggle Navigation">
                 <span class="navbar-toggle-icon"><span class="toggle-line"></span></span>
             </button>

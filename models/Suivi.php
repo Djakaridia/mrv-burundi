@@ -97,6 +97,16 @@ class Suivi
         return $row;
     }
 
+    public function readByMesure()
+    {
+        $query = "SELECT * FROM " . $this->table . " WHERE mesure_id=:mesure_id ORDER BY id DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':mesure_id', $this->mesure_id);
+        $stmt->execute();
+        $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $row;
+    }
+
     public function readByProjet()
     {
         $query = "SELECT * FROM " . $this->table . " WHERE projet_id=:projet_id ORDER BY id DESC";

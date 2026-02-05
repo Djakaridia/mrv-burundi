@@ -32,6 +32,12 @@
         return $secteur['parent'] == 0 && $secteur['state'] == 'actif';
     });
 
+    $referentiel = new Referentiel($db);
+    $referentiels = $referentiel->read();
+    $referentiels_mesure = array_filter($referentiels, function ($referentiel) {
+        return $referentiel['state'] == 'actif';
+    });
+
     $mesure = new Mesure($db);
     $mesures = $mesure->read();
     if (isset($_GET['secteur']) && !empty($_GET['secteur'])) {

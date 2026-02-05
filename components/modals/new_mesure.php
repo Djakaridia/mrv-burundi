@@ -1,7 +1,7 @@
 <div class="modal fade" id="addMesureModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addMesureModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content bg-body-highlight p-4">
-            <div class="modal-header justify-content-between border-0 p-0 mb-3">
+            <div class="modal-header justify-content-between border-0 p-0 mb-2">
                 <h3 class="mb-0" id="mesure_modtitle">Ajouter un mesure</h3>
                 <button class="btn btn-sm btn-phoenix-secondary" data-bs-dismiss="modal" aria-label="Close">
                     <span class="fas fa-times text-danger"></span>
@@ -68,14 +68,14 @@
                                 <div class="tab-pane active" role="tabpanel" aria-labelledby="phoenix-wizard-tab1" id="phoenix-wizard-tab1">
                                     <form id="wizMesureForm1" novalidate="novalidate" class="needs-validation" data-wizard-form="1">
                                         <div class="row g-3">
-                                            <div class="col-md-3 mb-3">
+                                            <div class="col-md-3 mb-2">
                                                 <div class="form-floating">
                                                     <input oninput="checkColumns('code', 'mesureCode', 'mesureCodeFeedback', 'mesures')" class="form-control" name="code" id="mesureCode" type="text" placeholder="Code" required>
                                                     <label for="mesureCode">Code*</label>
                                                     <div id="mesureCodeFeedback" class="invalid-feedback"></div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-9 mb-3">
+                                            <div class="col-md-9 mb-2">
                                                 <div class="form-floating">
                                                     <input class="form-control" name="name" id="mesureName" type="text" placeholder="Intitulé" required>
                                                     <label for="mesureName">Intitulé*</label>
@@ -83,7 +83,7 @@
                                             </div>
 
 
-                                            <div class="col-md-6 mb-3">
+                                            <div class="col-md-6 mb-2">
                                                 <div class="form-floating form-floating-advance-select">
                                                     <label for="mesureSecteur">Secteur concerné*</label>
                                                     <select class="form-select" name="secteur_id" id="mesureSecteur" required>
@@ -96,7 +96,7 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6 mb-3">
+                                            <div class="col-md-6 mb-2">
                                                 <div class="form-floating">
                                                     <select class="form-select" name="structure_id" id="mesureStructure" required>
                                                         <option value="" selected disabled>Sélectionner un acteur</option>
@@ -106,11 +106,23 @@
                                                             <?php endforeach; ?>
                                                         <?php endif; ?>
                                                     </select>
-                                                    <label for="mesureStructure">Entités de mise en œuvre *</label>
+                                                    <label for="mesureStructure">Entités de mise en œuvre*</label>
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-4 mb-3">
+                                            <div class="col-md-12 mb-2">
+                                                <div class="form-floating">
+                                                    <select class="form-select" id="referentiel_id" name="referentiel_id" required>
+                                                        <option value="" selected disabled>Sélectionner un indicateur</option>
+                                                        <?php foreach ($referentiels_mesure ?? [] as $indicateur): ?>
+                                                            <option value="<?= $indicateur['id'] ?>"><?= htmlspecialchars($indicateur['intitule'] ?? $indicateur['name'] ?? '') ?></option>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                    <label for="referentiel_id" class="form-label">Indicateur Référentiel*</label>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4 mb-2">
                                                 <div class="form-floating">
                                                     <select class="form-select" name="action_type" id="mesureAction" required>
                                                         <option value="" selected disabled>Sélectionner un type</option>
@@ -118,10 +130,10 @@
                                                             <option value="<?= $key ?>"><?= $value ?></option>
                                                         <?php endforeach; ?>
                                                     </select>
-                                                    <label for="mesureAction">Action type *</label>
+                                                    <label for="mesureAction">Action type*</label>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4 mb-3">
+                                            <div class="col-md-4 mb-2">
                                                 <div class="form-floating">
                                                     <select class="form-select" name="instrument" id="mesureInstrument" required>
                                                         <option value="" selected disabled>Sélectionner d'instrument</option>
@@ -129,17 +141,17 @@
                                                             <option value="<?= $key ?>"><?= $value ?></option>
                                                         <?php endforeach; ?>
                                                     </select>
-                                                    <label for="mesureInstrument">Instrument *</label>
+                                                    <label for="mesureInstrument">Instrument*</label>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4 mb-3">
+                                            <div class="col-md-4 mb-2">
                                                 <div class="form-floating">
                                                     <select class="form-select" name="status" id="mesureStatus" required>
                                                         <?php foreach (listStatus() as $key => $value) : ?>
                                                             <option value="<?= $key ?>"><?= $value ?></option>
                                                         <?php endforeach; ?>
                                                     </select>
-                                                    <label for="mesureStatus">Status *</label>
+                                                    <label for="mesureStatus">Status*</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -149,7 +161,7 @@
                                 <div class="tab-pane" role="tabpanel" aria-labelledby="phoenix-wizard-tab2" id="phoenix-wizard-tab2">
                                     <form id="wizMesureForm2" novalidate="novalidate" class="needs-validation" data-wizard-form="2">
                                         <div class="row g-3">
-                                            <div class="col-md-12 mb-3">
+                                            <div class="col-md-12 mb-2">
                                                 <div class="form-floating form-floating-advance-select">
                                                     <select class="form-select" style="padding-left: 10px;" id="MultipleMesureGaz" name="gaz" multiple="multiple"
                                                         data-placeholder="Type de gaz">
@@ -163,7 +175,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-6 mb-3">
+                                            <div class="col-md-6 mb-2">
                                                 <div class="flatpickr-input-container">
                                                     <div class="form-floating">
                                                         <input class="form-control" name="annee_debut" id="mesureStartDate" value="<?= date('Y') ?>" type="number" placeholder="Date de début">
@@ -172,7 +184,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6 mb-3">
+                                            <div class="col-md-6 mb-2">
                                                 <div class="flatpickr-input-container">
                                                     <div class="form-floating">
                                                         <input class="form-control" name="annee_fin" id="mesureEndDate" value="<?= date('Y') ?>" type="number" placeholder="Date de clôture">
@@ -182,7 +194,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-6 mb-3">
+                                            <!-- <div class="col-md-6 mb-2">
                                                 <div class="flatpickr-input-container">
                                                     <div class="form-floating">
                                                         <input class="form-control" name="valeur_realise" id="mesureValueRealise" type="text" placeholder="Valeur réalise">
@@ -191,12 +203,31 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6 mb-3">
+                                            <div class="col-md-6 mb-2">
                                                 <div class="flatpickr-input-container">
                                                     <div class="form-floating">
                                                         <input class="form-control" name="valeur_cible" id="mesureValueCible" type="text" placeholder="Valeur cible">
                                                         <label class="ps-6" for="mesureValueCible">Valeur cible</label>
                                                         <span class="uil uil-calculator-alt flatpickr-icon text-body-tertiary"></span>
+                                                    </div>
+                                                </div>
+                                            </div> -->
+
+                                            <div class="col-md-6 mb-2">
+                                                <div class="flatpickr-input-container">
+                                                    <div class="form-floating">
+                                                        <input class="form-control" name="latitude" id="mesureLatitude" type="text" placeholder="Latitude">
+                                                        <label class="ps-6" for="mesureLatitude">Latitude</label>
+                                                        <span class="uil uil-map-marker flatpickr-icon text-body-tertiary"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-2">
+                                                <div class="flatpickr-input-container">
+                                                    <div class="form-floating">
+                                                        <input class="form-control" name="longitude" id="mesureLongitude" type="text" placeholder="Longitude">
+                                                        <label class="ps-6" for="mesureLongitude">Longitude</label>
+                                                        <span class="uil uil-map-marker flatpickr-icon text-body-tertiary"></span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -207,12 +238,12 @@
                                 <div class="tab-pane" role="tabpanel" aria-labelledby="phoenix-wizard-tab3" id="phoenix-wizard-tab3">
                                     <form id="wizMesureForm3" novalidate="novalidate" class="needs-validation" data-wizard-form="3">
                                         <div class="row">
-                                            <div class="col-12 mb-3">
+                                            <div class="col-12 mb-2">
                                                 <label for="mesureDescription" class="fs-9 fw-semibold">Description de la mesure</label>
                                                 <textarea class="form-control" name="description" id="mesureDescription"></textarea>
                                             </div>
 
-                                            <div class="col-12 mb-3">
+                                            <div class="col-12 mb-2">
                                                 <label for="mesureObjectif" class="fs-9 fw-semibold">Objectif de la mesure</label>
                                                 <textarea class="form-control" name="objectif" id="mesureObjectif"></textarea>
                                             </div>
@@ -283,6 +314,7 @@
                     form.name.value = result.data.name || '';
                     form.secteur_id.value = result.data.secteur_id || '';
                     form.structure_id.value = result.data.structure_id || '';
+                    form.referentiel_id.value = result.data.referentiel_id || '';
                     form.action_type.value = result.data.action_type || '';
                     form.instrument.value = result.data.instrument || '';
                     form.status.value = result.data.status || '';
@@ -290,8 +322,8 @@
                     const form2 = document.forms['wizMesureForm2'];
                     form2.annee_debut.value = result.data.annee_debut || '';
                     form2.annee_fin.value = result.data.annee_fin || '';
-                    form2.valeur_realise.value = result.data.valeur_realise || '';
-                    form2.valeur_cible.value = result.data.valeur_cible || '';
+                    form2.latitude.value = result.data.latitude || '';
+                    form2.longitude.value = result.data.longitude || '';
                     $('#MultipleMesureGaz').val(result.data.gaz.split(','));
                     $('#MultipleMesureGaz').trigger('change');
 

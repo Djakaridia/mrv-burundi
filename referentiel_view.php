@@ -232,7 +232,6 @@
                         </div>
                     </div>
 
-                    <h5 class="mb-2 text-primary"><i class="fas fa-info-circle me-2"></i>Informations générale sur l'indicateur</h5>
                     <div class="row g-3 mb-3">
                         <div class="col-md-12">
                             <div class="card rounded-1 shadow-sm border h-100">
@@ -506,7 +505,6 @@
                         </div>
                     </div>
 
-                    <h5 class="mb-2 text-primary"><i class="fas fa-tasks me-2"></i>Synthèse du suivi de l'indicateur</h5>
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
                             <div class="card rounded-1 shadow-sm border h-100">
@@ -522,7 +520,7 @@
                                 </div>
                                 <div class="card-body p-2" style="max-height: 500px; overflow-y: auto;">
                                     <?php if (!empty($suivis_raw)) : ?>
-                                        <table class="table table-sm table-hover table-striped small table-bordered border-emphasis" id="suiviTable">
+                                        <table class="table table-sm table-hover table-striped small table-bordered border-emphasis">
                                             <thead class="bg-primary-subtle">
                                                 <tr>
                                                     <th scope="col" class="px-2">Année</th>
@@ -602,7 +600,7 @@
                                 </div>
                                 <div class="card-body p-2" style="max-height: 500px; overflow-y: auto;">
                                     <?php if (!empty($suivis_par_annee)) : ?>
-                                        <table class="table table-sm table-bordered small mb-0">
+                                        <table class="table table-sm table-hover table-striped small table-bordered border-emphasis">
                                             <thead class="bg-primary-subtle">
                                                 <tr>
                                                     <th class="text-center">Année</th>
@@ -711,7 +709,6 @@
                     </div>
 
                     <?php if (!empty($annees)) : ?>
-                        <h5 class="mb-2 text-primary"><i class="fas fa-chart-line me-2"></i>Visualisation des Données</h5>
                         <div class="row g-3 mb-3">
                             <div class="col-md-6">
                                 <div class="card rounded-1 shadow-sm border h-100">
