@@ -136,7 +136,7 @@
                                             </div>
                                             <div class="col-md-6 mb-2">
                                                 <div class="form-floating">
-                                                    <select class="form-select" name="programme_id" id="projetProgramme" required>
+                                                    <select class="form-select" name="programme_id" id="projetProgramme">
                                                         <option value="" disabled>Sélectionner un programme</option>
                                                         <?php if ($programmes ?? []) : ?>
                                                             <?php foreach ($programmes as $programme) : ?>
@@ -144,7 +144,7 @@
                                                             <?php endforeach; ?>
                                                         <?php endif; ?>
                                                     </select>
-                                                    <label for="projetProgramme">Programmes concernés*</label>
+                                                    <label for="projetProgramme">Programmes concernés</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -162,7 +162,7 @@
                                                             <option value="<?= $key ?>"><?= $value ?></option>
                                                         <?php endforeach; ?>
                                                     </select>
-                                                    <label for="projetAction">Action type *</label>
+                                                    <label for="projetAction">Action type*</label>
                                                 </div>
                                             </div>
                                             <div class="col-md-6 mb-2">
@@ -172,13 +172,13 @@
                                                             <option value="<?= $key ?>"><?= $value ?></option>
                                                         <?php endforeach; ?>
                                                     </select>
-                                                    <label for="projetStatus">Status *</label>
+                                                    <label for="projetStatus">Status*</label>
                                                 </div>
                                             </div>
 
                                             <div class="col-md-12 mt-0 mb-2">
                                                 <div class="form-group">
-                                                    <label for="MultipleProjetGaz" class="form-label">Types de gaz*</label>
+                                                    <label for="MultipleProjetGaz" class="form-label">Types de gaz</label>
                                                     <select class="form-select" id="MultipleProjetGaz" name="gaz" multiple="multiple">
                                                         <option value="" disabled>Sélectionner les types de gaz</option>
                                                         <?php if ($gazs ?? []) : ?>
@@ -236,7 +236,7 @@
                                         <div class="row">
                                             <div class="col-md-12 mt-0 mb-2">
                                                 <div class="form-group">
-                                                    <label for="MultipleProjetGroupe" class="form-label">Types de groupe*</label>
+                                                    <label for="MultipleProjetGroupe" class="form-label">Groupes de travail</label>
                                                     <select class="form-select" id="MultipleProjetGroupe" name="groupes" multiple="multiple">
                                                         <option value="" disabled>Sélectionner un groupe</option>
                                                         <?php if ($groupes_travail ?? []) : ?>

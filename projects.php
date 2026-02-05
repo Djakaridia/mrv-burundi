@@ -317,7 +317,7 @@
                 <tr>
                   <td><a href="project_view.php?id=<?= $projet['id'] ?>" class="text-muted fw-bold"><?= html_entity_decode($projet['name']) ?></a></td>
                   <td><span class="fw-semibold"><?= $projet['structure_sigle'] ?></span></td>
-                  <td>
+                  <td class="text-center">
                     <span class="badge badge-phoenix fs-10 py-1 badge-phoenix-light rounded-pill">
                       <?php foreach ($secteurs as $secteur) {
                         if ($secteur['id'] == $projet['secteur_id']) {
@@ -332,7 +332,7 @@
                       <?= date('Y', strtotime($projet['start_date'])) ?> - <?= date('Y', strtotime($projet['end_date'])) ?>
                     </span>
                   </td>
-                   <td>
+                   <td class="text-center">
                     <span class="badge badge-phoenix fs-10 py-1 rounded-pill badge-phoenix-<?= getBadgeClass($projet['status']); ?>">
                       <?= listStatus()[$projet['status']]; ?>
                     </span>

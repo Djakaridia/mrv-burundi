@@ -243,7 +243,7 @@
                                             <?php endforeach; ?>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <span class="badge badge-phoenix fs-10 py-1 badge-phoenix-light rounded-pill">
                                             <?php foreach ($secteurs_mesure as $secteur) {
                                                 if ($secteur['id'] == $mesure['secteur_id']) {
@@ -258,7 +258,7 @@
                                             <?= $mesure['annee_debut'] ?> - <?= $mesure['annee_fin'] ?>
                                         </span>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <span class="badge badge-phoenix fs-10 py-1 rounded-pill badge-phoenix-<?= getBadgeClass($mesure['status']); ?>">
                                             <?= listStatus()[$projet['status']]; ?>
                                         </span>

@@ -163,7 +163,7 @@
                                         <div class="row g-3">
                                             <div class="col-md-12 mb-2">
                                                 <div class="form-group">
-                                                    <label for="MultipleProjetGaz" class="form-label">Types de gaz*</label>
+                                                    <label for="MultipleProjetGaz" class="form-label">Types de gaz</label>
                                                     <select class="form-select" style="padding-left: 10px;" id="MultipleMesureGaz" name="gaz" multiple="multiple">
                                                         <option value="" disabled>Sélectionner les types de gaz</option>
                                                         <?php if ($gazs ?? []) : ?>
