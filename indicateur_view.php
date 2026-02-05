@@ -215,11 +215,6 @@
                                                     <?= "<strong>" . $structure['sigle'] . "</strong>"; ?> (Principal)
                                                 <?php endif; ?>
                                             <?php endforeach; ?>
-                                            <?php foreach ($structures as $structure): ?>
-                                                <?php if (in_array($structure['id'], explode(',', str_replace('"', '', $ref_curr['autre_responsable'] ?? ""))) && $structure['id'] != $ref_curr['responsable']): ?>
-                                                    <?= "/ " . $structure['sigle']; ?>
-                                                <?php endif; ?>
-                                            <?php endforeach; ?>
                                         </dd>
 
                                         <dt class="col-sm-4 text-muted fs-9">Fonction d'agrégration :</dt>

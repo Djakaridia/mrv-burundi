@@ -18,8 +18,8 @@
                 <div id="mesureContentContainer" style="display: none;">
                     <div class="card theme-wizard" data-theme-wizard="data-theme-wizard">
                         <ul class="nav justify-content-between nav-wizard nav-wizard-primary mx-3" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <a class="nav-link active fw-semibold" href="#phoenix-wizard-tab1" data-bs-toggle="tab" data-wizard-step="1" aria-selected="true" role="tab">
+                            <li class="nav-item" role="Etape 1">
+                                <a class="nav-link fw-semibold active" href="#mesure-wizard-tab1" data-bs-toggle="tab" data-wizard-step="1" aria-selected="true" role="tab">
                                     <div class="text-center d-inline-block">
                                         <span class="nav-item-circle-parent">
                                             <span class="nav-item-circle"><span class="fas fa-step-forward"></span></span>
@@ -28,8 +28,8 @@
                                     </div>
                                 </a>
                             </li>
-                            <li class="nav-item" role="presentation">
-                                <a class="nav-link fw-semibold" href="#phoenix-wizard-tab2" data-bs-toggle="tab" data-wizard-step="2" aria-selected="false" tabindex="-1" role="tab">
+                            <li class="nav-item" role="Etape 2">
+                                <a class="nav-link fw-semibold" href="#mesure-wizard-tab2" data-bs-toggle="tab" data-wizard-step="2" aria-selected="false" tabindex="-1" role="tab">
                                     <div class="text-center d-inline-block">
                                         <span class="nav-item-circle-parent">
                                             <span class="nav-item-circle"><span class="fas fa-step-forward"></span></span>
@@ -38,8 +38,8 @@
                                     </div>
                                 </a>
                             </li>
-                            <li class="nav-item" role="presentation">
-                                <a class="nav-link fw-semibold" href="#phoenix-wizard-tab3" data-bs-toggle="tab" data-wizard-step="3" aria-selected="false" tabindex="-1" role="tab">
+                            <li class="nav-item" role="Etape 3">
+                                <a class="nav-link fw-semibold" href="#mesure-wizard-tab3" data-bs-toggle="tab" data-wizard-step="3" aria-selected="false" tabindex="-1" role="tab">
                                     <div class="text-center d-inline-block">
                                         <span class="nav-item-circle-parent">
                                             <span class="nav-item-circle">
@@ -50,8 +50,8 @@
                                     </div>
                                 </a>
                             </li>
-                            <li class="nav-item" role="presentation">
-                                <a class="nav-link fw-semibold" href="#phoenix-wizard-tab4" data-bs-toggle="tab" data-wizard-step="4" aria-selected="false" tabindex="-1" role="tab">
+                            <li class="nav-item" role="Etape 4">
+                                <a class="nav-link fw-semibold" href="#mesure-wizard-tab4" data-bs-toggle="tab" data-wizard-step="4" aria-selected="false" tabindex="-1" role="tab">
                                     <div class="text-center d-inline-block">
                                         <span class="nav-item-circle-parent">
                                             <span class="nav-item-circle">
@@ -63,9 +63,9 @@
                                 </a>
                             </li>
                         </ul>
-                        <div class="card-body p-3">
+                        <div class="card-body p-3 border-top">
                             <div id="FormMesure" class="tab-content">
-                                <div class="tab-pane active" role="tabpanel" aria-labelledby="phoenix-wizard-tab1" id="phoenix-wizard-tab1">
+                                <div class="tab-pane active" role="tabpanel" aria-labelledby="mesure-wizard-tab1" id="mesure-wizard-tab1">
                                     <form id="wizMesureForm1" novalidate="novalidate" class="needs-validation" data-wizard-form="1">
                                         <div class="row g-3">
                                             <div class="col-md-3 mb-2">
@@ -84,8 +84,7 @@
 
 
                                             <div class="col-md-6 mb-2">
-                                                <div class="form-floating form-floating-advance-select">
-                                                    <label for="mesureSecteur">Secteur concerné*</label>
+                                                <div class="form-floating">
                                                     <select class="form-select" name="secteur_id" id="mesureSecteur" required>
                                                         <option value="" selected disabled>Sélectionner un secteur</option>
                                                         <?php if ($secteurs_mesure ?? []) : ?>
@@ -94,6 +93,7 @@
                                                             <?php endforeach; ?>
                                                         <?php endif; ?>
                                                     </select>
+                                                    <label for="mesureSecteur">Secteur concerné*</label>
                                                 </div>
                                             </div>
                                             <div class="col-md-6 mb-2">
@@ -158,14 +158,14 @@
                                     </form>
                                 </div>
 
-                                <div class="tab-pane" role="tabpanel" aria-labelledby="phoenix-wizard-tab2" id="phoenix-wizard-tab2">
+                                <div class="tab-pane" role="tabpanel" aria-labelledby="mesure-wizard-tab2" id="mesure-wizard-tab2">
                                     <form id="wizMesureForm2" novalidate="novalidate" class="needs-validation" data-wizard-form="2">
                                         <div class="row g-3">
                                             <div class="col-md-12 mb-2">
-                                                <div class="form-floating form-floating-advance-select">
-                                                    <select class="form-select" style="padding-left: 10px;" id="MultipleMesureGaz" name="gaz" multiple="multiple"
-                                                        data-placeholder="Type de gaz">
-                                                        <option value="" disabled>Sélectionner les autres responsables</option>
+                                                <div class="form-group">
+                                                    <label for="MultipleProjetGaz" class="form-label">Types de gaz*</label>
+                                                    <select class="form-select" style="padding-left: 10px;" id="MultipleMesureGaz" name="gaz" multiple="multiple">
+                                                        <option value="" disabled>Sélectionner les types de gaz</option>
                                                         <?php if ($gazs ?? []) : ?>
                                                             <?php foreach ($gazs as $gaz): ?>
                                                                 <option value="<?= $gaz['name'] ?>"><?= $gaz['name'] ?></option>
@@ -235,23 +235,23 @@
                                     </form>
                                 </div>
 
-                                <div class="tab-pane" role="tabpanel" aria-labelledby="phoenix-wizard-tab3" id="phoenix-wizard-tab3">
+                                <div class="tab-pane" role="tabpanel" aria-labelledby="mesure-wizard-tab3" id="mesure-wizard-tab3">
                                     <form id="wizMesureForm3" novalidate="novalidate" class="needs-validation" data-wizard-form="3">
                                         <div class="row">
                                             <div class="col-12 mb-2">
-                                                <label for="mesureDescription" class="fs-9 fw-semibold">Description de la mesure</label>
+                                                <label for="mesureDescription" class="form-label">Description de la mesure</label>
                                                 <textarea class="form-control" name="description" id="mesureDescription"></textarea>
                                             </div>
 
                                             <div class="col-12 mb-2">
-                                                <label for="mesureObjectif" class="fs-9 fw-semibold">Objectif de la mesure</label>
+                                                <label for="mesureObjectif" class="form-label">Objectif de la mesure</label>
                                                 <textarea class="form-control" name="objectif" id="mesureObjectif"></textarea>
                                             </div>
                                         </div>
                                     </form>
                                 </div>
 
-                                <div class="tab-pane" role="tabpanel" aria-labelledby="phoenix-wizard-tab4" id="phoenix-wizard-tab4">
+                                <div class="tab-pane" role="tabpanel" aria-labelledby="mesure-wizard-tab4" id="mesure-wizard-tab4">
                                     <form id="wizMesureForm4" novalidate="novalidate" novalidate="novalidate" class="needs-validation" data-wizard-form="5">
                                         <div class="text-center py-5 my-5">
                                             <h5 class="mb-3">Validation des informations de la mesure</h5>
@@ -324,7 +324,7 @@
                     form2.annee_fin.value = result.data.annee_fin || '';
                     form2.latitude.value = result.data.latitude || '';
                     form2.longitude.value = result.data.longitude || '';
-                    $('#MultipleMesureGaz').val(result.data.gaz.split(','));
+                    $('#MultipleMesureGaz').val(result.data.gaz?.split(','));
                     $('#MultipleMesureGaz').trigger('change');
 
                     const form3 = document.forms['wizMesureForm3'];
@@ -349,7 +349,7 @@
         });
 
         $('#addMesureModal').on('hide.bs.modal', function() {
-            resetWizard();
+            resetMesureWizard();
             setTimeout(() => {
                 $('#mesureLoadingScreen').show();
                 $('#mesureContentContainer').hide();
@@ -404,7 +404,7 @@
         });
     });
 
-    function resetWizard() {
+    function resetMesureWizard() {
         $('#wizMesureForm1')[0].reset();
         $('#wizMesureForm2')[0].reset();
         $('#wizMesureForm3')[0].reset();

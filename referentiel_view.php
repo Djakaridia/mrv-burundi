@@ -326,16 +326,6 @@
                                                     }
                                                 }
 
-                                                if (!empty($ref_curr['autre_responsable'])) {
-                                                    foreach (explode(',', str_replace('"', '', $ref_curr['autre_responsable'])) as $id) {
-                                                        foreach ($structures as $s) {
-                                                            if ($s['id'] == trim($id)) {
-                                                                $responsables[] = "<span class='badge bg-outline-secondary'>{$s['sigle']}</span>";
-                                                            }
-                                                        }
-                                                    }
-                                                }
-
                                                 echo $responsables ? implode(' ', $responsables) : '<em class="text-muted">Non défini</em>';
                                                 ?>
                                             </dd>

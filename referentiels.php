@@ -130,11 +130,6 @@
                             <?php echo $structure['sigle']; ?>
                           <?php endif; ?>
                         <?php endforeach; ?>
-                        <?php foreach ($structures as $structure): ?>
-                          <?php if (in_array($structure['id'], explode(',', str_replace('"', '', $referentiel['autre_responsable'] ?? ""))) && $structure['id'] != $referentiel['responsable']): ?>
-                            <?php echo "/ " . $structure['sigle']; ?>
-                          <?php endif; ?>
-                        <?php endforeach; ?>
                       </td>
 
                       <!-- <td class="align-middle text-start px-2">

@@ -170,12 +170,12 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                     </div>
 
                     <div class="nav-item-wrapper">
-                        <?php $subModIndic = ['referentiels', 'referentiel_view', 'projections']; ?>
+                        <?php $subModIndic = ['referentiels', 'referentiel_view', 'projections', 'mesures', 'mesure_view']; ?>
                         <a class="nav-link dropdown-indicator label-1 rounded-0 m-0" href="#nv-indicators" role="button" data-bs-toggle="collapse" aria-expanded="<?= in_array($pageCurr, $subModIndic) ? 'true' : 'false'; ?>" aria-controls="nv-indicators">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center">
                                     <span class="nav-link-icon ms-2 my-1"><span data-feather="airplay"></span></span>
-                                    <span class="nav-link-text">Indicateurs de la CDN</span>
+                                    <span class="nav-link-text">Atténuations</span>
                                 </div>
                                 <div class="dropdown-indicator-icon-wrapper">
                                     <span class="fas fa-chevron-right dropdown-indicator-icon"></span>
@@ -184,7 +184,7 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                         </a>
                         <div class="parent-wrapper label-1">
                             <ul class="nav collapse parent rounded-1 ms-1 <?= in_array($pageCurr, $subModIndic) ? 'show' : ''; ?>" data-bs-parent="#navbarVerticalCollapse" id="nv-indicators">
-                                <li class="collapsed-nav-item-title d-none">Indicateurs de la CDN</li>
+                                <li class="collapsed-nav-item-title d-none">Atténuations</li>
                                 <li class="nav-item overflow-hidden">
                                     <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo in_array($pageCurr, ['referentiels', 'referentiel_view']) ? 'active' : '' ?>" href="referentiels.php">
                                         <div class="d-flex align-items-center">
@@ -201,26 +201,6 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                                         </div>
                                     </a>
                                 </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="nav-item-wrapper">
-                        <?php $subModProj = ['programmes', 'mesures', 'mesure_view', 'projects', 'project_view', 'niveau_resultat', 'cadre_resultat_cr', 'fiches_dynamiques']; ?>
-                        <a class="nav-link dropdown-indicator label-1 rounded-0 m-0" href="#nv-projects" role="button" data-bs-toggle="collapse" aria-expanded="<?= in_array($pageCurr, $subModProj) ? 'true' : 'false'; ?>" aria-controls="nv-projects">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div class="d-flex align-items-center">
-                                    <span class="nav-link-icon ms-2 my-1"><span data-feather="briefcase"></span></span>
-                                    <span class="nav-link-text">Fiche des projets</span>
-                                </div>
-                                <div class="dropdown-indicator-icon-wrapper">
-                                    <span class="fas fa-chevron-right dropdown-indicator-icon"></span>
-                                </div>
-                            </div>
-                        </a>
-                        <div class="parent-wrapper label-1">
-                            <ul class="nav collapse parent rounded-1 ms-1 <?= in_array($pageCurr, $subModProj) ? 'show' : ''; ?>" data-bs-parent="#navbarVerticalCollapse" id="nv-projects">
-                                <li class="collapsed-nav-item-title d-none">Fiche des projets</li>
                                 <li class="nav-item overflow-hidden">
                                     <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo in_array($pageCurr, ['mesures', 'mesure_view']) ? 'active' : '' ?>" href="mesures.php">
                                         <div class="d-flex align-items-center">
@@ -229,6 +209,26 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                                         </div>
                                     </a>
                                 </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="nav-item-wrapper">
+                        <?php $subModProj = ['programmes', 'projects', 'project_view', 'niveau_resultat', 'cadre_resultat_cr', 'fiches_dynamiques']; ?>
+                        <a class="nav-link dropdown-indicator label-1 rounded-0 m-0" href="#nv-projects" role="button" data-bs-toggle="collapse" aria-expanded="<?= in_array($pageCurr, $subModProj) ? 'true' : 'false'; ?>" aria-controls="nv-projects">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <span class="nav-link-icon ms-2 my-1"><span data-feather="briefcase"></span></span>
+                                    <span class="nav-link-text">Adaptations</span>
+                                </div>
+                                <div class="dropdown-indicator-icon-wrapper">
+                                    <span class="fas fa-chevron-right dropdown-indicator-icon"></span>
+                                </div>
+                            </div>
+                        </a>
+                        <div class="parent-wrapper label-1">
+                            <ul class="nav collapse parent rounded-1 ms-1 <?= in_array($pageCurr, $subModProj) ? 'show' : ''; ?>" data-bs-parent="#navbarVerticalCollapse" id="nv-projects">
+                                <li class="collapsed-nav-item-title d-none">Adaptations</li>
                                 <li class="nav-item overflow-hidden">
                                     <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'programmes' ? 'active' : '' ?>" href="programmes.php">
                                         <div class="d-flex align-items-center">

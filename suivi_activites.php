@@ -102,7 +102,6 @@
                                 <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
                                     <thead class="bg-primary-subtle">
                                         <tr>
-                                            <th class="align-middle">Code</th>
                                             <th class="align-middle" style="min-width:300px;">Libellé</th>
                                             <th class="align-middle">Responsable</th>
                                             <th class="align-middle text-center">Priorité</th>
@@ -131,15 +130,14 @@
                                             }
                                         ?>
                                             <tr>
-                                                <td><?= $tache['code'] ?></td>
                                                 <td>
                                                     <div data-todo-offcanvas-toogle="data-todo-offcanvas-toogle" data-todo-offcanvas-target="suiviOffcanvas<?= $tache['id'] ?>">
-                                                        <a class="mb-0 fw-bold line-clamp-1 flex-grow-1 flex-md-grow-0 cursor-pointer"><?= $tache['name'] ?></a>
+                                                        <a class="mb-0 fw-bold line-clamp-1 flex-grow-1 flex-md-grow-0 cursor-pointer text-muted"><?= $tache['name'] ?></a>
                                                     </div>
                                                 </td>
 
                                                 <td>
-                                                    <?php echo $grouped_users[$tache['assigned_id']]['nom'] . ' ' . $grouped_users[$tache['assigned_id']]['prenom'] ?>
+                                                    <?php echo isset($grouped_users[$tache['assigned_id']]) ? $grouped_users[$tache['assigned_id']]['nom'] . ' ' . $grouped_users[$tache['assigned_id']]['prenom'] : 'Non assigné'; ?>
                                                 </td>
 
                                                 <td class="text-center">

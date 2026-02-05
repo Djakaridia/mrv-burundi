@@ -16,10 +16,8 @@
           <h4 class="mt-3 fw-bold text-primary" id="referentielLoadingText">Chargement en cours</h4>
         </div>
 
-        <!-- Content Container (initially hidden) -->
         <div id="referentielContentContainer" style="display: none;">
           <form class="row g-3" action="" method="post" id="FormReferentiel">
-            <!-- Code du referentiel -->
             <div class="col-md-4">
               <div class="form-floating">
                 <input oninput="checkColumns('code', 'referentielCode', 'referentielCodeFeedback', 'referentiels')" class="form-control" name="code" id="referentielCode" type="text"
@@ -28,7 +26,6 @@
                 <div id="referentielCodeFeedback" class="invalid-feedback"></div>
               </div>
             </div>
-            <!-- Intitule du referentiel -->
             <div class="col-md-8">
               <div class="form-floating">
                 <input class="form-control" name="intitule" id="referentielIntitule" type="text"
@@ -37,7 +34,6 @@
               </div>
             </div>
 
-            <!-- Description -->
             <div class="col-12">
               <div class="form-floating">
                 <textarea class="form-control" name="description" id="referentielDescription"
@@ -46,7 +42,6 @@
               </div>
             </div>
 
-            <!-- Catégorie -->
             <div class="col-4">
               <div class="form-floating">
                 <select class="form-select" name="categorie" id="referentielCategorie" required>
@@ -58,7 +53,6 @@
                 <label for="referentielCategorie">Catégorie*</label>
               </div>
             </div>
-            <!-- Sens Evolution -->
             <div class="col-md-4">
               <div class="form-floating">
                 <select class="form-select" name="sens_evolution" id="referentielSensEvolution" required>
@@ -69,7 +63,6 @@
                 <label for="referentielSensEvolution">Sens d'évolution*</label>
               </div>
             </div>
-            <!-- Unite -->
             <div class="col-4">
               <div class="form-floating">
                 <select class="form-select" name="unite" id="referentielUnite" required>
@@ -84,7 +77,6 @@
               </div>
             </div>
 
-            <!-- Echelle -->
             <div class="col-4">
               <div class="form-floating">
                 <select class="form-select" name="echelle" id="referentielEchelle" required>
@@ -100,7 +92,6 @@
                 <label for="referentielEchelle">Echelle*</label>
               </div>
             </div>
-            <!-- Modele -->
             <div class="col-4">
               <div class="form-floating">
                 <select class="form-select" name="modele" id="referentielModele" required>
@@ -112,7 +103,6 @@
                 <label for="referentielModele">Modèle*</label>
               </div>
             </div>
-            <!-- Fonction d'agregation -->
             <div class="col-md-4">
               <div class="form-floating">
                 <select class="form-select" name="fonction_agregation" id="referentielFonctionAgregation" required>
@@ -125,7 +115,6 @@
               </div>
             </div>
 
-            <!-- Domaine -->
             <div class="col-md-6">
               <div class="form-floating">
                 <select class="form-select" name="domaine" id="referentielDomaine" required>
@@ -139,7 +128,6 @@
                 <label for="referentielDomaine">Secteur*</label>
               </div>
             </div>
-            <!-- Action prioritaire -->
             <div class="col-md-6">
               <div class="form-floating">
                 <select class="form-select" name="action" id="referentielAction">
@@ -156,7 +144,17 @@
               </div>
             </div>
 
-            <!-- Responsable -->
+            <div class="col-md-6 mb-2">
+              <div class="form-floating">
+                <select class="form-select" name="action_type" id="referentielActionType" required>
+                  <option value="" selected disabled>Sélectionner une action</option>
+                  <?php foreach (listTypeAction() as $key => $value) : ?>
+                    <option value="<?= $key ?>"><?= $value ?></option>
+                  <?php endforeach; ?>
+                </select>
+                <label for="projetAction">Action type *</label>
+              </div>
+            </div>
             <div class="col-md-6">
               <div class="form-floating">
                 <select class="form-select" name="responsable" id="referentielResponsable" required>
@@ -170,22 +168,7 @@
                 <label for="referentielResponsable">Responsable*</label>
               </div>
             </div>
-            <!-- Autre Responsable -->
-            <div class="col-md-6">
-              <div class="form-floating form-floating-advance-select">
-                <select class="form-control" style="padding-left: 10px;" id="MultipleRefResponsable" name="autre_responsable" multiple="multiple"
-                  data-placeholder="Autres responsables">
-                  <option value="" disabled>Sélectionner les autres responsables</option>
-                  <?php if ($structures ?? []) : ?>
-                    <?php foreach ($structures as $structure): ?>
-                      <option value="<?= $structure['id'] ?>"><?= $structure['sigle'] ?></option>
-                    <?php endforeach; ?>
-                  <?php endif; ?>
-                </select>
-              </div>
-            </div>
 
-            <!-- Seuil minimum -->
             <div class="col-md-3">
               <div class="form-floating">
                 <input class="form-control" name="annee_debut" id="referentielAnneeDebut" type="number"
@@ -193,7 +176,6 @@
                 <label for="referentielAnneeDebut">Année de début</label>
               </div>
             </div>
-            <!-- Seuil maximum -->
             <div class="col-md-3">
               <div class="form-floating">
                 <input class="form-control" name="annee_fin" id="referentielAnneeFin" type="number"
@@ -202,7 +184,6 @@
               </div>
             </div>
 
-            <!-- Seuil minimum -->
             <div class="col-md-3">
               <div class="form-floating">
                 <input class="form-control" name="seuil_min" id="referentielSeuilMin" type="number"
@@ -210,7 +191,6 @@
                 <label for="referentielSeuilMin">Seuil minimum</label>
               </div>
             </div>
-            <!-- Seuil maximum -->
             <div class="col-md-3">
               <div class="form-floating">
                 <input class="form-control" name="seuil_max" id="referentielSeuilMax" type="number"
@@ -218,7 +198,7 @@
                 <label for="referentielSeuilMax">Seuil maximum</label>
               </div>
             </div>
-            <!-- Normes -->
+
             <div class="col-md-6">
               <div class="form-floating">
                 <input class="form-control" name="norme" id="referentielNorme" type="text"
@@ -226,7 +206,6 @@
                 <label for="referentielNorme">Norme</label>
               </div>
             </div>
-            <!-- In dashboard -->
             <div class="col-md-6">
               <div class="form-check form-switch mt-2">
                 <input class="form-check-input" name="in_dashboard" type="checkbox" id="referentielInDashboard">
@@ -252,8 +231,6 @@
   var allSubSectors = [];
 
   $(document).ready(function() {
-    initSelect2("#addReferentielModal", "MultipleRefResponsable");
-
     $('#addReferentielModal').on('shown.bs.modal', async function(event) {
       const dataId = $(event.relatedTarget).data('id');
       const form = document.getElementById('FormReferentiel');
@@ -287,6 +264,7 @@
           form.domaine.value = result.data.domaine;
           form.action.value = result.data.action;
           form.responsable.value = result.data.responsable;
+          form.action_type.value = result.data.action_type;
           form.fonction_agregation.value = result.data.fonction_agregation;
           form.seuil_min.value = result.data.seuil_min;
           form.seuil_max.value = result.data.seuil_max;
@@ -295,8 +273,6 @@
           form.norme.value = result.data.norme;
           form.in_dashboard.checked = result.data.in_dashboard == 1 ? true : false;
 
-          $('#MultipleRefResponsable').val(result.data.autre_responsable.split(','));
-          $('#MultipleRefResponsable').trigger('change');
           $('#MultipleRefConvention').trigger('change');
           $('#referentielAction').attr('disabled', false);
         } catch (error) {
@@ -320,9 +296,7 @@
 
     $('#addReferentielModal').on('hide.bs.modal', function() {
       $('#FormReferentiel')[0].reset();
-      $('#MultipleRefResponsable').val([]);
       $('#MultipleRefConvention').val([]);
-      $('#MultipleRefResponsable').trigger('change');
       $('#MultipleRefConvention').trigger('change');
       setTimeout(() => {
         $('#referentielLoadingScreen').show();
@@ -374,7 +348,6 @@
       formData.set('in_dashboard', $('#referentielInDashboard').is(':checked') ? 1 : 0);
       submitBtn.prop('disabled', true);
       submitBtn.text('Envoi en cours...');
-      formData.set('autre_responsable', $('#MultipleRefResponsable').val());
 
       try {
         const response = await fetch(url, {

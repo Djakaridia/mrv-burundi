@@ -32,10 +32,10 @@
 
                         <div class="col-12 col-md-9">
                             <div class="align-items-start align-items-md-center">
-                                <h3 class="fw-bolder mb-2" id="projetNameView"></h3>
+                                <h4 class="fw-bolder mb-2" id="projetNameView"></h4>
                                 <div class="d-flex align-items-center gap-2">
                                     <span class="badge bg-primary rounded-pill" id="projetCodeView"></span>
-                                    <span class="badge bg-secondary rounded-pill" id="projetStatusView"></span>
+                                    <span class="badge bg-info rounded-pill" id="projetStatusView"></span>
                                 </div>
                             </div>
 
@@ -111,6 +111,7 @@
 <script>
     let ViewProjectID = null;
     let listActions = <?php echo json_encode(listTypeAction()); ?>;
+    let listStatus = <?php echo json_encode(listStatus()); ?>;
 
     $(document).ready(function() {
         $('#projectsCardViewModal').on('shown.bs.modal', async function(event) {
@@ -132,7 +133,6 @@
                 const result = await response.json();
                 const data = result.data;
 
-                // Set basic info
                 if (data.logo) {
                     $('#projectCoverView').attr('src', data.logo.split("../").pop());
                     $('#projectCoverIcon').addClass('d-none');
@@ -140,13 +140,12 @@
                 }
                 $('#projetNameView').text(data.name);
                 $('#projetCodeView').text(data.code);
-                $('#projetStatusView').text(data.status);
+                $('#projetStatusView').text(listStatus[data.status]);
                 $('#projetBudgetTextView').text(`${data.budget}`);
                 $('#projetDescriptionView').html(data.description);
                 $('#projetObjectifView').html(data.objectif);
                 $('#projetDatesView').text(`${data.start_date} → ${data.end_date}`);
 
-                // Fetch related data
                 const [projetTasksRes] = await Promise.all([
                     fetch(`./apis/taches.routes.php?projet_id=${data.id}`, {
                         headers: {
@@ -157,8 +156,6 @@
                 ]);
 
                 const projetTasks = await projetTasksRes.json();
-
-                // Calculate progress percentage
                 let progressPercentage = 0;
                 if (Array.isArray(projetTasks.data) && projetTasks.data.length > 0) {
                     const finichedTasks = projetTasks.data.filter((task) => task.status.toLowerCase() == "terminée");
@@ -169,8 +166,6 @@
                 $('#projetBudgetProgressView').css('width', `${progressPercentage}%`);
                 $('#budgetProgressText').text(`${progressPercentage}%`);
 
-
-                // Display related data
                 const ProjetInfosSupplementaires = $('#projetInfosSupplementaires');
                 ProjetInfosSupplementaires.empty().append(`
                     <div class="col-12">

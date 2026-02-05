@@ -17,7 +17,7 @@ class Referentiel
     public $domaine;
     public $action;
     public $responsable;
-    public $autre_responsable;
+    public $action_type;
     public $fonction_agregation;
     public $seuil_min;
     public $seuil_max;
@@ -37,9 +37,9 @@ class Referentiel
     public function create()
     {
         $query = "INSERT INTO " . $this->table . " 
-                 (code, intitule, description, categorie, norme, unite, echelle, modele, domaine, action, responsable, autre_responsable, fonction_agregation, seuil_min, seuil_max, annee_debut, annee_fin, sens_evolution, in_dashboard, add_by) 
+                 (code, intitule, description, categorie, norme, unite, echelle, modele, domaine, action, responsable, action_type, fonction_agregation, seuil_min, seuil_max, annee_debut, annee_fin, sens_evolution, in_dashboard, add_by) 
                   VALUES 
-                 (:code, :intitule, :description, :categorie, :norme, :unite, :echelle, :modele, :domaine, :action, :responsable, :autre_responsable, :fonction_agregation, :seuil_min, :seuil_max, :annee_debut, :annee_fin, :sens_evolution, :in_dashboard, :add_by)";
+                 (:code, :intitule, :description, :categorie, :norme, :unite, :echelle, :modele, :domaine, :action, :responsable, :action_type, :fonction_agregation, :seuil_min, :seuil_max, :annee_debut, :annee_fin, :sens_evolution, :in_dashboard, :add_by)";
 
         $stmt = $this->conn->prepare($query);
 
@@ -55,7 +55,7 @@ class Referentiel
         $stmt->bindParam(':domaine', $this->domaine);
         $stmt->bindParam(':action', $this->action);
         $stmt->bindParam(':responsable', $this->responsable);
-        $stmt->bindParam(':autre_responsable', $this->autre_responsable);
+        $stmt->bindParam(':action_type', $this->action_type);
         $stmt->bindParam(':fonction_agregation', $this->fonction_agregation);
         $stmt->bindParam(':seuil_min', $this->seuil_min);
         $stmt->bindParam(':seuil_max', $this->seuil_max);
@@ -106,7 +106,7 @@ class Referentiel
                      domaine = :domaine,
                      action = :action,
                      responsable = :responsable,
-                     autre_responsable = :autre_responsable,
+                     action_type = :action_type,
                      fonction_agregation = :fonction_agregation,
                      seuil_min = :seuil_min,
                      seuil_max = :seuil_max,
@@ -130,7 +130,7 @@ class Referentiel
         $stmt->bindParam(':domaine', $this->domaine);
         $stmt->bindParam(':action', $this->action);
         $stmt->bindParam(':responsable', $this->responsable);
-        $stmt->bindParam(':autre_responsable', $this->autre_responsable);
+        $stmt->bindParam(':action_type', $this->action_type);
         $stmt->bindParam(':fonction_agregation', $this->fonction_agregation);
         $stmt->bindParam(':seuil_min', $this->seuil_min);
         $stmt->bindParam(':seuil_max', $this->seuil_max);

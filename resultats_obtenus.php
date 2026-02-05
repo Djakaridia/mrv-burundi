@@ -125,11 +125,6 @@
                                                             <?php echo $structure['sigle']; ?>
                                                         <?php endif; ?>
                                                     <?php endforeach; ?>
-                                                    <?php foreach ($structures as $structure): ?>
-                                                        <?php if (in_array($structure['id'], explode(',', str_replace('"', '', $referentiel['autre_responsable'] ?? ""))) && $structure['id'] != $referentiel['responsable']): ?>
-                                                            <?php echo "/ " . $structure['sigle']; ?>
-                                                        <?php endif; ?>
-                                                    <?php endforeach; ?>
                                                 </td>
                                                 <td class="align-middle text-center px-2 py-0">
                                                     <a class="btn btn-link text-decoration-none fw-bold p-0 m-0" data-bs-toggle="modal" data-bs-target="#viewRefCMRModal" aria-haspopup="true" aria-expanded="false"

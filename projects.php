@@ -17,15 +17,10 @@
   $projet = new Projet($db);
   $projets = $projet->read();
 
-  $currentSecteur = isset($_GET['secteur']) ? $_GET['secteur'] : '';
-  $currentAction = isset($_GET['action']) ? $_GET['action'] : '';
-  $currentStatus = isset($_GET['status']) ? $_GET['status'] : '';
-
   if (isset($_GET['secteur']) && !empty($_GET['secteur'])) {
     $secteur = (int) $_GET['secteur'];
     $projets = array_filter($projets, function ($projet) use ($secteur) {
-      $secteurs_ids = explode(',', str_replace('"', '', $projet['secteurs']));
-      return in_array($secteur, $secteurs_ids);
+      return $projet['secteur_id'] == $secteur;
     });
   }
 
@@ -84,90 +79,224 @@
     <?php include './components/navbar & footer/navbar.php'; ?>
 
     <div class="content">
-
-      <div class="mx-n4 mt-n5 px-0 mx-lg-n6 px-lg-0 bg-body-emphasis border border-start-0">
-        <div class="card-body p-2 d-lg-flex flex-row justify-content-between align-items-center">
-          <div class="col-auto">
-            <h4 class="my-1 fw-black fs-8">Liste des projets</h4>
+      <div class="mx-0 mt-n5">
+        <div class="row g-3 mx-n5 mb-3">
+          <div class="col-md-6 col-lg-3">
+            <div class="card card-float h-100 rounded-1">
+              <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-start">
+                  <span class="text-muted text-uppercase small fw-bold">Total Projets</span>
+                  <i class="fa fa-project-diagram text-primary fs-5"></i>
+                </div>
+                <?php
+                $total_projets = count($projets);
+                $projets_actifs = array_filter($projets, function ($p) {
+                  return $p['state'] == 'actif';
+                });
+                $projets_archives = array_filter($projets, function ($p) {
+                  return $p['state'] == 'archivé';
+                });
+                ?>
+                <div class="d-flex align-items-baseline gap-2">
+                  <span class="stat-value"><?= $total_projets ?></span>
+                  <span class="text-primary fw-medium">projets</span>
+                </div>
+                <div class="mt-1">
+                  <span class="badge bg-success-subtle text-success"><?= count($projets_actifs) ?> actifs</span>
+                  <span class="badge bg-secondary-subtle text-secondary ms-1"><?= count($projets_archives) ?> archivés</span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="d-lg-flex flex-row">
-            <div class="search-box d-none d-lg-block my-lg-0 my-2 me-1" style="width: 10rem !important;">
-              <form class="position-relative">
-                <select class="form-select form-select-sm bg-secondary-subtle px-2 rounded-1" id="secteurFilter">
-                  <option value="">Filtrer par secteur</option>
-                  <?php if (isset($secteurs) && !empty($secteurs)): ?>
-                    <?php foreach ($secteurs as $secteur): ?>
-                      <option value="<?= $secteur['id'] ?>" <?= ($currentSecteur == $secteur['id']) ? 'selected' : '' ?>>
-                        <?= $secteur['name'] ?>
-                      </option>
-                    <?php endforeach; ?>
+          <div class="col-md-6 col-lg-3">
+            <div class="card card-float h-100 rounded-1">
+              <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-start">
+                  <span class="text-muted text-uppercase small fw-bold">Budget Total</span>
+                  <i class="fa fa-money-bill-wave text-warning fs-5"></i>
+                </div>
+                <?php
+                $total_budget = 0;
+                $budgets_valides = array_filter($projets, function ($p) {
+                  return !empty($p['budget']) && $p['budget'] > 0;
+                });
+                foreach ($budgets_valides as $projet) {
+                  $total_budget += floatval($projet['budget']);
+                }
+                ?>
+                <div class="stat-value"><?= number_format($total_budget, 2, ',', ' ') ?></div>
+                <div class="mt-2 text-muted small">
+                  <?= count($budgets_valides) ?> projets budgetés
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-3">
+            <div class="card card-float h-100 rounded-1">
+              <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-start">
+                  <span class="text-muted text-uppercase small fw-bold">Projets en Cours</span>
+                  <i class="fa fa-spinner text-info fs-5"></i>
+                </div>
+                <?php
+                $now = new DateTime();
+                $projets_en_cours = array_filter($projets, function ($p) use ($now) {
+                  if (empty($p['start_date']) || empty($p['end_date'])) {
+                    return false;
+                  }
+
+                  $start = new DateTime($p['start_date']);
+                  $end = new DateTime($p['end_date']);
+
+                  return $now >= $start && $now <= $end && $p['state'] == 'actif';
+                });
+
+                $projets_termines = array_filter($projets, function ($p) use ($now) {
+                  if (empty($p['end_date'])) return false;
+                  $end = new DateTime($p['end_date']);
+                  return $now > $end && $p['state'] == 'actif';
+                });
+                ?>
+                <div class="d-flex align-items-baseline gap-2">
+                  <span class="stat-value"><?= count($projets_en_cours) ?></span>
+                  <span class="text-info fw-medium">En cours</span>
+                </div>
+                <div class="mt-1">
+                  <div class="progress" style="height: 5px;">
+                    <?php
+                    $pourcentage_termines = $total_projets > 0 ? round((count($projets_termines) / $total_projets) * 100) : 0;
+                    $pourcentage_en_cours = $total_projets > 0 ? round((count($projets_en_cours) / $total_projets) * 100) : 0;
+                    $pourcentage_futurs = 100 - $pourcentage_termines - $pourcentage_en_cours;
+                    ?>
+                    <div class="progress-bar bg-success" style="width: <?= $pourcentage_termines ?>%"
+                      title="Terminés: <?= count($projets_termines) ?>"></div>
+                    <div class="progress-bar bg-info" style="width: <?= $pourcentage_en_cours ?>%"
+                      title="En cours: <?= count($projets_en_cours) ?>"></div>
+                    <div class="progress-bar bg-light" style="width: <?= $pourcentage_futurs ?>%"
+                      title="À venir"></div>
+                  </div>
+                  <small class="text-muted"><?= count($projets_termines) ?> terminés</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-3">
+            <div class="card card-float h-100 rounded-1">
+              <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-start">
+                  <span class="text-muted text-uppercase small fw-bold">Gaz Concernés</span>
+                  <i class="fa fa-smog text-success fs-5"></i>
+                </div>
+                <?php
+                $gaz_unique_projets = [];
+                foreach ($projets as $projet) {
+                  if (!empty($projet['gaz'])) {
+                    $gaz_list = explode(',', $projet['gaz']);
+                    foreach ($gaz_list as $gaz) {
+                      $gaz_clean = trim($gaz);
+                      if ($gaz_clean) {
+                        $gaz_unique_projets[$gaz_clean] = true;
+                      }
+                    }
+                  }
+                }
+                $nombre_gaz = count($gaz_unique_projets);
+                ?>
+                <div class="stat-value"><?= $nombre_gaz ?></div>
+                <div class="mt-1 text-muted small">
+                  <?php if ($nombre_gaz > 0): ?>
+                    <?= implode(', ', array_slice(array_keys($gaz_unique_projets), 0, 3)) ?>
+                    <?php if ($nombre_gaz > 3): ?>...<?php endif; ?>
+                  <?php else: ?>
+                    Aucun gaz défini
                   <?php endif; ?>
-                </select>
-              </form>
-            </div>
-            <div class="search-box d-none d-lg-block my-lg-0 my-2 me-1" style="width: 10rem !important;">
-              <form class="position-relative">
-                <select class="form-select form-select-sm bg-secondary-subtle px-2 rounded-1" id="actionFilter">
-                  <option value="">Filtrer par action</option>
-                  <?php foreach (listTypeAction() as $key => $value): ?>
-                    <option value="<?= $key ?>" <?= ($currentAction == $key) ? 'selected' : '' ?>>
-                      <?= $value ?>
-                    </option>
-                  <?php endforeach; ?>
-                </select>
-              </form>
-            </div>
-            <div class="search-box d-none d-lg-block my-lg-0 my-2 me-1" style="width: 10rem !important;">
-              <form class="position-relative">
-                <select class="form-select form-select-sm bg-secondary-subtle px-2 rounded-1" id="statusFilter">
-                  <option value="">Filtrer par status</option>
-                  <?php foreach (listStatus() as $key => $value): ?>
-                    <option value="<?= $key ?>" <?= ($currentStatus == $key) ? 'selected' : '' ?>>
-                      <?= $value ?>
-                    </option>
-                  <?php endforeach; ?>
-                </select>
-              </form>
-            </div>
-
-
-            <div class="search-box ms-lg-1 my-lg-0 my-2">
-              <form class="position-relative">
-                <input id="searchProjet" class="form-control form-control-sm search-input search" type="search"
-                  placeholder="Rechercher un projet" aria-label="Search" />
-                <span class="fas fa-search search-box-icon"></span>
-              </form>
-            </div>
-            <div class="ms-lg-2">
-              <button title="Ajouter" class="btn btn-subtle-primary btn-sm" id="addBtn" data-bs-toggle="modal"
-                data-bs-target="#addProjetModal" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
-                <i class="fas fa-plus"></i> Ajouter un projet</button>
+                </div>
+              </div>
             </div>
           </div>
+
         </div>
       </div>
 
-      <div class="row mt-3">
-        <div class="col-12">
-          <div class="row g-3 mx-n4 pb-5 mx-lg-n6 bg-body-emphasis border-y">
-            <?php if (empty($projets)) { ?>
-              <div class="text-center py-5 my-5" style="min-height: 350px;">
-                <div class="d-flex justify-content-center mb-3">
-                  <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-                    class="text-warning">
-                    <path
-                      d="M12 8V12M12 16H12.01M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z"
-                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
+      <div class="mx-n4 p-1 mx-lg-n6 bg-body-emphasis border-y">
+        <div class="row mx-n1 py-1 align-items-center border-bottom">
+          <div class="col-md-4">
+            <h3 class="h5 mb-0 fw-bold">Liste des Projets Climatiques</h3>
+            <p class="text-muted small mb-0">Tableau récapitulatif des projets</p>
+          </div>
+
+          <div class="col-md-8">
+            <div class="d-flex justify-content-md-end gap-2">
+              <div class="d-flex gap-1 align-items-center">
+                <?php $currFilSecteur = isset($_GET['secteur']) ? $_GET['secteur'] : '';
+                $currFilAction = isset($_GET['action']) ? $_GET['action'] : '';
+                $currFilStatus = isset($_GET['status']) ? $_GET['status'] : ''; ?>
+
+                <span class="form-label">Filtrer : </span>
+                <div class="search-box d-none d-lg-block my-lg-0" style="width: 8rem !important;">
+                  <form class="position-relative">
+                    <select class="form-select form-select-sm bg-secondary-subtle px-2 rounded-1" id="secteurFilter">
+                      <option value="">Tous secteurs</option>
+                      <?php if (isset($secteurs) && !empty($secteurs)): ?>
+                        <?php foreach ($secteurs as $secteur): ?>
+                          <option value="<?= $secteur['id'] ?>" <?= ($currFilSecteur == $secteur['id']) ? 'selected' : '' ?>>
+                            <?= $secteur['name'] ?>
+                          </option>
+                        <?php endforeach; ?>
+                      <?php endif; ?>
+                    </select>
+                  </form>
                 </div>
-                <h4 class="text-800 mb-3">Aucun projet trouvé</h4>
-                <p class="text-600 mb-5">Il semble que vous n'ayez pas encore de projets. Commencez par en créer un.</p>
-                <button title="Ajouter" class="btn btn-primary px-5 fs-8" id="addBtn" data-bs-toggle="modal"
+                <div class="search-box d-none d-lg-block my-lg-0" style="width: 8rem !important;">
+                  <form class="position-relative">
+                    <select class="form-select form-select-sm bg-secondary-subtle px-2 rounded-1" id="actionFilter">
+                      <option value="">Toutes actions</option>
+                      <?php foreach (listTypeAction() as $key => $value): ?>
+                        <option value="<?= $key ?>" <?= ($currFilAction == $key) ? 'selected' : '' ?>>
+                          <?= $value ?>
+                        </option>
+                      <?php endforeach; ?>
+                    </select>
+                  </form>
+                </div>
+                <div class="search-box d-none d-lg-block my-lg-0" style="width: 8rem !important;">
+                  <form class="position-relative">
+                    <select class="form-select form-select-sm bg-secondary-subtle px-2 rounded-1" id="statusFilter">
+                      <option value="">Tous status</option>
+                      <?php foreach (listStatus() as $key => $value): ?>
+                        <option value="<?= $key ?>" <?= ($currFilStatus == $key) ? 'selected' : '' ?>>
+                          <?= $value ?>
+                        </option>
+                      <?php endforeach; ?>
+                    </select>
+                  </form>
+                </div>
+
+                <button title="Ajouter" class="btn btn-subtle-primary btn-sm" id="addBtn" data-bs-toggle="modal"
                   data-bs-target="#addProjetModal" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
                   <i class="fas fa-plus"></i> Ajouter un projet</button>
               </div>
-            <?php } else { ?>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-responsive mx-n1 p-1 scrollbar" style="min-height: 432px;">
+          <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
+            <thead class="table-light">
+              <tr>
+                <th>Intitulé du projet</th>
+                <th>Responsable</th>
+                <th class="text-center">Secteur</th>
+                <th class="text-center">Période</th>
+                <th class="text-center">Statut</th>
+                <th class="text-center">Progression</th>
+                <th class="text-center" style="width: 100px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
               <?php foreach ($projets as $projet):
                 $logoParts = explode("../", $projet['logo'] ?? '');
 
@@ -184,184 +313,65 @@
                 }));
                 $progress = $totalTacheCount > 0 ? (round(($finishedTacheCount / $totalTacheCount), 2) * 100) : 0;
               ?>
-                <div class="col-12 col-lg-4 col-xl-4 projet-item">
-                  <div
-                    class="card h-100 hover-actions-trigger rounded-top-0 border-0 border-top border-4 border-primary shadow-sm">
-                    <div
-                      class="card-header px-2 py-0 bg-primary-subtle rounded-0 border border-bottom-0 border-primary-subtle">
-                      <div class="d-flex align-items-center justify-content-between">
-                        <a href="project_view.php?id=<?= $projet['id'] ?>" class="text-decoration-none text-body-emphasis">
-                          <h5 class="mb-1 line-clamp-1 lh-sm flex-1 me-3 text-primary">
-                            <?= html_entity_decode($projet['name']) ?>
-                          </h5>
-                        </a>
-                        <div class="top-0 end-0 gap-1">
-                          <button title="Voir" class="btn btn-subtle-primary btn-icon flex-shrink-0 rounded-circle"
-                            data-bs-toggle="modal" data-bs-target="#projectsCardViewModal" data-id="<?= $projet['id'] ?>">
-                            <span class="fa-solid fa-eye"></span>
-                          </button>
+
+                <tr>
+                  <td><a href="project_view.php?id=<?= $projet['id'] ?>" class="text-muted fw-bold"><?= html_entity_decode($projet['name']) ?></a></td>
+                  <td><span class="fw-semibold"><?= $projet['structure_sigle'] ?></span></td>
+                  <td>
+                    <span class="badge badge-phoenix fs-10 py-1 badge-phoenix-light rounded-pill">
+                      <?php foreach ($secteurs as $secteur) {
+                        if ($secteur['id'] == $projet['secteur_id']) {
+                          echo $secteur['name'];
+                          break;
+                        }
+                      } ?>
+                    </span>
+                  </td>
+                  <td class="text-center">
+                    <span class="badge badge-phoenix fs-10 py-1 badge-phoenix-warning rounded-pill">
+                      <?= date('Y', strtotime($projet['start_date'])) ?> - <?= date('Y', strtotime($projet['end_date'])) ?>
+                    </span>
+                  </td>
+                   <td>
+                    <span class="badge badge-phoenix fs-10 py-1 rounded-pill badge-phoenix-<?= getBadgeClass($projet['status']); ?>">
+                      <?= listStatus()[$projet['status']]; ?>
+                    </span>
+                  </td>
+                  <td class="text-center p-0">
+                    <a onclick="window.location.href='suivi_activites.php?proj=<?= $projet['id'] ?>'" class="btn btn-link text-decoration-none fw-bold py-1 px-0 m-0">
+                      <?php
+                      if ($progress < 39)
+                        $color = "danger";
+                      elseif ($progress < 69)
+                        $color = "warning";
+                      elseif ($progress >= 70)
+                        $color = "success"; ?>
+                      <span id="tauxProj_<?php echo $projet['id']; ?>">
+                        <div class="progress progress-xl rounded-0 p-0 m-0" style="height: 1.5rem; width: 200px">
+                          <div class="progress-bar progress-bar-striped progress-bar-animated fs-14 fw-bold bg-<?php echo $color; ?> " aria-valuenow="70" style="width: 100%;">
+                            <?php echo (isset($progress) && $progress > 0) ? $progress . " %" : "Non entamé"; ?>
+                          </div>
                         </div>
-                      </div>
+                      </span>
+                    </a>
+                  </td>
+                  <td>
+                    <div class="d-flex gap-2">
+                      <?php if (checkPermis($db, 'update')) : ?>
+                        <button title="Modifier" class="btn btn-sm btn-phoenix-info fs-10 px-2 py-1" data-bs-toggle="modal" data-bs-target="#addProjetModal" data-id="<?= $projet['id']; ?>"><span class="uil-pen fs-8"></span></button>
+                      <?php endif; ?>
+
+                      <?php if (checkPermis($db, 'delete', 2)) : ?>
+                        <button title="Supprimer" class="btn btn-sm btn-phoenix-danger fs-10 px-2 py-1" onclick="deleteData(<?= $projet['id']; ?>,'Voulez-vous vraiment supprimer ce projet ?', 'projets', 'redirect', 'projects.php')"><span class="uil-trash-alt fs-8"></span></button>
+                      <?php endif; ?>
+
+                      <button title="Voir" class="btn btn-sm btn-phoenix-primary fs-10 px-2 py-1" data-bs-toggle="modal" data-bs-target="#projectsCardViewModal" data-id="<?= $projet['id'] ?>"><span class="uil-eye fs-8"></span></button>
                     </div>
-
-                    <div class="card-body p-3 border border-primary-subtle border-top-0 rounded-bottom-sm">
-                      <span
-                        class="badge badge-phoenix fs-10 mb-2 rounded-pill badge-phoenix-<?= $projet['state'] == 'actif' ? 'success' : 'danger'; ?>"><?= $projet['state'] == 'actif' ? 'Actif' : 'Archivé'; ?></span>
-
-                      <div class="row g-3 d-flex flex-row align-items-center">
-                        <!-- <div class="col-lg-2 col-12 mb-3">
-                          <?php if (!empty($projet['logo'])): ?>
-                            <img class="rounded-1 w-100 border border-light shadow-sm" src="<?php echo end($logoParts); ?>"
-                              alt="no-image" style="min-height: 65px; max-height: 150px; object-fit: contain; object-position: center;" />
-                          <?php else: ?>
-                            <i class="far fa-image fs-1 text-body-tertiary"></i>
-                          <?php endif; ?>
-                        </div> -->
-                        <div class="col-lg-10 col-12 mb-1 fs-9">
-                          <div class="d-flex align-items-center mb-1">
-                            <span class="fa-solid fa-chalkboard me-2 text-body-tertiary fs-10 fw-extra-bold"></span>
-                            <p class="mb-0 text-truncate">Code : <span class="fw-semibold ms-1">
-                                <?= $projet['code'] ?? "NA"; ?></span></p>
-                            <span class="mx-3">|</span>
-                            <p class="mb-0 text-truncate">Status : <span
-                                <?php foreach (listStatus() as $key => $value) {
-                                  if ($projet['status'] == $key) {
-                                    $statusLabel = $value;
-                                    break;
-                                  }
-                                } ?>
-                                class="badge badge-phoenix fs-10 badge-phoenix-warning"><?= $statusLabel ?></span></p>
-                          </div>
-
-                          <div class="d-flex align-items-center mb-1"><span
-                              class="fa-solid fa-user-shield me-2 text-body-tertiary fs-10 fw-extra-bold"></span>
-                            <p class="mb-0 text-truncate">Responsable : <span
-                                class="fw-semibold ms-1"><?= $projet['structure_sigle'] ?></span></p>
-                          </div>
-
-                          <div class="d-flex align-items-center mb-1"><span
-                              class="fa-solid fa-rocket me-2 text-body-tertiary fs-10 fw-extra-bold"></span>
-                            <p class="mb-0 text-truncate">Type action :
-                              <span class="fw-semibold ms-1">
-                                <?= $projet['action_type'] == 'adaptation' ? 'Adaptation' : 'Atténuation' ?>
-                              </span>
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="d-flex justify-content-between text-body-tertiary fw-semibold">
-                        <p class="mb-1 fs-9">Progression</p>
-                        <p class="mb-1 fs-9 text-body-emphasis">
-                          <?= $progress ?>%
-                        </p>
-                      </div>
-
-                      <div class="progress bg-warning-subtle">
-                        <div class="progress-bar rounded bg-warning" role="progressbar" aria-label="progression"
-                          style="width: <?= $progress ?>%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-
-                      <div class="d-flex align-items-center justify-content-between mt-2">
-                        <p class="mb-0 fs-9"><span class="far fa-calendar"></span> Début :<span
-                            class="fw-semibold text-body-tertiary text-opactity-85 ms-1">
-                            <?= date('Y-m-d', strtotime($projet['start_date'])) ?></span></p>
-                        <p class="mb-0 fs-9"><span class="far fa-calendar"></span> Clôture : <span
-                            class="fw-semibold text-body-tertiary text-opactity-85 ms-1">
-                            <?= date('Y-m-d', strtotime($projet['end_date'])) ?></span></p>
-                      </div>
-
-                      <div class="d-flex d-lg-block d-xl-flex justify-content-between align-items-center mt-2 fs-9">
-                        <div class="avatar-group">
-                          <?php
-                          $group = new GroupeUsers($db);
-                          $group_users = $group->read();
-                          $group_users = array_filter($group_users, function ($group) use ($projet) {
-                            return in_array($group['groupe_id'], explode(',', str_replace('"', '', $projet['groupes'])));
-                          });
-
-                          $users_ids = array_map(function ($group) {
-                            return $group['user_id'];
-                          }, $group_users);
-
-                          $user = new User($db);
-                          $users_project = $user->read();
-                          $users_project = array_filter($users_project, function ($user) use ($users_ids) {
-                            return in_array($user['id'], $users_ids);
-                          }); ?>
-
-                          <?php if (!empty($users_project)): ?>
-                            <?php foreach (array_slice($users_project, 0, 4) as $user): ?>
-                              <a class="dropdown-toggle dropdown-caret-none d-inline-block" href="#" role="button"
-                                data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-                                <div class="avatar avatar-m">
-                                  <div class="avatar-name rounded-circle bg-soft-info shadow-sm border-light">
-                                    <span
-                                      class="text-body-tertiary fs-9"><?= substr($user['prenom'], 0, 1) . substr($user['nom'], 0, 1) ?></span>
-                                  </div>
-                                </div>
-                              </a>
-                              <div class="dropdown-menu shadow-sm p-0">
-                                <div class="row g-0 p-2">
-                                  <div class="col-lg-3 col-12">
-                                    <div class="avatar avatar-xl">
-                                      <div class="avatar-name rounded-1 bg-soft-info shadow-sm border-light">
-                                        <span
-                                          class="text-body-tertiary fs-6"><?= substr($user['prenom'], 0, 1) . substr($user['nom'], 0, 1) ?></span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div class="col-lg-9 col-12 list-group list-group-flush">
-                                    <div class="list-group-item text-nowrap p-1"><small class="fw-bold">Nom:
-                                      </small><?php echo $user['nom']; ?></div>
-                                    <div class="list-group-item text-nowrap p-1"><small class="fw-bold">Prenom:
-                                      </small><?php echo $user['prenom']; ?></div>
-                                    <div class="list-group-item text-nowrap p-1"><small class="fw-bold">Email:
-                                      </small><?php echo $user['email']; ?></div>
-                                    <div class="list-group-item text-nowrap p-1"><small class="fw-bold">Contact:
-                                      </small><?php echo $user['phone']; ?></div>
-                                  </div>
-                                </div>
-                              </div>
-                            <?php endforeach; ?>
-
-                            <?php if (count($users_project) > 4): ?>
-                              <div class="avatar avatar-m">
-                                <div class="avatar-name rounded-circle bg-soft-info shadow-sm border-light">
-                                  <span class="text-body-tertiary fs-9">+<?= count($users_project) - 4 ?></span>
-                                </div>
-                              </div>
-                            <?php endif; ?>
-                          <?php else: ?>
-                            <div class="mt-lg-3 mt-xl-0 text-body-tertiary">
-                              <i class="fa-solid fa-users me-1"></i><span class="fw-normal"> 0 Membres</span>
-                            </div>
-                          <?php endif; ?>
-                        </div>
-
-                        <div class="mt-lg-3 mt-xl-0 text-body-tertiary">
-                          <i class="fa-solid fa-list-check me-1"></i>
-                          <p class="d-inline-block mb-0">
-                            <?php
-                            $tache = new Tache($db);
-                            $tache->projet_id = $projet['id'];
-                            $taches_project = $tache->readByProjet();
-                            $taches_project = array_filter($taches_project, function ($tache) {
-                              return $tache['state'] == 'actif';
-                            });
-
-                            echo count($taches_project);
-                            ?>
-                            <span class="fw-normal"> Activités</span>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  </td>
+                </tr>
               <?php endforeach; ?>
-            <?php } ?>
-          </div>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

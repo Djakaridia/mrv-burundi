@@ -75,22 +75,22 @@ switch ($requestMethod) {
             }
 
             $projet->id = $id;
-            $projet->name = sanitize_input($_POST['name']);
-            $projet->code = sanitize_input($_POST['code']);
-            $projet->description = $_POST['description'] ?? '';
-            $projet->objectif = $_POST['objectif'] ?? '';
+            $projet->name = sanitize_input($_POST['name'] ?? null);
+            $projet->code = sanitize_input($_POST['code'] ?? null);
+            $projet->description = $_POST['description'] ?? null;
+            $projet->objectif = $_POST['objectif'] ?? null;
             $projet->status = sanitize_input($_POST['status'] ?? 'planifie');
             $projet->budget = floatval($_POST['budget'] ?? 0);
             $projet->start_date = sanitize_input($_POST['start_date'] ?? null);
             $projet->end_date = sanitize_input($_POST['end_date'] ?? null);
             $projet->signature_date = sanitize_input($_POST['signature_date'] ?? null);
             $projet->miparcours_date = sanitize_input($_POST['miparcours_date'] ?? null);
-            $projet->structure_id = sanitize_input($_POST['structure_id']);
+            $projet->structure_id = (int)sanitize_input($_POST['structure_id'] ?? null);
             $projet->action_type = sanitize_input($_POST['action_type']);
-            $projet->gaz = sanitize_input($_POST['gaz']);
-            $projet->secteurs = isset($_POST['secteurs']) ? json_encode($_POST['secteurs']) : null;
-            $projet->groupes = isset($_POST['groupes']) ? json_encode($_POST['groupes']) : null;
-            $projet->programmes = isset($_POST['programmes']) ? json_encode($_POST['programmes']) : null;
+            $projet->gaz = sanitize_input($_POST['gaz']??null);
+            $projet->secteur_id = (int)sanitize_input($_POST['secteur_id'] ?? null);
+            $projet->programme_id = (int)sanitize_input($_POST['programme_id'] ?? null);
+            $projet->groupes = sanitize_input($_POST['groupes'] ?? null);
             $projet->add_by = $payload['user_id'] ?? null;
 
             if (empty($projet->code) || empty($projet->name) || empty($projet->structure_id)) {
@@ -111,22 +111,22 @@ switch ($requestMethod) {
                 $projet->logo = sanitize_input($_POST['logo']);
             }
 
-            $projet->name = sanitize_input($_POST['name']);
-            $projet->code = sanitize_input($_POST['code']);
-            $projet->description = $_POST['description'] ?? '';
-            $projet->objectif = $_POST['objectif'] ?? '';
+            $projet->name = sanitize_input($_POST['name'] ?? null);
+            $projet->code = sanitize_input($_POST['code'] ?? null);
+            $projet->description = $_POST['description'] ?? null;
+            $projet->objectif = $_POST['objectif'] ?? null;
             $projet->status = sanitize_input($_POST['status'] ?? 'planifie');
             $projet->budget = floatval($_POST['budget'] ?? 0);
             $projet->start_date = sanitize_input($_POST['start_date'] ?? null);
             $projet->end_date = sanitize_input($_POST['end_date'] ?? null);
             $projet->signature_date = sanitize_input($_POST['signature_date'] ?? null);
             $projet->miparcours_date = sanitize_input($_POST['miparcours_date'] ?? null);
-            $projet->structure_id = sanitize_input($_POST['structure_id']);
-            $projet->action_type = sanitize_input($_POST['action_type']);
-            $projet->gaz = sanitize_input($_POST['gaz']);
-            $projet->secteurs = isset($_POST['secteurs']) ? json_encode($_POST['secteurs']) : null;
-            $projet->groupes = isset($_POST['groupes']) ? json_encode($_POST['groupes']) : null;
-            $projet->programmes = isset($_POST['programmes']) ? json_encode($_POST['programmes']) : null;
+            $projet->structure_id = (int)sanitize_input($_POST['structure_id'] ?? null);
+            $projet->action_type = sanitize_input($_POST['action_type'] ?? null);
+            $projet->gaz = sanitize_input($_POST['gaz'] ?? null);
+            $projet->secteur_id = (int)sanitize_input($_POST['secteur_id'] ?? null);
+            $projet->programme_id = (int)sanitize_input($_POST['programme_id'] ?? null);
+            $projet->groupes = sanitize_input($_POST['groupes'] ?? null);
             $projet->add_by = $payload['user_id'] ?? null;
 
             // Get Structure Data
@@ -143,7 +143,9 @@ switch ($requestMethod) {
             });
 
             // Extraire les ids des utilisateurs
-            $users_ids = array_map(function ($groupe_user) { return $groupe_user['user_id']; }, $groupes_users);
+            $users_ids = array_map(function ($groupe_user) {
+                return $groupe_user['user_id'];
+            }, $groupes_users);
             $user = new User($db);
             $users = $user->read();
             $users = array_filter($users, function ($user) use ($users_ids) {

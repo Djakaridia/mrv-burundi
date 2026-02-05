@@ -155,155 +155,148 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-12">
-                    <div class="mx-n4 p-1 mx-lg-n6 bg-body-emphasis border-y">
-                        <div class="row mx-n1 py-1 align-items-center border-bottom">
-                            <div class="col-md-4">
-                                <h3 class="h5 mb-0 fw-bold">Mesures et Actions de contrôle des émissions GES</h3>
-                                <p class="text-muted small mb-0">Tableau récapitulatif des mesures d'atténuation et d'adaptation</p>
-                            </div>
-                            <div class="col-md-8">
-                                <div class="d-flex justify-content-md-end gap-1">
-                                    <div class="d-flex gap-1 align-items-center">
-                                        <?php
-                                        $currMesSecteur = isset($_GET['secteur']) ? $_GET['secteur'] : '';
-                                        $currMesAction = isset($_GET['action']) ? $_GET['action'] : '';
-                                        $currMesStatus = isset($_GET['status']) ? $_GET['status'] : '';
-                                        ?>
-                                        <span class="form-label">Filtrer : </span> 
-                                        <div class="search-box d-none d-lg-block my-lg-0" style="width: 8rem !important;">
-                                            <form class="position-relative">
-                                                <select class="form-select form-select-sm bg-secondary-subtle px-2 rounded-1" id="secteurFilter">
-                                                    <option value="">Tous secteurs</option>
-                                                    <?php if (isset($secteurs_mesure) && !empty($secteurs_mesure)): ?>
-                                                        <?php foreach ($secteurs_mesure as $secteur): ?>
-                                                            <option value="<?= $secteur['id'] ?>" <?= ($currMesSecteur == $secteur['id']) ? 'selected' : '' ?>>
-                                                                <?= $secteur['name'] ?>
-                                                            </option>
-                                                        <?php endforeach; ?>
-                                                    <?php endif; ?>
-                                                </select>
-                                            </form>
-                                        </div>
-                                        <div class="search-box d-none d-lg-block my-lg-0" style="width: 8rem !important;">
-                                            <form class="position-relative">
-                                                <select class="form-select form-select-sm bg-secondary-subtle px-2 rounded-1" id="actionFilter">
-                                                    <option value="">Toutes actions</option>
-                                                    <?php foreach (listTypeAction() as $key => $value): ?>
-                                                        <option value="<?= $key ?>" <?= ($currMesAction == $key) ? 'selected' : '' ?>>
-                                                            <?= $value ?>
-                                                        </option>
-                                                    <?php endforeach; ?>
-                                                </select>
-                                            </form>
-                                        </div>
-                                        <div class="search-box d-none d-lg-block my-lg-0" style="width: 8rem !important;">
-                                            <form class="position-relative">
-                                                <select class="form-select form-select-sm bg-secondary-subtle px-2 rounded-1" id="statusFilter">
-                                                    <option value="">Tous status</option>
-                                                    <?php foreach (listStatus() as $key => $value): ?>
-                                                        <option value="<?= $key ?>" <?= ($currMesStatus == $key) ? 'selected' : '' ?>>
-                                                            <?= $value ?>
-                                                        </option>
-                                                    <?php endforeach; ?>
-                                                </select>
-                                            </form>
-                                        </div>
-                                    </div>
+            <div class="mx-n4 p-1 mx-lg-n6 bg-body-emphasis border-y">
+                <div class="row mx-n1 py-1 align-items-center border-bottom">
+                    <div class="col-md-4">
+                        <h3 class="h5 mb-0 fw-bold">Mesures et Actions de contrôle des émissions GES</h3>
+                        <p class="text-muted small mb-0">Tableau récapitulatif des mesures d'atténuation et d'adaptation</p>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="d-flex justify-content-md-end gap-2">
+                            <div class="d-flex gap-1 align-items-center">
+                                <?php $currFilSecteur = isset($_GET['secteur']) ? $_GET['secteur'] : '';
+                                $currFilAction = isset($_GET['action']) ? $_GET['action'] : '';
+                                $currFilStatus = isset($_GET['status']) ? $_GET['status'] : ''; ?>
 
-                                    <button title="Ajouter une action" class="btn btn-subtle-primary btn-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addMesureModal">
-                                        <i class="fas fa-plus"></i> Ajouter Action
-                                    </button>
+                                <span class="form-label">Filtrer : </span>
+                                <div class="search-box d-none d-lg-block my-lg-0" style="width: 8rem !important;">
+                                    <form class="position-relative">
+                                        <select class="form-select form-select-sm bg-secondary-subtle px-2 rounded-1" id="secteurFilter">
+                                            <option value="">Tous secteurs</option>
+                                            <?php if (isset($secteurs_mesure) && !empty($secteurs_mesure)): ?>
+                                                <?php foreach ($secteurs_mesure as $secteur): ?>
+                                                    <option value="<?= $secteur['id'] ?>" <?= ($currFilSecteur == $secteur['id']) ? 'selected' : '' ?>>
+                                                        <?= $secteur['name'] ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
+                                        </select>
+                                    </form>
+                                </div>
+                                <div class="search-box d-none d-lg-block my-lg-0" style="width: 8rem !important;">
+                                    <form class="position-relative">
+                                        <select class="form-select form-select-sm bg-secondary-subtle px-2 rounded-1" id="actionFilter">
+                                            <option value="">Toutes actions</option>
+                                            <?php foreach (listTypeAction() as $key => $value): ?>
+                                                <option value="<?= $key ?>" <?= ($currFilAction == $key) ? 'selected' : '' ?>>
+                                                    <?= $value ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </form>
+                                </div>
+                                <div class="search-box d-none d-lg-block my-lg-0" style="width: 8rem !important;">
+                                    <form class="position-relative">
+                                        <select class="form-select form-select-sm bg-secondary-subtle px-2 rounded-1" id="statusFilter">
+                                            <option value="">Tous status</option>
+                                            <?php foreach (listStatus() as $key => $value): ?>
+                                                <option value="<?= $key ?>" <?= ($currFilStatus == $key) ? 'selected' : '' ?>>
+                                                    <?= $value ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </form>
                                 </div>
                             </div>
+
+                            <button title="Ajouter une action" class="btn btn-subtle-primary btn-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addMesureModal">
+                                <i class="fas fa-plus"></i> Ajouter Action
+                            </button>
                         </div>
-
-                        <div class="table-responsive mx-n1 p-1 scrollbar" style="min-height: 432px;">
-                            <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable2">
-                                <thead class="bg-primary-subtle">
-                                    <tr>
-                                        <th style="width: 35%;">Intitulé</th>
-                                        <th>Secteur</th>
-                                        <th>Periode</th>
-                                        <th>Statut</th>
-                                        <th class="text-center">Estimation d'émissions évitées (Gg Eq.CO2)</th>
-                                        <th class="text-center">Réalisations</th>
-                                        <th class="text-center">Prévisions <?= date('Y') ?></th>
-                                        <th style="width: 120px;">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($mesures as $mesure): ?>
-                                        <tr>
-                                            <td>
-                                                <div class="fw-semibold"><?= $mesure['name'] ?></div>
-                                                <div class="text-muted small mt-1">Gaz concerné :
-                                                    <?php foreach (explode(',', $mesure['gaz']) as $gaz) : ?>
-                                                        <span class="badge rounded-0" style="background-color: <?php echo $gaz_colors[strtoupper($gaz)] ?? '#6c757d'; ?>; color: white;">
-                                                            <?php echo $gaz; ?>
-                                                        </span>
-                                                    <?php endforeach; ?>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span class="badge badge-phoenix fs-10 py-1 badge-phoenix-info rounded-pill">
-                                                    <?php foreach ($secteurs_mesure as $secteur) {
-                                                        if ($secteur['id'] == $mesure['secteur_id']) {
-                                                            echo $secteur['name'];
-                                                            break;
-                                                        }
-                                                    } ?>
-                                                </span>
-                                            </td>
-                                            <td class="text-center">
-                                                <span class="badge badge-phoenix fs-10 py-1 badge-phoenix-warning rounded-pill">
-                                                    <?= $mesure['annee_debut'] ?> - <?= $mesure['annee_fin'] ?>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span class="badge badge-phoenix fs-10 py-1 badge-phoenix-primary rounded-pill">
-                                                    <?= $mesure['status'] ?>
-                                                </span>
-                                            </td>
-                                            <td class="text-center fw-bold text-success">
-                                                <?= $mesure['valeur_estime'] ?? "-" ?>
-                                            </td>
-                                            <td class="text-center fw-bold text-primary">
-                                                <?= $mesure['valeur_realise'] ?? "-" ?>
-                                            </td>
-                                            <td class="text-center fw-bold text-warning">
-                                                <?= $mesure['valeur_cible'] ?? "-" ?>
-                                            </td>
-                                            <td>
-                                                <div class="position-relative d-flex gap-1">
-                                                    <?php if (checkPermis($db, 'update')) : ?>
-                                                        <button title="Modifier" class="btn btn-sm btn-phoenix-info fs-10 px-2 py-1" data-bs-toggle="modal"
-                                                            data-bs-target="#addMesureModal" data-id="<?= $mesure['id'] ?>">
-                                                            <span class="uil-pen fs-8"></span>
-                                                        </button>
-                                                    <?php endif; ?>
-
-                                                    <?php if (checkPermis($db, 'delete', 2)) : ?>
-                                                        <button title="Supprimer" class="btn btn-sm btn-phoenix-danger fs-10 px-2 py-1" action_type="button"
-                                                            onclick="deleteData(<?= $mesure['id'] ?>, 'Êtes-vous sûr de vouloir supprimer cette mesure ?', 'mesures')">
-                                                            <span class="uil-trash-alt fs-8"></span>
-                                                        </button>
-                                                    <?php endif; ?>
-
-                                                    <button title="Détails" onclick="window.location.href='mesure_view.php?id=<?= $mesure['id'] ?>'" class="btn btn-sm btn-phoenix-primary fs-10 px-2 py-1" action_type="button">
-                                                        <span class="uil-eye fs-8"></span>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
-
-
                     </div>
+                </div>
+
+                <div class="table-responsive mx-n1 p-1 scrollbar" style="min-height: 432px;">
+                    <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
+                        <thead class="bg-primary-subtle">
+                            <tr>
+                                <th style="width: 35%;">Intitulé</th>
+                                <th class="text-center">Secteur</th>
+                                <th class="text-center">Periode</th>
+                                <th class="text-center">Statut</th>
+                                <th class="text-center">Estimation d'émissions évitées (Gg Eq.CO2)</th>
+                                <th class="text-center">Réalisations</th>
+                                <th class="text-center">Prévisions <?= date('Y') ?></th>
+                                <th class="text-center" style="width: 100px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($mesures as $mesure): ?>
+                                <tr>
+                                    <td>
+                                        <div class="fw-semibold"><?= $mesure['name'] ?></div>
+                                        <div class="text-muted small mt-1">Gaz concerné :
+                                            <?php foreach (explode(',', $mesure['gaz']) as $gaz) : ?>
+                                                <span class="badge rounded-0" style="background-color: <?php echo $gaz_colors[strtoupper($gaz)] ?? '#6c757d'; ?>; color: white;">
+                                                    <?php echo $gaz; ?>
+                                                </span>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-phoenix fs-10 py-1 badge-phoenix-light rounded-pill">
+                                            <?php foreach ($secteurs_mesure as $secteur) {
+                                                if ($secteur['id'] == $mesure['secteur_id']) {
+                                                    echo $secteur['name'];
+                                                    break;
+                                                }
+                                            } ?>
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge badge-phoenix fs-10 py-1 badge-phoenix-warning rounded-pill">
+                                            <?= $mesure['annee_debut'] ?> - <?= $mesure['annee_fin'] ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-phoenix fs-10 py-1 rounded-pill badge-phoenix-<?= getBadgeClass($mesure['status']); ?>">
+                                            <?= listStatus()[$projet['status']]; ?>
+                                        </span>
+                                    </td>
+                                    <td class="text-center fw-bold text-success">
+                                        <?= $mesure['valeur_estime'] ?? "-" ?>
+                                    </td>
+                                    <td class="text-center fw-bold text-primary">
+                                        <?= $mesure['valeur_realise'] ?? "-" ?>
+                                    </td>
+                                    <td class="text-center fw-bold text-warning">
+                                        <?= $mesure['valeur_cible'] ?? "-" ?>
+                                    </td>
+                                    <td>
+                                        <div class="position-relative d-flex gap-1">
+                                            <?php if (checkPermis($db, 'update')) : ?>
+                                                <button title="Modifier" class="btn btn-sm btn-phoenix-info fs-10 px-2 py-1" data-bs-toggle="modal"
+                                                    data-bs-target="#addMesureModal" data-id="<?= $mesure['id'] ?>">
+                                                    <span class="uil-pen fs-8"></span>
+                                                </button>
+                                            <?php endif; ?>
+
+                                            <?php if (checkPermis($db, 'delete', 2)) : ?>
+                                                <button title="Supprimer" class="btn btn-sm btn-phoenix-danger fs-10 px-2 py-1" action_type="button"
+                                                    onclick="deleteData(<?= $mesure['id'] ?>, 'Êtes-vous sûr de vouloir supprimer cette mesure ?', 'mesures')">
+                                                    <span class="uil-trash-alt fs-8"></span>
+                                                </button>
+                                            <?php endif; ?>
+
+                                            <button title="Détails" onclick="window.location.href='mesure_view.php?id=<?= $mesure['id'] ?>'" class="btn btn-sm btn-phoenix-primary fs-10 px-2 py-1" action_type="button">
+                                                <span class="uil-eye fs-8"></span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

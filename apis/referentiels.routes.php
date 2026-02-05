@@ -68,7 +68,7 @@ switch ($requestMethod) {
             $referentiel->domaine = sanitize_input($_POST['domaine']);
             $referentiel->action = sanitize_input($_POST['action'] ?? "");
             $referentiel->responsable = sanitize_input($_POST['responsable']);
-            $referentiel->autre_responsable = sanitize_input($_POST['autre_responsable'] ?? "");
+            $referentiel->action_type = sanitize_input($_POST['action_type'] ?? "");
             $referentiel->fonction_agregation = sanitize_input($_POST['fonction_agregation']);
             $referentiel->sens_evolution = sanitize_input($_POST['sens_evolution']);
             $referentiel->seuil_min = sanitize_input($_POST['seuil_min'] ?? "");
@@ -95,7 +95,7 @@ switch ($requestMethod) {
             $referentiel->domaine = sanitize_input($_POST['domaine']);
             $referentiel->action = sanitize_input($_POST['action'] ?? "");
             $referentiel->responsable = sanitize_input($_POST['responsable']);
-            $referentiel->autre_responsable = sanitize_input($_POST['autre_responsable'] ?? "");
+            $referentiel->action_type = sanitize_input($_POST['action_type'] ?? "");
             $referentiel->fonction_agregation = sanitize_input($_POST['fonction_agregation']);
             $referentiel->sens_evolution = sanitize_input($_POST['sens_evolution']);
             $referentiel->seuil_min = sanitize_input($_POST['seuil_min'] ?? "");
