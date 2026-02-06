@@ -199,12 +199,12 @@
                                 <p class="text-muted small mb-0">Projections 2023-2040 (Gg Eq.CO₂)</p>
                             </div>
                             <div class="col-md-7">
-                                <div class="d-flex justify-content-md-end gap-2">
-                                    <!-- Filtres -->
-                                    <div class="d-flex gap-2 align-items-center">
+                                <div class="d-flex justify-content-md-end gap-3">
+                                    <div class="d-flex gap-1 align-items-center">
                                         <span class="form-label small">Filtrer : </span>
                                         <div style="width: 8rem !important;">
-                                            <select class="form-select form-select-sm bg-secondary-subtle px-2 rounded-1" id="secteurFilter">
+                                            <select class="form-select form-select-sm bg-warning-subtle text-warning px-2 rounded-1" id="secteurFilter"
+                                                onchange="filterProjections()">
                                                 <option value="">Tous secteurs</option>
                                                 <?php foreach ($secteurs_projection as $secteur): ?>
                                                     <option value="<?= $secteur['id'] ?>">
@@ -214,7 +214,8 @@
                                             </select>
                                         </div>
                                         <div style="width: 8rem !important;">
-                                            <select class="form-select form-select-sm bg-secondary-subtle px-2 rounded-1" id="scenarioFilter">
+                                            <select class="form-select form-select-sm bg-warning-subtle text-warning px-2 rounded-1" id="scenarioFilter"
+                                                onchange="filterProjections()">
                                                 <option value="">Tous scénarios</option>
                                                 <?php foreach (listTypeScenario() as $key => $scenario): ?>
                                                     <option value="<?= $key ?>"><?= $scenario ?></option>
@@ -223,7 +224,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- Boutons d'action -->
                                     <div class="d-flex gap-1">
                                         <button title="Ajouter une projection" class="btn btn-subtle-primary btn-sm d-flex align-items-center gap-2"
                                             data-bs-toggle="modal" data-bs-target="#addProjectionModal">
@@ -248,9 +248,7 @@
                                 </thead>
                                 <tbody>
                                     <?php foreach ($projections_par_secteur as $secteur_id => $secteur_data): ?>
-                                        <?php
-                                        // Compter combien de scénarios ont des données pour ce secteur
-                                        $scenarios_avec_donnees = 0;
+                                        <?php $scenarios_avec_donnees = 0;
                                         foreach ($secteur_data['scenarios'] as $scenario => $valeurs) {
                                             if (!empty(array_filter($valeurs))) {
                                                 $scenarios_avec_donnees++;
@@ -522,7 +520,6 @@
             row.style.display = showRow ? '' : 'none';
         });
 
-        // Afficher/masquer les lignes de titre des secteurs
         const secteurRows = document.querySelectorAll('#id-datatableNONE tbody tr.table-secondary');
         secteurRows.forEach(row => {
             const secteurCells = row.querySelectorAll('td');
@@ -539,14 +536,10 @@
                         break;
                     }
                 }
-
                 row.style.display = hasVisibleChildren ? '' : 'none';
             }
         });
     }
-
-    document.getElementById('secteurFilter').addEventListener('change', filterProjections);
-    document.getElementById('scenarioFilter').addEventListener('change', filterProjections);
 
     function deleteProjectionScenario(secteurId, scenario) {
         if (!secteurId || !scenario) {
@@ -579,10 +572,6 @@
                 }
             });
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        filterProjections();
-    });
 </script>
 
 </html>

@@ -286,7 +286,7 @@
                                             <dt class="col-sm-4 text-muted">Secteur</dt>
                                             <dd class="col-sm-8">
                                                 <?php foreach ($secteurs as $secteur): ?>
-                                                    <?php if ($secteur['id'] == $ref_curr['domaine']): ?>
+                                                    <?php if ($secteur['id'] == $ref_curr['secteur_id']): ?>
                                                         <?= htmlspecialchars($secteur['name']) ?>
                                                     <?php endif; ?>
                                                 <?php endforeach; ?>
@@ -523,7 +523,7 @@
                                                         <th scope="col" class="px-2">Classe</th>
                                                     <?php endif; ?>
                                                     <th scope="col" class="px-2">Date suivie</th>
-                                                    <th scope="col" class="px-2">Observations</th>
+                                                    <th scope="col" class="px-2">Notes</th>
                                                 </tr>
                                             </thead>
                                             <tbody>

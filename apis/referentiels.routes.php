@@ -65,7 +65,7 @@ switch ($requestMethod) {
             $referentiel->unite = sanitize_input($_POST['unite']);
             $referentiel->echelle = sanitize_input($_POST['echelle']);
             $referentiel->modele = sanitize_input($_POST['modele']);
-            $referentiel->domaine = sanitize_input($_POST['domaine']);
+            $referentiel->secteur_id = sanitize_input($_POST['secteur_id']);
             $referentiel->action = sanitize_input($_POST['action'] ?? "");
             $referentiel->responsable = sanitize_input($_POST['responsable']);
             $referentiel->action_type = sanitize_input($_POST['action_type'] ?? "");
@@ -92,7 +92,7 @@ switch ($requestMethod) {
             $referentiel->unite = sanitize_input($_POST['unite']);
             $referentiel->echelle = sanitize_input($_POST['echelle']);
             $referentiel->modele = sanitize_input($_POST['modele']);
-            $referentiel->domaine = sanitize_input($_POST['domaine']);
+            $referentiel->secteur_id = sanitize_input($_POST['secteur_id']);
             $referentiel->action = sanitize_input($_POST['action'] ?? "");
             $referentiel->responsable = sanitize_input($_POST['responsable']);
             $referentiel->action_type = sanitize_input($_POST['action_type'] ?? "");
@@ -108,7 +108,7 @@ switch ($requestMethod) {
 
             if (
                 empty($referentiel->intitule) || empty($referentiel->code) || empty($referentiel->categorie) || empty($referentiel->unite)
-                || empty($referentiel->echelle) || empty($referentiel->modele) || empty($referentiel->domaine) || empty($referentiel->responsable)
+                || empty($referentiel->echelle) || empty($referentiel->modele) || empty($referentiel->secteur_id) || empty($referentiel->responsable)
             ) {
                 echo json_encode(array('status' => 'warning', 'message' => 'Veuillez remplir tous les champs obligatoires !!!'));
                 exit();

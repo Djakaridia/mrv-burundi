@@ -538,6 +538,14 @@ function listTypeInstrument()
     ];
 }
 
+function listTypeCategorie(){
+    return [
+        'effet' => 'Effet',
+        'impact' => 'Impact',
+        'produit' => 'Produit'
+    ];
+}
+
 function listStatus()
 {
     return [

@@ -164,7 +164,7 @@
                             </button>
                         <?php } ?>
                         <button type="button" data-bs-toggle="modal" data-bs-target="#addInventoryModal" class="btn btn-subtle-primary btn-sm">
-                            <span class="fa fa-table fs-9 me-2"></span>Inventaire
+                            <span class="fa fa-table fs-9 me-2"></span>Ajouter un inventaire
                         </button>
                     </div>
                 </div>

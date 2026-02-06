@@ -14,7 +14,7 @@ class Referentiel
     public $unite;
     public $echelle;
     public $modele;
-    public $domaine;
+    public $secteur_id;
     public $action;
     public $responsable;
     public $action_type;
@@ -37,9 +37,9 @@ class Referentiel
     public function create()
     {
         $query = "INSERT INTO " . $this->table . " 
-                 (code, intitule, description, categorie, norme, unite, echelle, modele, domaine, action, responsable, action_type, fonction_agregation, seuil_min, seuil_max, annee_debut, annee_fin, sens_evolution, in_dashboard, add_by) 
+                 (code, intitule, description, categorie, norme, unite, echelle, modele, secteur_id, action, responsable, action_type, fonction_agregation, seuil_min, seuil_max, annee_debut, annee_fin, sens_evolution, in_dashboard, add_by) 
                   VALUES 
-                 (:code, :intitule, :description, :categorie, :norme, :unite, :echelle, :modele, :domaine, :action, :responsable, :action_type, :fonction_agregation, :seuil_min, :seuil_max, :annee_debut, :annee_fin, :sens_evolution, :in_dashboard, :add_by)";
+                 (:code, :intitule, :description, :categorie, :norme, :unite, :echelle, :modele, :secteur_id, :action, :responsable, :action_type, :fonction_agregation, :seuil_min, :seuil_max, :annee_debut, :annee_fin, :sens_evolution, :in_dashboard, :add_by)";
 
         $stmt = $this->conn->prepare($query);
 
@@ -52,7 +52,7 @@ class Referentiel
         $stmt->bindParam(':unite', $this->unite);
         $stmt->bindParam(':echelle', $this->echelle);
         $stmt->bindParam(':modele', $this->modele);
-        $stmt->bindParam(':domaine', $this->domaine);
+        $stmt->bindParam(':secteur_id', $this->secteur_id);
         $stmt->bindParam(':action', $this->action);
         $stmt->bindParam(':responsable', $this->responsable);
         $stmt->bindParam(':action_type', $this->action_type);
@@ -103,7 +103,7 @@ class Referentiel
                      unite = :unite,
                      echelle = :echelle,
                      modele = :modele,
-                     domaine = :domaine,
+                     secteur_id = :secteur_id,
                      action = :action,
                      responsable = :responsable,
                      action_type = :action_type,
@@ -127,7 +127,7 @@ class Referentiel
         $stmt->bindParam(':unite', $this->unite);
         $stmt->bindParam(':echelle', $this->echelle);
         $stmt->bindParam(':modele', $this->modele);
-        $stmt->bindParam(':domaine', $this->domaine);
+        $stmt->bindParam(':secteur_id', $this->secteur_id);
         $stmt->bindParam(':action', $this->action);
         $stmt->bindParam(':responsable', $this->responsable);
         $stmt->bindParam(':action_type', $this->action_type);

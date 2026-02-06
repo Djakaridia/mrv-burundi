@@ -74,8 +74,25 @@
   });
   sort($referentiels_dash);
 
-  $unite = new Unite($db);
-  $unites = $unite->read();
+  // Actions & Mesures
+  $mesure = new Mesure($db);
+  $mesures = $mesure->read();
+  $actionsWithEmission = [];
+  foreach ($mesures as $mesure_curr) {
+    $suivi_mesure = new Suivi($db);
+    $suivi_mesure->mesure_id = $mesure_curr['id'];
+    $suivis_raw = $suivi_mesure->readByMesure();
+    $emissionEvitee = 0;
+
+    foreach ($suivis_raw as $suivi) {
+      if (!empty($suivi['valeur'])) {
+        $emissionEvitee += floatval(str_replace(',', '.', $suivi['valeur']));
+      }
+    }
+
+    $mesure_curr['emission_evitee'] = $emissionEvitee;
+    $actionsWithEmission[] = $mesure_curr;
+  }
 
   // Inventaires GES
   $inventory = new Inventory($db);
@@ -123,7 +140,7 @@
   $register = new Register($db);
   $registers = $register->read();
   $registre_inventory = [];
-  if($current_inventory){
+  if ($current_inventory) {
     $registre_inventory = array_filter($registers, function ($register) use ($current_inventory) {
       return $register['inventaire_id'] == $current_inventory['id'];
     });
@@ -256,7 +273,7 @@
       <?php include './components/ui/main_section.php'; ?>
 
       <!-- Section 2: Résumé Rapide -->
-      <div class="row mx-n6 mb-3">
+      <div class="row g-4 mx-n6">
         <div class="col-6 col-md-4 col-xl-2 mb-3">
           <div class="card card-float rounded-1 shadow-sm border-start border border-body dashboard-card">
             <div class="card-body p-3">
@@ -385,7 +402,7 @@
       </div>
 
       <!-- Section 3: Alertes et Délais -->
-      <div class="row mx-n6 mb-3">
+      <div class="row g-4 mx-n6">
         <div class="col-md-8 mb-3">
           <div class="card h-100 rounded-1 shadow-sm">
             <div class="card-header rounded-top-1 py-2 px-3 bg-primary d-flex justify-content-between align-items-center">
@@ -400,73 +417,31 @@
         <div class="col-md-4 mb-3">
           <div class="card h-100 shadow-sm">
             <div class="card-header rounded-top-1 py-2 px-3 bg-primary">
-              <h5 class="mb-0 text-white"><i class="fas fa-exclamation-triangle me-2"></i>Alertes et délais des projets</h5>
+              <h5 class="mb-0 text-white"><i class="fas fa-exclamation-triangle me-2"></i>Actions climatiques</h5>
             </div>
             <div class="card-body p-0">
-              <div class="list-group list-group-flush" style="max-height: 435px; overflow-y: auto;">
-                <?php
-                $projetsWithDeadline = array_filter($projets, function ($p) {
-                  return !empty($p['end_date']);
-                });
-                usort($projetsWithDeadline, function ($a, $b) {
-                  return strtotime($a['end_date']) - strtotime($b['end_date']);
-                });
-
-                if (count($projetsWithDeadline) > 0) {
-                  foreach (array_slice($projetsWithDeadline, 0, 5) as $projet):
-                    $daysLeft = floor((strtotime($projet['end_date']) - time()) / (60 * 60 * 24));
-                ?>
-                    <div onclick="window.location.href = 'project_view.php?id=<?= $projet['id'] ?>';" class="list-group-item list-group-item-action cursor-pointer border-bottom shadow-sm mb-1 py-2 px-3">
-                      <div class="d-flex justify-content-between align-items-center">
-                        <h6 class="mb-1 text-truncate"><?= html_entity_decode($projet['name']) ?></h6>
-                        <span class="badge badge-phoenix fs-10 badge-phoenix-<?= $daysLeft < 30 ? 'danger' : ($daysLeft < 90 ? 'warning' : 'success') ?>"><?= $daysLeft ?> jours</span>
-                      </div>
-                      <p class="mb-0 fs-10 text-body-secondary">Échéance: <?= date('d/m/Y', strtotime($projet['end_date'])) ?></p>
-                      <?php
-                      $tache_projet = new Tache($db);
-                      $tache_projet->projet_id = $projet['id'];
-                      $taches_projet = $tache_projet->readByProjet();
-                      $taches_projet = array_filter($taches_projet, function ($tache) {
-                        return $tache['state'] == 'actif';
-                      });
-                      $totalTacheCount = count($taches_projet);
-                      $finishedTacheCount = count(array_filter($taches_projet, function ($tache) {
-                        return strtolower($tache['status']) === 'terminée';
-                      }));
-                      $progress = $totalTacheCount > 0 ? (round(($finishedTacheCount / $totalTacheCount), 2) * 100) : 0;
-                      ?>
-                      <div class="my-1">
-                        <div class="d-flex justify-content-between fs-10 text-body-secondary mb-1">
-                          <span>Progression</span>
-                          <span><?= $finishedTacheCount ?> / <?= $totalTacheCount ?> tâches</span>
-                        </div>
-                        <div class="progress progress-thin">
-                          <div class="progress-bar bg-<?= $progress < 30 ? 'danger' : ($progress < 70 ? 'warning' : 'success') ?>"
-                            style="width: <?= $progress ?>%"
-                            role="progressbar"></div>
-                        </div>
-                      </div>
-                    </div>
-                  <?php endforeach; ?>
-                <?php } else { ?>
-                  <div class="text-center py-5 my-3" style="min-height: 300px;">
-                    <div class="d-flex justify-content-center mb-3">
-                      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-warning">
-                        <path d="M12 8V12M12 16H12.01M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                      </svg>
-                    </div>
-                    <h4 class="text-800 mb-3">Aucun projet trouvé</h4>
-                    <p class="text-600 mb-3">Veuillez ajouter des données pour avoir des alertes </p>
-                    <a href="projects.php" class="btn btn-subtle-primary rounded-1 btn-sm px-5">
-                      <span class="fa fa-plus fs-9 me-2"></span>Ajouter un projet
-                    </a>
+              <?php foreach (array_slice($actionsWithEmission, 0, 5) as $action): ?>
+                <div onclick="window.location.href = 'mesure_view.php?id=<?= $action['id'] ?>';" class="list-group-item list-group-item-action cursor-pointer shadow-sm mb-1 py-2 px-3">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="mb-1 text-truncate">
+                      <?= html_entity_decode($action['name']) ?>
+                    </h6>
+                    <span class="badge badge-phoenix fs-10 py-1 badge-phoenix-primary text-capitalize rounded-pill ms-2">
+                      <?= number_format($action['emission_evitee'], 2, ',', ' ') ?> Gg Eq. CO2
+                    </span>
                   </div>
-                <?php } ?>
-              </div>
+
+                  <p class="mb-0 fs-10 text-body-secondary">
+                    Type : <?= listTypeAction()[$action['action_type']] ?> |
+                    Statut : <?= ucfirst($action['status']) ?>
+                  </p>
+                </div>
+              <?php endforeach; ?>
+
             </div>
             <div class="card-footer bg-transparent py-2 text-center">
-              <a href="./projects.php?filter=deadline" class="btn btn-sm btn-link text-warning p-0 fs-10">
-                Voir tous les projets <i class="fas fa-arrow-right ms-1"></i>
+              <a href="./mesures.php" class="btn btn-sm btn-link text-warning p-0 fs-10">
+                Voir toutes les actions <i class="fas fa-arrow-right ms-1"></i>
               </a>
             </div>
           </div>
@@ -474,7 +449,7 @@
       </div>
 
       <!-- Section 4: Analyse Sectorielle -->
-      <div class="row mx-n6 mb-3 d-none">
+      <div class="row g-4 mx-n6 d-none">
         <div class="col-md-6 mb-3">
           <div class="card h-100 rounded-1 shadow-sm">
             <div class="card-header rounded-top-1 py-2 px-3 bg-primary">
@@ -498,12 +473,13 @@
         </div>
       </div>
 
-      <!-- Section 5: Emissions des Projets -->
-      <div class="row mx-n6 mb-3">
+      <!-- Section 5: Emissions des inventaire -->
+      <div class="row g-4 mx-n6">
         <div class="col-12 col-md-6 mb-3">
           <div class="card rounded-1 shadow-sm h-100">
-            <div class="card-header rounded-top-1 py-2 px-3 bg-primary">
+            <div class="card-header d-flex justify-content-between align-items-end rounded-top-1 py-2 px-3 bg-primary">
               <h5 class="mb-0 text-white"><i class="fas fa-bar-chart me-2"></i> Évolution des émissions nettes</h5>
+              <button type="button" onclick="window.location.href='inventory.php'" class="btn btn-sm py-1 px-2 rounded-1 bg-primary-subtle rounded-1 fs-10">Voir inventaires</button>
             </div>
             <div class="card-body p-2">
               <?php if (!empty($current_inventory_data['data'])) { ?>
@@ -525,8 +501,9 @@
 
         <div class="col-12 col-md-6 mb-3">
           <div class="card rounded-1 shadow-sm h-100">
-            <div class="card-header rounded-top-1 py-2 px-3 bg-primary">
+            <div class="card-header d-flex justify-content-between align-items-end rounded-top-1 py-2 px-3 bg-primary">
               <h5 class="mb-0 text-white"><i class="fas fa-wind me-2"></i> Évolution des émissions vs absorptions</h5>
+              <button type="button" onclick="window.location.href='inventory.php'" class="btn btn-sm py-1 px-2 rounded-1 bg-primary-subtle rounded-1 fs-10">Voir inventaires</button>
             </div>
             <div class="card-body p-2">
               <?php if (!empty($current_inventory_data['data'])) { ?>
@@ -547,11 +524,13 @@
         </div>
       </div>
 
-      <div class="row mx-n6 mb-3">
+      <!-- Section 6: Emissions des registres -->
+      <div class="row g-4 mx-n6">
         <div class="col-12 col-md-6 mb-3">
           <div class="card rounded-1 shadow-sm h-100">
-            <div class="card-header rounded-top-1 py-2 px-3 bg-primary">
+            <div class="card-header d-flex justify-content-between align-items-end rounded-top-1 py-2 px-3 bg-primary">
               <h5 class="mb-0 text-white"><i class="fas fa-bar-chart me-2"></i> Émissions par type de gaz</h5>
+              <button type="button" onclick="window.location.href='register_carbone.php'" class="btn btn-sm py-1 px-2 rounded-1 bg-primary-subtle rounded-1 fs-10">Voir registres</button>
             </div>
             <div class="card-body p-2">
               <?php if (!empty($registre_inventory)) { ?>
@@ -570,10 +549,12 @@
             </div>
           </div>
         </div>
+
         <div class="col-12 col-md-6 mb-3">
           <div class="card rounded-1 shadow-sm h-100">
-            <div class="card-header rounded-top-1 py-2 px-3 bg-primary">
+            <div class="card-header d-flex justify-content-between align-items-end rounded-top-1 py-2 px-3 bg-primary">
               <h5 class="mb-0 text-white"><i class="fas fa-bar-chart me-2"></i> Émissions par secteur et année</h5>
+              <button type="button" onclick="window.location.href='register_carbone.php'" class="btn btn-sm py-1 px-2 rounded-1 bg-primary-subtle rounded-1 fs-10">Voir registres</button>
             </div>
             <div class="card-body p-2">
               <?php if (!empty($registre_inventory)) { ?>
@@ -595,28 +576,29 @@
       </div>
 
       <!-- Section 6: Tableau des Projets -->
-      <div class="row mx-n6 mb-3">
+      <div class="row g-4 mx-n6">
         <div class="col-12 mb-3">
           <div class="card rounded-1 shadow-sm h-100">
             <div class="card-header rounded-top-1 py-2 px-3 bg-primary d-flex justify-content-between align-items-center">
-              <h5 class="mb-0 text-white"><i class="fas fa-briefcase me-2"></i>Analyse par projet</h5>
+              <h5 class="mb-0 text-white"><i class="fas fa-briefcase me-2"></i>Listes des projets climatiques</h5>
             </div>
             <div class="card-body p-1 table-responsive scrollbar">
               <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
-                <thead class="bg-primary-subtle">
-                  <tr class="text-nowrap">
-                    <th class="align-middle ps-2" scope="col" data-sort="code" style="width:10%;">CODE</th>
-                    <th class="align-middle ps-2" scope="col" data-sort="name" style="width:30%;">NOM DU PROJET</th>
-                    <th class="align-middle ps-2" scope="col" data-sort="dates" style="width:10%;">AJOUTÉ LE</th>
-                    <th class="align-middle ps-2" scope="col" data-sort="responsable" style="width:10%;">RESPONSABLE</th>
-                    <th class="align-middle ps-2" scope="col" data-sort="progression" style="width:20%;">PROGRESSION</th>
-                    <th class="align-middle ps-2" scope="col" data-sort="deadline" style="width:5%;">DEADLINE</th>
-                    <th class="align-middle ps-2" scope="col" data-sort="status" style="width:5%;">ACTIONS</th>
+                <thead class="table-light">
+                  <tr>
+                    <th>Intitulé du projet</th>
+                    <th>Responsable</th>
+                    <th class="text-center">Secteur</th>
+                    <th class="text-center">Période</th>
+                    <th class="text-center">Statut</th>
+                    <th class="text-center">Progression</th>
+                    <th class="text-center" style="width: 100px;">Actions</th>
                   </tr>
                 </thead>
-                <tbody class="list" id="project-summary-table-body">
-                  <?php foreach ($projets as $projet) {
-                    $daysDeadline = floor((strtotime($projet['end_date']) - time()) / (60 * 60 * 24));
+                <tbody>
+                  <?php foreach ($projets as $projet):
+                    $logoParts = explode("../", $projet['logo'] ?? '');
+
                     $tache_projet = new Tache($db);
                     $tache_projet->projet_id = $projet['id'];
                     $taches_projet = $tache_projet->readByProjet();
@@ -629,65 +611,60 @@
                       return strtolower($tache['status']) === 'terminée';
                     }));
                     $progress = $totalTacheCount > 0 ? (round(($finishedTacheCount / $totalTacheCount), 2) * 100) : 0;
-
-                    // Get structure name
-                    $structureName = '';
-                    foreach ($structures as $structure) {
-                      if ($structure['id'] == $projet['structure_id']) {
-                        $structureName = $structure['sigle'];
-                        break;
-                      }
-                    }
                   ?>
-                    <tr class="position-static">
-                      <td class="align-middle ps-2">
-                        <p class="mb-0 fs-9 text-body"><?= $projet['code'] ?></p>
+
+                    <tr>
+                      <td><a href="project_view.php?id=<?= $projet['id'] ?>" class="text-muted fw-bold"><?= html_entity_decode($projet['name']) ?></a></td>
+                      <td><span class="fw-semibold"><?= $projet['structure_sigle'] ?></span></td>
+                      <td class="text-center">
+                        <span class="badge badge-phoenix fs-10 py-1 badge-phoenix-light rounded-pill">
+                          <?php foreach ($secteurs as $secteur) {
+                            if ($secteur['id'] == $projet['secteur_id']) {
+                              echo $secteur['name'];
+                              break;
+                            }
+                          } ?>
+                        </span>
                       </td>
-                      <td class="align-middle ps-2" style="width: 200px;">
-                        <a class="mb-0 fs-9 fw-semibold" href="project_view.php?id=<?= $projet['id'] ?>">
-                          <?= html_entity_decode($projet['name']) ?>
+                      <td class="text-center">
+                        <span class="badge badge-phoenix fs-10 py-1 badge-phoenix-warning rounded-pill">
+                          <?= date('Y', strtotime($projet['start_date'])) ?> - <?= date('Y', strtotime($projet['end_date'])) ?>
+                        </span>
+                      </td>
+                      <td class="text-center">
+                        <span class="badge badge-phoenix fs-10 py-1 rounded-pill badge-phoenix-<?= getBadgeClass($projet['status']); ?>">
+                          <?= listStatus()[$projet['status']]; ?>
+                        </span>
+                      </td>
+                      <td class="text-center p-0">
+                        <a onclick="window.location.href='suivi_activites.php?proj=<?= $projet['id'] ?>'" class="btn btn-link text-decoration-none fw-bold py-1 px-0 m-0">
+                          <?php
+                          if ($progress < 39)
+                            $color = "danger";
+                          elseif ($progress < 69)
+                            $color = "warning";
+                          elseif ($progress >= 70)
+                            $color = "success"; ?>
+                          <span id="tauxProj_<?php echo $projet['id']; ?>">
+                            <div class="progress progress-xl rounded-0 p-0 m-0" style="height: 1.5rem; width: 200px">
+                              <div class="progress-bar progress-bar-striped progress-bar-animated fs-14 fw-bold bg-<?php echo $color; ?> " aria-valuenow="70" style="width: 100%;">
+                                <?php echo (isset($progress) && $progress > 0) ? $progress . " %" : "Non entamé"; ?>
+                              </div>
+                            </div>
+                          </span>
                         </a>
                       </td>
-                      <td class="align-middle ps-2">
-                        <p class="mb-0 fs-9 text-body">
-                          <?= date('Y-m-d', strtotime($projet['created_at'])) ?>
-                        </p>
-                      </td>
-                      <td class="align-middle ps-2">
-                        <p class="mb-0 fs-9 text-body"><?= $structureName ?></p>
-                      </td>
-                      <td class="align-middle ps-2">
-                        <div class="d-flex align-items-center">
-                          <div class="progress progress-thin flex-grow-1 me-2">
-                            <div class="progress-bar bg-<?= $progress < 30 ? 'danger' : ($progress < 70 ? 'warning' : 'success') ?>"
-                              style="width: <?= $progress ?>%"
-                              role="progressbar"></div>
-                          </div>
-                          <span class="fs-10 fw-bold"><?= $progress ?>%</span>
-                        </div>
-                        <p class="text-body-secondary fs-10 mb-0 mt-1">
-                          <?= $finishedTacheCount ?> / <?= $totalTacheCount ?> tâches
-                        </p>
-                      </td>
-
-                      <td class="align-middle ps-2">
-                        <span class="badge badge-phoenix fs-10 badge-phoenix-<?= $daysDeadline < 30 ? 'danger' : ($daysDeadline < 90 ? 'warning' : 'success') ?>"><?= $daysDeadline ?> jours</span>
-                      </td>
-
-                      <td class="align-middle px-2">
-                        <div class="position-relative">
-                          <div class="btn-group btn-group-sm" role="group">
-                            <button title="Voir" class="btn btn-sm px-2 py-1 btn-phoenix-info" data-bs-toggle="modal" data-bs-target="#projectsCardViewModal" data-id="<?= $projet['id'] ?>">
-                              <span class="uil-eye fs-8"></span>
-                            </button>
-                            <a title="Consulter" href="project_view.php?id=<?= $projet['id'] ?>" class="btn btn-sm px-2 py-1 btn-phoenix-success">
-                              <span class="uil-arrow-right fs-8"></span>
-                            </a>
-                          </div>
+                      <td>
+                        <div class="d-flex gap-2">
+                          <button title="Voir" class="btn btn-sm btn-phoenix-primary fs-10 px-2 py-1" data-bs-toggle="modal"
+                            data-bs-target="#projectsCardViewModal" data-id="<?= $projet['id'] ?>"><span class="uil-eye fs-8"></span></button>
+                          <a title="Consulter" href="project_view.php?id=<?= $projet['id'] ?>" class="btn btn-sm px-2 py-1 btn-phoenix-success">
+                            <span class="uil-arrow-right fs-8"></span>
+                          </a>
                         </div>
                       </td>
                     </tr>
-                  <?php } ?>
+                  <?php endforeach; ?>
                 </tbody>
               </table>
             </div>

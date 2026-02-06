@@ -19,6 +19,26 @@
     $referentiels = array_filter($referentiels, function ($referentiel) {
         return $referentiel['state'] == 'actif';
     });
+    if (isset($_GET['secteur']) && !empty($_GET['secteur'])) {
+        $secteur = (int) $_GET['secteur'];
+        $referentiels = array_filter($referentiels, function ($referentiel) use ($secteur) {
+            return $referentiel['secteur_id'] == $secteur;
+        });
+    }
+
+    if (isset($_GET['action']) && !empty($_GET['action'])) {
+        $action = $_GET['action'];
+        $referentiels = array_filter($referentiels, function ($referentiel) use ($action) {
+            return $referentiel['action_type'] == $action;
+        });
+    }
+
+    if (isset($_GET['categorie']) && !empty($_GET['categorie'])) {
+        $categorie = $_GET['categorie'];
+        $referentiels = array_filter($referentiels, function ($referentiel) use ($categorie) {
+            return $referentiel['categorie'] == $categorie;
+        });
+    }
 
     $structure = new Structure($db);
     $structures = $structure->read();
@@ -26,9 +46,14 @@
         return $structure['state'] == 'actif';
     });
 
-    $unite = new Unite($db);
-    $unites = $unite->read();
-
+    $secteur = new Secteur($db);
+    $data_secteurs = $secteur->read();
+    $secteurs = array_filter($data_secteurs, function ($secteur) {
+        return $secteur['parent'] == 0 && $secteur['state'] == 'actif';
+    });
+    $sous_secteurs = array_filter($data_secteurs, function ($secteur) {
+        return $secteur['parent'] > 0 && $secteur['state'] == 'actif';
+    });
     ?>
 </head>
 
@@ -41,132 +66,264 @@
         <?php include './components/navbar & footer/navbar.php'; ?>
 
         <div class="content">
-            <div class="mx-n4 mt-n5 px-0 mx-lg-n6 px-lg-0 bg-body-emphasis border border-start-0">
-                <div class="card-body p-2 d-lg-flex flex-row justify-content-between align-items-center g-3">
-                    <div class="col-lg-6 mb-2 mb-lg-0">
-                        <h4 class="my-1 fw-black fs-8">Résultats obtenus sur les indicateurs de la CDN</h4>
+            <div class="mt-n5 p-1 mx-lg-n6 bg-body-emphasis border-y">
+                <div class="row mx-n1 py-1 align-items-center">
+                    <div class="col-md-4">
+                        <h3 class="h5 mb-0 fw-bold">Résultats obtenus sur les indicateurs</h3>
+                        <p class="text-muted small mb-0">Tableau récapitulatif des suivis des indicateurs de la CDN</p>
                     </div>
+                    <div class="col-md-8">
+                        <div class="d-flex justify-content-md-end gap-3">
+                            <div class="d-flex gap-1 align-items-center">
+                                <?php $currFilSecteur = isset($_GET['secteur']) ? $_GET['secteur'] : '';
+                                $currFilAction = isset($_GET['action']) ? $_GET['action'] : '';
+                                $currFilCategorie = isset($_GET['categorie']) ? $_GET['categorie'] : ''; ?>
 
-                    <div class="col-lg-6 mb-2 mb-lg-0 text-lg-end">
-                        <a href="referentiels.php" class="btn btn-phoenix-info rounded-pill btn-sm">
-                            <span class="fa-solid fa-eye fs-9 me-2"></span>Voir les indicateurs
-                        </a>
+                                <span class="form-label">Filtrer : </span>
+                                <div class="search-box d-none d-lg-block my-lg-0" style="width: 8rem !important;">
+                                    <form class="position-relative">
+                                        <select class="form-select form-select-sm bg-warning-subtle text-warning px-2 rounded-1" id="actionFilter"
+                                            onchange="pagesFilters([{ id: 'actionFilter', param: 'action' }])">
+                                            <option value="">Toutes actions</option>
+                                            <?php foreach (listTypeAction() as $key => $value): ?>
+                                                <option value="<?= $key ?>" <?= ($currFilAction == $key) ? 'selected' : '' ?>>
+                                                    <?= $value ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </form>
+                                </div>
+                                <div class="search-box d-none d-lg-block my-lg-0" style="width: 8rem !important;">
+                                    <form class="position-relative">
+                                        <select class="form-select form-select-sm bg-warning-subtle text-warning px-2 rounded-1" id="secteurFilter"
+                                            onchange="pagesFilters([{ id: 'secteurFilter', param: 'secteur' }])">
+                                            <option value="">Tous secteurs</option>
+                                            <?php if (isset($secteurs) && !empty($secteurs)): ?>
+                                                <?php foreach ($secteurs as $secteur): ?>
+                                                    <option value="<?= $secteur['id'] ?>" <?= ($currFilSecteur == $secteur['id']) ? 'selected' : '' ?>>
+                                                        <?= $secteur['name'] ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
+                                        </select>
+                                    </form>
+                                </div>
+                                <div class="search-box d-none d-lg-block my-lg-0" style="width: 8rem !important;">
+                                    <form class="position-relative">
+                                        <select class="form-select form-select-sm bg-warning-subtle text-warning px-2 rounded-1" id="catgorieFilter"
+                                            onchange="pagesFilters([{ id: 'catgorieFilter', param: 'categorie' }])">
+                                            <option value="">Tous catégorie</option>
+                                            <?php foreach (listTypeCategorie() as $key => $value): ?>
+                                                <option value="<?= $key ?>" <?= ($currFilCategorie == $key) ? 'selected' : '' ?>>
+                                                    <?= $value ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <a href="referentiels.php" class="btn btn-subtle-info btn-sm">
+                                <span class="fa-solid fa-eye fs-9 me-2"></span>Voir les indicateurs
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="row mt-3">
-                <div class="col-12">
-                    <div class="mx-n4 p-1 mx-lg-n6 bg-body-emphasis border-y">
-                        <?php if (!empty($referentiels)) { ?>
-                            <div class="table-responsive mx-n1 px-1 scrollbar" style="min-height: 432px;">
-                                <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
-                                    <thead class="bg-primary-subtle">
-                                        <tr>
-                                            <th class="sort align-middle px-2" scope="col">Code</th>
-                                            <th class="sort align-middle px-2" scope="col">Intitulé</th>
-                                            <th class="sort align-middle px-2" scope="col">Unité</th>
-                                            <th class="sort align-middle px-2" scope="col">Catégorie</th>
-                                            <th class="sort align-middle px-2" scope="col">Responsables</th>
-                                            <th class="sort align-middle px-2 text-nowrap" scope="col">Indicateur projet</th>
-                                            <th class="sort align-middle px-2" scope="col">Total prévu</th>
-                                            <th class="sort align-middle px-2" scope="col">Total réalisé</th>
-                                            <th class="sort align-middle px-2" scope="col">Taux réalisation</th>
-                                            <th class="sort align-middle px-2" scope="col">Suivis</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="list" id="table-latest-review-body">
-                                        <?php foreach ($referentiels as $referentiel):
-                                            $indicateur = new Indicateur($db);
-                                            $indicateur->referentiel_id = $referentiel['id'];
-                                            $indicateur_cmr = $indicateur->readByReferentiel();
-                                            $nbre_cmr = count($indicateur_cmr);
+            <div class="mt-3 p-1 mx-lg-n6 bg-body-emphasis border-y">
+                <div class="table-responsive mx-n1 px-1 scrollbar" style="min-height: 432px;">
+                    <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
+                        <thead class="bg-primary-subtle">
+                            <tr>
+                                <th class="sort align-middle px-2" scope="col">Code</th>
+                                <th class="sort align-middle px-2" scope="col">Intitulé</th>
+                                <th class="sort align-middle px-2" scope="col">Unité</th>
+                                <th class="sort align-middle px-2" scope="col">Responsables</th>
+                                <th class="sort align-middle px-2 text-nowrap" scope="col">Mesures & actions</th>
+                                <th class="sort align-middle px-2 text-nowrap" scope="col">Indicateur projet</th>
+                                <th class="sort align-middle px-2" scope="col">Total prévu</th>
+                                <th class="sort align-middle px-2" scope="col">Total réalisé</th>
+                                <th class="sort align-middle px-2" scope="col">Taux réalisation</th>
+                                <th class="sort align-middle px-2" scope="col">Suivis</th>
+                            </tr>
+                        </thead>
+                        <tbody class="list" id="table-latest-review-body">
+                            <?php foreach ($referentiels as $referentiel):
+                                $cibles_total = 0;
+                                $suivis_total = 0;
+                                $taux_progress = 0;
+                                $nbre_cmr = 0;
+                                $nbre_mesure = 0;
 
-                                            $total_prevu = 0;
-                                            $total_realise = 0;
-                                            if (isset($indicateur_cmr)) {
-                                                $cmr_tab_prevu = [];
-                                                $cmr_tab_realise = [];
-                                                foreach ($indicateur_cmr as $cmr) {
-                                                    $cmr_tab_prevu[$cmr['id']] = $cmr['valeur_cible'];
+                                if ($referentiel['categorie'] != 'impact') {
+                                    $indicateur = new Indicateur($db);
+                                    $indicateur->referentiel_id = $referentiel['id'];
+                                    $indicateurs = array_filter($indicateur->readByReferentiel(), fn($i) => $i['state'] == 'actif');
 
-                                                    $suivi = new Suivi($db);
-                                                    $suivi->indicateur_id = $cmr['id'];
-                                                    $suivis_cmr = $suivi->readByIndicateur();
-                                                    $suivis_cmr_grouped = array();
-                                                    $suivis_calcul = 0;
-                                                    foreach ($suivis_cmr as $suivi) {
-                                                        $suivis_cmr_grouped[$suivi['annee']][] = $suivi;
-                                                    }
-                                                    foreach ($suivis_cmr_grouped as $annee => $suivis) {
-                                                        $suivis_calcul += calculSuiviData($suivis_cmr_grouped[$annee] ?? [], $cmr['mode_calcul']);
-                                                    }
-                                                    $cmr_tab_realise[$cmr['id']] = $suivis_calcul;
-                                                }
+                                    if (!empty($indicateurs)) {
+                                        $nbre_cmr = count($indicateurs);
+                                        $indicateur_cmr = array_pop($indicateurs);
 
-                                                $total_prevu += array_sum($cmr_tab_prevu);
-                                                $total_realise += array_sum($cmr_tab_realise);
+                                        $projet = new Projet($db);
+                                        $projet->id = $indicateur_cmr['projet_id']??"";
+                                        $projet_ref = $projet->readById();
+                                        $annees = [];
+                                        for ($year = date('Y', strtotime($projet_ref['start_date'])); $year <= date('Y', strtotime($projet_ref['end_date'])); $year++) {
+                                            $annees[] = $year;
+                                        }
 
-                                                $taux_progress = 0;
-                                                if (isset($total_prevu) && $total_prevu > 0) {
-                                                    $taux_progress = $total_realise / $total_prevu * 100;
-                                                }
+                                        $cible = new Cible($db);
+                                        $cible->indicateur_id = $indicateur_cmr['id']??"";
+                                        $cibles_raw = $cible->readByIndicateur();
+                                        $cibles_map = [];
+                                        if (count($cibles_raw) > 0) {
+                                            foreach ($cibles_raw as $item) {
+                                                $year = $item['annee'];
+                                                $value = (float)$item['valeur'];
+                                                if (!isset($cibles_map[$year])) $cibles_map[$year] = 0;
+                                                $cibles_map[$year] += $value;
                                             }
-                                        ?>
-                                            <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                                                <td class="align-middle px-2 py-0"> <?php echo $referentiel['code']; ?> </td>
-                                                <td class="align-middle px-2"> <?php echo $referentiel['intitule']; ?> </td>
-                                                <td class="align-middle px-2 py-0 text-nowrap"><?php echo $referentiel['unite']; ?></td>
+                                        }
+                                        $cibles = array_map(fn($y) => (float)($cibles_map[$y] ?? 0), $annees);
 
-                                                <td class="align-middle px-2 py-0"> <?php echo strtoupper($referentiel['categorie'] ?? '-'); ?> </td>
-                                                <td class="align-middle px-2 py-0">
-                                                    <?php foreach ($structures as $structure): ?>
-                                                        <?php if ($structure['id'] == $referentiel['responsable']): ?>
-                                                            <?php echo $structure['sigle']; ?>
-                                                        <?php endif; ?>
-                                                    <?php endforeach; ?>
-                                                </td>
-                                                <td class="align-middle text-center px-2 py-0">
-                                                    <a class="btn btn-link text-decoration-none fw-bold p-0 m-0" data-bs-toggle="modal" data-bs-target="#viewRefCMRModal" aria-haspopup="true" aria-expanded="false"
-                                                        data-id="<?php echo $referentiel['id']; ?>">
-                                                        <?php if ($nbre_cmr > 0): ?>
-                                                            (<?php echo $nbre_cmr; ?>) indicateur
-                                                        <?php else: ?>
-                                                            Aucun indicateur
-                                                        <?php endif; ?>
-                                                    </a>
-                                                </td>
-                                                <td class="align-middle bg-secondary-subtle px-2 py-0"> <?php echo strtoupper($total_prevu ?? '-'); ?> </td>
-                                                <td class="align-middle bg-secondary-subtle px-2 py-0"> <?php echo strtoupper($total_realise ?? '-'); ?> </td>
-                                                <td class="align-middle bg-secondary-subtle px-2 py-0"> <?php echo round($taux_progress, 2) . ' %' ?? '-'; ?> </td>
-                                                <td class="align-middle px-2 py-0">
-                                                    <?php if ($referentiel['categorie'] == 'impact') { ?>
-                                                        <button title="Suivre" type="button" class="btn btn-subtle-warning rounded-pill btn-sm fw-bold fs-9 px-2 py-1"
-                                                            onclick="window.location.href = 'referentiel_view.php?id=<?php echo $referentiel['id']; ?>';">Suivre
-                                                        </button>
-                                                    <?php } else {
-                                                        echo '-';
-                                                    } ?>
-                                                </td>
-                                            </tr>
+                                        $suivi = new Suivi($db);
+                                        $suivi->indicateur_id = $indicateur_cmr['id'];
+                                        $suivis_raw = $suivi->readByIndicateur();
+                                        $suivis_map = [];
+                                        if (count($suivis_raw) > 0) {
+                                            foreach ($suivis_raw as $item) {
+                                                $year = $item['annee'];
+                                                $value = (float)$item['valeur'];
+                                                if (!isset($suivis_map[$year])) $suivis_map[$year] = 0;
+                                                $suivis_map[$year] += $value;
+                                            }
+                                        }
+                                        $suivis = array_map(fn($y) => (float)($suivis_map[$y] ?? 0), $annees);
+                                    }
+                                } else {
+                                    $mesure = new Mesure($db);
+                                    $mesure->referentiel_id = $referentiel['id'];
+                                    $mesures = $mesure->readByIndicateur();
+                                    $nbre_mesure = count($mesures);
+
+                                    $cible_referentiel = new Cible($db);
+                                    $cible_referentiel->indicateur_id = $referentiel['id'];
+                                    $cibles_raw = $cible_referentiel->readByIndicateur();
+
+                                    $suivi_referentiel = new Suivi($db);
+                                    $suivi_referentiel->indicateur_id = $referentiel['id'];
+                                    $suivis_raw = $suivi_referentiel->readByIndicateur();
+
+                                    $annees = array();
+                                    if (!empty($cibles_raw) || !empty($suivis_raw)) {
+                                        $all_years = array();
+                                        if (!empty($cibles_raw)) {
+                                            $cible_years = array_column($cibles_raw, 'annee');
+                                            $all_years = array_merge($all_years, $cible_years);
+                                        }
+
+                                        if (!empty($suivis_raw)) {
+                                            $suivi_years = array_column($suivis_raw, 'annee');
+                                            $all_years = array_merge($all_years, $suivi_years);
+                                        }
+
+                                        if (!empty($all_years)) {
+                                            $min_year = min($all_years);
+                                            $max_year = max($all_years);
+
+                                            for ($year = $min_year; $year <= $max_year; $year++) {
+                                                $annees[] = $year;
+                                            }
+                                        }
+                                    }
+
+                                    $cibles_map = array();
+                                    if (!empty($cibles_raw)) {
+                                        usort($cibles_raw, fn($a, $b) => $a['annee'] - $b['annee']);
+                                        foreach ($cibles_raw as $item) {
+                                            $year = $item['annee'];
+                                            $value = (float)$item['valeur'];
+                                            if (!isset($cibles_map[$year])) $cibles_map[$year] = 0;
+                                            $cibles_map[$year] += $value;
+                                            $cibles_total += $value;
+                                        }
+                                        ksort($cibles_map, SORT_NUMERIC);
+                                    }
+
+                                    $suivis_map = array();
+                                    if (!empty($suivis_raw)) {
+                                        usort($suivis_raw, fn($a, $b) => $a['annee'] - $b['annee']);
+                                        foreach ($suivis_raw as $item) {
+                                            $year = $item['annee'];
+                                            $value = (float)$item['valeur'];
+                                            if (!isset($suivis_map[$year])) $suivis_map[$year] = 0;
+                                            $suivis_map[$year] += $value;
+                                            $suivis_total += $value;
+                                        }
+                                        ksort($suivis_map, SORT_NUMERIC);
+                                    }
+
+                                    $cibles = array();
+                                    $suivis = array();
+                                    if (!empty($annees)) {
+                                        foreach ($annees as $year) {
+                                            $cibles[] = (float)($cibles_map[$year] ?? 0);
+                                            $suivis[] = (float)($suivis_map[$year] ?? 0);
+                                        }
+                                    }
+                                }
+
+                                $taux_progress = $cibles_total > 0 ? ($suivis_total / $cibles_total) * 100 : 0;
+                            ?>
+                                <tr class="hover-actions-trigger btn-reveal-trigger position-static">
+                                    <td class="align-middle px-2 py-0"> <?php echo $referentiel['code']; ?> </td>
+                                    <td class="align-middle px-2"> <?php echo $referentiel['intitule']; ?> </td>
+                                    <td class="align-middle px-2 py-0 text-nowrap"><?php echo $referentiel['unite']; ?></td>
+
+                                    <td class="align-middle px-2 py-0">
+                                        <?php foreach ($structures as $structure): ?>
+                                            <?php if ($structure['id'] == $referentiel['responsable']): ?>
+                                                <?php echo $structure['sigle']; ?>
+                                            <?php endif; ?>
                                         <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        <?php } else { ?>
-                            <div class="text-center py-5 my-5" style="min-height: 350px;">
-                                <div class="d-flex justify-content-center mb-3">
-                                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-warning">
-                                        <path d="M12 8V12M12 16H12.01M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
-                                </div>
-                                <h4 class="text-800 mb-3">Aucun projet trouvé</h4>
-                                <p class="text-600 mb-5">Veuillez ajouter un projet pour afficher ses indicateurs</p>
-                                <a href="projects.php" class="btn btn-primary px-5 fs-8" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-arrow-right"></i> Aller vers les projets</a>
-                            </div>
-                        <?php } ?>
-                    </div>
+                                    </td>
+                                    <td class="align-middle text-center px-2 py-0">
+                                        <a class="btn btn-link text-decoration-none fw-bold p-0 m-0" data-bs-toggle="modal" data-bs-target="#viewRefCMRModal" aria-haspopup="true" aria-expanded="false"
+                                            data-id="<?php echo $referentiel['id']; ?>">
+                                            <?php if ($nbre_mesure > 0): ?>
+                                                (<?php echo $nbre_mesure; ?>) mesure
+                                            <?php else: ?>
+                                                Aucune mesure
+                                            <?php endif; ?>
+                                        </a>
+                                    </td>
+                                    <td class="align-middle text-center px-2 py-0">
+                                        <a class="btn btn-link text-decoration-none fw-bold p-0 m-0" data-bs-toggle="modal" data-bs-target="#viewRefCMRModal" aria-haspopup="true" aria-expanded="false"
+                                            data-id="<?php echo $referentiel['id']; ?>">
+                                            <?php if ($nbre_cmr > 0): ?>
+                                                (<?php echo $nbre_cmr; ?>) indicateur
+                                            <?php else: ?>
+                                                Aucun indicateur
+                                            <?php endif; ?>
+                                        </a>
+                                    </td>
+                                    <td class="align-middle bg-secondary-subtle px-2 py-0"> <?php echo strtoupper($cibles_total ?? '-'); ?> </td>
+                                    <td class="align-middle bg-secondary-subtle px-2 py-0"> <?php echo strtoupper($suivis_total ?? '-'); ?> </td>
+                                    <td class="align-middle bg-secondary-subtle px-2 py-0"> <?php echo round($taux_progress, 2) . ' %' ?? '-'; ?> </td>
+                                    <td class="align-middle px-2 py-0">
+                                        <?php if ($referentiel['categorie'] == 'impact') { ?>
+                                            <button title="Suivre" type="button" class="btn btn-subtle-warning rounded-pill btn-sm fw-bold fs-9 px-2 py-1"
+                                                onclick="window.location.href = 'referentiel_view.php?id=<?php echo $referentiel['id']; ?>';">Suivre
+                                            </button>
+                                        <?php } else {
+                                            echo '-';
+                                        } ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

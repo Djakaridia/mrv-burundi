@@ -162,7 +162,7 @@
                         <p class="text-muted small mb-0">Tableau récapitulatif des mesures d'atténuation et d'adaptation</p>
                     </div>
                     <div class="col-md-8">
-                        <div class="d-flex justify-content-md-end gap-2">
+                        <div class="d-flex justify-content-md-end gap-3">
                             <div class="d-flex gap-1 align-items-center">
                                 <?php $currFilSecteur = isset($_GET['secteur']) ? $_GET['secteur'] : '';
                                 $currFilAction = isset($_GET['action']) ? $_GET['action'] : '';
@@ -171,7 +171,21 @@
                                 <span class="form-label">Filtrer : </span>
                                 <div class="search-box d-none d-lg-block my-lg-0" style="width: 8rem !important;">
                                     <form class="position-relative">
-                                        <select class="form-select form-select-sm bg-secondary-subtle px-2 rounded-1" id="secteurFilter">
+                                        <select class="form-select form-select-sm bg-warning-subtle text-warning px-2 rounded-1" id="actionFilter"
+                                            onchange="pagesFilters([{ id: 'actionFilter', param: 'action' }])">
+                                            <option value="">Toutes actions</option>
+                                            <?php foreach (listTypeAction() as $key => $value): ?>
+                                                <option value="<?= $key ?>" <?= ($currFilAction == $key) ? 'selected' : '' ?>>
+                                                    <?= $value ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </form>
+                                </div>
+                                <div class="search-box d-none d-lg-block my-lg-0" style="width: 8rem !important;">
+                                    <form class="position-relative">
+                                        <select class="form-select form-select-sm bg-warning-subtle text-warning px-2 rounded-1" id="secteurFilter"
+                                            onchange="pagesFilters([{ id: 'secteurFilter', param: 'secteur' }])">
                                             <option value="">Tous secteurs</option>
                                             <?php if (isset($secteurs_mesure) && !empty($secteurs_mesure)): ?>
                                                 <?php foreach ($secteurs_mesure as $secteur): ?>
@@ -185,19 +199,8 @@
                                 </div>
                                 <div class="search-box d-none d-lg-block my-lg-0" style="width: 8rem !important;">
                                     <form class="position-relative">
-                                        <select class="form-select form-select-sm bg-secondary-subtle px-2 rounded-1" id="actionFilter">
-                                            <option value="">Toutes actions</option>
-                                            <?php foreach (listTypeAction() as $key => $value): ?>
-                                                <option value="<?= $key ?>" <?= ($currFilAction == $key) ? 'selected' : '' ?>>
-                                                    <?= $value ?>
-                                                </option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </form>
-                                </div>
-                                <div class="search-box d-none d-lg-block my-lg-0" style="width: 8rem !important;">
-                                    <form class="position-relative">
-                                        <select class="form-select form-select-sm bg-secondary-subtle px-2 rounded-1" id="statusFilter">
+                                        <select class="form-select form-select-sm bg-warning-subtle text-warning px-2 rounded-1" id="statusFilter"
+                                            onchange="pagesFilters([{ id: 'statusFilter', param: 'status' }])">
                                             <option value="">Tous status</option>
                                             <?php foreach (listStatus() as $key => $value): ?>
                                                 <option value="<?= $key ?>" <?= ($currFilStatus == $key) ? 'selected' : '' ?>>
@@ -309,10 +312,5 @@
 
     <?php include './components/navbar & footer/foot.php'; ?>
 </body>
-<script>
-    document.getElementById('secteurFilter').addEventListener('change', updateFilters);
-    document.getElementById('actionFilter').addEventListener('change', updateFilters);
-    document.getElementById('statusFilter').addEventListener('change', updateFilters);
-</script>
 
 </html>

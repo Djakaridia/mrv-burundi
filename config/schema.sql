@@ -498,7 +498,6 @@ CREATE TABLE IF NOT EXISTS t_referentiel_indicateur (
     categorie VARCHAR(30),
     norme VARCHAR(30),
     unite VARCHAR(50),
-    domaine VARCHAR(30),
     action VARCHAR(30),
     echelle VARCHAR(100),
     modele VARCHAR(100),
@@ -512,6 +511,7 @@ CREATE TABLE IF NOT EXISTS t_referentiel_indicateur (
     sens_evolution VARCHAR(50),
     in_dashboard TINYINT(1) DEFAULT false,
     state VARCHAR(20) DEFAULT 'actif',
+    secteur_id INT,
     add_by INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

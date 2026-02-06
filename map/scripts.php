@@ -359,13 +359,8 @@
                 $start_date = !empty($projet_info['start_date']) ? date('d/m/Y', strtotime($projet_info['start_date'])) : 'Non définie';
                 $end_date = !empty($projet_info['end_date']) ? date('d/m/Y', strtotime($projet_info['end_date'])) : 'Non définie';
                 $budget = !empty($projet_info['budget']) ? number_format($projet_info['budget'], 0, ',', ' ') . ' USD' : 'Non défini';
-                $sectors = $projet_info['secteur_id'] ?? "";
-                $sectors_names = array_map(function ($sector_id) use ($secteurs_assoc) {
-                    return $secteurs_assoc[$sector_id] ?? 'Non défini';
-                }, $sectors);
-                $sectors_names = implode(', ', $sectors_names);
-                $sector_ids_js = json_encode(array_map('trim', $sectors));
-
+                $sectors = $secteurs_assoc[$projet_info['secteur_id']] ?? "Non défini";
+                
                 // Data indicateur
                 $valeur_cible = floatval($indicateur['valeur_cible']);
                 $valeur_realisee = floatval($suivis_assoc[$indicateur['id']]);
@@ -381,7 +376,7 @@
                             <span><strong>Action:</strong> " . $projet_info['action_type'] . "</span>
                             <span><strong>Budget:</strong> " . $budget . "</span>
                             <span><strong>Période:</strong> " . $start_date . " - " . $end_date . "</span>
-                            <span><strong>Secteurs:</strong> " . $sectors_names . "</span>
+                            <span><strong>Secteurs:</strong> " . $sectors . "</span>
                         </div>
                         <hr>
                         <div class='project-info d-flex flex-column gap-1'>
@@ -391,13 +386,12 @@
                             <span><strong>Responsable:</strong> " . $structures_assoc[$indicateur['responsable']] . "</span>
                             <span><strong>Valeur cible:</strong> " . $indicateur['valeur_cible'] . "</span>
                             <span><strong>Valeur réalisée:</strong> " . $suivis_assoc[$indicateur['id']] . "</span>
-                            <div>
-                            <strong>Progression:</strong> " . $pourcentage . "%
-                            <div class='progress-bar-container'>
-                                <div class='progress-bar' style='width: " . $pourcentage . "%; background-color: " . $progress_color . ";'></div>
-                            </div>
-                            </div>
+                        <div>
+                        <strong>Progression:</strong> " . $pourcentage . "%
+                        <div class='progress-bar-container'>
+                            <div class='progress-bar' style='width: " . $pourcentage . "%; background-color: " . $progress_color . ";'></div>
                         </div>
+                    
                         <div class='text-center mt-2'>
                             <a target='_blank' href='../project_view.php?id=" . $projet_info['id'] . "' class='btn btn-sm btn-primary text-white'>Voir détail du projet</a>
                         </div>
@@ -416,7 +410,7 @@
                                 name: "<?= $projet_info['name'] ?>",
                                 code: "<?= $projet_info['code'] ?>",
                                 action: "<?= $projet_info['action_type'] ?>",
-                                secteurs: <?= $sector_ids_js ?>,
+                                secteurs: <?= $projet_info['secteur_id'] ?>,
                                 budget: <?= $projet_info['budget'] ?? 0 ?>
                             }
                         }).bindPopup(`<?= $popup ?>`);

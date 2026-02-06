@@ -1,5 +1,5 @@
 <?php if (isset($sections_dash) && is_array($sections_dash) && count($sections_dash) > 0) { ?>
-    <div class="row mx-n6 mb-3">
+    <div class="row g-4 mx-n6 mt-n5">
         <?php foreach ($sections_dash as $section): ?>
             <?php
             $value = 'N/A';

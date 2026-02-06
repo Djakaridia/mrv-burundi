@@ -71,22 +71,6 @@ foreach (glob("$modalsDir/*.php") as $modalFile) {
 <!--    Search Filter Data-->
 <!-- ===============================================-->
 <script>
-  function updateFilters() {
-    const secteurId = document.getElementById('secteurFilter').value;
-    const actionId = document.getElementById('actionFilter').value;
-    const statusId = document.getElementById('statusFilter').value;
-    const params = new URLSearchParams();
-
-    if (secteurId) params.set('secteur', secteurId);
-    if (actionId) params.set('action', actionId);
-    if (statusId) params.set('status', statusId);
-
-    const queryString = params.toString();
-    const newUrl = queryString ? '?' + queryString : '?';
-    window.location.href = newUrl;
-  }
-</script>
-<script>
   searchFilterData('searchInput', '.navbar-item');
   searchFilterData('searchProjet', '.projet-item');
   searchFilterData('searchDossiers', '.dossier-item');

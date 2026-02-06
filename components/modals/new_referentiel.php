@@ -46,9 +46,9 @@
               <div class="form-floating">
                 <select class="form-select" name="categorie" id="referentielCategorie" required>
                   <option value="" selected disabled>Sélectionner une catégorie</option>
-                  <option value="effet">Effet</option>
-                  <option value="impact">Impact</option>
-                  <option value="produit">Produit</option>
+                  <?php foreach (listTypeCategorie() as $key => $value) : ?>
+                    <option value="<?= $key ?>"><?= $value ?></option>
+                  <?php endforeach; ?>
                 </select>
                 <label for="referentielCategorie">Catégorie*</label>
               </div>
@@ -117,7 +117,7 @@
 
             <div class="col-md-6">
               <div class="form-floating">
-                <select class="form-select" name="domaine" id="referentielDomaine" required>
+                <select class="form-select" name="secteur_id" id="referentielSecteur" required>
                   <option value="" selected disabled>Sélectionner un secteur</option>
                   <?php if (!empty($secteurs)) : ?>
                     <?php foreach ($secteurs as $secteur): ?>
@@ -125,7 +125,7 @@
                     <?php endforeach; ?>
                   <?php endif; ?>
                 </select>
-                <label for="referentielDomaine">Secteur*</label>
+                <label for="referentielSecteur">Secteur*</label>
               </div>
             </div>
             <div class="col-md-6">
@@ -261,7 +261,7 @@
           form.unite.value = result.data.unite;
           form.echelle.value = result.data.echelle;
           form.modele.value = result.data.modele;
-          form.domaine.value = result.data.domaine;
+          form.secteur_id.value = result.data.secteur_id;
           form.action.value = result.data.action;
           form.responsable.value = result.data.responsable;
           form.action_type.value = result.data.action_type;
@@ -314,7 +314,7 @@
       }
     });
 
-    $('#referentielDomaine').on('change', function() {
+    $('#referentielSecteur').on('change', function() {
       var selectedSectorId = $(this).val();
       var $subSectorSelect = $('#referentielAction');
       $subSectorSelect.val('');

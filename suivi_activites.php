@@ -86,7 +86,7 @@
 
                     <div class="col-lg-4 mb-2 mb-lg-0 text-lg-end">
                         <?php if ($sel_id && $sel_id != '') { ?>
-                            <a href="project_view.php?id=<?php echo $sel_id; ?>&tab=task" class="btn btn-phoenix-info rounded-pill btn-sm">
+                            <a href="project_view.php?id=<?php echo $sel_id; ?>&tab=task" class="btn btn-subtle-info btn-sm">
                                 <span class="fa-solid fa-eye fs-9 me-2"></span>Voir les activités
                             </a>
                         <?php } ?>

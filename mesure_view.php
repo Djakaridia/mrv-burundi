@@ -297,7 +297,7 @@
                                                     <th scope="col" class="px-2">Valeur</th>
                                                     <th scope="col" class="px-2">Scénario</th>
                                                     <th scope="col" class="px-2">Date suivie</th>
-                                                    <th scope="col" class="px-2">Observations</th>
+                                                    <th scope="col" class="px-2">Notes</th>
                                                 </tr>
                                             </thead>
                                             <tbody>

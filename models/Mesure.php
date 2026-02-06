@@ -96,6 +96,17 @@ class Mesure
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function readByIndicateur()
+    {
+        $query = "SELECT * FROM " . $this->table . " WHERE referentiel_id=:referentiel_id ORDER BY id DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':referentiel_id', $this->referentiel_id);
+        $stmt->execute();
+        $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $row;
+    }
+
+
     public function update()
     {
         $query = "UPDATE " . $this->table . " SET 

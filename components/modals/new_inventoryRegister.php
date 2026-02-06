@@ -21,8 +21,8 @@
                                 <label class="form-label">Inventaire*</label>
                                 <select class="form-select" name="inventaire_id" id="register_inventaires" required>
                                     <option value="" disabled>Sélectionner un inventaire</option>
-                                    <?php if ($inventaires ?? []) : ?>
-                                        <?php foreach ($inventaires as $inventaire) : ?>
+                                    <?php if ($inventories ?? []) : ?>
+                                        <?php foreach ($inventories as $inventaire) : ?>
                                             <option value="<?= $inventaire['id'] ?>"><?= $inventaire['name'] ?></option>
                                         <?php endforeach; ?>
                                     <?php endif; ?>

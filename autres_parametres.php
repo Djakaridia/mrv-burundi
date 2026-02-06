@@ -203,7 +203,7 @@
                                     <div class="card-body px-3">
                                         <?php if (count($section_dash) > 0) { ?>
                                             <?php foreach ($section_dash as $section) { ?>
-                                                <div class="row align-items-center p-2 hover-actions-trigger btn-reveal-trigger shadow rounded-1 border m-0">
+                                                <div class="row align-items-center p-2 hover-actions-trigger btn-reveal-trigger shadow rounded-1 border m-0 mb-3">
                                                     <div class="col-3 border-end me-2 justify-content-start d-flex align-items-center gap-2">
                                                         <i class="<?= !empty($section['icone']) ? $section['icone'] . ' text-' . $section['couleur'] : 'fas fa-question-circle' ?> fs-9 text-red"></i>
                                                         <span class="fs-9"><?= $section['intitule'] ?></span>
