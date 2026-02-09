@@ -70,18 +70,27 @@ class Mesure
 
     public function readAll()
     {
-        $query = "SELECT p.*, s.sigle as structure_sigle
-          FROM " . $this->table . " p 
-          LEFT JOIN t_structures s ON p.structure_id = s.id
-          WHERE p.state='actif'
-          ORDER BY p.id ASC";
+        $query = "SELECT 
+            mes.*,
+            str.sigle AS structure_sigle,
+            sec.name AS secteur_name,
+            san.annee,
+            COALESCE(SUM(CAST(san.valeur AS DECIMAL(12,2))), 0) AS emission_evitee
+        FROM ". $this->table ." mes
+        LEFT JOIN t_structures str 
+            ON mes.structure_id = str.id
+        LEFT JOIN t_secteurs sec
+            ON mes.secteur_id = sec.id
+        LEFT JOIN t_suivi_annuelle san 
+            ON san.mesure_id = mes.id
+        WHERE mes.state = 'actif'
+        GROUP BY mes.id, san.annee
+        ORDER BY mes.id, san.annee;";
 
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
-        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $data;
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
 
     public function readById()
     {
@@ -163,30 +172,4 @@ class Mesure
         }
         return false;
     }
-
-    // public function createOrUpdateFromSync($data, $secteur_id, $typeAction)
-    // {
-    //     $id_ref = $data['id'] ?? null;
-    //     if (!$id_ref)
-    //         return;
-
-    //     $check = $this->conn->prepare("SELECT id FROM projet WHERE id_ref = :id_ref AND secteur_id = :secteur_id");
-    //     $check->execute([':id_ref' => $id_ref, ':secteur_id' => $secteur_id]);
-
-    //     if ($check->rowCount() > 0) {
-    //         $sql = "UPDATE projet SET intitule=:intitule, cout=:cout, updated_at=NOW() WHERE id_ref=:id_ref AND secteur_id=:secteur_id";
-    //     } else {
-    //         $sql = "INSERT INTO projet (id_ref, intitule, cout, secteur_id, type_action, created_at)
-    //             valeurS (:id_ref, :intitule, :cout, :secteur_id, :type_action, NOW())";
-    //     }
-
-    //     $stmt = $this->conn->prepare($sql);
-    //     $stmt->execute([
-    //         ':id_ref' => $id_ref,
-    //         ':intitule' => $data['intitule'] ?? '',
-    //         ':cout' => $data['cout'] ?? 0,
-    //         ':secteur_id' => $secteur_id,
-    //         ':type_action' => $typeAction
-    //     ]);
-    // }
 }

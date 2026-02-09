@@ -55,7 +55,7 @@ switch ($requestMethod) {
                 echo json_encode(array('status' => 'success', 'message' => 'Aucune projection trouvée.', 'data' => []));
             }
         } else {
-            $result = $projection->readAll();
+            $result = $projection->read();
             if ($result) {
                 echo json_encode(array('status' => 'success', 'message' => 'Données des projections', 'data' => $result));
             } else {

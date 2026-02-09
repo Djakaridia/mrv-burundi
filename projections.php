@@ -17,7 +17,7 @@
     $db = $database->getConnection();
 
     $projection = new Projection($db);
-    $projections_data = $projection->readAll();
+    $projections_data = $projection->read();
 
     $referentiel = new Referentiel($db);
     $referentiels = $referentiel->read();
