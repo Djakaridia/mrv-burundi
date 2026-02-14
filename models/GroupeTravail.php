@@ -7,6 +7,7 @@ class GroupeTravail
     public $id;
     public $code;
     public $name;
+    public $secteur_id;
     public $monitor;
     public $description;
     public $created_at;
@@ -19,10 +20,11 @@ class GroupeTravail
 
     public function create()
     {
-        $query = "INSERT INTO " . $this->table . " (code, name, monitor, description) VALUES (:code, :name, :monitor, :description)";
+        $query = "INSERT INTO " . $this->table . " (code, name, secteur_id, monitor, description) VALUES (:code, :name, :secteur_id, :monitor, :description)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':code', $this->code);
         $stmt->bindParam(':name', $this->name);
+        $stmt->bindParam(':secteur_id', $this->secteur_id);
         $stmt->bindParam(':monitor', $this->monitor);
         $stmt->bindParam(':description', $this->description);
 
@@ -52,10 +54,11 @@ class GroupeTravail
 
     public function update()
     {
-        $query = "UPDATE " . $this->table . " SET code=:code, name=:name, monitor=:monitor, description=:description WHERE id=:id";
+        $query = "UPDATE " . $this->table . " SET code=:code, name=:name, secteur_id=:secteur_id, monitor=:monitor, description=:description WHERE id=:id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':code', $this->code);
         $stmt->bindParam(':name', $this->name);
+        $stmt->bindParam(':secteur_id', $this->secteur_id);
         $stmt->bindParam(':monitor', $this->monitor);
         $stmt->bindParam(':description', $this->description);
         $stmt->bindParam(':id', $this->id);

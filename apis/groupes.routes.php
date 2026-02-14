@@ -42,6 +42,7 @@ switch ($requestMethod) {
             // Create
             $groupeTravail->code = sanitize_input($_POST['code']);
             $groupeTravail->name = sanitize_input($_POST['name']);
+            $groupeTravail->secteur_id = sanitize_input($_POST['secteur_id']);
             $groupeTravail->monitor = sanitize_input($_POST['monitor']);
             $groupeTravail->description = sanitize_input($_POST['description']);
 
@@ -60,6 +61,7 @@ switch ($requestMethod) {
             $groupeTravail->id = $id;
             $groupeTravail->code = sanitize_input($_POST['code']);
             $groupeTravail->name = sanitize_input($_POST['name']);
+            $groupeTravail->secteur_id = sanitize_input($_POST['secteur_id']);
             $groupeTravail->monitor = sanitize_input($_POST['monitor']);
             $groupeTravail->description = sanitize_input($_POST['description']);
 

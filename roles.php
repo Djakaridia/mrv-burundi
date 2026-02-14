@@ -71,16 +71,15 @@
                       </td>
                       <td class="align-middle px-2">
                         <?php
-                        if ($role['niveau'] == 1) echo 'Super Admin';
-                        elseif ($role['niveau'] == 2) echo 'Admin';
-                        elseif ($role['niveau'] == 3) echo 'Editeur';
-                        elseif ($role['niveau'] == 4) echo 'Visiteur';
+                        if ($role['niveau'] == 1) echo 'Administateur';
+                        elseif ($role['niveau'] == 2) echo 'Editeur';
+                        elseif ($role['niveau'] == 3) echo 'Visiteur';
                         else echo 'Inconnu';
                         ?>
                       </td>
                       <?php if (checkPermis($db, 'update', 1)) : ?>
                         <td class="align-middle px-2">
-                          <?php if ($role['niveau'] < 4) : ?>
+                          <?php if ($role['niveau'] < 3) : ?>
                             <button title="Modifier" type="button" class="btn btn-subtle-primary rounded-pill btn-sm fw-bold fs-9 px-2 py-1" data-bs-toggle="modal"
                               data-bs-target="#newPermisModal" data-id="<?php echo $role['id']; ?>" aria-haspopup="true" aria-expanded="false">Modifier
                             </button>

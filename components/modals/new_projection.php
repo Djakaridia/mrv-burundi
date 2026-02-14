@@ -21,10 +21,10 @@
                         <input type="hidden" id="projection_id" name="id">
 
                         <div class="row">
-                             <!-- Secteur -->
+                            <!-- Secteur -->
                             <div class="col-md-6 mb-1">
-                                <label for="secteur_id" class="form-label">Secteur <span class="text-danger">*</span></label>
-                                <select class="form-select" id="secteur_id" name="secteur_id" required>
+                                <label for="projecttionSecteur" class="form-label">Secteur <span class="text-danger">*</span></label>
+                                <select class="form-select" id="projecttionSecteur" name="secteur_id" required>
                                     <option value="" selected disabled>Sélectionner un secteur</option>
                                     <?php foreach ($secteurs_projection ?? [] as $secteur): ?>
                                         <option value="<?= $secteur['id'] ?>"><?= htmlspecialchars($secteur['nom'] ?? $secteur['name'] ?? '') ?></option>
@@ -33,8 +33,8 @@
                             </div>
                             <!-- Scénario -->
                             <div class="col-md-6 mb-1">
-                                <label for="scenario" class="form-label">Scénario <span class="text-danger">*</span></label>
-                                <select class="form-select" id="scenario" name="scenario" required>
+                                <label for="projectionScenario" class="form-label">Scénario <span class="text-danger">*</span></label>
+                                <select class="form-select" id="projectionScenario" name="scenario" required>
                                     <option value="" selected disabled>Sélectionner un scénario</option>
                                     <?php foreach (listTypeScenario() as $key => $scenario): ?>
                                         <option value="<?= $key ?>"><?= $scenario ?></option>
@@ -44,32 +44,34 @@
 
                             <!-- Indicateur -->
                             <div class="col-md-12 mb-1">
-                                <label for="referentiel_id" class="form-label">Indicateur Référentiel <span class="text-danger">*</span></label>
-                                <select class="form-select" id="referentiel_id" name="referentiel_id" required>
+                                <label for="projectionReferentiel" class="form-label">Indicateur Référentiel <span class="text-danger">*</span></label>
+                                <select class="form-select" id="projectionReferentiel" name="referentiel_id" required>
                                     <option value="" selected disabled>Sélectionner un indicateur</option>
-                                    <?php foreach ($referentiels_projection ?? [] as $indicateur): ?>
-                                        <option value="<?= $indicateur['id'] ?>"><?= htmlspecialchars($indicateur['intitule'] ?? $indicateur['name'] ?? '') ?></option>
+                                    <?php foreach ($referentiels_projection ?? [] as $ref): ?>
+                                        <?php if ($ref['categorie'] == 'impact' || $ref['categorie'] == 'effet') : ?>
+                                            <option value="<?= $ref['id'] ?>"><?= htmlspecialchars($ref['intitule'] ?? $ref['name'] ?? '') ?></option>
+                                        <?php endif; ?>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
 
                             <!-- Année -->
                             <div class="col-md-4 mb-1">
-                                <label for="annee" class="form-label">Année <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" id="annee" name="annee"
+                                <label for="projectionAnnee" class="form-label">Année <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="projectionAnnee" name="annee"
                                     min="2000" max="2100" step="1"
                                     value="<?= date('Y') ?>" required>
                             </div>
                             <!-- Valeur -->
                             <div class="col-md-4 mb-1">
-                                <label for="valeur" class="form-label">Valeur <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="valeur" name="valeur"
+                                <label for="projectionValeur" class="form-label">Valeur <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="projectionValeur" name="valeur"
                                     placeholder="Ex: 1234.56" required>
                             </div>
                             <!-- Unité -->
                             <div class="col-md-4 mb-1">
-                                <label for="unite" class="form-label">Unité</label>
-                                <select class="form-select" id="unite" name="unite">
+                                <label for="projectionUnite" class="form-label">Unité</label>
+                                <select class="form-select" id="projectionUnite" name="unite">
                                     <option value="">Sélectionner une unité</option>
                                     <?php foreach ($unites as $unite): ?>
                                         <option value="<?= $unite['name'] ?>"><?= $unite['description'] ?></option>
@@ -79,13 +81,13 @@
 
                             <!-- Source -->
                             <div class="col-12 mb-1">
-                                <label for="source" class="form-label">Source</label>
-                                <input type="text" class="form-control" id="source" name="source" placeholder="Ex: Rapport XYZ, Étude ABC...">
+                                <label for="projectionSource" class="form-label">Source</label>
+                                <input type="text" class="form-control" id="projectionSource" name="source" placeholder="Ex: Rapport XYZ, Étude ABC...">
                             </div>
                             <!-- Description -->
                             <div class="col-12 mb-1">
-                                <label for="description" class="form-label">Description</label>
-                                <textarea class="form-control" id="description" name="description" rows="3" placeholder="Détails supplémentaires sur la projection..."></textarea>
+                                <label for="projectionDescription" class="form-label">Description</label>
+                                <textarea class="form-control" id="projectionDescription" name="description" rows="3" placeholder="Détails supplémentaires sur la projection..."></textarea>
                             </div>
                         </div>
 
@@ -110,6 +112,8 @@
     let currentAnnee = null;
 
     $(document).ready(function() {
+        initSelect2("#addProjectionModal", "projectionReferentiel");
+
         $('#addProjectionModal').on('shown.bs.modal', async function(event) {
             const dataId = $(event.relatedTarget).data('id');
             const dataSecteur = $(event.relatedTarget).data('secteur');
@@ -144,17 +148,16 @@
                     const result = await response.json();
                     if (result.status === 'success') {
                         const data = result.data;
-                        $('#projection_id').val(data.id);
-                        $('#referentiel_id').val(data.referentiel_id);
-                        $('#secteur_id').val(data.secteur_id);
-                        $('#scenario').val(data.scenario);
-                        $('#annee').val(data.annee);
-                        $('#valeur').val(data.valeur);
-                        $('#unite').val(data.unite || '');
-                        $('#source').val(data.source || '');
-                        $('#description').val(data.description || '');
+                        form.projection_id.value = data.id;
+                        form.secteur_id.value = data.secteur_id;
+                        form.scenario.value = data.scenario;
+                        form.annee.value = data.annee;
+                        form.valeur.value = data.valeur;
+                        form.unite.value = data.unite || '';
+                        form.source.value = data.source || '';
+                        form.description.value = data.description || '';
 
-                        // Mettre à jour les variables globales
+                        $('#projectionReferentiel').val(result.data.referentiel_id).trigger('change');
                         currentSecteurId = data.secteur_id;
                         currentScenario = data.scenario;
                         currentAnnee = data.annee;
@@ -173,8 +176,6 @@
                 $('#Projection_modtitle').text('Ajouter une projection');
                 $('#Projection_modbtn').text('Ajouter');
                 projectionId = null;
-
-                // Réinitialiser les variables globales
                 currentSecteurId = null;
                 currentScenario = null;
                 currentAnnee = null;
@@ -188,6 +189,7 @@
 
         $('#addProjectionModal').on('hide.bs.modal', function() {
             $('#FormProjection')[0].reset();
+            $('#projectionReferentiel').val("").trigger('change');
             setTimeout(() => {
                 $('#ProjectionLoadingScreen').show();
                 $('#projectionContentContainer').hide();

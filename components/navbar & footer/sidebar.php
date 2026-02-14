@@ -432,14 +432,14 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                                         </div>
                                     </a>
                                 </li>
-                                <li class="nav-item overflow-hidden">
+                                <!-- <li class="nav-item overflow-hidden">
                                     <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'rapport_sectoriel' ? 'active' : '' ?>" href="rapport_sectoriel.php">
                                         <div class="d-flex align-items-center">
                                             <span class="fas fa-chevron-right fs-11"></span>
                                             <span class="nav-link-text ms-lg-0 ms-1">Synthèse sectorielle</span>
                                         </div>
                                     </a>
-                                </li>
+                                </li> -->
                             </ul>
                         </div>
                     </div>

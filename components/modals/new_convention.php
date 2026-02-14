@@ -51,7 +51,9 @@
                     <option value="">Sélectionner un bailleur</option>
                     <?php if ($structures ?? []) : ?>
                       <?php foreach ($structures as $structure): ?>
-                        <option value="<?php echo $structure['id']; ?>"><?php echo $structure['sigle']; ?></option>
+                        <option value="<?= $structure['id'] ?>">
+                          <?= $structure['description'] ? $structure['description'] . ' (' . $structure['sigle'] . ')' : $structure['sigle']; ?>
+                        </option>
                       <?php endforeach; ?>
                     <?php endif; ?>
                   </select>
@@ -68,7 +70,7 @@
             </div>
 
             <div class="modal-footer d-flex justify-content-between border-0 pt-3 px-0 pb-0">
-              <input type="hidden" name="projet_id" id="projet_id_conven" value="<?php echo $project_curr['id']??''; ?>">
+              <input type="hidden" name="projet_id" id="projet_id_conven" value="<?php echo $project_curr['id'] ?? ''; ?>">
               <button type="button" class="btn btn-secondary btn-sm px-3 my-0" data-bs-dismiss="modal"
                 aria-label="Close">Annuler</button>
               <button type="submit" class="btn btn-primary btn-sm px-3 my-0" id="conven_modbtn">Ajouter</button>
@@ -83,8 +85,10 @@
 
 <script>
   let formConvenID = null;
-  $(document).ready(function () {
-    $('#addConvenModal').on('shown.bs.modal', async function (event) {
+  $(document).ready(function() {
+    initSelect2("#addConvenModal", "structure_id_conven");
+
+    $('#addConvenModal').on('shown.bs.modal', async function(event) {
       const dataId = $(event.relatedTarget).data('id');
       const form = document.getElementById('FormConven');
       // Show loading screen and hide content
@@ -95,7 +99,7 @@
         $('#conven_modtitle').text('Modifier la convention');
         $('#conven_modbtn').text('Modifier');
         $('#conventionLoadingText').text("Chargement des données conventions...");
-        
+
         try {
           const response = await fetch(`./apis/conventions.routes.php?id=${dataId}`, {
             headers: {
@@ -107,14 +111,15 @@
           const result = await response.json();
           form.code.value = result.data.code;
           form.name.value = result.data.name;
-          form.structure_id.value = result.data.structure_id;
+          // form.structure_id.value = result.data.structure_id;
           form.projet_id.value = result.data.projet_id;
           form.montant.value = result.data.montant;
           form.date_accord.value = result.data.date_accord;
+
+          $('#structure_id_conven').val(result.data.structure_id).trigger('change');
         } catch (error) {
           errorAction('Impossible de charger les données.');
-        }
-        finally {
+        } finally {
           // Hide loading screen and show content
           $('#conventionLoadingScreen').hide();
           $('#conventionContentContainer').show();
@@ -124,7 +129,7 @@
         $('#conven_modtitle').text('Ajouter une convention');
         $('#conven_modbtn').text('Ajouter');
         $('#conventionLoadingText').text("Préparation du formulaire...");
-        
+
         setTimeout(() => {
           $('#conventionLoadingScreen').hide();
           $('#conventionContentContainer').show();
@@ -132,22 +137,23 @@
       }
     });
 
-    $('#addConvenModal').on('hide.bs.modal', function () {
+    $('#addConvenModal').on('hide.bs.modal', function() {
       $('#FormConven')[0].reset();
-      setTimeout(()=> {
+      $('#structure_id_conven').val("").trigger('change');
+      setTimeout(() => {
         $('#conventionLoadingScreen').show();
         $('#conventionContentContainer').hide();
       }, 200);
     });
 
-    $('#FormConven').on('submit', async function (event) {
+    $('#FormConven').on('submit', async function(event) {
       event.preventDefault();
       const formData = new FormData(this);
       const url = formConvenID ? `./apis/conventions.routes.php?id=${formConvenID}` : './apis/conventions.routes.php';
       const submitBtn = $('#conven_modbtn');
       submitBtn.prop('disabled', true);
       submitBtn.text('Envoi en cours...');
-      
+
       try {
         const response = await fetch(url, {
           headers: {

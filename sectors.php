@@ -24,6 +24,9 @@
   });
   $actions_prio = new ActionPrioritaire($db);
   $data_actions_prio = $actions_prio->read();
+
+  $structure = new Structure($db);
+  $structures = $structure->read();
   ?>
 </head>
 
@@ -66,7 +69,7 @@
                     <tr class="text-center">
                       <th class="sort align-middle" scope="col" rowspan="2"> Code</th>
                       <th class="sort align-middle" scope="col" rowspan="2"> Intitulé</th>
-                      <th class="sort align-middle" scope="col" rowspan="2"> Actions Prioritaires</th>
+                      <!-- <th class="sort align-middle" scope="col" rowspan="2"> Actions Prioritaires</th> -->
                       <th class="sort align-middle" scope="col" colspan="2"> Structure responsable</th>
                       <th class="sort align-middle" scope="col" rowspan="2" style="min-width:100px;">Actions</th>
                     </tr>
@@ -84,13 +87,22 @@
                     ?>
                       <tr class="bg-light fw-semibold">
                         <td class="align-middle px-2"><?= $secteur['code'] ?></td>
-                        <td class="align-middle px-2"><?= $secteur['name'] ?></td>
-                        <td class="align-middle px-2 text-center">
+                        <td class="align-middle px-2">
+                          <strong><?= $secteur['name'] ?></strong>
+                          <span class="badge bg-primary px-1 text-nowrap"><?= count($sous_secteur_items) ?></span>
+                        </td>
+                        <!-- <td class="align-middle px-2 text-center">
                           <span class="text-primary p-0 m-0">
                             Sous-secteurs <span class="badge bg-primary px-1 text-nowrap"><?= count($sous_secteur_items) ?></span>
                           </span>
+                        </td> -->
+                        <td class="align-middle px-2 text-center" colspan="2">
+                          <?php foreach ($structures as $structure): ?>
+                            <?php if ($structure['id'] == $secteur['structure_id']): ?>
+                                <?= $structure['description']?  $structure['description'].'('.$structure['sigle'].')' : $structure['sigle'] ?>
+                            <?php endif; ?>
+                          <?php endforeach; ?>
                         </td>
-                        <td class="align-middle px-2 text-center" colspan="2"><?= $secteur['organisme'] ?></td>
                         <td class="align-middle px-2">
                           <div class="position-relative">
                             <div class="d-flex gap-1">
@@ -127,11 +139,11 @@
                         <tr>
                           <td class="align-middle px-2"><?= $sous_secteur_item['code'] ?></td>
                           <td class="align-middle px-2"><?= $sous_secteur_item['name'] ?></td>
-                          <td class="align-middle px-2">
+                          <!-- <td class="align-middle px-2">
                             <button title="Voir" type="button" class="btn btn-sm btn-link text-warning text-nowrap p-0 m-0" onclick="window.location.href='sectors.php?id=<?= $sous_secteur_item['id'] ?>'">
                               Actions prioritaires <span class="badge bg-warning px-1"><?= count($sous_secteur_actions) ?></span>
                             </button>
-                          </td>
+                          </td> -->
                           <td colspan="2" class="p-0">
                             <table class="table fs-9 m-0">
                               <?php

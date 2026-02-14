@@ -53,7 +53,16 @@
               <div id="sec_organism" class="col-12 d-none mt-1">
                 <div class="mb-1">
                   <label class="form-label">Structure responsable</label>
-                  <input class="form-control" type="text" name="organisme" id="secteur_organism" placeholder="Entrer la structure responsable" />
+                  <select class="form-select" name="structure_id" id="secteur_organism" required>
+                    <option value="">Sélectionner une structure</option>
+                    <?php if ($structures ?? []) : ?>
+                      <?php foreach ($structures as $structure) : ?>
+                        <option value="<?php echo $structure['id'] ?>">
+                          <?php echo $structure['description'] ?  $structure['description'] . "(" . $structure['sigle'] . ")" : $structure['sigle'] ?>
+                        </option>
+                      <?php endforeach; ?>
+                    <?php endif; ?>
+                  </select>
                 </div>
               </div>
 
@@ -113,6 +122,8 @@
   let formSecteurID = null;
 
   $(document).ready(function() {
+    initSelect2("#addSecteurModal", "secteur_organism");
+
     function combineSubData() {
       const natures = [];
       const sources = [];
@@ -195,28 +206,29 @@
             method: 'GET',
           });
 
-          const data = await response.json();
-          const secteurData = data.data;
+          const result = await response.json();
+          if (result.data) {
+            form.code.value = result.data.code;
+            form.name.value = result.data.name;
+            form.description.value = result.data.description;
+            form.parent.value = result.data.parent;
 
-          form.code.value = secteurData.code;
-          form.name.value = secteurData.name;
-          form.organisme.value = secteurData.organisme;
-          form.description.value = secteurData.description;
-          form.parent.value = secteurData.parent;
+            $('#secteur_organism').val(result.data.structure_id);
+            $('#secteur_organism').trigger('change');
 
-          if (secteurData.nature && secteurData.nature !== 'N/A') {
-            const natures = secteurData.nature.split(' | ');
-            const sources = secteurData.source && secteurData.source !== 'N/A' ? secteurData.source.split(' | ') : [];
-            const maxLength = Math.max(natures.length, sources.length);
+            if (result.data.nature && result.data.nature !== 'N/A') {
+              const natures = result.data.nature.split(' | ');
+              const sources = result.data.source && result.data.source !== 'N/A' ? result.data.source.split(' | ') : [];
+              const maxLength = Math.max(natures.length, sources.length);
 
-            for (let i = 0; i < maxLength; i++) {
-              addSubDataItem(
-                natures[i] || '',
-                sources[i] || ''
-              );
+              for (let i = 0; i < maxLength; i++) {
+                addSubDataItem(
+                  natures[i] || '',
+                  sources[i] || ''
+                );
+              }
             }
           }
-
         } catch (error) {
           errorAction('Impossible de charger les données.');
         } finally {

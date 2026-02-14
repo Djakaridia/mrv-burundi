@@ -100,7 +100,7 @@
                                                     <label for="projetName">Intitulé*</label>
                                                 </div>
                                             </div>
-                                            
+
                                             <div class="col-md-6 mb-2">
                                                 <div class="form-floating">
                                                     <select class="form-select" name="secteur_id" id="projetSecteur" required>
@@ -114,17 +114,19 @@
                                                     <label for="projetSecteur">Secteur concerné*</label>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6 mb-2">
-                                                <div class="form-floating">
+                                            <div class="col-md-6 mb-2 mt-0">
+                                                <div class="form-group">
+                                                    <label for="projetManager" class="form-label">Entités de mise en œuvre *</label>
                                                     <select class="form-select" name="structure_id" id="projetStructure" required>
                                                         <option value="" selected disabled>Sélectionner une structure</option>
                                                         <?php if ($structures ?? []) : ?>
                                                             <?php foreach ($structures as $structure) : ?>
-                                                                <option value="<?= $structure['id'] ?>"><?= $structure['sigle'] ?></option>
+                                                                <option value="<?= $structure['id'] ?>">
+                                                                    <?= $structure['description'] ? $structure['description'] . ' (' . $structure['sigle'] . ')' : $structure['sigle']; ?>
+                                                                </option>
                                                             <?php endforeach; ?>
                                                         <?php endif; ?>
                                                     </select>
-                                                    <label for="projetManager">Entités de mise en œuvre *</label>
                                                 </div>
                                             </div>
 
@@ -295,6 +297,7 @@
 <script>
     let formProjetID = null;
     $(document).ready(function() {
+        initSelect2("#addProjetModal", "projetStructure");
         initSelect2("#addProjetModal", "MultipleProjetGaz");
         initSelect2("#addProjetModal", "MultipleProjetGroupe");
         $('#addProjetModal').on('shown.bs.modal', async function(event) {
@@ -325,7 +328,7 @@
                     form.name.value = result.data.name || '';
                     form.code.value = result.data.code || '';
                     form.budget.value = result.data.budget || 0;
-                    form.structure_id.value = result.data.structure_id || '';
+                    // form.structure_id.value = result.data.structure_id || '';
                     form.secteur_id.value = result.data.secteur_id || '';
                     form.programme_id.value = result.data.programme_id || '';
 
@@ -343,10 +346,9 @@
                         $('#projetLoadImageIcon').addClass('d-none');
                     }
 
-                    $('#MultipleProjetGaz').val(result.data.gaz?.split(','));
-                    $('#MultipleProjetGaz').trigger('change');
-                    $('#MultipleProjetGroupe').val(result.data.groupes?.split(','));
-                    $('#MultipleProjetGroupe').trigger('change');
+                    $('#projetStructure').val(result.data.structure_id).trigger('change');
+                    $('#MultipleProjetGaz').val(result.data.gaz?.split(',')).trigger('change');
+                    $('#MultipleProjetGroupe').val(result.data.groupes?.split(',')).trigger('change');
                 } catch (error) {
                     errorAction('Erreur lors du chargement des données: ' + error.message);
                 } finally {
@@ -454,10 +456,9 @@
         $('#wizProjetForm1')[0].reset();
         $('#wizProjetForm2')[0].reset();
         $('#wizProjetForm3')[0].reset();
-        $('#MultipleProjetGaz').val([]);
-        $('#MultipleProjetGaz').trigger('change');
-        $('#MultipleProjetGroupe').val([]);
-        $('#MultipleProjetGroupe').trigger('change');
+        $('#projetStructure').val([]).trigger('change');
+        $('#MultipleProjetGaz').val([]).trigger('change');
+        $('#MultipleProjetGroupe').val([]).trigger('change');
         tinymce.get('projetObjectif')?.setContent('');
         tinymce.get('projetDescription')?.setContent('');
     }

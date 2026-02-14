@@ -115,7 +115,7 @@
               </div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-4">
               <div class="form-floating">
                 <select class="form-select" name="secteur_id" id="referentielSecteur" required>
                   <option value="" selected disabled>Sélectionner un secteur</option>
@@ -128,7 +128,7 @@
                 <label for="referentielSecteur">Secteur*</label>
               </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
               <div class="form-floating">
                 <select class="form-select" name="action" id="referentielAction">
                   <option value="" selected disabled>Sélectionner un sous secteur</option>
@@ -144,7 +144,7 @@
               </div>
             </div>
 
-            <div class="col-md-6 mb-2">
+            <div class="col-md-4 mb-2">
               <div class="form-floating">
                 <select class="form-select" name="action_type" id="referentielActionType" required>
                   <option value="" selected disabled>Sélectionner une action</option>
@@ -155,17 +155,19 @@
                 <label for="projetAction">Action type *</label>
               </div>
             </div>
-            <div class="col-md-6">
-              <div class="form-floating">
+            <div class="col-md-12 mt-0">
+              <div class="form-group">
+                <label for="referentielResponsable" class="form-label">Entité responsable*</label>
                 <select class="form-select" name="responsable" id="referentielResponsable" required>
                   <option value="" selected disabled>Sélectionner un responsable</option>
                   <?php if ($structures ?? []) : ?>
                     <?php foreach ($structures as $structure): ?>
-                      <option value="<?= $structure['id'] ?>"><?= $structure['sigle'] ?></option>
+                      <option value="<?= $structure['id'] ?>">
+                        <?= $structure['description'] ? $structure['description'] . ' (' . $structure['sigle'] . ')' : $structure['sigle']; ?>
+                      </option>
                     <?php endforeach; ?>
                   <?php endif; ?>
                 </select>
-                <label for="referentielResponsable">Responsable*</label>
               </div>
             </div>
 
@@ -231,6 +233,8 @@
   var allSubSectors = [];
 
   $(document).ready(function() {
+    initSelect2("#addReferentielModal", "referentielResponsable");
+
     $('#addReferentielModal').on('shown.bs.modal', async function(event) {
       const dataId = $(event.relatedTarget).data('id');
       const form = document.getElementById('FormReferentiel');
@@ -263,7 +267,7 @@
           form.modele.value = result.data.modele;
           form.secteur_id.value = result.data.secteur_id;
           form.action.value = result.data.action;
-          form.responsable.value = result.data.responsable;
+          // form.responsable.value = result.data.responsable;
           form.action_type.value = result.data.action_type;
           form.fonction_agregation.value = result.data.fonction_agregation;
           form.seuil_min.value = result.data.seuil_min;
@@ -273,7 +277,7 @@
           form.norme.value = result.data.norme;
           form.in_dashboard.checked = result.data.in_dashboard == 1 ? true : false;
 
-          $('#MultipleRefConvention').trigger('change');
+          $('#referentielResponsable').val(result.data.responsable).trigger('change');
           $('#referentielAction').attr('disabled', false);
         } catch (error) {
           errorAction('Erreur lors du chargement des données.');
@@ -296,8 +300,7 @@
 
     $('#addReferentielModal').on('hide.bs.modal', function() {
       $('#FormReferentiel')[0].reset();
-      $('#MultipleRefConvention').val([]);
-      $('#MultipleRefConvention').trigger('change');
+      $('#referentielResponsable').val("").trigger('change');
       setTimeout(() => {
         $('#referentielLoadingScreen').show();
         $('#referentielContentContainer').hide();

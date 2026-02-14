@@ -7,7 +7,7 @@ class Secteur
     public $id;
     public $code;
     public $name;
-    public $organisme;
+    public $structure_id;
     public $nature;
     public $source;
     public $description;
@@ -21,11 +21,11 @@ class Secteur
 
     public function create()
     {
-        $query = "INSERT INTO " . $this->table . " (code, name, organisme, nature, source, description, parent, add_by) VALUES (:code, :name, :organisme, :nature, :source, :description, :parent, :add_by)";
+        $query = "INSERT INTO " . $this->table . " (code, name, structure_id, nature, source, description, parent, add_by) VALUES (:code, :name, :structure_id, :nature, :source, :description, :parent, :add_by)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':code', $this->code);
         $stmt->bindParam(':name', $this->name);
-        $stmt->bindParam(':organisme', $this->organisme);
+        $stmt->bindParam(':structure_id', $this->structure_id);
         $stmt->bindParam(':nature', $this->nature);
         $stmt->bindParam(':source', $this->source);
         $stmt->bindParam(':description', $this->description);
@@ -60,12 +60,12 @@ class Secteur
 
     public function update()
     {
-        $query = "UPDATE " . $this->table . " SET code=:code, name=:name, organisme=:organisme, nature=:nature, source=:source, description=:description, parent=:parent, add_by=:add_by WHERE id=:id";
+        $query = "UPDATE " . $this->table . " SET code=:code, name=:name, structure_id=:structure_id, nature=:nature, source=:source, description=:description, parent=:parent, add_by=:add_by WHERE id=:id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $this->id);
         $stmt->bindParam(':code', $this->code);
         $stmt->bindParam(':name', $this->name);
-        $stmt->bindParam(':organisme', $this->organisme);
+        $stmt->bindParam(':structure_id', $this->structure_id);
         $stmt->bindParam(':nature', $this->nature);
         $stmt->bindParam(':source', $this->source);
         $stmt->bindParam(':description', $this->description);

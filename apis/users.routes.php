@@ -73,7 +73,7 @@ switch ($requestMethod) {
 
             $user->nom = sanitize_input($_POST['nom']);
             $user->prenom = sanitize_input($_POST['prenom']);
-            $user->username = sanitize_input($_POST['username']);
+            // $user->username = sanitize_input($_POST['username']);
             // $user->email = sanitize_input($_POST['email']);
             $user->phone = sanitize_input($_POST['phone']);
             // $user->password = sanitize_input($_POST['password']);

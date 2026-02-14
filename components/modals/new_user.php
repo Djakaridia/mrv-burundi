@@ -19,7 +19,7 @@ $roles = $role->read();
           </div>
           <h4 class="mt-3 fw-bold text-primary" id="userLoadingText">Chargement des données </h4>
         </div>
-        
+
         <!-- Content Container (initially hidden) -->
         <div id="userContentContainer" style="display: none;">
           <form action="" method="POST" name="FormUser" id="FormUser">
@@ -36,19 +36,13 @@ $roles = $role->read();
                   <input class="form-control" type="text" name="prenom" placeholder="Entrer le prénom" required />
                 </div>
               </div>
+
               <div class="col-lg-6 mt-1">
                 <div class="mb-1">
                   <label class="form-label">Nom d'utilisateur*</label>
                   <input class="form-control" type="text" name="username" id="username_user" placeholder="Entrer le nom d'utilisateur" required />
                 </div>
               </div>
-              <div class="col-lg-6 mt-1">
-                <div class="mb-1">
-                  <label class="form-label">Adresse e-mail*</label>
-                  <input class="form-control" autocomplete="email" type="email" name="email" id="email_user" placeholder="Entrer l'adresse e-mail" required />
-                </div>
-              </div>
-
               <div class="col-lg-6 mt-1">
                 <div class="mb-1">
                   <label class="form-label">Mot de passe*</label>
@@ -61,16 +55,13 @@ $roles = $role->read();
                   </div>
                 </div>
               </div>
+
               <div class="col-lg-6 mt-1">
                 <div class="mb-1">
-                  <label class="form-label">Confirmer le mot de passe*</label>
-                  <div class="form-icon-container" data-password="data-password">
-                    <input class="form-control form-icon-input pe-6" autocomplete="new-password" id="confirm_password" type="password" name="confirm_password" placeholder="Confirmer le mot de passe" required />
-                    <span class="fas fa-key text-body fs-9 form-icon"></span>
-                  </div>
+                  <label class="form-label">Adresse e-mail*</label>
+                  <input class="form-control" autocomplete="email" type="email" name="email" id="email_user" placeholder="Entrer l'adresse e-mail" required />
                 </div>
               </div>
-
               <div class="col-lg-6 mt-1">
                 <div class="mb-1">
                   <label class="form-label">Téléphone (Whatsapp)*</label>
@@ -78,15 +69,18 @@ $roles = $role->read();
                   <span id="phoneError" class="text-danger"></span>
                 </div>
               </div>
-              <div class="col-lg-6 mt-1">
+
+              <div class="col-lg-12 mt-1">
                 <div class="mb-1">
-                  <label class="form-label">Rôle*</label>
-                  <select class="form-select" name="role_id" id="role_id" required>
-                    <option value="">Sélectionner le rôle</option>
-                    <?php if ($roles ?? []) : ?>
-                    <?php foreach ($roles as $role) : ?>
-                      <option value="<?php echo $role['id'] ?>"><?php echo $role['name'] ?></option>
-                    <?php endforeach; ?>
+                  <label class="form-label">Structure*</label>
+                  <select class="form-select" name="structure_id" id="structure_id" required>
+                    <option value="">Sélectionner une structure</option>
+                    <?php if ($structures ?? []) : ?>
+                      <?php foreach ($structures as $structure) : ?>
+                        <option value="<?php echo $structure['id'] ?>">
+                          <?php echo $structure['description'] ?  $structure['description'] . "(" . $structure['sigle'] . ")" : $structure['sigle'] ?>
+                        </option>
+                      <?php endforeach; ?>
                     <?php endif; ?>
                   </select>
                 </div>
@@ -94,13 +88,13 @@ $roles = $role->read();
 
               <div class="col-lg-6 mt-1">
                 <div class="mb-1">
-                  <label class="form-label">Structure*</label>
-                  <select class="form-select" name="structure_id" id="structure_id" required>
-                    <option value="">Sélectionner une structure</option>
-                    <?php if ($structures ?? []) : ?>
-                    <?php foreach ($structures as $structure) : ?>
-                      <option value="<?php echo $structure['id'] ?>"><?php echo $structure['sigle'] ?></option>
-                    <?php endforeach; ?>
+                  <label class="form-label">Rôle*</label>
+                  <select class="form-select" name="role_id" id="role_id" required>
+                    <option value="">Sélectionner le rôle</option>
+                    <?php if ($roles ?? []) : ?>
+                      <?php foreach ($roles as $role) : ?>
+                        <option value="<?php echo $role['id'] ?>"><?php echo $role['name'] ?></option>
+                      <?php endforeach; ?>
                     <?php endif; ?>
                   </select>
                 </div>
@@ -131,10 +125,11 @@ $roles = $role->read();
 <script>
   let formUserID = null;
   $(document).ready(function() {
+    initSelect2("#addUserModal", "structure_id");
     $('#addUserModal').on('shown.bs.modal', async function(event) {
       const dataId = $(event.relatedTarget).data('id');
       const form = document.getElementById('FormUser');
-      
+
       $('#userLoadingScreen').show();
       $('#userContentContainer').hide();
       form.reset();
@@ -153,7 +148,9 @@ $roles = $role->read();
 
         try {
           const response = await fetch(`./apis/users.routes.php?id=${dataId}`, {
-            headers: { 'Authorization': `Bearer ${token}` },
+            headers: {
+              'Authorization': `Bearer ${token}`
+            },
             method: 'GET',
           });
 
@@ -167,11 +164,14 @@ $roles = $role->read();
             form.role_id.value = result.data.role_id;
             form.structure_id.value = result.data.structure_id;
             form.fonction.value = result.data.fonction;
-            
+
+            $('#structure_id').val(result.data.structure_id);
+            $('#structure_id').trigger('change');
+
+            $('#username_user').removeAttr('required');
+            $('#username_user').closest('.mb-1').hide();
             $('#password').removeAttr('required');
-            $('#confirm_password').removeAttr('required');
             $('#password').closest('.mb-1').hide();
-            $('#confirm_password').closest('.mb-1').hide();
           } else {
             throw new Error('Données utilisateur invalides');
           }
@@ -187,20 +187,20 @@ $roles = $role->read();
         $('#FormUser-title').text('Ajouter un utilisateur');
         $('#FormUser-btn').text('Ajouter');
         $('#userLoadingText').text("Préparation du formulaire...");
-        
+
         $('#username_user').attr('readonly', false);
         $('#username_user').attr('required', true);
         $('#username_user').removeClass('bg-warning-subtle');
-        
+
         $('#email_user').attr('readonly', false);
         $('#email_user').attr('required', true);
         $('#email_user').removeClass('bg-warning-subtle');
 
+        $('#username_user').attr('required', true);
+        $('#username_user').closest('.mb-1').show();
         $('#password').attr('required', true);
-        $('#confirm_password').attr('required', true);
         $('#password').closest('.mb-1').show();
-        $('#confirm_password').closest('.mb-1').show();
-        
+
         setTimeout(() => {
           $('#userLoadingScreen').hide();
           $('#userContentContainer').show();
@@ -210,7 +210,9 @@ $roles = $role->read();
 
     $('#addUserModal').on('hide.bs.modal', function() {
       $('#FormUser')[0].reset();
-      setTimeout(()=> {
+      $('#structure_id').val('');
+      $('#structure_id').trigger('change');
+      setTimeout(() => {
         $('#userLoadingScreen').show();
         $('#userContentContainer').hide();
       }, 200);
@@ -222,15 +224,6 @@ $roles = $role->read();
       const formData = new FormData(form);
       const url = formUserID ? `./apis/users.routes.php?id=${formUserID}` : './apis/users.routes.php';
 
-      if (!formUserID) {
-        const password = form.password.value;
-        const confirmPassword = form.confirm_password.value;
-        if (password !== confirmPassword) {
-          errorAction('Les mots de passe ne correspondent pas.');
-          return;
-        }
-      }
-
       const submitBtn = $('#FormUser-btn');
       submitBtn.prop('disabled', true);
       submitBtn.text('Envoi en cours...');
@@ -238,7 +231,9 @@ $roles = $role->read();
       try {
         const response = await fetch(url, {
           method: 'POST',
-          headers: { 'Authorization': `Bearer ${token}` },
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
           body: formData,
         });
 

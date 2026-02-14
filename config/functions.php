@@ -68,7 +68,7 @@ function addRootRoles(PDO $db)
     }
 
     $role = new Role($db);
-    $role->name = 'Super Administrateur';
+    $role->name = 'Administrateur';
     $role->niveau = 1;
     $role->page_edit = 'admin';
     $role->page_delete = 'admin';

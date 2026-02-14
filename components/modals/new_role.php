@@ -33,10 +33,9 @@
                                     <label class="form-label">Niveau*</label>
                                     <select class="form-select" name="niveau" id="niveau" required>
                                         <option value="" disabled selected>Sélectionner le niveau</option>
-                                        <option value="1">Super Administateur</option>
-                                        <option value="2">Administateur</option>
-                                        <option value="3">Editeur</option>
-                                        <option value="4">Visiteur</option>
+                                        <option value="1">Administateur</option>
+                                        <option value="2">Editeur</option>
+                                        <option value="3">Visiteur</option>
                                     </select>
                                 </div>
                             </div>

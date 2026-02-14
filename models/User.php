@@ -95,11 +95,10 @@ class User {
     }
     
     public function update() {
-        $query = "UPDATE " . $this->table . " SET nom = :nom, prenom = :prenom, username = :username, role_id = :role_id, structure_id = :structure_id, phone = :phone, fonction = :fonction WHERE id = :id";
+        $query = "UPDATE " . $this->table . " SET nom = :nom, prenom = :prenom, role_id = :role_id, structure_id = :structure_id, phone = :phone, fonction = :fonction WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':nom', $this->nom);
         $stmt->bindParam(':prenom', $this->prenom);
-        $stmt->bindParam(':username', $this->username);
         $stmt->bindParam(':role_id', $this->role_id);
         $stmt->bindParam(':structure_id', $this->structure_id);
         $stmt->bindParam(':phone', $this->phone);

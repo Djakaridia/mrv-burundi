@@ -98,32 +98,6 @@
                                             </div>
                                             <div class="col-md-6 mb-2">
                                                 <div class="form-floating">
-                                                    <select class="form-select" name="structure_id" id="mesureStructure" required>
-                                                        <option value="" selected disabled>Sélectionner un acteur</option>
-                                                        <?php if ($structures ?? []) : ?>
-                                                            <?php foreach ($structures as $structure) : ?>
-                                                                <option value="<?= $structure['id'] ?>"><?= $structure['sigle'] ?></option>
-                                                            <?php endforeach; ?>
-                                                        <?php endif; ?>
-                                                    </select>
-                                                    <label for="mesureStructure">Entités de mise en œuvre*</label>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-12 mb-2">
-                                                <div class="form-floating">
-                                                    <select class="form-select" id="referentiel_id" name="referentiel_id" required>
-                                                        <option value="" selected disabled>Sélectionner un indicateur</option>
-                                                        <?php foreach ($referentiels_mesure ?? [] as $indicateur): ?>
-                                                            <option value="<?= $indicateur['id'] ?>"><?= htmlspecialchars($indicateur['intitule'] ?? $indicateur['name'] ?? '') ?></option>
-                                                        <?php endforeach; ?>
-                                                    </select>
-                                                    <label for="referentiel_id" class="form-label">Indicateur Référentiel*</label>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-4 mb-2">
-                                                <div class="form-floating">
                                                     <select class="form-select" name="action_type" id="mesureAction" required>
                                                         <option value="" selected disabled>Sélectionner un type</option>
                                                         <?php foreach (listTypeAction() as $key => $value) : ?>
@@ -133,7 +107,38 @@
                                                     <label for="mesureAction">Action type*</label>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4 mb-2">
+
+                                            <div class="col-md-6 mb-2 mt-0">
+                                                <div class="form-group">
+                                                    <label for="mesureStructure" class="form-label">Entités de mise en œuvre*</label>
+                                                    <select class="form-select" name="structure_id" id="mesureStructure" required>
+                                                        <option value="" selected disabled>Sélectionner un acteur</option>
+                                                        <?php if ($structures ?? []) : ?>
+                                                            <?php foreach ($structures as $structure) : ?>
+                                                                <option value="<?= $structure['id'] ?>">
+                                                                    <?= $structure['description'] ? $structure['description'] . ' (' . $structure['sigle'] . ')' : $structure['sigle']; ?>
+                                                                </option>
+                                                            <?php endforeach; ?>
+                                                        <?php endif; ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6 mb-2 mt-0">
+                                                <div class="form-group">
+                                                    <label for="mesureReferentiel" class="form-label">Indicateur Référentiel*</label>
+                                                    <select class="form-select" name="referentiel_id" id="mesureReferentiel" required>
+                                                        <option value="" selected disabled>Sélectionner un indicateur</option>
+                                                        <?php foreach ($referentiels_mesure ?? [] as $ref): ?>
+                                                            <?php if ($ref['categorie'] == 'impact' || $ref['categorie'] == 'effet') : ?>
+                                                                <option value="<?= $ref['id'] ?>"><?= htmlspecialchars($ref['intitule'] ?? $ref['name'] ?? '') ?></option>
+                                                            <?php endif; ?>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6 mb-2">
                                                 <div class="form-floating">
                                                     <select class="form-select" name="instrument" id="mesureInstrument" required>
                                                         <option value="" selected disabled>Sélectionner d'instrument</option>
@@ -144,7 +149,7 @@
                                                     <label for="mesureInstrument">Instrument*</label>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4 mb-2">
+                                            <div class="col-md-6 mb-2">
                                                 <div class="form-floating">
                                                     <select class="form-select" name="status" id="mesureStatus" required>
                                                         <?php foreach (listStatus() as $key => $value) : ?>
@@ -286,6 +291,8 @@
     let formMesureID = null;
     $(document).ready(function() {
         initSelect2("#addMesureModal", "MultipleMesureGaz");
+        initSelect2("#addMesureModal", "mesureStructure");
+        initSelect2("#addMesureModal", "mesureReferentiel");
         $('#addMesureModal').on('shown.bs.modal', async function(event) {
             const dataId = $(event.relatedTarget).data('id');
 
@@ -313,8 +320,8 @@
                     form.code.value = result.data.code || '';
                     form.name.value = result.data.name || '';
                     form.secteur_id.value = result.data.secteur_id || '';
-                    form.structure_id.value = result.data.structure_id || '';
-                    form.referentiel_id.value = result.data.referentiel_id || '';
+                    // form.structure_id.value = result.data.structure_id || '';
+                    // form.referentiel_id.value = result.data.referentiel_id || '';
                     form.action_type.value = result.data.action_type || '';
                     form.instrument.value = result.data.instrument || '';
                     form.status.value = result.data.status || '';
@@ -324,8 +331,10 @@
                     form2.annee_fin.value = result.data.annee_fin || '';
                     form2.latitude.value = result.data.latitude || '';
                     form2.longitude.value = result.data.longitude || '';
-                    $('#MultipleMesureGaz').val(result.data.gaz?.split(','));
-                    $('#MultipleMesureGaz').trigger('change');
+
+                    $('#mesureReferentiel').val(result.data.referentiel_id).trigger('change');
+                    $('#mesureStructure').val(result.data.structure_id).trigger('change');
+                    $('#MultipleMesureGaz').val(result.data.gaz?.split(',')).trigger('change');
 
                     const form3 = document.forms['wizMesureForm3'];
                     form3.objectif.value = result.data.objectif || '';
@@ -408,7 +417,8 @@
         $('#wizMesureForm1')[0].reset();
         $('#wizMesureForm2')[0].reset();
         $('#wizMesureForm3')[0].reset();
-        $('#MultipleMesureGaz').val([]);
-        $('#MultipleMesureGaz').trigger('change');
+        $('#mesureReferentiel').val("").trigger('change');
+        $('#mesureStructure').val("").trigger('change');
+        $('#MultipleMesureGaz').val([]).trigger('change');
     }
 </script>

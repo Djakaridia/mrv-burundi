@@ -16,7 +16,7 @@
 
   $tab = isset($_GET['tab']) ? $_GET['tab'] : 'group';
 
-  if(!in_array($tab, ['group', 'meet'])) {
+  if (!in_array($tab, ['group', 'meet'])) {
     $tab = 'group';
   }
 
@@ -28,14 +28,18 @@
 
   $structure = new Structure($db);
   $structures = $structure->read();
-  $structures = array_filter($structures, function ($structure) { return $structure['state'] == 'actif'; });
+  $structures = array_filter($structures, function ($structure) {
+    return $structure['state'] == 'actif';
+  });
 
   $reunion = new Reunion($db);
   $reunions = $reunion->read();
 
   $secteur = new Secteur($db);
   $secteurs = $secteur->read();
-  $secteurs = array_filter($secteurs, function ($secteur) { return $secteur['state'] == 'actif'; });
+  $secteurs = array_filter($secteurs, function ($secteur) {
+    return $secteur['parent'] == 0 && $secteur['state'] == 'actif';
+  });
 
   ?>
 </head>
@@ -60,7 +64,7 @@
         <div class="tab-pane fade <?php echo $tab == 'group' ? 'active show' : ''; ?>" id="tab-group" role="tabpanel" aria-labelledby="group-tab">
           <?php include './components/tabs/tab_groups.php'; ?>
         </div>
-          <!-- <div class="tab-pane fade" id="tab-profile" role="tabpanel" aria-labelledby="profile-tab">
+        <!-- <div class="tab-pane fade" id="tab-profile" role="tabpanel" aria-labelledby="profile-tab">
           <php include './components/tabs/tab_structure.php'; ?>
         </div> -->
         <div class="tab-pane fade <?php echo $tab == 'meet' ? 'active show' : ''; ?>" id="tab-meet" role="tabpanel" aria-labelledby="meet-tab">

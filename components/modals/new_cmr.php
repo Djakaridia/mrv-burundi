@@ -7,7 +7,7 @@
           <span class="fas fa-times text-danger"></span>
         </button>
       </div>
-      <div class="modal-body px-0">
+      <div class="modal-body p-0">
         <!-- Loading Screen -->
         <div id="cmrLoadingScreen" class="text-center py-5">
           <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
@@ -35,21 +35,23 @@
             </div>
 
             <!-- Referentiel -->
-            <div class="col-4">
-              <div class="form-floating">
+            <div class="col-12 mt-0">
+              <div class="form-group">
+                <label for="indicateurReferentiel" class="form-label">Indicateur Referentiel*</label>
                 <select class="form-select" name="referentiel_id" id="indicateurReferentiel" required>
                   <option value="" selected disabled>Sélectionner un referentiel</option>
                   <?php if ($referentiels ?? []) : ?>
                     <?php foreach ($referentiels as $ref) : ?>
-                      <option value="<?= $ref['id'] ?>"><?= html_entity_decode($ref['intitule']) ?></option>
+                      <?php if ($ref['categorie'] == 'produit') : ?>
+                        <option value="<?= $ref['id'] ?>"><?= html_entity_decode($ref['intitule']) ?></option>
+                      <?php endif; ?>
                     <?php endforeach; ?>
                   <?php endif; ?>
                 </select>
-                <label for="indicateurReferentiel">Indicateur Referentiel*</label>
               </div>
             </div>
             <!-- Objectif -->
-            <div class="col-4">
+            <div class="col-6">
               <div class="form-floating">
                 <select class="form-select" name="resultat_id" id="indicateurObjectif" required>
                   <option value="" selected disabled>Sélectionner un niveau</option>
@@ -63,7 +65,7 @@
               </div>
             </div>
 
-            <div class="col-4">
+            <div class="col-6">
               <div class="form-floating">
                 <select class="form-select" name="projet_id" id="indicSelectProjet">
                   <option value="" selected disabled>Sélectionner un projet</option>
@@ -105,36 +107,38 @@
             </div>
 
             <!-- Responsable -->
-            <div class="col-6">
-              <div class="form-floating">
+            <div class="col-12 mt-0">
+              <div class="form-group">
+                <label for="indicateurResponsable" class="form-label">Responsable*</label>
                 <select class="form-select" name="responsable" id="indicateurResponsable" required>
                   <option value="" selected disabled>Sélectionner un responsable</option>
                   <?php if ($structures ?? []) : ?>
                     <?php foreach ($structures as $structure) : ?>
-                      <option value="<?= $structure['id'] ?>"><?= $structure['sigle'] ?></option>
+                      <option value="<?= $structure['id'] ?>">
+                        <?= $structure['description'] ? $structure['description'] . ' (' . $structure['sigle'] . ')' : $structure['sigle']; ?>
+                      </option>
                     <?php endforeach; ?>
                   <?php endif; ?>
                 </select>
-                <label for="indicateurResponsable">Responsable*</label>
               </div>
             </div>
+
             <!-- Annee de reference -->
-            <div class="col-md-6">
+            <div class="col-md-4">
               <div class="form-floating">
                 <input class="form-control" name="annee_reference" id="indicateurAnneeReference" type="number" placeholder="Année de référence" required>
                 <label for="indicateurAnneeReference">Année de référence*</label>
               </div>
             </div>
-
             <!-- Valeur de base -->
-            <div class="col-md-6">
+            <div class="col-md-4">
               <div class="form-floating">
                 <input class="form-control" name="valeur_reference" id="indicateurValeurReference" type="text" placeholder="Valeur de base" required>
                 <label for="indicateurValeurReference">Valeur de référence*</label>
               </div>
             </div>
             <!-- Valeur cible -->
-            <div class="col-md-6">
+            <div class="col-md-4">
               <div class="form-floating">
                 <input class="form-control" name="valeur_cible" id="indicateurValeurCible" type="text" placeholder="Valeur cible" required>
                 <label for="indicateurValeurCible">Valeur cible*</label>
@@ -149,7 +153,7 @@
               </div>
             </div>
 
-             <!-- Longitude -->
+            <!-- Longitude -->
             <div class="col-md-6">
               <div class="form-floating">
                 <input class="form-control" name="longitude" id="indicateurLongitude" type="text" placeholder="Longitude">
@@ -180,6 +184,9 @@
 <script>
   let formIndicateurID = null;
   $(document).ready(function() {
+    initSelect2("#addIndicateurModal", "indicateurReferentiel");
+    initSelect2("#addIndicateurModal", "indicateurResponsable");
+
     $('#addIndicateurModal').on('shown.bs.modal', async function(event) {
       const dataId = $(event.relatedTarget).data('id');
       const projet_id = $(event.relatedTarget).data('projet_id');
@@ -216,14 +223,17 @@
           form.annee_reference.value = result.data.annee_reference;
           form.unite.value = result.data.unite;
           form.mode_calcul.value = result.data.mode_calcul;
-          form.responsable.value = result.data.responsable;
+          // form.responsable.value = result.data.responsable;
           form.latitude.value = result.data.latitude;
           form.longitude.value = result.data.longitude;
           form.valeur_reference.value = result.data.valeur_reference;
           form.valeur_cible.value = result.data.valeur_cible;
           form.projet_id.value = result.data.projet_id;
-          form.referentiel_id.value = result.data.referentiel_id;
+          // form.referentiel_id.value = result.data.referentiel_id;
           form.resultat_id.value = result.data.resultat_id;
+
+          $('#indicateurResponsable').val(result.data.responsable).trigger('change');
+          $('#indicateurReferentiel').val(result.data.referentiel_id).trigger('change');
         } catch (error) {
           errorAction('Impossible de charger les données.');
         } finally {
@@ -246,11 +256,13 @@
     });
 
     $('#addIndicateurModal').on('hide.bs.modal', function() {
-      $('#FormIndicateur')[0].reset();
       setTimeout(() => {
         $('#cmrLoadingScreen').show();
         $('#cmrContentContainer').hide();
       }, 200);
+      $('#FormIndicateur')[0].reset();
+      $('#indicateurResponsable').val("").trigger('change');
+      $('#indicateurReferentiel').val("").trigger('change');
     });
 
 

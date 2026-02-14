@@ -52,6 +52,14 @@
                                 </div>
                             </div>
 
+                            <div class="col-lg-12 mt-1">
+                                <div class="mb-1">
+                                    <label class="form-label">Description</label>
+                                    <textarea class="form-control" name="description" id="description_structure"
+                                        placeholder="Entrer une description"></textarea>
+                                </div>
+                            </div>
+
                             <div class="col-lg-6 mt-1">
                                 <div class="mb-1">
                                     <label class="form-label">Email*</label>
@@ -66,7 +74,7 @@
                                         required />
                                 </div>
                             </div>
-                            
+
 
                             <div class="col-lg-2 mt-1">
                                 <div class="mb-1">
@@ -84,19 +92,9 @@
                             </div>
 
                             <div class="col-lg-10 mt-1">
-                                <div class="mb-1">
-                                    <label class="form-label">Adresse</label>
-                                    <textarea class="form-control" name="address" id="address_structure"
-                                        placeholder="Entrer l'adresse" style="height: 70px"></textarea>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-12 mt-n3">
-                                <div class="mb-1">
-                                    <label class="form-label">Description</label>
-                                    <textarea class="form-control" name="description" id="description_structure"
-                                        placeholder="Entrer une description"></textarea>
-                                </div>
+                                <label class="form-label">Adresse</label>
+                                <textarea class="form-control" name="address" id="address_structure"
+                                    placeholder="Entrer l'adresse" style="height: 70px"></textarea>
                             </div>
                         </div>
 

@@ -76,9 +76,13 @@ class Projet
     public function readAll()
     {
         $query = "SELECT p.*, 
-                s.sigle as structure_sigle
+                str.sigle as structure_sigle,
+                sec.name AS secteur_name,
+                pro.name AS programme_name
           FROM " . $this->table . " p 
-          LEFT JOIN t_structures s ON p.structure_id = s.id
+          LEFT JOIN t_structures str ON p.structure_id = str.id
+          LEFT JOIN t_secteurs sec ON p.secteur_id = sec.id
+          LEFT JOIN t_programmes pro ON p.programme_id = pro.id
           WHERE p.state='actif'
           ORDER BY p.id ASC";
 

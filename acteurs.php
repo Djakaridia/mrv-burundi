@@ -88,7 +88,7 @@
                             <?php } ?>
                           </td>
                           <td class="align-middle product"><?php echo $structure['code']; ?></td>
-                          <td class="align-middle rating"><?php echo $structure['sigle']; ?></td>
+                          <td class="align-middle rating"><?php echo $structure['description']? $structure['description'].' ('.$structure['sigle'].')': $structure['sigle']; ?></td>
                           <td class="align-middle rating"><?php echo $structure['email']; ?></td>
                           <td class="align-middle rating"><?php echo $structure['phone']; ?></td>
                           <td class="align-middle review">

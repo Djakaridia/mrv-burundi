@@ -19,7 +19,7 @@ $database = new Database();
 $db = $database->getConnection();
 
 // Vérification des permissions
-if(checkPermis($db, 'interdite')){
+if (checkPermis($db, 'interdite')) {
     header("Location: interdite.php");
     exit();
 }
@@ -211,5 +211,14 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
 
     #sidebarDefault .nav-item-wrapper:hover .nav-link-icon {
         color: var(--bd-green-dark) !important;
+    }
+    .select2-selection--single,
+    .select2-selection--multiple {
+        min-height: 37px !important;
+        font-size: 13px !important;
+        padding: 3px 6px !important;
+        border: 1px solid #ccd1de !important;
+        border-radius: 6px !important;
+        font-weight: 600 !important;
     }
 </style>
