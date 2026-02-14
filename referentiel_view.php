@@ -56,6 +56,9 @@
     $zone_type = new ZoneType($db);
     $zone_types = $zone_type->read();
 
+    $typologie = new Typologie($db);
+    $typologies = $typologie->read();
+
     $sens_evolutions = array('asc' => 'Ascendant', 'desc' => 'Descendant');
     $echelles = array('nationale' => 'Nationale', 'provincial' => 'Provincial');
 
