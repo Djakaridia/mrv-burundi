@@ -11,6 +11,7 @@
     <!-- ===============================================-->
     <title>Détails Mesure | MRV - Burundi</title>
     <?php include './components/navbar & footer/head.php'; ?>
+
     <?php
     $mesure_id = $_GET['id'] ?? 0;
     $mesure = new Mesure($db);
@@ -22,31 +23,27 @@
         exit();
     }
 
-    $cible_mesure = new Cible($db);
-    $cible_mesure->mesure_id = $mesure_curr['id'];
-    $cibles_raw = $cible_mesure->readByMesure();
+    $mesure = new Mesure($db);
+    $emi_evitee_day = $mesure->getEmissionsEviteesAnnee($mesure_curr['id'], date("Y"));
+    $progression = $emi_evitee_day['bau'] > 0 ? (($emi_evitee_day['bau'] - $emi_evitee_day['wam']) / $emi_evitee_day['bau']) * 100 : 0;
+
+    $unite = new Unite($db);
+    $unites = $unite->read();
 
     $suivi_mesure = new Suivi($db);
     $suivi_mesure->mesure_id = $mesure_curr['id'];
     $suivis_raw = $suivi_mesure->readByMesure();
 
+    $annees = array();
     $suivis_map = array();
     $suivis_total = 0;
-    $suivis_par_annee = array();
-    $suivis_par_scenario = array();
 
-    $annees = array();
-    if (!empty($cibles_raw) || !empty($suivis_raw)) {
+    if (!empty($suivis_raw)) {
         $all_years = array();
-        if (!empty($cibles_raw)) {
-            $cible_years = array_column($cibles_raw, 'annee');
-            $all_years = array_merge($all_years, $cible_years);
-        }
+        usort($suivis_raw, fn($a, $b) => $a['annee'] - $b['annee']);
 
-        if (!empty($suivis_raw)) {
-            $suivi_years = array_column($suivis_raw, 'annee');
-            $all_years = array_merge($all_years, $suivi_years);
-        }
+        $suivi_years = array_column($suivis_raw, 'annee');
+        $all_years = array_merge($all_years, $suivi_years);
 
         if (!empty($all_years)) {
             $min_year = min($all_years);
@@ -56,10 +53,6 @@
                 $annees[] = $year;
             }
         }
-    }
-
-    if (!empty($suivis_raw)) {
-        usort($suivis_raw, fn($a, $b) => $a['annee'] - $b['annee']);
 
         foreach ($suivis_raw as $item) {
             $year = $item['annee'];
@@ -69,20 +62,9 @@
             if (!isset($suivis_map[$year])) $suivis_map[$year] = 0;
             $suivis_map[$year] += $value;
             $suivis_total += $value;
-
-            if (!isset($suivis_par_scenario[$scenario])) {
-                $suivis_par_scenario[$scenario] = 0;
-            }
-            $suivis_par_scenario[$scenario] += $value;
-
-            if (!isset($suivis_par_annee[$year])) {
-                $suivis_par_annee[$year] = array();
-            }
-            $suivis_par_annee[$year][] = $item;
         }
         ksort($suivis_map, SORT_NUMERIC);
     }
-
 
     $structure = new Structure($db);
     $structures = $structure->read();
@@ -109,7 +91,6 @@
     $secteurs_mesure = array_filter($data_secteurs, function ($secteur) {
         return $secteur['parent'] == 0 && $secteur['state'] == 'actif';
     });
-
     ?>
 
     <style>
@@ -170,117 +151,101 @@
                     </div>
 
                     <div class="row g-3 mb-3">
-                        <div class="col-lg-8">
-                            <div class="card mb-3 rounded-1 overflow-hidden">
-                                <div class="card-header d-flex justify-content-between align-items-center bg-light dark__bg-dark rounded-0 py-2 px-2">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span class="fa fa-info-circle text-primary"></span>
-                                        <h3 class="h6 mb-0 fw-bold">Description</h3>
-                                    </div>
+                        <div class="col-md-8">
+                            <div class="card mb-3 rounded-1 shadow-sm border">
+                                <div class="card-header bg-light dark__bg-dark rounded-0 py-3 pb-2 px-2 d-flex align-items-center">
+                                    <h5 class="mb-0">Synthèse des émissions par année</h5>
                                 </div>
-                                <div class="card-body">
-                                    <p class="text-body mb-0">
-                                        <?= $mesure_curr['description'] ?>
-                                    </p>
-                                </div>
-                            </div>
+                                <div class="card-body p-2" style="max-height: 500px; overflow-y: auto;">
+                                    <?php if (!empty($suivis_raw)) : ?>
+                                        <table class="table table-sm table-hover table-striped small table-bordered border-emphasis">
+                                            <thead class="bg-primary-subtle">
+                                                <tr>
+                                                    <th class="text-center">Année</th>
+                                                    <th class="text-center">Inconditionnel</th>
+                                                    <th class="text-center">Conditionnel</th>
+                                                    <th class="text-center">Émission totale évitée</th>
+                                                    <th class="text-center">% de réduction</th>
+                                                    <th class="text-center">Objectif</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                $total_wem = $total_wam = $total_emi = $total_taux = 0;
+                                                foreach ($annees as $annee):
+                                                    $mesure = new Mesure($db);
+                                                    $emi_evitee = $mesure->getEmissionsEviteesAnnee($mesure_curr['id'], $annee);
+                                                    $taux_reduc = $emi_evitee['bau'] > 0 ? (($emi_evitee['bau'] - $emi_evitee['wam']) / $emi_evitee['bau']) * 100 : 0;
 
-                            <div class="card mb-3 rounded-1 overflow-hidden">
-                                <div class="card-header d-flex justify-content-between align-items-center bg-light dark__bg-dark rounded-0 py-2 px-2">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span class="fa fa-bullseye text-primary"></span>
-                                        <h3 class="h6 mb-0 fw-bold">Objectifs</h3>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <!-- <ul class="list-unstyled mb-0">
-                                    <php foreach ($mesure_curr['objectifs_details'] as $objectif): ?>
-                                        <li class="d-flex align-items-start gap-3 mb-3">
-                                            <span class="fa fa-check-circle text-primary mt-1"></span>
-                                            <span class="text-body"><?= $objectif ?></span>
-                                        </li>
-                                    <php endforeach; ?>
-                                </ul> -->
-                                    <p class="text-body mb-0"><?= $mesure_curr['objectif'] ?></p>
-                                </div>
-                            </div>
-
-                            <div class="card mb-3 rounded-1">
-                                <div class="card-header d-flex justify-content-between align-items-center bg-light dark__bg-dark rounded-0 py-2 px-2">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span class="far fa-list-alt text-primary"></span>
-                                        <h3 class="h6 mb-0 fw-bold">Informations techniques</h3>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row g-3">
-                                        <div class="col-6">
-                                            <p class="text-uppercase text-muted small fw-bold mb-1">Année de début</p>
-                                            <p class="fw-semibold mb-0"><?= $mesure_curr['annee_debut'] ?></p>
-                                        </div>
-                                        <div class="col-6">
-                                            <p class="text-uppercase text-muted small fw-bold mb-1">Gaz concernés</p>
-                                            <div class="d-flex flex-wrap gap-1">
-                                                <?php foreach (explode(',', $mesure_curr['gaz']) as $gaz) : ?>
-                                                    <span class="badge rounded-1" style="background-color: <?php echo $gaz_colors[strtoupper($gaz)] ?? '#6c757d'; ?>; color: white;">
-                                                        <?php echo $gaz; ?>
-                                                    </span>
+                                                    $total_wem += $emi_evitee['wem'];
+                                                    $total_wam += $emi_evitee['wam'];
+                                                    $total_emi += $emi_evitee['wem'] + $emi_evitee['wam'];
+                                                    $total_taux += $taux_reduc;
+                                                ?>
+                                                    <tr>
+                                                        <td class="text-center fw-bold"><?= $annee ?></td>
+                                                        <td class="text-center"><?= $emi_evitee['wem'] > 0 ? number_format($emi_evitee['wem'], 2) : '-' ?></td>
+                                                        <td class="text-center"><?= $emi_evitee['wam'] > 0 ? number_format($emi_evitee['wam'], 2) : '-' ?></td>
+                                                        <td class="text-center fw-bold"><?= number_format($emi_evitee['wem'] + $emi_evitee['wam'], 2) ?></td>
+                                                        <td class="text-center fw-bold"><?= number_format($taux_reduc, 2) ?></td>
+                                                        <td class="text-center">
+                                                            <?php if ($emi_evitee['bau'] > 0): ?>
+                                                                <?php if ($taux_reduc >= 100): ?>
+                                                                    <span class="badge rounded-pill py-1 badge-phoenix badge-phoenix-success">Atteinte</span>
+                                                                <?php elseif ($taux_reduc >= 80): ?>
+                                                                    <span class="badge rounded-pill py-1 badge-phoenix badge-phoenix-info">Partielle</span>
+                                                                <?php elseif ($taux_reduc >= 50): ?>
+                                                                    <span class="badge rounded-pill py-1 badge-phoenix badge-phoenix-warning">En cours</span>
+                                                                <?php else: ?>
+                                                                    <span class="badge rounded-pill py-1 badge-phoenix badge-phoenix-danger">Non atteinte</span>
+                                                                <?php endif; ?>
+                                                            <?php else: ?>
+                                                                <span class="badge rounded-pill py-1 badge-phoenix badge-phoenix-secondary">Pas de cible</span>
+                                                            <?php endif; ?>
+                                                        </td>
+                                                    </tr>
                                                 <?php endforeach; ?>
+                                            </tbody>
+                                            <tfoot class="bg-warning-subtle text-dark fw-bold">
+                                                <tr>
+                                                    <td class="text-center">Total</td>
+                                                    <td class="text-center"><?= number_format($total_wem, 2) ?></td>
+                                                    <td class="text-center"><?= number_format($total_wam, 2) ?></td>
+                                                    <td class="text-center"><?= number_format($total_emi, 2) ?></td>
+                                                    <td class="text-center"><?= number_format($total_taux, 2) ?></td>
+                                                    <td class="text-center">
+                                                        <?php if ($emi_evitee['bau'] > 0): ?>
+                                                            <?php if ($total_taux >= 100): ?>
+                                                                <span class="badge rounded-pill py-1 badge-phoenix badge-phoenix-success">Atteinte</span>
+                                                            <?php elseif ($total_taux >= 80): ?>
+                                                                <span class="badge rounded-pill py-1 badge-phoenix badge-phoenix-info">Partielle</span>
+                                                            <?php elseif ($total_taux >= 50): ?>
+                                                                <span class="badge rounded-pill py-1 badge-phoenix badge-phoenix-warning">En cours</span>
+                                                            <?php else: ?>
+                                                                <span class="badge rounded-pill py-1 badge-phoenix badge-phoenix-danger">Non atteinte</span>
+                                                            <?php endif; ?>
+                                                        <?php else: ?>
+                                                            <span class="badge rounded-pill py-1 badge-phoenix badge-phoenix-secondary">Pas de cible</span>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    <?php else : ?>
+                                        <div class="text-center py-5">
+                                            <div class="mb-3">
+                                                <span class="uil-database display-4 text-muted"></span>
                                             </div>
+                                            <h5 class="text-muted">Aucun suivi enregistré</h5>
+                                            <p class="text-muted fs-9 mb-0">Ajoutez des données de suivi pour cette mesure</p>
                                         </div>
-                                        <div class="col-6">
-                                            <p class="text-uppercase text-muted small fw-bold mb-1">Estimation évitée</p>
-                                            <p class="fw-bold text-success mb-0">
-                                                <?= $mesure_curr['valeur_estimee'] ?? 0 ?> Gg Eq.CO2
-                                            </p>
-                                        </div>
-                                    </div>
+                                    <?php endif; ?>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="col-lg-4">
-                            <div class="card mb-3 rounded-1 overflow-hidden">
-                                <div class="card-header d-flex justify-content-between align-items-center bg-light dark__bg-dark rounded-0 py-2 px-2">
-                                    <h3 class="h6 mb-0 fw-bold">Réalisations vs Prévisions</h3>
-                                    <span class="badge bg-primary rounded-pill">Cible <?= date("Y") ?></span>
-                                </div>
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-center py-3">
-                                        <div class="position-relative">
-                                            <div class="gauge-conic rounded-circle" style="width: 200px; height: 200px;"></div>
-                                            <div class="position-absolute top-50 start-50 translate-middle bg-primary-subtle rounded-circle d-flex flex-column align-items-center justify-content-center shadow-inner" style="width: 150px; height: 150px;">
-                                                <span class="fs-4 fw-bold text-primary"><?= $mesure_curr['progression'] ?? 0 ?>%</span>
-                                                <span class="text-uppercase text-muted small fw-bold">Progression</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mt-4 pt-3 border-top">
-                                        <div class="col-6">
-                                            <p class="text-uppercase text-muted small fw-bold mb-1">Réalisé</p>
-                                            <p class="h5 fw-bold mb-0">
-                                                <?= number_format($mesure_curr['realise_co2'] ?? 0, 0, ',', ' ') ?> tCO2e
-                                            </p>
-                                        </div>
-                                        <div class="col-6 text-end">
-                                            <p class="text-uppercase text-muted small fw-bold mb-1">Prévision <?= date("Y") ?></p>
-                                            <p class="h5 fw-bold text-body-tertiary mb-0">
-                                                <?= number_format($mesure_curr['prevision_2025_co2'] ?? 0, 0, ',', ' ') ?> tCO2e
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <div class="card rounded-1 shadow-sm border h-100">
+                            <div class="card mb-3 rounded-1 shadow-sm border">
                                 <div class="card-header d-flex justify-content-between align-items-center bg-light dark__bg-dark rounded-0 py-1 px-2">
                                     <h5 class="mb-0">Suivis de la mesure</h5>
-
                                     <?php if (checkPermis($db, 'create')) : ?>
                                         <button title="Nouvelle valeur" type="button" class="btn btn-sm btn-subtle-primary fs-9 p-2 rounded-1" data-bs-toggle="modal"
                                             data-bs-target="#newIndicateurSuiviModal" data-mesure_id="<?php echo $mesure_curr['id']; ?>" data-indicateur_id="<?php echo $mesure_curr['referentiel_id']; ?>">
@@ -319,9 +284,9 @@
                                                     </tr>
                                                 <?php endforeach; ?>
                                             </tbody>
-                                            <tfoot class="bg-light">
+                                            <tfoot class="bg-warning-subtle">
                                                 <tr>
-                                                    <td class="text-end fw-bold">Total :</td>
+                                                    <td class="text-center fw-bold">Total </td>
                                                     <td class="fw-bold text-primary"><?= number_format($suivis_total, 2) ?></td>
                                                     <td colspan="4"></td>
                                                 </tr>
@@ -340,116 +305,98 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
-                            <div class="card rounded-1 shadow-sm border">
-                                <div class="card-header bg-light dark__bg-dark rounded-0 py-3 pb-2 px-3 d-flex align-items-center">
-                                    <h5 class="mb-0">Synthèse des données par année</h5>
+                        <div class="col-lg-4">
+                            <div class="card mb-3 rounded-1 overflow-hidden">
+                                <div class="card-header d-flex justify-content-between align-items-center bg-light dark__bg-dark rounded-0 p-2">
+                                    <h3 class="h6 mb-0 fw-bold">Réalisations vs Prévisions</h3>
+                                    <span class="badge bg-primary rounded-pill">Objectif <?= date("Y") ?></span>
                                 </div>
-                                <div class="card-body p-2" style="max-height: 500px; overflow-y: auto;">
-                                    <?php if (!empty($suivis_par_annee)) : ?>
-                                        <table class="table table-sm table-hover table-striped small table-bordered border-emphasis">
-                                            <thead class="bg-primary-subtle">
-                                                <tr>
-                                                    <th class="text-center">Année</th>
-                                                    <th class="text-center">Cible totale</th>
-                                                    <th class="text-center">Suivi total</th>
-                                                    <th class="text-center">Taux de réalisation</th>
-                                                    <th class="text-center">Écart</th>
-                                                    <th class="text-center">Statut</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php
-                                                $total_cibles = 0;
-                                                $total_suivis = 0;
-
-                                                foreach ($annees as $annee):
-                                                    $cible_annee = $cibles_map[$annee] ?? 0;
-                                                    $suivi_annee = $suivis_map[$annee] ?? 0;
-                                                    $taux = $cible_annee > 0 ? ($suivi_annee / $cible_annee) * 100 : 0;
-                                                    $ecart = $suivi_annee - $cible_annee;
-
-                                                    $total_cibles += $cible_annee;
-                                                    $total_suivis += $suivi_annee;
-                                                ?>
-                                                    <tr>
-                                                        <td class="text-center fw-bold"><?= $annee ?></td>
-                                                        <td class="text-center"><?= $cible_annee > 0 ? number_format($cible_annee, 2) : '-' ?></td>
-                                                        <td class="text-center fw-bold"><?= number_format($suivi_annee, 2) ?></td>
-                                                        <td class="text-center">
-                                                            <?php if ($cible_annee > 0): ?>
-                                                                <span class="badge bg-<?= $taux >= 100 ? 'success' : ($taux >= 80 ? 'warning' : 'danger') ?>">
-                                                                    <?= number_format($taux, 1) ?>%
-                                                                </span>
-                                                            <?php else: ?>
-                                                                -
-                                                            <?php endif; ?>
-                                                        </td>
-                                                        <td class="text-center <?= $ecart >= 0 ? 'text-success' : 'text-danger' ?>">
-                                                            <?= $ecart >= 0 ? '+' : '' ?><?= number_format($ecart, 2) ?>
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <?php if ($cible_annee > 0): ?>
-                                                                <?php if ($taux >= 100): ?>
-                                                                    <span class="badge bg-success">Atteinte</span>
-                                                                <?php elseif ($taux >= 80): ?>
-                                                                    <span class="badge bg-warning">Partielle</span>
-                                                                <?php else: ?>
-                                                                    <span class="badge bg-danger">Non atteinte</span>
-                                                                <?php endif; ?>
-                                                            <?php else: ?>
-                                                                <span class="badge bg-secondary">Pas de cible</span>
-                                                            <?php endif; ?>
-                                                        </td>
-                                                    </tr>
-                                                <?php endforeach; ?>
-                                            </tbody>
-                                            <tfoot class="bg-light fw-bold">
-                                                <tr>
-                                                    <td class="text-center">Total</td>
-                                                    <td class="text-center"><?= number_format($total_cibles, 2) ?></td>
-                                                    <td class="text-center"><?= number_format($total_suivis, 2) ?></td>
-                                                    <td class="text-center">
-                                                        <?php if ($total_cibles > 0): ?>
-                                                            <?php
-                                                            $taux_total = ($total_suivis / $total_cibles) * 100;
-                                                            $badge_class = $taux_total >= 100 ? 'success' : ($taux_total >= 80 ? 'warning' : 'danger');
-                                                            ?>
-                                                            <span class="badge bg-<?= $badge_class ?>">
-                                                                <?= number_format($taux_total, 1) ?>%
-                                                            </span>
-                                                        <?php else: ?>
-                                                            -
-                                                        <?php endif; ?>
-                                                    </td>
-                                                    <td class="text-center <?= ($total_suivis - $total_cibles) >= 0 ? 'text-success' : 'text-danger' ?>">
-                                                        <?= ($total_suivis - $total_cibles) >= 0 ? '+' : '' ?><?= number_format($total_suivis - $total_cibles, 2) ?>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <?php if ($total_cibles > 0): ?>
-                                                            <?php if ($taux_total >= 100): ?>
-                                                                <span class="badge bg-success">Atteinte</span>
-                                                            <?php elseif ($taux_total >= 80): ?>
-                                                                <span class="badge bg-warning">Partielle</span>
-                                                            <?php else: ?>
-                                                                <span class="badge bg-danger">Non atteinte</span>
-                                                            <?php endif; ?>
-                                                        <?php else: ?>
-                                                            <span class="badge bg-secondary">Pas de cible</span>
-                                                        <?php endif; ?>
-                                                    </td>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
-                                    <?php else : ?>
-                                        <div class="text-center py-5">
-                                            <div class="mb-3">
-                                                <span class="uil-database display-4 text-muted"></span>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-center py-3">
+                                        <div class="position-relative">
+                                            <div class="gauge-conic rounded-circle" style="width: 150px; height: 150px;"></div>
+                                            <div class="position-absolute top-50 start-50 translate-middle bg-primary-subtle rounded-circle d-flex flex-column align-items-center justify-content-center shadow-inner" style="width: 120px; height: 120px;">
+                                                <span class="fs-5 fw-bold text-primary"><?= $progression ?>%</span>
+                                                <span class="text-uppercase text-muted small fw-bold">Progression</span>
                                             </div>
-                                            <h5 class="text-muted">Aucun suivi enregistré</h5>
-                                            <p class="text-muted fs-9 mb-0">Ajoutez des données de suivi pour cette mesure</p>
                                         </div>
-                                    <?php endif; ?>
+                                    </div>
+
+                                    <div class="row mt-4 pt-3 border-top">
+                                        <div class="col-6">
+                                            <p class="text-uppercase text-muted small fw-bold mb-1">Emission Réalisée</p>
+                                            <p class="h5 fw-bold text-primary mb-0">
+                                                <?= number_format(($emi_evitee_day['wem'] + $emi_evitee_day['wam']) ?? 0, 0, ',', ' ') . " " . $mesure_curr['unite'] ?>
+                                            </p>
+                                        </div>
+                                        <div class="col-6 text-end">
+                                            <p class="text-uppercase text-muted small fw-bold mb-1">Prévision <?= date("Y") ?></p>
+                                            <p class="h5 fw-bold text-primary mb-0">
+                                                <?= number_format($emi_evitee_day['bau'] ?? 0, 0, ',', ' ') . " " . $mesure_curr['unite'] ?>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3 rounded-1 overflow-hidden">
+                                <div class="card-header d-flex justify-content-between align-items-center bg-light dark__bg-dark rounded-0 p-2">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="fa fa-info-circle text-primary"></span>
+                                        <h3 class="h6 mb-0 fw-bold">Description</h3>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-body mb-0">
+                                        <?= $mesure_curr['description'] ?>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3 rounded-1 overflow-hidden">
+                                <div class="card-header d-flex justify-content-between align-items-center bg-light dark__bg-dark rounded-0 p-2">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="fa fa-bullseye text-primary"></span>
+                                        <h3 class="h6 mb-0 fw-bold">Objectifs</h3>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <!-- <ul class="list-unstyled mb-0">
+                                    <php foreach ($mesure_curr['objectifs_details'] as $objectif): ?>
+                                        <li class="d-flex align-items-start gap-3 mb-3">
+                                            <span class="fa fa-check-circle text-primary mt-1"></span>
+                                            <span class="text-body"><= $objectif ?></span>
+                                        </li>
+                                    <php endforeach; ?>
+                                </ul> -->
+                                    <p class="text-body mb-0"><?= $mesure_curr['objectif'] ?></p>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3 rounded-1">
+                                <div class="card-header d-flex justify-content-between align-items-center bg-light dark__bg-dark rounded-0 p-2">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="far fa-list-alt text-primary"></span>
+                                        <h3 class="h6 mb-0 fw-bold">Informations techniques</h3>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <p class="text-uppercase text-muted small fw-bold mb-1">Période</p>
+                                            <small class="fw-semibold mb-0"><?= $mesure_curr['annee_debut'] . "-" . $mesure_curr['annee_fin'] ?></small>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="text-uppercase text-muted small fw-bold mb-1">Gaz concernés</p>
+                                            <div class="d-flex flex-wrap gap-1">
+                                                <?php foreach (explode(',', $mesure_curr['gaz']) as $gaz) : ?>
+                                                    <span class="badge rounded-1" style="background-color: <?php echo $gaz_colors[strtoupper($gaz)] ?? '#6c757d'; ?>; color: white;">
+                                                        <?php echo $gaz; ?>
+                                                    </span>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -19,6 +19,9 @@
         return $structure['state'] == 'actif';
     });
 
+    $unite = new Unite($db);
+    $unites = $unite->read();
+
     $gaz = new Gaz($db);
     $gazs = $gaz->read();
     $gaz_colors = [];
@@ -60,6 +63,16 @@
             return $mesure['status'] == $status;
         });
     }
+
+    $emissions_totals_wem = $emissions_totals_wam = 0;
+    if ($mesures) {
+        foreach ($mesures as $item) {
+            $mesure_emi = new Mesure($db);
+            $emissions_evitees = $mesure_emi->getTotalEmissionsEvitees($item['id']);
+            $emissions_totals_wem += $emissions_evitees ? $emissions_evitees['wem'] : 0;
+            $emissions_totals_wam += $emissions_evitees ? $emissions_evitees['wam'] : 0;
+        }
+    }
     ?>
 </head>
 
@@ -98,15 +111,17 @@
                         <div class="card card-float h-100 rounded-1">
                             <div class="card-body p-3">
                                 <div class="d-flex justify-content-between align-items-start">
-                                    <span class="text-muted text-uppercase small fw-bold">Émissions évitées totales</span>
+                                    <span class="text-muted text-uppercase small fw-bold">Émissions totales évitées</span>
                                     <i class="fa fa-leaf text-warning fs-5"></i>
                                 </div>
-                                <?php $total_evitees = 0;
-                                foreach ($mesures as $mesure) {
-                                    $total_evitees += floatval(str_replace(',', '.', $mesure['valeur_estime'] ?? ""));
-                                } ?>
-                                <div class="stat-value"><?= number_format($total_evitees, 3, ',', ' ') ?></div>
-                                <div class="mt-2 text-muted small">Gg Eq.CO2</div>
+                                <div class="mt-1 d-flex gap-1 align-items-center">
+                                    <div class="stat-value"><?= number_format($emissions_totals_wem, 3, ',', ' ') ?> <small>Gg Eq.CO2</small></div>
+                                    <div class="mt-1 text-success fs-10">(Inconditionnel)</div>
+                                </div>
+                                <div class="mt-1 d-flex gap-1 align-items-center">
+                                    <div class="stat-value"><?= number_format($emissions_totals_wam, 3, ',', ' ') ?> <small>Gg Eq.CO2</small></div>
+                                    <div class="mt-1 text-warning fs-10">(Conditionnel)</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -223,18 +238,35 @@
                     <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
                         <thead class="bg-primary-subtle">
                             <tr>
-                                <th style="width: 35%;">Intitulé</th>
-                                <th class="text-center">Secteur</th>
-                                <th class="text-center">Periode</th>
-                                <th class="text-center">Statut</th>
-                                <th class="text-center">Estimation d'émissions évitées (Gg Eq.CO2)</th>
-                                <th class="text-center">Réalisations</th>
-                                <th class="text-center">Prévisions <?= date('Y') ?></th>
-                                <th class="text-center" style="width: 100px;">Actions</th>
+                                <th rowspan="2" style="width: 35%;">Intitulé</th>
+                                <th rowspan="2" class="text-center">Secteur</th>
+                                <th rowspan="2" class="text-center">Periode</th>
+                                <th rowspan="2" class="text-center">Statut</th>
+                                <th rowspan="2" class="text-center">Réalisations totales (Gg Eq.CO2)</th>
+                                <th class="text-center" colspan="2">Emissions totales évitées (Gg Eq.CO2)</th>
+                                <th rowspan="2" class="text-center" style="width: 100px;">Actions</th>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Inconditionnel</th>
+                                <th class="text-center">Conditionnel</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($mesures as $mesure): ?>
+                            <?php foreach ($mesures as $mesure):
+                                $suivi_mesure = new Suivi($db);
+                                $suivi_mesure->mesure_id = $mesure['id'];
+                                $suivis_raw = $suivi_mesure->readByMesure();
+
+                                $suivis_total = 0;
+                                if (!empty($suivis_raw)) {
+                                    foreach ($suivis_raw as $item) {
+                                        if ($item['scenario'] !== 'bau') $suivis_total += (float)$item['valeur'];
+                                    }
+                                }
+
+                                $mesure_cal = new Mesure($db);
+                                $emissions_evitees = $mesure_cal->getTotalEmissionsEvitees($mesure['id']);
+                            ?>
                                 <tr>
                                     <td>
                                         <div class="fw-semibold"><?= $mesure['name'] ?></div>
@@ -267,14 +299,11 @@
                                         </span>
                                     </td>
                                     <td class="text-center fw-bold text-success">
-                                        <?= $mesure['valeur_estime'] ?? "-" ?>
+                                        <?= $suivis_total ?? "-" ?>
                                     </td>
-                                    <td class="text-center fw-bold text-primary">
-                                        <?= $mesure['valeur_realise'] ?? "-" ?>
-                                    </td>
-                                    <td class="text-center fw-bold text-warning">
-                                        <?= $mesure['valeur_cible'] ?? "-" ?>
-                                    </td>
+                                    <?php foreach ($emissions_evitees as $value): ?>
+                                        <td><?= number_format($value, 2, ',', ' ') ?></td>
+                                    <?php endforeach; ?>
                                     <td>
                                         <div class="position-relative d-flex gap-1">
                                             <?php if (checkPermis($db, 'update')) : ?>

@@ -13,6 +13,7 @@ class Mesure
     public $instrument;
     public $status;
     public $gaz;
+    public $unite;
     public $secteur_id;
     public $annee_debut;
     public $annee_fin;
@@ -29,8 +30,8 @@ class Mesure
 
     public function create()
     {
-        $query = "INSERT INTO " . $this->table . " (code, name, referentiel_id, structure_id, action_type, instrument, status, gaz, secteur_id, annee_debut, annee_fin, latitude, longitude, description, objectif, add_by) VALUES 
-                  (:code, :name, :referentiel_id, :structure_id, :action_type, :instrument, :status, :gaz, :secteur_id, :annee_debut, :annee_fin, :latitude, :longitude, :description, :objectif, :add_by)";
+        $query = "INSERT INTO " . $this->table . " (code, name, referentiel_id, structure_id, action_type, instrument, status, gaz, unite, secteur_id, annee_debut, annee_fin, latitude, longitude, description, objectif, add_by) VALUES 
+                  (:code, :name, :referentiel_id, :structure_id, :action_type, :instrument, :status, :gaz, :unite, :secteur_id, :annee_debut, :annee_fin, :latitude, :longitude, :description, :objectif, :add_by)";
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':code', $this->code);
@@ -41,6 +42,7 @@ class Mesure
         $stmt->bindParam(':instrument', $this->instrument);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':gaz', $this->gaz);
+        $stmt->bindParam(':unite', $this->unite);
         $stmt->bindParam(':secteur_id', $this->secteur_id);
         $stmt->bindParam(':annee_debut', $this->annee_debut);
         $stmt->bindParam(':annee_fin', $this->annee_fin);
@@ -76,7 +78,7 @@ class Mesure
             sec.name AS secteur_name,
             san.annee,
             COALESCE(SUM(CAST(san.valeur AS DECIMAL(12,2))), 0) AS emission_evitee
-        FROM ". $this->table ." mes
+        FROM " . $this->table . " mes
         LEFT JOIN t_structures str 
             ON mes.structure_id = str.id
         LEFT JOIN t_secteurs sec
@@ -119,7 +121,7 @@ class Mesure
     public function update()
     {
         $query = "UPDATE " . $this->table . " SET 
-      code=:code, name=:name, referentiel_id=:referentiel_id, structure_id=:structure_id, action_type=:action_type, instrument=:instrument, status=:status, gaz=:gaz, secteur_id=:secteur_id, annee_debut=:annee_debut, annee_fin=:annee_fin, 
+      code=:code, name=:name, referentiel_id=:referentiel_id, structure_id=:structure_id, action_type=:action_type, instrument=:instrument, status=:status, gaz=:gaz, unite=:unite, secteur_id=:secteur_id, annee_debut=:annee_debut, annee_fin=:annee_fin, 
       latitude=:latitude, longitude=:longitude, description=:description, objectif=:objectif, add_by=:add_by 
       WHERE id=:id";
 
@@ -133,6 +135,7 @@ class Mesure
         $stmt->bindParam(':instrument', $this->instrument);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':gaz', $this->gaz);
+        $stmt->bindParam(':unite', $this->unite);
         $stmt->bindParam(':secteur_id', $this->secteur_id);
         $stmt->bindParam(':annee_debut', $this->annee_debut);
         $stmt->bindParam(':annee_fin', $this->annee_fin);
@@ -171,5 +174,76 @@ class Mesure
             return true;
         }
         return false;
+    }
+
+
+    function getEmissionsEviteesAnnee($mesureId, $annee)
+    {
+        $query = "SELECT
+            SUM(CASE WHEN scenario = 'bau' THEN CAST(valeur AS DECIMAL(20,4)) ELSE 0 END) AS bau,
+            SUM(CASE WHEN scenario = 'wem' THEN CAST(valeur AS DECIMAL(20,4)) ELSE 0 END) AS wem,
+            SUM(CASE WHEN scenario = 'wam' THEN CAST(valeur AS DECIMAL(20,4)) ELSE 0 END) AS wam
+        FROM t_suivi_annuelle
+        WHERE mesure_id = ?
+        AND annee = ?";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([$mesureId, $annee]);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $bau = (float)$data['bau'];
+        $wem = (float)$data['wem'];
+        $wam = (float)$data['wam'];
+
+        return [
+            'bau' => $bau,
+            'wem' => $bau - $wem,
+            'wam' => $bau - $wam
+        ];
+    }
+
+    function getTotalEmissionsEvitees($mesureId)
+    {
+        $query = "SELECT
+            SUM(CASE WHEN scenario = 'bau' THEN CAST(valeur AS DECIMAL(20,4)) ELSE 0 END) AS bau,
+            SUM(CASE WHEN scenario = 'wem' THEN CAST(valeur AS DECIMAL(20,4)) ELSE 0 END) AS wem,
+            SUM(CASE WHEN scenario = 'wam' THEN CAST(valeur AS DECIMAL(20,4)) ELSE 0 END) AS wam
+        FROM t_suivi_annuelle
+        WHERE mesure_id = ?";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([$mesureId]);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $bau = (float)$data['bau'];
+        $wem = (float)$data['wem'];
+        $wam = (float)$data['wam'];
+
+        return ['wem' => $bau - $wem,'wam' => $bau - $wam];
+    }
+
+    function getSerieMesure($mesureId)
+    {
+        $query = "SELECT annee,
+            SUM(CASE WHEN scenario = 'bau' THEN CAST(valeur AS DECIMAL(20,4)) ELSE 0 END) AS bau,
+            SUM(CASE WHEN scenario = 'wem' THEN CAST(valeur AS DECIMAL(20,4)) ELSE 0 END) AS wem,
+            SUM(CASE WHEN scenario = 'wam' THEN CAST(valeur AS DECIMAL(20,4)) ELSE 0 END) AS wam
+        FROM t_suivi_annuelle
+        WHERE mesure_id = ?
+        GROUP BY annee
+        ORDER BY annee";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([$mesureId]);
+        $data = [];
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $bau = (float)$row['bau'];
+            $wem = (float)$row['wem'];
+            $wam = (float)$row['wam'];
+            $data[] = ['annee' => $row['annee'],'bau' => $bau,'wem' => $wem,'wam' => $wam,'evite_wem' => $bau - $wem,'evite_wam' => $bau - $wam];
+        }
+
+        return $data;
     }
 }

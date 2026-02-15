@@ -89,6 +89,7 @@ switch ($requestMethod) {
             $projet->action_type = sanitize_input($_POST['action_type']);
             $projet->gaz = sanitize_input($_POST['gaz']??null);
             $projet->secteur_id = (int)sanitize_input($_POST['secteur_id'] ?? null);
+            $projet->mesure_id = (int)sanitize_input($_POST['mesure_id'] ?? null);
             $projet->programme_id = (int)sanitize_input($_POST['programme_id'] ?? null);
             $projet->groupes = sanitize_input($_POST['groupes'] ?? null);
             $projet->add_by = $payload['user_id'] ?? null;
@@ -125,6 +126,7 @@ switch ($requestMethod) {
             $projet->action_type = sanitize_input($_POST['action_type'] ?? null);
             $projet->gaz = sanitize_input($_POST['gaz'] ?? null);
             $projet->secteur_id = (int)sanitize_input($_POST['secteur_id'] ?? null);
+            $projet->mesure_id = (int)sanitize_input($_POST['mesure_id'] ?? null);
             $projet->programme_id = (int)sanitize_input($_POST['programme_id'] ?? null);
             $projet->groupes = sanitize_input($_POST['groupes'] ?? null);
             $projet->add_by = $payload['user_id'] ?? null;

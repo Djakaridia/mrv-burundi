@@ -50,6 +50,9 @@
     return $structure['state'] == 'actif';
   });
 
+  $mesure = new Mesure($db);
+  $mesures = $mesure->read();
+
   $gaz = new Gaz($db);
   $gazs = $gaz->read();
 
@@ -113,7 +116,7 @@
             <div class="card card-float h-100 rounded-1">
               <div class="card-body p-3">
                 <div class="d-flex justify-content-between align-items-start">
-                  <span class="text-muted text-uppercase small fw-bold">Budget Total</span>
+                  <span class="text-muted text-uppercase small fw-bold">Budget Total (USD)</span>
                   <i class="fa fa-money-bill-wave text-warning fs-5"></i>
                 </div>
                 <?php
@@ -127,7 +130,7 @@
                 ?>
                 <div class="stat-value"><?= number_format($total_budget, 2, ',', ' ') ?></div>
                 <div class="mt-2 text-muted small">
-                  <?= count($budgets_valides) ?> projets budgetés
+                  <?= count($budgets_valides) ?> projets budgetisés
                 </div>
               </div>
             </div>

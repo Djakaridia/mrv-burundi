@@ -62,7 +62,6 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
 <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&amp;display=swap" rel="stylesheet" />
 
 <link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.1/dist/MarkerCluster.css" />
@@ -80,6 +79,7 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
 <link href="assets/css/theme.min.css" type="text/css" rel="stylesheet" id="style-default" />
 <link href="assets/css/user-rtl.min.css" type="text/css" rel="stylesheet" id="user-style-rtl" />
 <link href="assets/css/user.min.css" type="text/css" rel="stylesheet" id="user-style-default" />
+<link href="assets/unicons/css/line.css" rel="stylesheet" />
 
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>

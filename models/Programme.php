@@ -7,6 +7,8 @@ class Programme
     public $id;
     public $name;
     public $sigle;
+    public $annee_debut;
+    public $annee_fin;
     public $description;
     public $code;
     public $status;
@@ -19,10 +21,12 @@ class Programme
 
     public function create()
     {
-        $query = "INSERT INTO " . $this->table . " (name, sigle, description, code, status, add_by) VALUES (:name, :sigle, :description, :code, :status, :add_by)";
+        $query = "INSERT INTO " . $this->table . " (name, sigle, annee_debut, annee_fin, description, code, status, add_by) VALUES (:name, :sigle, :annee_debut, :annee_fin, :description, :code, :status, :add_by)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':sigle', $this->sigle);
+        $stmt->bindParam(':annee_debut', $this->annee_debut);
+        $stmt->bindParam(':annee_fin', $this->annee_fin);
         $stmt->bindParam(':description', $this->description);
         $stmt->bindParam(':code', $this->code);
         $stmt->bindParam(':status', $this->status);
@@ -55,11 +59,13 @@ class Programme
 
     public function update()
     {
-        $query = "UPDATE " . $this->table . " SET name=:name, sigle=:sigle, description=:description, code=:code, status=:status, add_by=:add_by WHERE id=:id";
+        $query = "UPDATE " . $this->table . " SET name=:name, sigle=:sigle, annee_debut=:annee_debut, annee_fin=:annee_fin, description=:description, code=:code, status=:status, add_by=:add_by WHERE id=:id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $this->id);
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':sigle', $this->sigle);
+        $stmt->bindParam(':annee_debut', $this->annee_debut);
+        $stmt->bindParam(':annee_fin', $this->annee_fin);
         $stmt->bindParam(':description', $this->description);
         $stmt->bindParam(':code', $this->code);
         $stmt->bindParam(':status', $this->status);

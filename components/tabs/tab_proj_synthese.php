@@ -289,7 +289,7 @@
                                                 <th class="text-center" style="width: 35%;">Activités</th>
                                                 <th class="text-center" style="width: 15%;">Responsables</th>
                                                 <th class="text-center" style="width: 15%;">Indicateur</th>
-                                                <th class="text-center" style="width: 10%;">Cout(USD)</th>
+                                                <th class="text-center" style="width: 10%;">Cout (USD)</th>
                                                 <th class="text-center" style="width: 10%;">Statut</th>
                                                 <th class="text-center" style="width: 10%;">Observation</th>
                                             </tr>

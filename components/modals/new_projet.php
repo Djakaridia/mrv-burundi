@@ -1,4 +1,6 @@
-<?php $array_typeLogo = ".jpg, .jpeg, .png, .gif, .webp"; ?>
+<?php
+$array_typeLogo = ".jpg, .jpeg, .png, .gif, .webp";
+?>
 <div class="modal fade" id="addProjetModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addProjetModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content bg-body-highlight p-4">
@@ -17,9 +19,9 @@
                 </div>
 
                 <div id="projetContentContainer" style="display: none;">
-                    <div class="card theme-wizard" data-theme-wizard="data-theme-wizard">
-                        <ul class="nav justify-content-between nav-wizard nav-wizard-primary mx-3" role="tablist">
-                            <li class="nav-item" role="Etape 1">
+                    <div class="card theme-wizard">
+                        <ul class="nav mx-3" role="tablist">
+                            <li class="nav-item" role="presentation">
                                 <a class="nav-link fw-semibold active" href="#projet-wizard-tab1" data-bs-toggle="tab" data-wizard-step="1" aria-selected="true" role="tab">
                                     <div class="text-center d-inline-block">
                                         <span class="nav-item-circle-parent">
@@ -29,7 +31,7 @@
                                     </div>
                                 </a>
                             </li>
-                            <li class="nav-item" role="Etape 2">
+                            <li class="nav-item" role="presentation">
                                 <a class="nav-link fw-semibold" href="#projet-wizard-tab2" data-bs-toggle="tab" data-wizard-step="2" aria-selected="false" tabindex="-1" role="tab">
                                     <div class="text-center d-inline-block">
                                         <span class="nav-item-circle-parent">
@@ -39,23 +41,13 @@
                                     </div>
                                 </a>
                             </li>
-                            <li class="nav-item" role="Etape 3">
+                            <li class="nav-item" role="presentation">
                                 <a class="nav-link fw-semibold" href="#projet-wizard-tab3" data-bs-toggle="tab" data-wizard-step="3" aria-selected="false" tabindex="-1" role="tab">
                                     <div class="text-center d-inline-block">
                                         <span class="nav-item-circle-parent">
                                             <span class="nav-item-circle"><span class="fas fa-step-forward"></span></span>
                                         </span>
                                         <span class="nav-item-title fs-9">Etape 3</span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="nav-item" role="Etape 5">
-                                <a class="nav-link fw-semibold" href="#projet-wizard-tab5" data-bs-toggle="tab" data-wizard-step="5" aria-selected="false" tabindex="-1" role="tab">
-                                    <div class="text-center d-inline-block">
-                                        <span class="nav-item-circle-parent">
-                                            <span class="nav-item-circle"><span class="fas fa-check"></span></span>
-                                        </span>
-                                        <span class="nav-item-title fs-9">Validation</span>
                                     </div>
                                 </a>
                             </li>
@@ -119,7 +111,7 @@
                                                     <label for="projetManager" class="form-label">Entités de mise en œuvre *</label>
                                                     <select class="form-select" name="structure_id" id="projetStructure" required>
                                                         <option value="" selected disabled>Sélectionner une structure</option>
-                                                        <?php if ($structures ?? []) : ?>
+                                                        <?php if (!empty($structures)) : ?>
                                                             <?php foreach ($structures as $structure) : ?>
                                                                 <option value="<?= $structure['id'] ?>">
                                                                     <?= $structure['description'] ? $structure['description'] . ' (' . $structure['sigle'] . ')' : $structure['sigle']; ?>
@@ -132,15 +124,15 @@
 
                                             <div class="col-md-6 mb-2">
                                                 <div class="form-floating">
-                                                    <input class="form-control" name="budget" id="projetBudget" type="number" placeholder="Budget" required>
-                                                    <label for="projetBudget">Budget*</label>
+                                                    <input class="form-control" name="budget" id="projetBudget" type="number" step="0.01" min="0" placeholder="Budget" required>
+                                                    <label for="projetBudget">Budget (USD)*</label>
                                                 </div>
                                             </div>
                                             <div class="col-md-6 mb-2">
                                                 <div class="form-floating">
                                                     <select class="form-select" name="programme_id" id="projetProgramme">
-                                                        <option value="" disabled>Sélectionner un programme</option>
-                                                        <?php if ($programmes ?? []) : ?>
+                                                        <option value="" selected disabled>Sélectionner un programme</option>
+                                                        <?php if (!empty($programmes)) : ?>
                                                             <?php foreach ($programmes as $programme) : ?>
                                                                 <option value="<?= $programme['id'] ?>"><?= $programme['name'] ?></option>
                                                             <?php endforeach; ?>
@@ -170,20 +162,34 @@
                                             <div class="col-md-6 mb-2">
                                                 <div class="form-floating">
                                                     <select class="form-select" name="status" id="projetStatus" required>
+                                                        <option value="" selected disabled>Sélectionner un statut</option>
                                                         <?php foreach (listStatus() as $key => $value) : ?>
                                                             <option value="<?= $key ?>"><?= $value ?></option>
                                                         <?php endforeach; ?>
                                                     </select>
-                                                    <label for="projetStatus">Status*</label>
+                                                    <label for="projetStatus">Statut*</label>
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-12 mt-0 mb-2">
+                                            <div class="col-md-12 mt-0 mb-1">
+                                                <div class="form-group">
+                                                    <label for="projetMesure" class="form-label">Mesure concernée</label>
+                                                    <select class="form-select" id="projetMesure" name="mesure_id">
+                                                        <option value="" selected disabled>Sélectionner la mesure</option>
+                                                        <?php if (!empty($mesures)) : ?>
+                                                            <?php foreach ($mesures as $mesure): ?>
+                                                                <option value="<?= $mesure['id'] ?>"><?= $mesure['name'] ?></option>
+                                                            <?php endforeach; ?>
+                                                        <?php endif; ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12 mt-0 mb-1">
                                                 <div class="form-group">
                                                     <label for="MultipleProjetGaz" class="form-label">Types de gaz</label>
-                                                    <select class="form-select" id="MultipleProjetGaz" name="gaz" multiple="multiple">
-                                                        <option value="" disabled>Sélectionner les types de gaz</option>
-                                                        <?php if ($gazs ?? []) : ?>
+                                                    <select class="form-select" id="MultipleProjetGaz" name="gaz[]" multiple="multiple">
+                                                        <?php if (!empty($gazs)) : ?>
                                                             <?php foreach ($gazs as $gaz): ?>
                                                                 <option value="<?= $gaz['name'] ?>"><?= $gaz['name'] ?></option>
                                                             <?php endforeach; ?>
@@ -192,7 +198,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-6 mb-2">
+                                            <div class="col-md-6 mb-1">
                                                 <div class="flatpickr-input-container">
                                                     <div class="form-floating">
                                                         <input class="form-control datetimepicker" name="start_date" id="projetStartDate" value="<?= date('Y-m-d') ?>" type="text" placeholder="Date de début">
@@ -201,7 +207,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6 mb-2">
+                                            <div class="col-md-6 mb-1">
                                                 <div class="flatpickr-input-container">
                                                     <div class="form-floating">
                                                         <input class="form-control datetimepicker" name="end_date" id="projetEndDate" value="<?= date('Y-m-d') ?>" type="text" placeholder="Date de clôture">
@@ -211,7 +217,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-6 mb-2">
+                                            <div class="col-md-6 mb-1">
                                                 <div class="flatpickr-input-container">
                                                     <div class="form-floating">
                                                         <input class="form-control datetimepicker" name="signature_date" id="projetSignatureDate" value="<?= date('Y-m-d') ?>" type="text" placeholder="Date de signature">
@@ -220,7 +226,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6 mb-2">
+                                            <div class="col-md-6 mb-1">
                                                 <div class="flatpickr-input-container">
                                                     <div class="form-floating">
                                                         <input class="form-control datetimepicker" name="miparcours_date" id="projetMiparcours" value="<?= date('Y-m-d') ?>" type="text" placeholder="Date de mi-parcours">
@@ -239,9 +245,8 @@
                                             <div class="col-md-12 mt-0 mb-2">
                                                 <div class="form-group">
                                                     <label for="MultipleProjetGroupe" class="form-label">Groupes de travail</label>
-                                                    <select class="form-select" id="MultipleProjetGroupe" name="groupes" multiple="multiple">
-                                                        <option value="" disabled>Sélectionner un groupe</option>
-                                                        <?php if ($groupes_travail ?? []) : ?>
+                                                    <select class="form-select" id="MultipleProjetGroupe" name="groupes[]" multiple="multiple">
+                                                        <?php if (!empty($groupes_travail)) : ?>
                                                             <?php foreach ($groupes_travail as $groupe) : ?>
                                                                 <option value="<?= $groupe['id'] ?>"><?= $groupe['name'] ?></option>
                                                             <?php endforeach; ?>
@@ -252,24 +257,12 @@
 
                                             <div class="col-12 mb-2">
                                                 <label for="projetDescription" class="form-label">Description du projet</label>
-                                                <textarea class="form-control" name="description" id="projetDescription"></textarea>
+                                                <textarea class="form-control" name="description" id="projetDescription" rows="4"></textarea>
                                             </div>
 
                                             <div class="col-12 mb-2">
                                                 <label for="projetObjectif" class="form-label">Objectif du projet</label>
-                                                <textarea class="form-control" name="objectif" id="projetObjectif"></textarea>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-
-                                <div class="tab-pane" role="tabpanel" aria-labelledby="projet-wizard-tab5" id="projet-wizard-tab5">
-                                    <form id="wizProjetForm4" novalidate="novalidate" class="needs-validation" data-wizard-form="5">
-                                        <div class="text-center py-5 my-5">
-                                            <h5 class="mb-3">Validation des informations du projet</h5>
-                                            <p class="text-body-emphasis fs-9">Veuillez vous assurer de la véracité des informations du projet</p>
-                                            <div class="d-flex justify-content-center border-0 px-0 pb-0">
-                                                <button type="button" class="btn btn-primary my-0 px-5" id="projetModbtn">Valider les données</button>
+                                                <textarea class="form-control" name="objectif" id="projetObjectif" rows="4"></textarea>
                                             </div>
                                         </div>
                                     </form>
@@ -278,12 +271,15 @@
                         </div>
                         <div class="card-footer border-top border-light p-2" data-wizard-footer="data-wizard-footer">
                             <div class="d-flex pager justify-content-between wizard list-inline mb-0">
-                                <button class="d-none btn btn-sm btn-secondary px-3" type="button" data-wizard-prev-btn="data-wizard-prev-btn">
+                                <button class="d-none btn btn-sm btn-secondary px-3" type="button" projet-wizard-prev-btn="projet-wizard-prev-btn">
                                     <span class="fas fa-chevron-left me-1" data-fa-transform="shrink-3"></span>
                                     Précédent
                                 </button>
-                                <button class="btn btn-sm btn-primary px-3" type="submit" data-wizard-next-btn="data-wizard-next-btn">
+                                <button class="btn btn-sm btn-primary px-3" type="button" projet-wizard-next-btn="projet-wizard-next-btn">
                                     Suivant <span class="fas fa-chevron-right ms-1" data-fa-transform="shrink-3"></span>
+                                </button>
+                                <button class="btn btn-sm btn-success px-3 d-none" type="button" id="projetModbtn">
+                                    Enregistrer
                                 </button>
                             </div>
                         </div>
@@ -296,68 +292,68 @@
 
 <script>
     let formProjetID = null;
+
     $(document).ready(function() {
+        initSelect2("#addProjetModal", "projetMesure");
         initSelect2("#addProjetModal", "projetStructure");
         initSelect2("#addProjetModal", "MultipleProjetGaz");
         initSelect2("#addProjetModal", "MultipleProjetGroupe");
+
+        if (typeof flatpickr !== 'undefined') {
+            $(".datetimepicker").flatpickr({
+                dateFormat: "Y-m-d",
+                allowInput: true
+            });
+        }
+
         $('#addProjetModal').on('shown.bs.modal', async function(event) {
-            const dataId = $(event.relatedTarget).data('id');
+            const button = $(event.relatedTarget);
+            const dataId = button.data('id');
+
             $('#projetLoadingScreen').show();
             $('#projetContentContainer').hide();
+            resetProjetWizard();
 
             if (dataId) {
                 formProjetID = dataId;
                 $('#projet_modtitle').text('Modifier le projet');
-                $('#projetModbtn').text('Modifier les données');
+                $('#projetModbtn').text('Modifier');
                 $('#projetLoadingText').text("Chargement des données projet...");
 
                 try {
                     const response = await fetch(`./apis/projets.routes.php?id=${dataId}`, {
                         headers: {
-                            'Authorization': `Bearer ${token}`
+                            'Authorization': `Bearer ${token}`,
+                            'Accept': 'application/json'
                         },
                         method: 'GET',
                     });
 
-                    const result = await response.json();
-                    if (result.status !== 'success') throw new Error(result.message || 'Erreur de données');
-
-                    const form = document.forms['wizProjetForm1'];
-                    form.file.filename = result.data.logo || '';
-                    form.logo.value = result.data.logo || '';
-                    form.name.value = result.data.name || '';
-                    form.code.value = result.data.code || '';
-                    form.budget.value = result.data.budget || 0;
-                    // form.structure_id.value = result.data.structure_id || '';
-                    form.secteur_id.value = result.data.secteur_id || '';
-                    form.programme_id.value = result.data.programme_id || '';
-
-                    const form2 = document.forms['wizProjetForm2'];
-                    form2.start_date.value = result.data.start_date || '';
-                    form2.end_date.value = result.data.end_date || '';
-                    form2.signature_date.value = result.data.signature_date || '';
-                    form2.miparcours_date.value = result.data.miparcours_date || '';
-                    form2.action_type.value = result.data.action_type || '';
-                    form2.status.value = result.data.status || '';
-
-                    if (result.data.logo) {
-                        $('#projetLoadImage').attr('src', result.data.logo.split("../").pop());
-                        $('#projetLoadImage').removeClass('d-none');
-                        $('#projetLoadImageIcon').addClass('d-none');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
                     }
 
-                    $('#projetStructure').val(result.data.structure_id).trigger('change');
-                    $('#MultipleProjetGaz').val(result.data.gaz?.split(',')).trigger('change');
-                    $('#MultipleProjetGroupe').val(result.data.groupes?.split(',')).trigger('change');
+                    const result = await response.json();
+
+                    if (result.status !== 'success') {
+                        throw new Error(result.message || 'Erreur de chargement des données');
+                    }
+
+                    fillProjetForm(result.data);
                 } catch (error) {
-                    errorAction('Erreur lors du chargement des données: ' + error.message);
+                    console.error('Erreur:', error);
+                    if (typeof errorAction === 'function') {
+                        errorAction('Erreur lors du chargement des données: ' + error.message);
+                    } else {
+                        alert('Erreur: ' + error.message);
+                    }
                 } finally {
                     $('#projetLoadingScreen').hide();
                     $('#projetContentContainer').show();
                 }
             } else {
                 $('#projet_modtitle').text('Ajouter un projet');
-                $('#projetModbtn').text('Valider les données');
+                $('#projetModbtn').text('Enregistrer');
                 $('#projetLoadingText').text("Préparation du formulaire...");
 
                 setTimeout(() => {
@@ -367,34 +363,57 @@
             }
         });
 
-        $('#addProjetModal').on('hide.bs.modal', function() {
+        $('#addProjetModal').on('hidden.bs.modal', function() {
             resetProjetWizard();
-            setTimeout(() => {
-                $('#projetLoadingScreen').show();
-                $('#projetContentContainer').hide();
-            }, 200);
         });
 
         $('#projetImage').on('change', function() {
             const file = this.files[0];
             if (file) {
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+                if (!allowedTypes.includes(file.type)) {
+                    if (typeof errorAction === 'function') {
+                        errorAction('Type de fichier non autorisé');
+                    } else {
+                        alert('Type de fichier non autorisé');
+                    }
+                    this.value = '';
+                    return;
+                }
+
+                if (file.size > 5 * 1024 * 1024) {
+                    if (typeof errorAction === 'function') {
+                        errorAction('Le fichier ne doit pas dépasser 5MB');
+                    } else {
+                        alert('Le fichier ne doit pas dépasser 5MB');
+                    }
+                    this.value = '';
+                    return;
+                }
+
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    $('#projetLoadImage').attr('src', e.target.result);
-                    $('#projetLoadImage').removeClass('d-none');
+                    $('#projetLoadImage').attr('src', e.target.result).removeClass('d-none');
                     $('#projetLoadImageIcon').addClass('d-none');
+                };
+                reader.onerror = function() {
+                    console.error('Erreur de lecture du fichier');
                 };
                 reader.readAsDataURL(file);
             } else {
-                $('#projetLoadImage').addClass('d-none');
+                $('#projetLoadImage').attr('src', '').addClass('d-none');
                 $('#projetLoadImageIcon').removeClass('d-none');
             }
         });
 
         $('#projetModbtn').on('click', async function() {
-            const submitBtn = $('#projetModbtn');
+            const submitBtn = $(this);
+
+            if (!validateProjetForms()) return;
+
             submitBtn.prop('disabled', true);
-            submitBtn.text('Envoi en cours...');
+            const originalText = submitBtn.text();
+            submitBtn.html('<span class="spinner-border fs-8 spinner-border-sm me-2"></span>Envoi...');
 
             try {
                 const formData = new FormData();
@@ -406,17 +425,26 @@
 
                 forms.forEach(form => {
                     if (form) {
-                        const formElements = form.elements;
-                        for (let element of formElements) {
-                            if (element.name && element.type !== 'file') {
-                                formData.append(element.name, element.value);
+                        $(form).find(':input').each(function() {
+                            const input = $(this);
+                            const name = input.attr('name');
+                            if (name && !name.endsWith('[]')) {
+                                formData.append(name, input.val() || '');
                             }
-                        }
+                        });
                     }
                 });
 
-                formData.append('gaz', $('#MultipleProjetGaz').val());
-                formData.append('groupes', $('#MultipleProjetGroupe').val());
+                const gazValues = $('#MultipleProjetGaz').val();
+                if (gazValues && gazValues.length > 0) {
+                    formData.append('gaz', gazValues.join(','));
+                }
+
+                const groupesValues = $('#MultipleProjetGroupe').val();
+                if (groupesValues && groupesValues.length > 0) {
+                    formData.append('groupes', groupesValues.join(','));
+                }
+
                 const fileInput = document.getElementById('projetImage');
                 if (fileInput.files.length > 0) {
                     formData.append('file', fileInput.files[0]);
@@ -432,34 +460,198 @@
                 });
 
                 const result = await response.json();
+
                 if (result.status === 'success') {
-                    successAction('Projet enregistré avec succès!');
+                    if (typeof successAction === 'function') {
+                        successAction('Projet enregistré avec succès!');
+                    } else {
+                        alert('Succès: Projet enregistré!');
+                    }
                     $('#addProjetModal').modal('hide');
+
+                    if (typeof loadProjets === 'function') loadProjets();
                 } else {
-                    errorAction(result.message || 'Erreur lors de l\'enregistrement');
+                    throw new Error(result.message || 'Erreur lors de l\'enregistrement');
                 }
+
             } catch (error) {
-                errorAction('Erreur: ' + error.message);
+                console.error('Erreur:', error);
+                if (typeof errorAction === 'function') {
+                    errorAction('Erreur: ' + error.message);
+                } else {
+                    alert('Erreur: ' + error.message);
+                }
             } finally {
-                submitBtn.prop('disabled', false);
-                submitBtn.text('Enregistrer');
+                submitBtn.prop('disabled', false).text(originalText);
+            }
+        });
+
+        $('[projet-wizard-next-btn]').on('click', function() {
+            const currentTab = $('.tab-pane.active');
+            const currentForm = currentTab.find('form');
+
+            if (currentForm.length && currentForm[0].checkValidity) {
+                if (!currentForm[0].checkValidity()) {
+                    currentForm[0].reportValidity();
+                    return;
+                }
+            }
+
+            const nextTab = currentTab.next('.tab-pane');
+            if (nextTab.length) {
+                const tabId = nextTab.attr('id');
+                $(`a[href="#${tabId}"]`).tab('show');
+                updateWizardProjet();
+            }
+        });
+
+        $('[projet-wizard-prev-btn]').on('click', function() {
+            const currentTab = $('.tab-pane.active');
+            const prevTab = currentTab.prev('.tab-pane');
+
+            if (prevTab.length) {
+                const tabId = prevTab.attr('id');
+                $(`a[href="#${tabId}"]`).tab('show');
+                updateWizardProjet();
             }
         });
     });
 
+    function updateWizardProjet() {
+        const currentTab = $('#FormProjet .tab-pane.active');
+        const tabIndex = $('#FormProjet .tab-pane').index(currentTab);
+        const totalTabs = $('#FormProjet .tab-pane').length;
+        const prevBtn = $('[projet-wizard-prev-btn]');
+        const nextBtn = $('[projet-wizard-next-btn]');
+        const saveBtn = $('#projetModbtn');
+
+        if (tabIndex === 0) {
+            prevBtn.addClass('d-none');
+            nextBtn.removeClass('d-none');
+            saveBtn.addClass('d-none');
+        } else if (tabIndex === totalTabs - 1) {
+            prevBtn.removeClass('d-none');
+            nextBtn.addClass('d-none');
+            saveBtn.removeClass('d-none');
+        } else {
+            prevBtn.removeClass('d-none');
+            nextBtn.removeClass('d-none');
+            saveBtn.addClass('d-none');
+        }
+    }
+
+    function fillProjetForm(data) {
+        try {
+            $('#wizProjetForm1 input[name="code"]').val(data.code || '');
+            $('#wizProjetForm1 input[name="name"]').val(data.name || '');
+            $('#wizProjetForm1 input[name="budget"]').val(data.budget || 0);
+            $('#wizProjetForm1 select[name="secteur_id"]').val(data.secteur_id || '');
+            $('#wizProjetForm1 select[name="programme_id"]').val(data.programme_id || '');
+
+            if (data.logo) {
+                const logoPath = data.logo.replace(/^\.\.\//, '');
+                $('#projetLoadImage').attr('src', logoPath).removeClass('d-none');
+                $('#projetLoadImageIcon').addClass('d-none');
+                $('#logo').val(data.logo);
+            }
+
+            $('#wizProjetForm2 input[name="start_date"]').val(data.start_date || '');
+            $('#wizProjetForm2 input[name="end_date"]').val(data.end_date || '');
+            $('#wizProjetForm2 input[name="signature_date"]').val(data.signature_date || '');
+            $('#wizProjetForm2 input[name="miparcours_date"]').val(data.miparcours_date || '');
+            $('#wizProjetForm2 select[name="action_type"]').val(data.action_type || '');
+            $('#wizProjetForm2 select[name="status"]').val(data.status || '');
+
+            if (data.mesure_id) $('#projetMesure').val(data.mesure_id).trigger('change');
+            if (data.structure_id) $('#projetStructure').val(data.structure_id).trigger('change');
+
+            if (data.gaz) {
+                const gazArray = data.gaz.split(',').map(g => g.trim());
+                $('#MultipleProjetGaz').val(gazArray).trigger('change');
+            }
+
+            if (data.groupes) {
+                const groupesArray = data.groupes.split(',').map(g => g.trim());
+                $('#MultipleProjetGroupe').val(groupesArray).trigger('change');
+            }
+
+            if (typeof tinymce !== 'undefined') {
+                if (tinymce.get('projetDescription')) {
+                    tinymce.get('projetDescription').setContent(data.description || '');
+                }
+                if (tinymce.get('projetObjectif')) {
+                    tinymce.get('projetObjectif').setContent(data.objectif || '');
+                }
+            } else {
+                $('#projetDescription').val(data.description || '');
+                $('#projetObjectif').val(data.objectif || '');
+            }
+
+        } catch (error) {
+            console.error('Erreur lors du remplissage du formulaire:', error);
+        }
+    }
+
+    function validateProjetForms() {
+        const forms = [
+            document.getElementById('wizProjetForm1'),
+            document.getElementById('wizProjetForm2'),
+            document.getElementById('wizProjetForm3')
+        ];
+
+        for (let form of forms) {
+            if (form && !form.checkValidity()) {
+                const tabId = $(form).closest('.tab-pane').attr('id');
+                if (tabId) $(`a[href="#${tabId}"]`).tab('show');
+                form.reportValidity();
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     function resetProjetWizard() {
-        $('#projetLoadImage').attr('src', '');
-        $('#projetLoadImage').addClass('d-none');
+        $('#projetLoadImage').attr('src', '').addClass('d-none');
         $('#projetLoadImageIcon').removeClass('d-none');
         $('#projetImage').val('');
+        $('#logo').val('');
 
-        $('#wizProjetForm1')[0].reset();
-        $('#wizProjetForm2')[0].reset();
-        $('#wizProjetForm3')[0].reset();
-        $('#projetStructure').val([]).trigger('change');
+        $('#wizProjetForm1')[0]?.reset();
+        $('#wizProjetForm2')[0]?.reset();
+        $('#wizProjetForm3')[0]?.reset();
+
+        $('#projetMesure').val('').trigger('change');
+        $('#projetStructure').val('').trigger('change');
         $('#MultipleProjetGaz').val([]).trigger('change');
         $('#MultipleProjetGroupe').val([]).trigger('change');
-        tinymce.get('projetObjectif')?.setContent('');
-        tinymce.get('projetDescription')?.setContent('');
+
+        if (typeof tinymce !== 'undefined') {
+            if (tinymce.get('projetObjectif')) {
+                tinymce.get('projetObjectif').setContent('');
+            }
+            if (tinymce.get('projetDescription')) {
+                tinymce.get('projetDescription').setContent('');
+            }
+        }
+
+        $('.nav-wizard .nav-link').removeClass('active');
+        $('.nav-wizard .nav-item:first-child .nav-link').addClass('active');
+        $('.tab-pane').removeClass('active show');
+        $('#projet-wizard-tab1').addClass('active show');
+        $('[projet-wizard-prev-btn]').addClass('d-none');
+        $('[projet-wizard-next-btn]').removeClass('d-none');
+        $('#projetModbtn').addClass('d-none');
+
+        formProjetID = null;
     }
+
+    $(document).on('focus', '.datetimepicker', function() {
+        if (typeof flatpickr !== 'undefined' && !$(this).data('flatpickr')) {
+            $(this).flatpickr({
+                dateFormat: "Y-m-d",
+                allowInput: true
+            });
+        }
+    });
 </script>

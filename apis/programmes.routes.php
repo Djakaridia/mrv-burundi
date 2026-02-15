@@ -61,6 +61,8 @@ switch ($requestMethod) {
             $programme->name = sanitize_input($_POST['name']);
             $programme->sigle = sanitize_input($_POST['sigle']);
             $programme->code = sanitize_input($_POST['code']);
+            $programme->annee_debut = sanitize_input($_POST['annee_debut']);
+            $programme->annee_fin = sanitize_input($_POST['annee_fin']);
             $programme->description = sanitize_input($_POST['description']);
             $programme->status = sanitize_input($_POST['status']);
             $programme->add_by = sanitize_input($payload['user_id']);
@@ -79,6 +81,8 @@ switch ($requestMethod) {
             $programme->name = sanitize_input($_POST['name']);
             $programme->sigle = sanitize_input($_POST['sigle']);
             $programme->code = sanitize_input($_POST['code']);
+            $programme->annee_debut = sanitize_input($_POST['annee_debut']);
+            $programme->annee_fin = sanitize_input($_POST['annee_fin']);
             $programme->description = sanitize_input($_POST['description']);
             $programme->status = sanitize_input($_POST['status']);
             $programme->add_by = sanitize_input($payload['user_id']);

@@ -71,7 +71,7 @@ $logoParts = explode("../", $project_curr['logo'] ?? '');
                                             <td class="align-top py-1">
                                                 <div class="d-flex">
                                                     <span class="fa-regular fa-credit-card me-2 text-body-tertiary fs-9"></span>
-                                                    <h5 class="text-body mb-0 text-nowrap">Budget : </h5>
+                                                    <h5 class="text-body mb-0 text-nowrap">Budget (USD) : </h5>
                                                 </div>
                                             </td>
                                             <td class="ps-1 py-1 text-body-highlight">

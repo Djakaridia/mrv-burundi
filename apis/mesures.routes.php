@@ -69,6 +69,7 @@ switch ($requestMethod) {
             $mesure->action_type = sanitize_input($_POST['action_type']);
             $mesure->instrument = sanitize_input($_POST['instrument']);
             $mesure->gaz = sanitize_input($_POST['gaz']);
+            $mesure->unite = sanitize_input($_POST['unite']);
             $mesure->annee_debut = sanitize_input($_POST['annee_debut'] ?? null);
             $mesure->annee_fin = sanitize_input($_POST['annee_fin'] ?? null);
             $mesure->latitude = sanitize_input($_POST['latitude'] ?? null);
@@ -97,6 +98,7 @@ switch ($requestMethod) {
             $mesure->action_type = sanitize_input($_POST['action_type']);
             $mesure->instrument = sanitize_input($_POST['instrument']);
             $mesure->gaz = sanitize_input($_POST['gaz']);
+            $mesure->unite = sanitize_input($_POST['unite']);
             $mesure->annee_debut = sanitize_input($_POST['annee_debut'] ?? null);
             $mesure->annee_fin = sanitize_input($_POST['annee_fin'] ?? null);
             $mesure->latitude = sanitize_input($_POST['latitude'] ?? null);

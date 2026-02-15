@@ -34,7 +34,12 @@
         return $secteur['parent'] == 0 && $secteur['state'] == 'actif';
     });
 
-    $annees_cibles = [2023, 2025, 2030, 2035, 2040];
+    $annees_cibles = [2020, 2025, 2030, 2035];
+    if (!empty($projections_data)) {
+        $annees_cibles = array_unique(array_column($projections_data, 'annee'));
+        sort($annees_cibles);
+    }
+    
     $projections_par_secteur = [];
     $projections_id_map = [];
     $totaux = [];
@@ -54,6 +59,7 @@
             $secteur_fat_id = $sect['id'];
         }
     }
+    ksort($projections_par_secteur);
 
     foreach ($projections_data as $proj) {
         $projection_id = $proj['id'];

@@ -121,6 +121,9 @@
     return $referentiel['state'] == 'actif';
   });
 
+  $mesure = new Mesure($db);
+  $mesures = $mesure->read();
+
   $niveau_resultat = new NiveauResultat($db);
   $niveau_resultats = $niveau_resultat->read();
 

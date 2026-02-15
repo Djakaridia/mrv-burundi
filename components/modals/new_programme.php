@@ -44,28 +44,21 @@
                                 </div>
                             </div>
 
-                            <!-- <div class="col-lg-6 mt-1">
+                            <div class="col-lg-6 mt-1">
                                 <div class="mb-1">
-                                    <label for="programmeStartDate" class="form-label">Date de
-                                        début</label>
-                                    <input class="form-control datetimepicker" id="programmeStartDate" type="text"
-                                        name="start_date" placeholder="YYYY-MM-DD"
-                                        data-options="{&quot;disableMobile&quot;:true}" required />
+                                    <label for="programmeStartDate" class="form-label">Année début</label>
+                                    <input class="form-control" id="programmeStartDate" type="number" min="1900" max="2100" maxlength="4" placeholder="2000" name="annee_debut" required />
                                 </div>
                             </div>
                             <div class="col-lg-6 mt-1">
                                 <div class="mb-1">
-                                    <label for="programmeEndDate" class="form-label">Date de
-                                        fin</label>
-                                    <input class="form-control datetimepicker" id="programmeEndDate" type="text"
-                                        name="end_date" placeholder="YYYY-MM-DD"
-                                        data-options="{&quot;disableMobile&quot;:true}" required />
+                                    <label for="programmeEndDate" class="form-label">Année fin</label>
+                                    <input class="form-control" id="programmeEndDate" type="number" min="1900" max="2100" maxlength="4" placeholder="2000" name="annee_fin" required />
                                 </div>
-                            </div> -->
+                            </div>
                             <div class="col-lg-12 mt-1">
                                 <div class="mb-1">
-                                    <label for="programmeDescription"
-                                        class="form-label">Description</label>
+                                    <label for="programmeDescription" class="form-label">Description</label>
                                     <textarea class="form-control" name="description" id="programmeDescription"
                                         placeholder="Entrer la description"></textarea>
                                 </div>
@@ -115,8 +108,8 @@
                     form.name.value = result.data.name;
                     form.sigle.value = result.data.sigle;
                     form.code.value = result.data.code;
-                    // form.start_date.value = result.data.start_date;
-                    // form.end_date.value = result.data.end_date;
+                    form.annee_debut.value = result.data.annee_debut;
+                    form.annee_fin.value = result.data.annee_fin;
                     form.description.value = result.data.description;
                     form.status.value = result.data.status;
                 } catch (error) {

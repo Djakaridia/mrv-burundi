@@ -61,16 +61,20 @@
                                         <th class="sort align-middle" scope="col" data-sort="product"> Code</th>
                                         <th class="sort align-middle" scope="col" data-sort="customer"> Intitulé</th>
                                         <th class="sort align-middle" scope="col" data-sort="description"> Sigle</th>
+                                        <th class="sort align-middle" scope="col" data-sort="description"> Année début</th>
+                                        <th class="sort align-middle" scope="col" data-sort="description"> Année fin</th>
                                         <th class="sort align-middle" scope="col" data-sort="time" style="min-width:100px;">Actions</th>
                                     </tr>
                                 </thead>
-                                
+
                                 <tbody class="list" id="table-latest-review-body">
                                     <?php foreach ($programmes as $programme) { ?>
                                         <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                                             <td class="align-middle customer"><?= $programme['code'] ?></td>
                                             <td class="align-middle product"><?= $programme['name'] ?></td>
                                             <td class="align-middle product"><?= $programme['sigle'] ?></td>
+                                            <td class="align-middle product"><?= $programme['annee_debut'] ?></td>
+                                            <td class="align-middle product"><?= $programme['annee_fin'] ?></td>
                                             <td class="align-middle review">
                                                 <div class="position-relative">
                                                     <div class="">
@@ -81,8 +85,15 @@
                                                             </button>
                                                         <?php endif; ?>
 
+                                                        <?php if (checkPermis($db, 'update', 2)) : ?>
+                                                            <button title="Activer/Désactiver" onclick="updateState(<?php echo $programme['id']; ?>, '<?php echo $programme['state'] == 'actif' ? 'inactif' : 'actif'; ?>', 'Êtes-vous sûr de vouloir <?php echo $programme['state'] == 'actif' ? 'désactiver' : 'activer'; ?> ce programme ?', 'programmes')"
+                                                                type="button" class="btn btn-sm btn-phoenix-warning fs-10 px-2 py-1">
+                                                                <span class="uil-<?php echo $programme['state'] == 'actif' ? 'ban text-warning' : 'check-circle text-success'; ?> fs-8"></span>
+                                                            </button>
+                                                        <?php endif; ?>
+
                                                         <?php if (checkPermis($db, 'delete')) : ?>
-                                                            <button title="Supprimer" 
+                                                            <button title="Supprimer"
                                                                 onclick="deleteData(<?php echo $programme['id'] ?>, 'Êtes-vous sûr de vouloir supprimer ce programme ?', 'programmes')"
                                                                 type="button" class="btn btn-sm btn-phoenix-danger fs-10 px-2 py-1">
                                                                 <span class="uil-trash-alt fs-8"></span>
