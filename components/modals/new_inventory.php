@@ -48,7 +48,7 @@
                                     <div class="mb-1">
                                         <label class="form-label">Année*</label>
                                         <input oninput="checkColumns('annee', 'inventory_annee', 'inventory_annee_feedback', 'inventories')"
-                                            class="form-control" type="number" min="2000" max="2100" name="annee" id="inventory_annee" value="<?= date('Y') ?>" placeholder="Entrer l'année" required />
+                                            class="form-control" type="number" min="2000" max="2100" name="annee" id="inventory_annee" placeholder="Entrer l'année" required />
                                         <div class="invalid-feedback" id="inventory_annee_feedback"></div>
                                     </div>
                                 </div>
@@ -235,10 +235,10 @@
             if (result.status === 'success') {
                 successAction('Données envoyées avec succès.', action);
             } else {
-                errorAction(result.message || 'Erreur lors de l\'envoi des données.');
+                errorAction('Erreur lors de l\'envoi des données.');
             }
         } catch (error) {
-            errorAction('Erreur lors de l\'envoi des données: ' + error.message);
+            errorAction('Erreur lors de l\'envoi des données');
         } finally {
             cancelInventoryForm();
         }
@@ -288,9 +288,7 @@
         deleteData(id, 'Êtes-vous sûr de vouloir supprimer ce suivi ?', 'inventories', 'none')
             .then(() => {
                 loadInventories();
-            })
-            .catch(error => {
-                errorAction('Erreur lors de la suppression');
+                successAction('Invetaire supprimé avec success.')
             })
     }
 
