@@ -11,7 +11,7 @@ $database = new Database();
 $db = $database->getConnection();
 $mesure = new Mesure($db);
 
-$data = $mesure->readAll();
+$data = $mesure->read();
 
 if (!empty($data)) {
     $secteurs = [];

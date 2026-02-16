@@ -78,7 +78,7 @@ switch ($requestMethod) {
 
                 /* ===== Mapping des colonnes ===== */
                 $headers = array_map('trim', $rows[1]);
-                $requiredHeaders = ['Code', 'Sous-secteur', 'Gaz', 'Emissions Année', 'Emissions Absolues', 'Niveau Emissions', 'Total Comule'];
+                $requiredHeaders = ['Code', 'Catégorie', 'Gaz', 'Emissions Année', 'Emissions Absolues', 'Niveau Emissions', 'Total Comule'];
 
                 foreach ($requiredHeaders as $h) {
                     if (!in_array($h, $headers)) {
@@ -112,7 +112,7 @@ switch ($requestMethod) {
                     $register = new Register($db);
                     $register->secteur_id = $secteurMap[$codeSecteur];
                     $register->code = $codeSousSecteur;
-                    $register->categorie          = trim($row[array_search('Sous-secteur', $headers)]);
+                    $register->categorie          = trim($row[array_search('Catégorie', $headers)]);
                     $register->gaz                = trim($row[array_search('Gaz', $headers)]);
                     $register->emission_annee     = floatval($row[array_search('Emissions Année', $headers)]);
                     $register->emission_absolue   = floatval($row[array_search('Emissions Absolues', $headers)]);

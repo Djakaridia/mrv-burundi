@@ -60,10 +60,13 @@ class Mesure
 
     public function read()
     {
-        $query = "SELECT p.*, s.sigle as structure_sigle
-                  FROM " . $this->table . " p 
-                  LEFT JOIN t_structures s ON p.structure_id = s.id
-                  ORDER BY p.id ASC";
+        $query = "SELECT mes.*, 
+            str.sigle AS structure_sigle,
+            sec.name AS secteur_name
+            FROM " . $this->table . " mes 
+            LEFT JOIN t_structures str  ON mes.structure_id = str.id
+            LEFT JOIN t_secteurs sec ON mes.secteur_id = sec.id
+            ORDER BY mes.id ASC";
 
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
@@ -79,12 +82,9 @@ class Mesure
             san.annee,
             COALESCE(SUM(CAST(san.valeur AS DECIMAL(12,2))), 0) AS emission_evitee
         FROM " . $this->table . " mes
-        LEFT JOIN t_structures str 
-            ON mes.structure_id = str.id
-        LEFT JOIN t_secteurs sec
-            ON mes.secteur_id = sec.id
-        LEFT JOIN t_suivi_annuelle san 
-            ON san.mesure_id = mes.id
+        LEFT JOIN t_structures str  ON mes.structure_id = str.id
+        LEFT JOIN t_secteurs sec ON mes.secteur_id = sec.id
+        LEFT JOIN t_suivi_annuelle san  ON san.mesure_id = mes.id
         WHERE mes.state = 'actif'
         GROUP BY mes.id, san.annee
         ORDER BY mes.id, san.annee;";
