@@ -164,15 +164,15 @@
                                         class="hover-actions-trigger btn-reveal-trigger position-static">
                                         <td class="align-middle px-2">
                                             <div class="d-flex align-items-center text-body">
-                                                <i class="fas fa-file fs-8 me-2"></i><?= $document['name'] ?>
+                                                <i class="fas fa-file fs-9 me-2"></i><?= $document['name'] ?>
                                             </div>
                                         </td>
                                         <td class="align-middle px-2">
                                             <a class="d-flex align-items-center text-body" href="dossier_view.php?id=<?= $document['dossier_id'] ?>">
-                                                <i class="fas fa-folder fs-8 me-2"></i>
                                                 <div class="mb-0 text-body">
                                                     <?php foreach ($dossiers as $dossier) { ?>
                                                         <?php if ($dossier['id'] == $document['dossier_id']) { ?>
+                                                            <i class="fas fa-folder fs-9 me-1"></i>
                                                             <?= $dossier['name'] ?>
                                                         <?php } ?>
                                                     <?php } ?>
@@ -273,7 +273,8 @@
     <script>
         const data = <?php echo json_encode($data); ?>;
         const chartData = Object.keys(data).map((label, index) => ({
-            name: label, y: data[label],
+            name: label,
+            y: data[label],
             color: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#8AC24A', '#FF5733', '#33FF57', '#3357FF', '#F033FF'][index % 11]
         }));
 

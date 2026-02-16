@@ -39,6 +39,7 @@
                                     <label class="form-label">Dossier*</label>
                                     <select class="form-select" name="dossier_id" id="dossier_id" required>
                                         <option value="">Sélectionner un dossier</option>
+                                        <option value="0" selected>Racine</option>
                                         <?php if ($dossiers ?? []) : ?>
                                             <?php foreach ($dossiers as $dossier): ?>
                                                 <option value="<?= $dossier['id'] ?>"><?= $dossier['name'] ?></option>
