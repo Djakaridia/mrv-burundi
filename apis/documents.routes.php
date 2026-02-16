@@ -1,5 +1,9 @@
 <?php
 session_start();
+
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 $routePath = '../';
 
 require_once $routePath . 'config/cors-access.php';
@@ -10,161 +14,125 @@ require_once $routePath . 'models/Documents.php';
 configureCORS();
 header("Content-Type: application/json");
 
-// Authentication
+function sanitize($data)
+{
+    return htmlspecialchars(strip_tags(trim($data)));
+}
+
+function jsonResponse($code, $status, $message, $data = null)
+{
+    http_response_code($code);
+    echo json_encode(["status" => $status, "message" => $message, "data" => $data]);
+    exit;
+}
+
 try {
     $jwt = JWTUtils::getBearerToken();
     $payload = JWTUtils::validateJWT($jwt);
 } catch (Exception $e) {
-    http_response_code(401);
-    echo json_encode(['status' => 'danger', 'message' => 'Accès non autorisé']);
-    exit();
+    jsonResponse(401, "danger", "Accès non autorisé");
 }
 
-$database = new Database();
-$db = $database->getConnection();
+$db = (new Database())->getConnection();
 $document = new Documents($db);
-$requestMethod = $_SERVER['REQUEST_METHOD'];
-$uploadDirectory = $routePath . 'uploads/';
+$uploadDir = __DIR__ . '/../uploads/';
+$uploadDB = 'uploads/';
 
-function sanitize_input($data)
-{
-    return trim($data);
+if (!is_dir($uploadDir)) {
+    mkdir($uploadDir, 0777, true);
 }
 
-switch ($requestMethod) {
+$method = $_SERVER['REQUEST_METHOD'];
+
+switch ($method) {
     case 'POST':
-        $id = isset($_GET['id']) ? sanitize_input($_GET['id']) : null;
 
-        if ($id === null) {
-            if (isset($_FILES['file']) && isset($_POST['name']) && isset($_POST['dossier_id'])) {
-                $fileName = $_FILES['file']['name'];
-                $fileTmpName = $_FILES['file']['tmp_name'];
-                $fileSize = $_FILES['file']['size'];
-                $fileError = $_FILES['file']['error'];
-                $fileType = $_FILES['file']['type'];
-                $allow_file = strval($_POST['allow_files']);
-
-                $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-                $newFileName = uniqid('', true) . '.' . $fileExt;
-                $fileDestination = $uploadDirectory . $newFileName;
-
-                // Vérification de l'extension
-                if (!in_array('.' . $fileExt, explode(', ', $allow_file))) {
-                    http_response_code(400);
-                    echo json_encode(array('status' => 'danger', 'message' => 'Type de fichier non autorisé. Veuillez choisir un fichier de type: ' . $allow_file));
-                    exit();
-                }
-
-                // Vérification et déplacement du fichier
-                if ($fileError === 0) {
-                    if (move_uploaded_file($fileTmpName, $fileDestination)) {
-                        $document->name = sanitize_input($_POST['name']);
-                        $document->file_type = $fileExt;
-                        $document->file_path = $fileDestination;
-                        $document->file_size = $fileSize;
-                        $document->description = sanitize_input($_POST['description']);
-                        $document->dossier_id = sanitize_input($_POST['dossier_id']);
-                        $document->entity_id = sanitize_input($_POST['entity_id'] ?? 0);
-                        $document->add_by = sanitize_input($payload['user_id']);
-
-                        if ($document->create()) {
-                            http_response_code(200);
-                            echo json_encode(array('status' => 'success', 'message' => 'Document créé avec succès.', 'file_path' => $fileDestination));
-                        } else {
-                            unlink($fileDestination);
-                            http_response_code(503);
-                            echo json_encode(array('status' => 'danger', 'message' => 'Erreur lors de la création du document.'));
-                        }
-                    } else {
-                        http_response_code(500);
-                        echo json_encode(array('status' => 'danger', 'message' => 'Erreur lors du téléchargement du fichier.'));
-                    }
-                } else {
-                    http_response_code(400);
-                    echo json_encode(array('status' => 'danger', 'message' => 'Erreur avec le fichier uploadé.'));
-                }
-            } else {
-                http_response_code(400);
-                echo json_encode(array('status' => 'danger', 'message' => 'Aucun fichier reçu.'));
-            }
-        } else {
-            $document->id = $id;
-            $document->name = sanitize_input($_POST['name']);
-            $document->description = sanitize_input($_POST['description']);
-            $document->dossier_id = sanitize_input($_POST['dossier_id']);
-            $document->entity_id = sanitize_input($_POST['entity_id'] ?? 0);
-            $document->add_by = sanitize_input($payload['user_id']);
-
-            if ($document->update()) {
-                http_response_code(200);
-                echo json_encode(array('status' => 'success', 'message' => 'Document modifié avec succès.'));
-            } else {
-                http_response_code(503);
-                echo json_encode(array('status' => 'danger', 'message' => 'Erreur lors de la modification du document.'));
-            }
+        if (!isset($_FILES['file'])) {
+            jsonResponse(400, "danger", "Aucun fichier reçu");
         }
+
+        $allow = $_POST['allow_files'] ?? '';
+        $allowedExtensions = array_map(function ($ext) {
+            return strtolower(ltrim(trim($ext), '.'));
+        }, explode(',', $allow));
+
+        $fileName = $_FILES['file']['name'];
+        $fileTmp  = $_FILES['file']['tmp_name'];
+        $fileSize = $_FILES['file']['size'];
+        $fileError = $_FILES['file']['error'];
+        $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+        if (!in_array($fileExt, $allowedExtensions)) {
+            jsonResponse(400, "danger", "Type de fichier non autorisé : " . $fileExt);
+        }
+
+        if ($fileError !== 0) {
+            jsonResponse(400, "danger", "Erreur upload fichier");
+        }
+
+        $newName = uniqid() . '.' . $fileExt;
+        $fileDestination = $uploadDir . $newName;
+        $filePathDB = $uploadDB . $newName;
+
+        if (!move_uploaded_file($fileTmp, $fileDestination)) {
+            jsonResponse(500, "danger", "Impossible d’enregistrer le fichier");
+        }
+
+        $document->name = sanitize($_POST['name']);
+        $document->file_type = $fileExt;
+        $document->file_path = $filePathDB;
+        $document->file_size = $fileSize;
+        $document->description = sanitize($_POST['description']);
+        $document->dossier_id = sanitize($_POST['dossier_id']);
+        $document->entity_id = !empty($_POST['entity_id']) ? (int) $_POST['entity_id'] : null;
+        $document->add_by = $payload['user_id'];
+
+        if ($document->create()) {
+            jsonResponse(200, "success", "Document ajouté", $filePathDB);
+        }
+
+        unlink($fileDestination);
+        jsonResponse(503, "danger", "Erreur enregistrement DB");
 
         break;
 
     case 'DELETE':
-        $document->id = isset($_GET['id']) ? sanitize_input($_GET['id']) : die(json_encode(['error' => 'ID manquant']));
-        $delete_document = $document->readById();
+        $id = $_GET['id'] ?? null;
+
+        if (!$id) jsonResponse(400, "danger", "ID manquant");
+
+        $document->id = sanitize($id);
+        $doc = $document->readById();
+
+        if (!$doc) jsonResponse(404, "danger", "Document introuvable");
 
         if ($document->delete()) {
-            deleteFile($delete_document['file_path']);
-            http_response_code(200);
-            echo json_encode(array('status' => 'success', 'message' => 'Document supprimé avec succès.'));
-        } else {
-            http_response_code(503);
-            echo json_encode(array('status' => 'danger', 'message' => 'Erreur lors de la suppression du document.'));
-        }
-        break;
+            $file = __DIR__ . '/../' . $doc['file_path'];
+            if (file_exists($file)) unlink($file);
 
-    case 'PUT':
-        $document->id = isset($_GET['id']) ? sanitize_input($_GET['id']) : die(json_encode(['error' => 'ID manquant']));
-        $state = sanitize_input($_GET['state']);
-
-        if (isset($state) && $document->updateState($state)) {
-            http_response_code(200);
-            echo json_encode(array('status' => 'success', 'message' => 'Document modifié avec succès.'));
-        } else {
-            http_response_code(503);
-            echo json_encode(array('status' => 'danger', 'message' => 'Erreur lors de la modification du Document.'));
+            jsonResponse(200, "success", "Document supprimé");
         }
+
+        jsonResponse(503, "danger", "Erreur suppression");
+
         break;
 
     case 'GET':
-        $id = isset($_GET['id']) ? sanitize_input($_GET['id']) : null;
-        $projet_id = isset($_GET['projet_id']) ? sanitize_input($_GET['projet_id']) : null;
+        $id = $_GET['id'] ?? null;
 
         if ($id) {
-            $document->id = $id;
+            $document->id = sanitize($id);
             $data = $document->readById();
-            if ($data) {
-                http_response_code(200);
-                echo json_encode(array('status' => 'success', 'message' => 'Détails du document', 'data' => $data));
-            } else {
-                http_response_code(404);
-                echo json_encode(array('status' => 'warning', 'message' => 'Document non trouvé'));
-            }
-        } else {
-            $data = $document->read();
-            if ($data) {
-                http_response_code(200);
-                echo json_encode(array('status' => 'success', 'message' => 'Liste des documents', 'data' => $data));
-            } else {
-                http_response_code(404);
-                echo json_encode(array('status' => 'warning', 'message' => 'Aucun document trouvé'));
-            }
+
+            if ($data) jsonResponse(200, "success", "Détails document", $data);
+            jsonResponse(404, "warning", "Document non trouvé");
         }
+
+        $data = $document->read();
+        jsonResponse(200, "success", "Liste documents", $data);
+
         break;
 
     default:
-        http_response_code(405);
-        echo json_encode(array("message" => "Method not allowed."));
-        break;
+        jsonResponse(405, "danger", "Méthode non autorisée");
 }
-
-// Close database connection
-$db = null;
-exit();
