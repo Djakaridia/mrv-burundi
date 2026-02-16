@@ -186,6 +186,7 @@
         $('#sec_parent').removeClass('d-none');
         $('#sub_data_container').removeClass('d-none');
         $('#sec_organism').addClass('d-none');
+        $('#secteur_organism').removeAttr('required');
       } else {
         $('#sec_parent').addClass('d-none');
         $('#sub_data_container').addClass('d-none');
@@ -286,6 +287,8 @@
           errorAction(result.message);
         }
       } catch (error) {
+        console.log(error);
+        
         errorAction('Erreur lors de la soumission du formulaire.');
       } finally {
         submitBtn.prop('disabled', false);

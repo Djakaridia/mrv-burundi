@@ -63,9 +63,9 @@ switch ($requestMethod) {
             $mesure->code = sanitize_input($_POST['code']);
             $mesure->name = sanitize_input($_POST['name']);
             $mesure->status = sanitize_input($_POST['status'] ?? 'planifie');
-            $mesure->secteur_id = sanitize_input($_POST['secteur_id']) ?? null;
-            $mesure->structure_id = sanitize_input($_POST['structure_id']);
-            $mesure->referentiel_id = sanitize_input($_POST['referentiel_id']);
+            $mesure->secteur_id = (int)sanitize_input($_POST['secteur_id'] ?? 0) ?? null;
+            $mesure->structure_id = (int)sanitize_input($_POST['structure_id'] ?? 0);
+            $mesure->referentiel_id = (int)sanitize_input($_POST['referentiel_id'] ?? 0);
             $mesure->action_type = sanitize_input($_POST['action_type']);
             $mesure->instrument = sanitize_input($_POST['instrument']);
             $mesure->gaz = sanitize_input($_POST['gaz']);
@@ -92,9 +92,9 @@ switch ($requestMethod) {
             $mesure->code = sanitize_input($_POST['code']);
             $mesure->name = sanitize_input($_POST['name']);
             $mesure->status = sanitize_input($_POST['status'] ?? 'planifie');
-            $mesure->secteur_id = sanitize_input($_POST['secteur_id']) ?? null;
-            $mesure->structure_id = sanitize_input($_POST['structure_id']);
-            $mesure->referentiel_id = sanitize_input($_POST['referentiel_id']);
+            $mesure->secteur_id = (int)sanitize_input($_POST['secteur_id'] ?? 0) ?? null;
+            $mesure->structure_id = (int)sanitize_input($_POST['structure_id'] ?? 0);
+            $mesure->referentiel_id = (int)sanitize_input($_POST['referentiel_id'] ?? 0);
             $mesure->action_type = sanitize_input($_POST['action_type']);
             $mesure->instrument = sanitize_input($_POST['instrument']);
             $mesure->gaz = sanitize_input($_POST['gaz']);

@@ -120,7 +120,7 @@ switch ($requestMethod) {
                     $register->emission_cumulee   = floatval($row[array_search('Total Comule', $headers)]);
                     $register->file             = $fileDestination;
                     $register->annee            = $_POST['annee'];
-                    $register->inventaire_id    = $_POST['inventaire_id'];
+                    $register->inventaire_id    = (int)sanitize_input($_POST['inventaire_id'] ?? 0);
                     $register->add_by           = $payload['user_id'];
 
                     if (!$register->create()) {

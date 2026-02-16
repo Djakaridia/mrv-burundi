@@ -33,18 +33,17 @@ function sanitize_input($data)
 
 switch ($requestMethod) {
     case 'POST':
-        $table = $_POST['feuille'];
-        $operator = $_POST['operator'];
-        $colValue = $_POST['col_value'];
-        $colGroup = $_POST['col_group'];
-        $champ_criteres = $_POST['champ_criteres'];
-        $condition_criteres = $_POST['condition_criteres'];
-        $valeur_criteres = $_POST['valeur_criteres'];
-        $et_ou_criteres = $_POST['et_ou_criteres'];
-
-        $requete->name = $_POST['intitule'];
-        $requete->projet_id = $_POST['projet_id'];
-        $requete->indicateur_id = null;
+        $table = sanitize_input($_POST['feuille']);
+        $operator = sanitize_input($_POST['operator']);
+        $colValue = sanitize_input($_POST['col_value']);
+        $colGroup = sanitize_input($_POST['col_group']);
+        $champ_criteres = sanitize_input($_POST['champ_criteres']);
+        $condition_criteres = sanitize_input($_POST['condition_criteres']);
+        $valeur_criteres = sanitize_input($_POST['valeur_criteres']);
+        $et_ou_criteres = sanitize_input($_POST['et_ou_criteres']);
+        $requete->name = sanitize_input($_POST['intitule']);
+        $requete->projet_id = (int)sanitize_input($_POST['projet_id'] ?? 0);
+        $requete->indicateur_id = (int)sanitize_input($_POST['indicateur_id'] ?? 0);
         $requete->query = $sql;
         $requete->add_by = $payload['id'];
 

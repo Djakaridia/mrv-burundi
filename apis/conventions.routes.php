@@ -62,8 +62,8 @@ switch ($requestMethod) {
             $convention->name = sanitize_input($_POST['name']);
             $convention->montant = sanitize_input($_POST['montant']);
             $convention->date_accord = sanitize_input($_POST['date_accord']);
-            $convention->structure_id = sanitize_input($_POST['structure_id']);
-            $convention->projet_id = sanitize_input($_POST['projet_id']);
+            $convention->structure_id = (int)sanitize_input($_POST['structure_id']??0);
+            $convention->projet_id = (int)sanitize_input($_POST['projet_id']??0);
             $convention->add_by = sanitize_input($payload['user_id']);
 
             if ($convention->update()) {
@@ -76,8 +76,8 @@ switch ($requestMethod) {
             $convention->code = sanitize_input($_POST['code']);
             $convention->montant = sanitize_input($_POST['montant']);
             $convention->date_accord = sanitize_input($_POST['date_accord']);
-            $convention->structure_id = sanitize_input($_POST['structure_id']);
-            $convention->projet_id = sanitize_input($_POST['projet_id']);
+            $convention->structure_id = (int)sanitize_input($_POST['structure_id']??0);
+            $convention->projet_id = (int)sanitize_input($_POST['projet_id']??0);
             $convention->add_by = sanitize_input($payload['user_id']);
 
             if (empty($convention->name) || empty($convention->montant) || empty($convention->structure_id)) {

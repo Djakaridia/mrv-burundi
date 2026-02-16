@@ -60,6 +60,7 @@
                 <thead class="bg-primary-subtle">
                   <tr>
                     <th class="sort align-middle" scope="col" data-sort="name"> Nom & Prenoms</th>
+                    <th class="sort align-middle" scope="col" data-sort="identifiant"> Identifiant</th>
                     <th class="sort align-middle" scope="col" data-sort="email"> Email</th>
                     <th class="sort align-middle" scope="col" data-sort="contact"> Contact</th>
                     <th class="sort align-middle" scope="col" data-sort="role"> Role</th>
@@ -80,6 +81,7 @@
                           <span class="text-body text-capitalize"><?php echo $user['nom'] . ' ' . $user['prenom']; ?></span>
                         </div>
                       </td>
+                      <td class="align-middle product px-2"><?php echo $user['username']; ?></td>
                       <td class="align-middle product px-2"><?php echo $user['email']; ?></td>
                       <td class="align-middle product px-2"><?php echo $user['phone']; ?></td>
                       <td class="align-middle product px-2 py-0">

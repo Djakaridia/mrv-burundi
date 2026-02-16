@@ -83,7 +83,7 @@ switch ($method) {
         $document->file_path = $filePathDB;
         $document->file_size = $fileSize;
         $document->description = sanitize($_POST['description']);
-        $document->dossier_id = sanitize($_POST['dossier_id']);
+        $document->dossier_id = (int)sanitize($_POST['dossier_id'] ?? 0);
         $document->entity_id = !empty($_POST['entity_id']) ? (int) $_POST['entity_id'] : null;
         $document->add_by = $payload['user_id'];
 

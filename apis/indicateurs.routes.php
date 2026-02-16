@@ -74,9 +74,9 @@ switch ($requestMethod) {
             $indicateur->valeur_cible = sanitize_input($_POST['valeur_cible']);
             $indicateur->latitude = sanitize_input($_POST['latitude']);
             $indicateur->longitude = sanitize_input($_POST['longitude']);
-            $indicateur->referentiel_id = sanitize_input($_POST['referentiel_id']);
-            $indicateur->resultat_id = sanitize_input($_POST['resultat_id']);
-            $indicateur->projet_id = sanitize_input($_POST['projet_id']);
+            $indicateur->referentiel_id = (int)sanitize_input($_POST['referentiel_id'] ?? 0);
+            $indicateur->resultat_id = (int)sanitize_input($_POST['resultat_id'] ?? 0);
+            $indicateur->projet_id = (int)sanitize_input($_POST['projet_id'] ?? 0);
             $indicateur->add_by = sanitize_input($payload['user_id']);
 
             if ($indicateur->update()) {
@@ -96,9 +96,9 @@ switch ($requestMethod) {
             $indicateur->valeur_cible = sanitize_input($_POST['valeur_cible']);
             $indicateur->latitude = sanitize_input($_POST['latitude']);
             $indicateur->longitude = sanitize_input($_POST['longitude']);
-            $indicateur->referentiel_id = sanitize_input($_POST['referentiel_id']);
-            $indicateur->resultat_id = sanitize_input($_POST['resultat_id']);
-            $indicateur->projet_id = sanitize_input($_POST['projet_id']);
+            $indicateur->referentiel_id = (int)sanitize_input($_POST['referentiel_id'] ?? 0);
+            $indicateur->resultat_id = (int)sanitize_input($_POST['resultat_id'] ?? 0);
+            $indicateur->projet_id = (int)sanitize_input($_POST['projet_id'] ?? 0);
             $indicateur->add_by = sanitize_input($payload['user_id']);
 
             // Get projet data

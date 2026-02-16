@@ -40,7 +40,9 @@ $roles = $role->read();
               <div class="col-lg-6 mt-1">
                 <div class="mb-1">
                   <label class="form-label">Nom d'utilisateur*</label>
-                  <input class="form-control" type="text" name="username" id="username_user" placeholder="Entrer le nom d'utilisateur" required />
+                  <input class="form-control" type="text" name="username" id="username_user" placeholder="Entrer le nom d'utilisateur" required
+                    oninput="checkColumns('username', 'username_user', 'usernameFeedback', 'users')" />
+                  <div id="usernameFeedback" class="invalid-feedback"></div>
                 </div>
               </div>
               <div class="col-lg-6 mt-1">

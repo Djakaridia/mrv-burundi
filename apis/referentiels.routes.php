@@ -65,7 +65,7 @@ switch ($requestMethod) {
             $referentiel->unite = sanitize_input($_POST['unite']);
             $referentiel->echelle = sanitize_input($_POST['echelle']);
             $referentiel->modele = sanitize_input($_POST['modele']);
-            $referentiel->secteur_id = sanitize_input($_POST['secteur_id']);
+            $referentiel->secteur_id = (int)sanitize_input($_POST['secteur_id'] ?? 0);
             $referentiel->action = sanitize_input($_POST['action'] ?? "");
             $referentiel->responsable = sanitize_input($_POST['responsable']);
             $referentiel->action_type = sanitize_input($_POST['action_type'] ?? "");
@@ -92,7 +92,7 @@ switch ($requestMethod) {
             $referentiel->unite = sanitize_input($_POST['unite']);
             $referentiel->echelle = sanitize_input($_POST['echelle']);
             $referentiel->modele = sanitize_input($_POST['modele']);
-            $referentiel->secteur_id = sanitize_input($_POST['secteur_id']);
+            $referentiel->secteur_id = (int)sanitize_input($_POST['secteur_id'] ?? 0);
             $referentiel->action = sanitize_input($_POST['action'] ?? "");
             $referentiel->responsable = sanitize_input($_POST['responsable']);
             $referentiel->action_type = sanitize_input($_POST['action_type'] ?? "");
