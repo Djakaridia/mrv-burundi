@@ -295,7 +295,7 @@
                                     </td>
                                     <td class="text-center">
                                         <span class="badge badge-phoenix fs-10 py-1 rounded-pill badge-phoenix-<?= getBadgeClass($mesure['status']); ?>">
-                                            <?= listStatus()[$projet['status']]; ?>
+                                            <?= listStatus()[$mesure['status']]; ?>
                                         </span>
                                     </td>
                                     <td class="text-center fw-bold text-success">
