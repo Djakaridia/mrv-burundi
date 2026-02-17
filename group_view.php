@@ -58,6 +58,15 @@
     return in_array($group_id, $groupes_ids);
   });
 
+  $secteur = new Secteur($db);
+  $data_secteurs = $secteur->read();
+  $secteurs = array_filter($data_secteurs, function ($secteur) {
+    return $secteur['parent'] == 0 && $secteur['state'] == 'actif';
+  });
+  $sous_secteurs = array_filter($data_secteurs, function ($secteur) {
+    return $secteur['parent'] > 0 && $secteur['state'] == 'actif';
+  });
+
   $group_user = new GroupeUsers($db);
   $group_user->groupe_id = $group_id;
   $users_group = $group_user->readByGroupeId();

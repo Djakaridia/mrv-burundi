@@ -27,6 +27,9 @@
         return $register['inventaire_id'] == $active_inventory['id'];
     });
 
+    $registers_global = $registers;
+    usort($registers_global, function ($a, $b) {return (int)$a['secteur_id'] <=> (int)$b['secteur_id'];});
+
     $registers_secteurs = [];
     foreach ($registers as $register) $registers_secteurs[$register['secteur_id']][] = $register;
 
@@ -674,6 +677,71 @@
                                     </div>
                                 </div>
 
+                                <h5 class="m-2 text-semibold mt-4"><i class="fas fa-table me-2"></i>Données des émissions</h5>
+                                <div class="mx-n1 mb-3 px-1 scrollbar">
+                                    <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable2">
+                                        <thead class="bg-primary-subtle">
+                                            <tr>
+                                                <th class="sort align-middle text-uppercase">Année</th>
+                                                <th class="sort align-middle text-uppercase">Secteur</th>
+                                                <th class="sort align-middle text-uppercase">Catégorie</th>
+                                                <th class="sort align-middle text-uppercase" style="width: 5%;">Gaz</th>
+                                                <th class="sort align-middle text-uppercase" style="width: 8%;">Emission Année</th>
+                                                <th class="sort align-middle text-uppercase" style="width: 8%;">Emission Absolue</th>
+                                                <th class="sort align-middle text-uppercase" style="width: 8%;">Niveau Emission</th>
+                                                <th class="sort align-middle text-uppercase" style="width: 8%;">Emission Cumulée</th>
+                                                <th class="sort align-middle text-uppercase" style="width: 100px;">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="list" id="table-latest-review-body">
+                                            <?php foreach ($registers_global as $row) { ?>
+                                                <tr class="hover-actions-trigger btn-reveal-trigger position-static">
+                                                    <td class="align-middle px-2"> <?php echo $row['annee']; ?> </td>
+                                                    <td class="align-middle px-2"> 
+                                                        <?php echo array_column($secteurs, 'name', 'id')[$row['secteur_id']] ?? ''; ?>
+                                                    </td>
+                                                    <td class="align-middle px-2"> <strong><?php echo $row['code']; ?></strong> - <?php echo $row['categorie']; ?> </td>
+                                                    <td class="align-middle px-2">
+                                                        <span class="badge" style="background-color: <?php echo $gaz_colors[strtoupper($row['gaz'])] ?? '#6c757d'; ?>; color: white;">
+                                                            <?php echo $row['gaz']; ?>
+                                                        </span>
+                                                    </td>
+                                                    <td class="align-middle px-2"> <?php echo number_format($row['emission_annee'], 2); ?> </td>
+                                                    <td class="align-middle px-2"> <?php echo number_format($row['emission_absolue'], 2); ?> </td>
+                                                    <td class="align-middle px-2"> <?php echo number_format($row['emission_niveau'], 2); ?> </td>
+                                                    <td class="align-middle px-2"> <?php echo number_format($row['emission_cumulee'], 2); ?> </td>
+                                                    <td class="align-middle review px-2">
+                                                        <div class="position-relative">
+                                                            <div class="d-flex gap-1">
+                                                                <!-- <?php if (checkPermis($db, 'update')) : ?>
+                                                                    <button title="Modifier" class="btn btn-sm btn-phoenix-info fs-10 px-2 py-1" data-bs-toggle="modal"
+                                                                        data-bs-target="#addRegisterModal" data-id="<?php echo $row['id']; ?>">
+                                                                        <span class="uil-pen fs-8"></span>
+                                                                    </button>
+                                                                <?php endif; ?>
+
+                                                                <?php if (checkPermis($db, 'update', 2)) : ?>
+                                                                    <button title="Approuver/Désapprouver" onclick="updateState(<?php echo $row['id']; ?>, '<?php echo $row['status'] == 'approuve' ? 'non_approuve' : 'approuve'; ?>', 'Êtes-vous sûr de vouloir <?php echo $row['status'] == 'approuve' ? 'désapprouver' : 'approuver'; ?> ce register ?', 'registers')"
+                                                                        type="button" class="btn btn-sm btn-phoenix-warning fs-10 px-2 py-1">
+                                                                        <span class="uil-<?php echo $row['status'] == 'approuve' ? 'ban text-warning' : 'check-circle text-success'; ?> fs-8"></span>
+                                                                    </button>
+                                                                <?php endif; ?> -->
+
+                                                                <?php if (checkPermis($db, 'delete')) : ?>
+                                                                    <button title="Supprimer" onclick="deleteData(<?php echo $row['id']; ?>, 'Êtes-vous sûr de vouloir supprimer ce register ?', 'registers')"
+                                                                        type="button" class="btn btn-sm btn-phoenix-danger fs-10 px-2 py-1">
+                                                                        <span class="uil-trash-alt fs-8"></span>
+                                                                    </button>
+                                                                <?php endif; ?>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            <?php } ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+
                                 <h5 class="m-2 text-semibold mt-4"><i class="fas fa-table me-2"></i>Synthèse par secteur</h5>
                                 <div class="mx-n1 mb-3 px-1 scrollbar">
                                     <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
@@ -722,7 +790,6 @@
                                         </tbody>
                                     </table>
                                 </div>
-
                             <?php } else if (!empty($currFilSecteur)) { ?>
                                 <div class="row mx-0 mb-3 g-3">
                                     <div class="col-lg-6 col-12 mb-1">
@@ -805,7 +872,7 @@
                                                     <td class="align-middle review px-2">
                                                         <div class="position-relative">
                                                             <div class="d-flex gap-1">
-                                                                <?php if (checkPermis($db, 'update')) : ?>
+                                                                <!-- <?php if (checkPermis($db, 'update')) : ?>
                                                                     <button title="Modifier" class="btn btn-sm btn-phoenix-info fs-10 px-2 py-1" data-bs-toggle="modal"
                                                                         data-bs-target="#addRegisterModal" data-id="<?php echo $row['id']; ?>">
                                                                         <span class="uil-pen fs-8"></span>
@@ -817,7 +884,7 @@
                                                                         type="button" class="btn btn-sm btn-phoenix-warning fs-10 px-2 py-1">
                                                                         <span class="uil-<?php echo $row['status'] == 'approuve' ? 'ban text-warning' : 'check-circle text-success'; ?> fs-8"></span>
                                                                     </button>
-                                                                <?php endif; ?>
+                                                                <?php endif; ?> -->
 
                                                                 <?php if (checkPermis($db, 'delete')) : ?>
                                                                     <button title="Supprimer" onclick="deleteData(<?php echo $row['id']; ?>, 'Êtes-vous sûr de vouloir supprimer ce register ?', 'registers')"
@@ -912,16 +979,7 @@
                                                         <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                                                             <td class="align-middle px-2"><?php echo $row['annee']; ?></td>
                                                             <td class="align-middle px-2">
-                                                                <strong><?php
-                                                                        $secteur_name = '';
-                                                                        foreach ($data_secteurs as $s) {
-                                                                            if ($s['id'] == $row['secteur_id']) {
-                                                                                $secteur_name = $s['name'];
-                                                                                break;
-                                                                            }
-                                                                        }
-                                                                        echo htmlspecialchars($secteur_name);
-                                                                        ?></strong>
+                                                                <?php echo array_column($secteurs, 'name', 'id')[$row['secteur_id']] ?? ''; ?>
                                                             </td>
                                                             <td class="align-middle px-2">
                                                                 <strong><?php echo $row['code']; ?></strong> - <?php echo $row['categorie']; ?>
@@ -933,7 +991,7 @@
                                                             <td class="align-middle review px-2">
                                                                 <div class="position-relative">
                                                                     <div class="d-flex gap-1">
-                                                                        <?php if (checkPermis($db, 'update')) : ?>
+                                                                        <!-- <?php if (checkPermis($db, 'update')) : ?>
                                                                             <button title="Modifier" class="btn btn-sm btn-phoenix-info fs-10 px-2 py-1" data-bs-toggle="modal"
                                                                                 data-bs-target="#addRegisterModal" data-id="<?php echo $row['id']; ?>">
                                                                                 <span class="uil-pen fs-8"></span>
@@ -945,7 +1003,7 @@
                                                                                 type="button" class="btn btn-sm btn-phoenix-warning fs-10 px-2 py-1">
                                                                                 <span class="uil-<?php echo $row['status'] == 'approuve' ? 'ban text-warning' : 'check-circle text-success'; ?> fs-8"></span>
                                                                             </button>
-                                                                        <?php endif; ?>
+                                                                        <?php endif; ?> -->
 
                                                                         <?php if (checkPermis($db, 'delete')) : ?>
                                                                             <button title="Supprimer" onclick="deleteData(<?php echo $row['id']; ?>, 'Êtes-vous sûr de vouloir supprimer ce register ?', 'registers')"
@@ -961,22 +1019,12 @@
                                                     }
                                                 }
                                             } else {
-                                                // Si $table_data n'est pas défini, afficher toutes les lignes filtrées
                                                 foreach ($registers_gaz[$currFilGaz] as $row) {
                                                     ?>
                                                     <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                                                         <td class="align-middle px-2"><?php echo $row['annee']; ?></td>
                                                         <td class="align-middle px-2">
-                                                            <strong><?php
-                                                                    $secteur_name = '';
-                                                                    foreach ($data_secteurs as $s) {
-                                                                        if ($s['id'] == $row['secteur_id']) {
-                                                                            $secteur_name = $s['name'];
-                                                                            break;
-                                                                        }
-                                                                    }
-                                                                    echo htmlspecialchars($secteur_name);
-                                                                    ?></strong>
+                                                            <?php echo array_column($secteurs, 'name', 'id')[$row['secteur_id']] ?? ''; ?>
                                                         </td>
                                                         <td class="align-middle px-2">
                                                             <strong><?php echo $row['code']; ?></strong> - <?php echo $row['categorie']; ?>
@@ -988,7 +1036,7 @@
                                                         <td class="align-middle review px-2">
                                                             <div class="position-relative">
                                                                 <div class="d-flex gap-1">
-                                                                    <?php if (checkPermis($db, 'update')) : ?>
+                                                                    <!-- <?php if (checkPermis($db, 'update')) : ?>
                                                                         <button title="Modifier" class="btn btn-sm btn-phoenix-info fs-10 px-2 py-1" data-bs-toggle="modal"
                                                                             data-bs-target="#addRegisterModal" data-id="<?php echo $row['id']; ?>">
                                                                             <span class="uil-pen fs-8"></span>
@@ -1000,7 +1048,7 @@
                                                                             type="button" class="btn btn-sm btn-phoenix-warning fs-10 px-2 py-1">
                                                                             <span class="uil-<?php echo $row['status'] == 'approuve' ? 'ban text-warning' : 'check-circle text-success'; ?> fs-8"></span>
                                                                         </button>
-                                                                    <?php endif; ?>
+                                                                    <?php endif; ?> -->
 
                                                                     <?php if (checkPermis($db, 'delete')) : ?>
                                                                         <button title="Supprimer" onclick="deleteData(<?php echo $row['id']; ?>, 'Êtes-vous sûr de vouloir supprimer ce register ?', 'registers')"

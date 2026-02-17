@@ -78,8 +78,8 @@ if (!empty($projets)) {
                     $budget_conventions_formate = $budget_conventions > 0 ? number_format($budget_conventions, 0, ',', ' ') . ' USD' : 'Aucune convention';
                     $montant_depense_formate = $montant_total_depense > 0 ? number_format($montant_total_depense, 0, ',', ' ') . ' USD' : '0 USD';
                 ?>
-                    <div class="col-12 col-lg-6 col-xl-4 mb-4">
-                        <div class="card border border-light h-100 hover-shadow-lg overflow-hidden">
+                    <div class="col-12 col-lg-6 col-xl-4">
+                        <div class="card card-float border border-primary-subtle h-100 overflow-hidden">
                             <div class="card-body p-3">
                                 <div class="d-flex align-items-start mb-2 gap-2">
                                     <?php if (!empty($projet['logo'])): ?>
@@ -96,8 +96,11 @@ if (!empty($projets)) {
                                     <div class="flex-grow-1">
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <span class="badge badge-phoenix fs-10 py-1 rounded-pill badge-phoenix-secondary">
-                                                <i class="fas fa-qrcode me-1"></i><?= $projet['code'] ?? "N/A"; ?>
+                                                <?php foreach ($secteurs as $secteur) {
+                                                    if ($secteur['id'] == $projet['secteur_id']) echo $secteur['name'];
+                                                } ?>
                                             </span>
+
                                             <span class="badge badge-phoenix fs-10 py-1 rounded-pill badge-phoenix-<?= $projet['status'] ? getBadgeClass($projet['status']) : "secondary"; ?>">
                                                 <?= listStatus()[$projet['status']] ?? 'N/A'; ?>
                                             </span>
@@ -194,9 +197,15 @@ if (!empty($projets)) {
                             </div>
 
                             <div class="card-footer bg-transparent border-0 p-3 pt-0">
-                                <a href="project_view.php?id=<?= $projet['id'] ?>" class="btn btn-sm btn-phoenix-primary rounded-1 w-100">
-                                    <i class="fas fa-eye me-1"></i>Détails
-                                </a>
+                                <div class="d-flex align-items-center gap-3">
+                                    <button title="Voir" class="btn btn-sm btn-phoenix-info rounded-1 w-100" data-bs-toggle="modal" data-bs-target="#projectsCardViewModal" data-id="<?= $projet['id'] ?>">
+                                        <i class="fas fa-eye me-1"></i> Aperçu
+                                    </button>
+
+                                    <a href="project_view.php?id=<?= $projet['id'] ?>" class="btn btn-sm btn-phoenix-warning rounded-1 w-100">
+                                        <i class="fas fa-list me-1"></i>Détails
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>

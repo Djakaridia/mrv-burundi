@@ -19,9 +19,17 @@
   $secteurs = array_filter(array_reverse($data_secteurs), function ($secteur) {
     return $secteur['parent'] == 0;
   });
+  usort($secteurs, function ($a, $b) {
+    return (int)$a['code'] <=> (int)$b['code'];
+  });
+
   $sous_secteurs = array_filter($data_secteurs, function ($secteur) {
     return $secteur['parent'] > 0;
   });
+  usort($sous_secteurs, function ($a, $b) {
+    return (int)$a['code'] <=> (int)$b['code'];
+  });
+
   $actions_prio = new ActionPrioritaire($db);
   $data_actions_prio = $actions_prio->read();
 
@@ -99,7 +107,7 @@
                         <td class="align-middle px-2 text-center" colspan="2">
                           <?php foreach ($structures as $structure): ?>
                             <?php if ($structure['id'] == $secteur['structure_id']): ?>
-                                <?= $structure['description']?  $structure['description'].'('.$structure['sigle'].')' : $structure['sigle'] ?>
+                              <?= $structure['description'] ?  $structure['description'] . '(' . $structure['sigle'] . ')' : $structure['sigle'] ?>
                             <?php endif; ?>
                           <?php endforeach; ?>
                         </td>
