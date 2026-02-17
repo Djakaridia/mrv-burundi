@@ -26,7 +26,7 @@
   </style>
 
   <script>
-    const viewMode = localStorage.getItem('viewMode') || 'table';
+    const viewMode = localStorage.getItem('viewMode') || 'card';
     document.documentElement.setAttribute('data-view', viewMode);
     document.addEventListener('DOMContentLoaded', function() {
 
