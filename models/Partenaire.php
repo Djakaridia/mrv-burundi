@@ -1,20 +1,16 @@
 <?php
-class Structure
+class Partenaire
 {
     private $conn;
-    private $table = 't_structures';
+    private $table = 't_partenaires';
 
     public $id;
     public $code;
     public $sigle;
-    public $logo;
     public $email;
-    public $phone;
-    public $address;
     public $description;
-    public $type_id;
+    public $perimetre;
     public $add_by;
-
 
     public function __construct($db)
     {
@@ -24,17 +20,14 @@ class Structure
     public function create()
     {
         $query = "INSERT INTO " . $this->table . " 
-                 (code, sigle, logo, email, phone, address, description, type_id, add_by) 
-                 VALUES (:code, :sigle, :logo, :email, :phone, :address, :description, :type_id, :add_by)";
+                 (code, sigle, email, description, perimetre, add_by) 
+                 VALUES (:code, :sigle, :email, :description, :perimetre, :add_by)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':code', $this->code);
         $stmt->bindParam(':sigle', $this->sigle);
-        $stmt->bindParam(':logo', $this->logo);
         $stmt->bindParam(':email', $this->email);
-        $stmt->bindParam(':phone', $this->phone);
-        $stmt->bindParam(':address', $this->address);
         $stmt->bindParam(':description', $this->description);
-        $stmt->bindParam(':type_id', $this->type_id);
+        $stmt->bindParam(':perimetre', $this->perimetre);
         $stmt->bindParam(':add_by', $this->add_by);
 
         return $stmt->execute();
@@ -62,12 +55,9 @@ class Structure
         $query = "UPDATE " . $this->table . " 
                  SET code = :code, 
                      sigle = :sigle, 
-                     logo = :logo, 
                      email = :email, 
-                     phone = :phone, 
-                     address = :address, 
                      description = :description, 
-                     type_id = :type_id,
+                     perimetre = :perimetre,
                      add_by = :add_by,
                      updated_at = CURRENT_TIMESTAMP
                  WHERE id = :id";
@@ -76,12 +66,9 @@ class Structure
         $stmt->bindParam(':id', $this->id);
         $stmt->bindParam(':code', $this->code);
         $stmt->bindParam(':sigle', $this->sigle);
-        $stmt->bindParam(':logo', $this->logo);
         $stmt->bindParam(':email', $this->email);
-        $stmt->bindParam(':phone', $this->phone);
-        $stmt->bindParam(':address', $this->address);
         $stmt->bindParam(':description', $this->description);
-        $stmt->bindParam(':type_id', $this->type_id);
+        $stmt->bindParam(':perimetre', $this->perimetre);
         $stmt->bindParam(':add_by', $this->add_by);
 
         return $stmt->execute();
@@ -93,17 +80,5 @@ class Structure
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $this->id);
         return $stmt->execute();
-    }
-
-    public function updateState($state) {
-        $query = "UPDATE " . $this->table . " SET state = :state WHERE id = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':state', $state);
-        $stmt->bindParam(':id', $this->id);
-
-        if ($stmt->execute()) {
-            return true;
-        }
-        return false;
     }
 }

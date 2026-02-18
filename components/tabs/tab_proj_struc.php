@@ -40,9 +40,9 @@
                             <td class="align-middle customer"><?php echo $structure['sigle']; ?></td>
                             <td class="align-middle rating"><?php echo $structure['sigle']; ?></td>
                             <td class="align-middle review" style="min-width:350px;">
-                                <?php foreach ($type_structures as $type_structure) { ?>
-                                    <?php if ($type_structure['id'] == $structure['type_id']) { ?>
-                                        <?php echo $type_structure['name']; ?>
+                                <?php foreach (listTypeActeur() as $key => $value) { ?>
+                                    <?php if ($key == $structure['type_id']) { ?>
+                                        <?php echo $value; ?>
                                     <?php } ?>
                                 <?php } ?>
                             </td>

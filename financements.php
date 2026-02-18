@@ -9,13 +9,13 @@
   <!-- ===============================================-->
   <!--    Document Title-->
   <!-- ===============================================-->
-  <title>Bailleurs | MRV - Burundi</title>
+  <title>Financements | MRV - Burundi</title>
 
   <?php
   include './components/navbar & footer/head.php';
 
-  $structure = new Structure($db);
-  $structures = $structure->read();
+  $partenaire = new Partenaire($db);
+  $partenaires = $partenaire->read();
 
   $convention = new Convention($db);
   $conventions = $convention->read();
@@ -56,54 +56,39 @@
             <div class="table-responsive mx-n1 px-1 scrollbar" style="min-height: 432px;">
               <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
                 <thead class="bg-primary-subtle">
-                  <tr>
-                    <th class="sort align-middle" scope="col" data-sort="product">Logo</th>
-                    <th class="sort align-middle" scope="col" data-sort="product">Code</th>
-                    <th class="sort align-middle" scope="col" data-sort="customer" style="min-width:200px;">Nom</th>
-                    <th class="sort align-middle" scope="col" data-sort="rating">Sigle</th>
-                    <th class="sort align-middle" scope="col" data-sort="review">Acteur</th>
-                    <th class="sort align-middle" scope="col" data-sort="review">Projet</th>
-                    <th class="sort align-middle" scope="col" data-sort="rating" style="min-width:110px;">Montant</th>
-                    <th class="sort align-middle" scope="col" data-sort="rating" style="min-width:110px;">Date d'acord
-                    </th>
+                  <tr class="text-nowrap">
+                    <th class="sort align-middle" scope="col">Code</th>
+                    <th class="sort align-middle" scope="col">Convention</th>
+                    <th class="sort align-middle" scope="col">Bailleur</th>
+                    <th class="sort align-middle" scope="col">Type d'action</th>
+                    <th class="sort align-middle" scope="col">Projet / Action</th>
+                    <th class="sort align-middle" scope="col" style="min-width:110px;">Montant (USD)</th>
+                    <th class="sort align-middle" scope="col" style="min-width:110px;">Date d'acord</th>
                     <th class="sort align-middle" scope="col" style="min-width:100px;">Actions</th>
                   </tr>
                 </thead>
                 <tbody class="list" id="table-latest-review-body">
                   <?php foreach ($conventions as $convention) { ?>
                     <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                      <td class="align-middle product py-0">
-                        <span class="d-block rounded-2 border border-translucent text-center text-primary">
-                          <?php foreach ($structures as $structure) { ?>
-                            <?php if ($structure['id'] == $convention['structure_id']) { ?>
-                              <?php if ($structure['logo']) { ?>
-                                <img src="<?php echo $structure['logo']; ?>" alt="Logo" width="45" />
-                              <?php } else { ?>
-                                <i class="fas fa-users fs-8 p-2"></i>
-                              <?php } ?>
-                            <?php } ?>
-                          <?php } ?>
-                        </span>
-                      </td>
-                      <td class="align-middle product"><?php echo $convention['code']; ?></td>
-                      <td class="align-middle customer"><?php echo $convention['name']; ?></td>
-                      <td class="align-middle rating"><?php echo $convention['montant']; ?></td>
-                      <td class="align-middle review">
-                        <?php foreach ($structures as $structure) { ?>
-                          <?php if ($structure['id'] == $convention['structure_id']) { ?>
-                            <?php echo $structure['sigle']; ?>
+                      <td class="align-middle"><?php echo $convention['code']; ?></td>
+                      <td class="align-middle"><?php echo $convention['name']; ?></td>
+                      <td class="align-middle">
+                        <?php foreach ($partenaires as $partenaire) { ?>
+                          <?php if ($partenaire['id'] == $convention['partenaire_id']) { ?>
+                            <?php echo $partenaire['sigle']; ?>
                           <?php } ?>
                         <?php } ?>
                       </td>
-                      <td class="align-middle review">
+                      <td class="align-middle"><?php echo listTypeAction()[$convention['action_type']]??"N/A"; ?></td>
+                      <td class="align-middle">
                         <?php foreach ($projets as $projet) { ?>
                           <?php if ($projet['id'] == $convention['projet_id']) { ?>
-                            <?php echo $projet['name']; ?>
+                            <?php echo html_entity_decode($projet['name']); ?>
                           <?php } ?>
                         <?php } ?>
                       </td>
                       <td class="align-middle rating" style="min-width:200px;">
-                        <span class="badge bg-primary p-2 fs-10"><?php echo number_format($convention['montant'], 0, 0); ?></span>
+                        <span class="badge badge-phoenix badge-phoenix-primary px-2 py-1 rounded-pill fs-9"><?php echo number_format($convention['montant'], 0, 0); ?></span>
                       </td>
                       <td class="align-middle date">
                         <?php echo date('Y-m-d', strtotime($convention['date_accord'])); ?>

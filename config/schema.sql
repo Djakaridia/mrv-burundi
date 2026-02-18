@@ -150,16 +150,6 @@ CREATE TABLE IF NOT EXISTS t_zones (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Table de type structures
-CREATE TABLE IF NOT EXISTS t_type_structures (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(200) NOT NULL,
-    description TEXT,
-    add_by INT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 -- Table des structures
 CREATE TABLE IF NOT EXISTS t_structures (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -379,12 +369,41 @@ CREATE TABLE IF NOT EXISTS t_conventions (
     name VARCHAR(200) NOT NULL,
     montant DECIMAL(15,2) NOT NULL,
     date_accord DATE NOT NULL,
-    structure_id INT,
+    action_type VARCHAR(50),
+    partenaire_id INT,
     projet_id INT,
     add_by INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Table des structures
+CREATE TABLE IF NOT EXISTS t_partenaires (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(50) NOT NULL,
+    sigle VARCHAR(50) NOT NULL,
+    email VARCHAR(200) NOT NULL,
+    description TEXT,
+    perimetre VARCHAR(50), --National / International
+    add_by INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- -- Table des financement
+-- CREATE TABLE IF NOT EXISTS t_financements (
+--     id INT AUTO_INCREMENT PRIMARY KEY,
+--     structure_id INT,
+--     partenaire_id INT,
+--     secteur_id INT,
+--     sous_secteur VARCHAR(150),
+--     montant DECIMAL(15,2) NOT NULL,
+--     action_type VARCHAR(50),    --Attenuation / Adaptation
+--     instrument_type VARCHAR(50),    --Subvention, Prêt, Don, PPP…
+--     add_by INT,
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Table des tâches
 CREATE TABLE IF NOT EXISTS t_taches (

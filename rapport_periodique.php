@@ -159,7 +159,7 @@
                                             </div>
                                             <div class="card-footer bg-white dark__bg-dark p-2">
                                                 <div class="d-flex justify-content-between">
-                                                    <a href="rperiode_view.php?id=<?= $rapport['id'] ?>" class="btn btn-sm btn-phoenix-primary">
+                                                    <a href="rapport_periode_view.php?id=<?= $rapport['id'] ?>" class="btn btn-sm btn-phoenix-primary">
                                                         <i class="fas fa-eye me-1"></i> Consulter
                                                     </a>
                                                     <div class="dropdown">

@@ -377,21 +377,51 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
 
                 <li class="nav-item">
                     <div class="navbar-vertical-label bg-light-subtle m-0 px-2">
-                        <i class="fas fa-list me-1"></i> Financements
+                        <i class="fas fa-list me-1"></i> Soutiens & Financements
                     </div>
 
                     <div class="nav-item-wrapper">
-                        <a class="nav-link dropdown-indicator label-1 rounded-0 m-0 <?php echo in_array($pageCurr, ['analyse_budgetaire']) ? 'active' : '' ?>" href="analyse_budgetaire.php" role="button" aria-expanded="<?= in_array($pageCurr, ['analyse_budgetaire']) ? 'true' : 'false'; ?>">
+                        <?php $subModSoutien = ['partenaires', 'financements', 'analyse_budgetaire']; ?>
+                        <a class="nav-link dropdown-indicator label-1 rounded-0 m-0" href="#nv-soutiens" role="button" data-bs-toggle="collapse" aria-expanded="<?= in_array($pageCurr, $subModSoutien) ? 'true' : 'false'; ?>" aria-controls="nv-soutiens">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center">
                                     <span class="nav-link-icon ms-2 my-1"><span data-feather="server"></span></span>
-                                    <span class="nav-link-text">Analyse budgétaire</span>
+                                    <span class="nav-link-text">Soutiens</span>
                                 </div>
                                 <div class="dropdown-indicator-icon-wrapper">
                                     <span class="fas fa-chevron-right dropdown-indicator-icon"></span>
                                 </div>
                             </div>
                         </a>
+                        <div class="parent-wrapper label-1">
+                            <ul class="nav collapse parent rounded-1 ms-1 <?= in_array($pageCurr, $subModSoutien) ? 'show' : ''; ?>" data-bs-parent="#navbarVerticalCollapse" id="nv-soutiens">
+                                <li class="collapsed-nav-item-title d-none">Soutiens</li>
+                                <li class="nav-item overflow-hidden">
+                                    <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'partenaires' ? 'active' : '' ?>" href="partenaires.php">
+                                        <div class="d-flex align-items-center">
+                                            <span class="fas fa-chevron-right fs-11"></span>
+                                            <span class="nav-link-text ms-lg-0 ms-1">Partenaires</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="nav-item overflow-hidden">
+                                    <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'financements' ? 'active' : '' ?>" href="financements.php">
+                                        <div class="d-flex align-items-center">
+                                            <span class="fas fa-chevron-right fs-11"></span>
+                                            <span class="nav-link-text ms-lg-0 ms-1">Financements</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="nav-item overflow-hidden">
+                                    <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'analyse_budgetaire' ? 'active' : '' ?>" href="analyse_budgetaire.php">
+                                        <div class="d-flex align-items-center">
+                                            <span class="fas fa-chevron-right fs-11"></span>
+                                            <span class="nav-link-text ms-lg-0 ms-1">Analyse budgétaire</span>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </li>
 
@@ -401,7 +431,7 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                     </div>
 
                     <div class="nav-item-wrapper">
-                        <?php $subModReports = ['rapport_dynamique', 'rapport_periodique', 'rperiode_view', 'dashboard', 'rapport_sectoriel']; ?>
+                        <?php $subModReports = ['rapport_dynamique', 'rapport_periodique', 'rapport_periode_view', 'dashboard', 'rapport_sectoriel']; ?>
                         <a class="nav-link dropdown-indicator label-1 rounded-0 m-0" href="#nv-reports" role="button" data-bs-toggle="collapse" aria-expanded="<?= in_array($pageCurr, $subModReports) ? 'true' : 'false'; ?>" aria-controls="nv-reports">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center">
@@ -425,7 +455,7 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                                     </a>
                                 </li>
                                 <li class="nav-item overflow-hidden">
-                                    <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo in_array($pageCurr, ['rapport_periodique', 'rperiode_view']) ? 'active' : '' ?>" href="rapport_periodique.php">
+                                    <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo in_array($pageCurr, ['rapport_periodique', 'rapport_periode_view']) ? 'active' : '' ?>" href="rapport_periodique.php">
                                         <div class="d-flex align-items-center">
                                             <span class="fas fa-chevron-right fs-11"></span>
                                             <span class="nav-link-text ms-lg-0 ms-1">Rapports périodiques</span>

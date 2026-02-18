@@ -58,7 +58,7 @@
                         </div>
                     </header>
 
-                    <div class="p-3">
+                    <div class="py-3 mx-n2">
                         <div class="accordion" id="accordionFlushExample">
                             <div class="accordion-item border-0">
                                 <button type="button" id="litem_lib_1"
@@ -145,7 +145,7 @@
                                     Chapitre 2 : DETAILS FINANCIERS
                                 </button>
                                 <div id="litem_2" class="accordion-collapse collapse show" style="padding: 10px;">
-                                    <?php if (isset($structures_project)) { ?>
+                                    <?php if (isset($partenaires_project)) { ?>
                                         <div class="mb-3">
                                             <div class="text-primary fs-8 fw-bold mb-1 border-bottom">Source de Financement :</div>
                                             <ul>
@@ -155,10 +155,10 @@
                                                         <span class="fw-bold">
                                                             <?php echo number_format($convention["montant"], 0, ',', ' ') . " USD"; ?>
                                                         </span>
-                                                        <?php foreach ($structures_project as $structure) { ?>
-                                                            <?php if ($structure['id'] == $convention['structure_id']) { ?>
+                                                        <?php foreach ($partenaires_project as $partenaire) { ?>
+                                                            <?php if ($partenaire['id'] == $convention['partenaire_id']) { ?>
                                                                 <i class="fa fa-arrow-right mx-1 text-primary"></i>
-                                                                <?php echo html_entity_decode($structure['description']) . ' <b>(' . $structure["sigle"] . ')</b>'; ?>
+                                                                <?php echo html_entity_decode($partenaire['description']) . ' <b>(' . $partenaire["sigle"] . ')</b>'; ?>
                                                             <?php } ?>
                                                         <?php } ?>
                                                     </li>
@@ -213,7 +213,6 @@
                                     <?php } ?>
                                 </div>
                             </div>
-
 
                             <div class="accordion-item border-0">
                                 <button type="button" id="litem_lib_4"

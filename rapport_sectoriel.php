@@ -52,25 +52,25 @@
             return strtoupper(removeAccents($data['secteur'])) === strtoupper(removeAccents($secteur_curr['name']));
         });
 
-        // Structures
-        $type_structure = new StructureType($db);
-        $type_structures = $type_structure->read();
-
         $structure = new Structure($db);
         $structures = $structure->read();
         $structures = array_filter($structures, function ($structure) use ($secteur_curr) {
             return $structure['state'] == 'actif' && $structure['secteur_id'] == $secteur_curr['id'];
         });
-
-        // Conventions
         $structures_ids = array_map(function ($structure) {
             return $structure['id'];
         }, $structures);
 
+        $partenaire = new Partenaire($db);
+        $partenaires = $partenaire->read();
+        $partenaires_ids = array_map(function ($partenaire) {
+            return $partenaire['id'];
+        }, $partenaires);
+
         $convention = new Convention($db);
         $conventions = $convention->read();
-        $conventions = array_filter($conventions, function ($convention) use ($structures_ids) {
-            return in_array($convention['structure_id'], $structures_ids);
+        $conventions = array_filter($conventions, function ($convention) use ($partenaires_ids) {
+            return in_array($convention['partenaire_id'], $partenaires_ids);
         });
     }
     ?>
@@ -247,9 +247,9 @@
                                                         <td class="align-middle rating"><?php echo $structure['email']; ?></td>
                                                         <td class="align-middle rating"><?php echo $structure['phone']; ?></td>
                                                         <td class="align-middle review">
-                                                            <?php foreach ($type_structures as $type_structure) { ?>
-                                                                <?php if ($type_structure['id'] == $structure['type_id']) { ?>
-                                                                    <?php echo $type_structure['name']; ?>
+                                                            <?php foreach (listTypeActeur() as $key => $value) { ?>
+                                                                <?php if ($key == $structure['type_id']) { ?>
+                                                                    <?php echo $value; ?>
                                                                 <?php } ?>
                                                             <?php } ?>
                                                         </td>
@@ -272,7 +272,6 @@
                                     <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable4">
                                         <thead class="bg-primary-subtle">
                                             <tr>
-                                                <th class="align-middle px-2">Logo</th>
                                                 <th class="align-middle px-2">Code</th>
                                                 <th class="align-middle px-2">Intitulé</th>
                                                 <th class="align-middle px-2">Bailleur</th>
@@ -284,28 +283,10 @@
                                             <?php if (isset($conventions) && count($conventions) > 0) : ?>
                                                 <?php foreach ($conventions as $convention) : ?>
                                                     <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                                                        <td class="align-middle product py-0">
-                                                            <?php foreach ($structures as $structure) {
-                                                                $logoStruc = explode("../", $structure['logo'] ?? ''); ?>
-                                                                <?php if ($structure['id'] == $convention['structure_id']) { ?>
-                                                                    <?php if ($structure['logo']) { ?>
-                                                                        <img class="d-block rounded-1 w-100 object-fit-contain" src="<?php echo end($logoStruc) ?>" alt="Logo" height="35" />
-                                                                    <?php } else { ?>
-                                                                        <div class="d-block rounded-1 border border-translucent text-center p-1 text-primary">
-                                                                            <i class="fas fa-users fs-8 p-1"></i>
-                                                                        </div>
-                                                                    <?php } ?>
-                                                                <?php } ?>
-                                                            <?php } ?>
-                                                        </td>
                                                         <td class="align-middle product"><?php echo $convention['code']; ?></td>
                                                         <td class="align-middle customer"><?php echo $convention['name']; ?></td>
                                                         <td class="align-middle review">
-                                                            <?php foreach ($structures as $structure) { ?>
-                                                                <?php if ($structure['id'] == $convention['structure_id']) { ?>
-                                                                    <?php echo $structure['sigle']; ?>
-                                                                <?php } ?>
-                                                            <?php } ?>
+                                                            <?php echo array_column($partenaires, 'description', 'id')[$convention['partenaire_id']]; ?>
                                                         </td>
                                                         <td class="align-middle rating" style="min-width:200px;">
                                                             <span class="badge bg-info-subtle text-info p-2 fs-10"><?php echo number_format($convention['montant'], 0, ',', ' '); ?></span>

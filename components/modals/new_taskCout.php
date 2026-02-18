@@ -27,7 +27,7 @@
                                 <thead class="bg-primary-subtle">
                                     <tr>
                                         <th scope="col" class="fs-12 px-2 text-center" width="40%">Convention</th>
-                                        <th scope="col" class="fs-12 px-2 text-center" width="60%">Montant</th>
+                                        <th scope="col" class="fs-12 px-2 text-center" width="60%">Montant (USD)</th>
                                     </tr>
                                 </thead>
                                 <tbody>

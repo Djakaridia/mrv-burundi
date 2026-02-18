@@ -34,9 +34,6 @@
   $users = $user->read();
   $users = array_filter($users, function ($user) { return $user['state'] == 'actif'; });
 
-  $type_structure = new StructureType($db);
-  $type_structures = $type_structure->read();
-
   //=============================//
   //=============================//
   $group = new GroupeTravail($db);

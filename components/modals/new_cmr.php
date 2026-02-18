@@ -51,7 +51,7 @@
               </div>
             </div>
             <!-- Objectif -->
-            <div class="col-6">
+            <div class="col-4">
               <div class="form-floating">
                 <select class="form-select" name="resultat_id" id="indicateurObjectif" required>
                   <option value="" selected disabled>Sélectionner un niveau</option>
@@ -65,22 +65,8 @@
               </div>
             </div>
 
-            <div class="col-6">
-              <div class="form-floating">
-                <select class="form-select" name="projet_id" id="indicSelectProjet">
-                  <option value="" selected disabled>Sélectionner un projet</option>
-                  <?php if ($projets ?? []) : ?>
-                    <?php foreach ($projets as $projet) : ?>
-                      <option value="<?= $projet['id'] ?>"><?= html_entity_decode($projet['name']) ?></option>
-                    <?php endforeach; ?>
-                  <?php endif; ?>
-                </select>
-                <label for="indicSelectProjet">Projet*</label>
-              </div>
-            </div>
-
             <!-- Unite -->
-            <div class="col-6">
+            <div class="col-4">
               <div class="form-floating">
                 <select class="form-select" name="unite" id="indicateurUnite" required>
                   <option value="" selected disabled>Sélectionner une unité</option>
@@ -94,7 +80,7 @@
               </div>
             </div>
             <!-- Mode de calcul -->
-            <div class="col-6">
+            <div class="col-4">
               <div class="form-floating">
                 <select class="form-select" name="mode_calcul" id="indicateurModeCalcul" required>
                   <option value="" selected disabled>Sélectionner un mode de calcul</option>
@@ -106,8 +92,22 @@
               </div>
             </div>
 
+            <div class="col-6 mt-1">
+              <div class="form-group">
+                <label for="indicSelectProjet" class="form-label">Projet*</label>
+                <select class="form-select" name="projet_id" id="indicSelectProjet">
+                  <option value="" selected disabled>Sélectionner un projet</option>
+                  <?php if ($projets ?? []) : ?>
+                    <?php foreach ($projets as $projet) : ?>
+                      <option value="<?= $projet['id'] ?>"><?= html_entity_decode($projet['name']) ?></option>
+                    <?php endforeach; ?>
+                  <?php endif; ?>
+                </select>
+              </div>
+            </div>
+
             <!-- Responsable -->
-            <div class="col-12 mt-0">
+            <div class="col-6 mt-1">
               <div class="form-group">
                 <label for="indicateurResponsable" class="form-label">Responsable*</label>
                 <select class="form-select" name="responsable" id="indicateurResponsable" required>
@@ -186,6 +186,7 @@
   $(document).ready(function() {
     initSelect2("#addIndicateurModal", "indicateurReferentiel");
     initSelect2("#addIndicateurModal", "indicateurResponsable");
+    initSelect2("#addIndicateurModal", "indicSelectProjet");
 
     $('#addIndicateurModal').on('shown.bs.modal', async function(event) {
       const dataId = $(event.relatedTarget).data('id');
@@ -223,17 +224,15 @@
           form.annee_reference.value = result.data.annee_reference;
           form.unite.value = result.data.unite;
           form.mode_calcul.value = result.data.mode_calcul;
-          // form.responsable.value = result.data.responsable;
           form.latitude.value = result.data.latitude;
           form.longitude.value = result.data.longitude;
           form.valeur_reference.value = result.data.valeur_reference;
           form.valeur_cible.value = result.data.valeur_cible;
-          form.projet_id.value = result.data.projet_id;
-          // form.referentiel_id.value = result.data.referentiel_id;
           form.resultat_id.value = result.data.resultat_id;
 
           $('#indicateurResponsable').val(result.data.responsable).trigger('change');
           $('#indicateurReferentiel').val(result.data.referentiel_id).trigger('change');
+          $('#indicSelectProjet').val(result.data.projet_id).trigger('change');
         } catch (error) {
           errorAction('Impossible de charger les données.');
         } finally {
@@ -261,6 +260,7 @@
         $('#cmrContentContainer').hide();
       }, 200);
       $('#FormIndicateur')[0].reset();
+      $('#indicSelectProjet').val("").trigger('change');
       $('#indicateurResponsable').val("").trigger('change');
       $('#indicateurReferentiel').val("").trigger('change');
     });

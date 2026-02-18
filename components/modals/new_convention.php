@@ -21,14 +21,14 @@
           <form action="" name="FormConven" id="FormConven" method="POST" enctype="multipart/form-data">
             <div class="row g-4">
 
-              <div class="col-lg-6 mt-1">
+              <div class="col-lg-3 mt-1">
                 <div class="mb-1">
                   <label class="form-label">Code*</label>
                   <input class="form-control" type="text" name="code" id="code_conven" placeholder="Entrer le code" required />
                   <div class="invalid-feedback" id="code_conven_feedback"></div>
                 </div>
               </div>
-              <div class="col-lg-6 mt-1">
+              <div class="col-lg-9 mt-1">
                 <div class="mb-1">
                   <label class="form-label">Intitulé*</label>
                   <input class="form-control" type="text" name="name" id="name_conven" placeholder="Entrer l'intitulé"
@@ -36,9 +36,9 @@
                 </div>
               </div>
 
-              <div class="col-12 mt-1">
+              <div class="col-6 mt-1">
                 <div class="mb-1">
-                  <label class="form-label">Montant*</label>
+                  <label class="form-label">Montant (USD)*</label>
                   <input class="form-control" type="number" name="montant" id="montant_conven"
                     placeholder="Entrer le montant" required />
                 </div>
@@ -47,12 +47,12 @@
               <div class="col-lg-6 mt-1">
                 <div class="mb-1">
                   <label class="form-label">Bailleur*</label>
-                  <select class="form-select" name="structure_id" id="structure_id_conven" required>
+                  <select class="form-select" name="partenaire_id" id="partenaire_id_conven" required>
                     <option value="">Sélectionner un bailleur</option>
-                    <?php if ($structures ?? []) : ?>
-                      <?php foreach ($structures as $structure): ?>
-                        <option value="<?= $structure['id'] ?>">
-                          <?= $structure['description'] ? $structure['description'] . ' (' . $structure['sigle'] . ')' : $structure['sigle']; ?>
+                    <?php if ($partenaires ?? []) : ?>
+                      <?php foreach ($partenaires as $partenaire): ?>
+                        <option value="<?= $partenaire['id'] ?>">
+                          <?= $partenaire['description'] ? $partenaire['description'] . ' (' . $partenaire['sigle'] . ')' : $partenaire['sigle']; ?>
                         </option>
                       <?php endforeach; ?>
                     <?php endif; ?>
@@ -67,10 +67,36 @@
                     placeholder="Entrer la date d'accord" data-options='{"dateFormat":"Y-m-d"}' />
                 </div>
               </div>
+              <div class="col-lg-6 mt-1">
+                <div class="mb-1">
+                  <label class="form-label">Type de soutien*</label>
+                  <select class="form-select" name="action_type" id="action_type_conven" required>
+                    <option value="">Sélectionner un type</option>
+                    <?php foreach (listTypeAction() as $key => $action): ?>
+                      <option value="<?= $key ?>"><?= $action; ?></option>
+                    <?php endforeach; ?>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-lg-12 mt-1">
+                <div class="mb-1">
+                  <label class="form-label">Projets / Actions*</label>
+                  <select class="form-select" name="projet_id" id="projet_id_conven" required>
+                    <option value="">Sélectionner un projet / action</option>
+                    <?php if ($projets ?? []) : ?>
+                      <?php foreach ($projets as $projet): ?>
+                        <option value="<?= $projet['id'] ?>" data-action-type="<?= $projet['action_type'] ?>">
+                          <?= $projet['code'] . " - " . $projet['name']; ?>
+                        </option>
+                      <?php endforeach; ?>
+                    <?php endif; ?>
+                  </select>
+                </div>
+              </div>
             </div>
 
             <div class="modal-footer d-flex justify-content-between border-0 pt-3 px-0 pb-0">
-              <input type="hidden" name="projet_id" id="projet_id_conven" value="<?php echo $project_curr['id'] ?? ''; ?>">
               <button type="button" class="btn btn-secondary btn-sm px-3 my-0" data-bs-dismiss="modal"
                 aria-label="Close">Annuler</button>
               <button type="submit" class="btn btn-primary btn-sm px-3 my-0" id="conven_modbtn">Ajouter</button>
@@ -85,97 +111,202 @@
 
 <script>
   let formConvenID = null;
+  let allProjetSelect = [];
+
   $(document).ready(function() {
-    initSelect2("#addConvenModal", "structure_id_conven");
+    initSelect2("#addConvenModal", "partenaire_id_conven");
+    initSelect2("#addConvenModal", "projet_id_conven");
 
-    $('#addConvenModal').on('shown.bs.modal', async function(event) {
-      const dataId = $(event.relatedTarget).data('id');
-      const form = document.getElementById('FormConven');
-      // Show loading screen and hide content
-      $('#conventionLoadingScreen').show();
-      $('#conventionContentContainer').hide();
-      if (dataId) {
-        formConvenID = dataId;
-        $('#conven_modtitle').text('Modifier la convention');
-        $('#conven_modbtn').text('Modifier');
-        $('#conventionLoadingText').text("Chargement des données conventions...");
-
-        try {
-          const response = await fetch(`./apis/conventions.routes.php?id=${dataId}`, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            },
-            method: 'GET',
-          });
-
-          const result = await response.json();
-          form.code.value = result.data.code;
-          form.name.value = result.data.name;
-          // form.structure_id.value = result.data.structure_id;
-          form.projet_id.value = result.data.projet_id;
-          form.montant.value = result.data.montant;
-          form.date_accord.value = result.data.date_accord;
-
-          $('#structure_id_conven').val(result.data.structure_id).trigger('change');
-        } catch (error) {
-          errorAction('Impossible de charger les données.');
-        } finally {
-          // Hide loading screen and show content
-          $('#conventionLoadingScreen').hide();
-          $('#conventionContentContainer').show();
-        }
-      } else {
-        formConvenID = null;
-        $('#conven_modtitle').text('Ajouter une convention');
-        $('#conven_modbtn').text('Ajouter');
-        $('#conventionLoadingText').text("Préparation du formulaire...");
-
-        setTimeout(() => {
-          $('#conventionLoadingScreen').hide();
-          $('#conventionContentContainer').show();
-        }, 200);
-      }
-    });
-
-    $('#addConvenModal').on('hide.bs.modal', function() {
-      $('#FormConven')[0].reset();
-      $('#structure_id_conven').val("").trigger('change');
-      setTimeout(() => {
-        $('#conventionLoadingScreen').show();
-        $('#conventionContentContainer').hide();
-      }, 200);
-    });
-
-    $('#FormConven').on('submit', async function(event) {
-      event.preventDefault();
-      const formData = new FormData(this);
-      const url = formConvenID ? `./apis/conventions.routes.php?id=${formConvenID}` : './apis/conventions.routes.php';
-      const submitBtn = $('#conven_modbtn');
-      submitBtn.prop('disabled', true);
-      submitBtn.text('Envoi en cours...');
-
-      try {
-        const response = await fetch(url, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          },
-          method: "POST",
-          body: formData
-        });
-
-        const result = await response.json();
-        if (result.status === 'success') {
-          successAction('Données envoyées avec succès.');
-          $('#addConvenModal').modal('hide');
-        } else {
-          errorAction(result.message || 'Erreur lors de l\'envoi des données.');
-        }
-      } catch (error) {
-        errorAction('Erreur lors de l\'envoi des données.');
-      } finally {
-        submitBtn.prop('disabled', false);
-        submitBtn.text('Enregistrer');
-      }
-    });
+    $('#addConvenModal').on('shown.bs.modal', handleModalOpen);
+    $('#addConvenModal').on('hide.bs.modal', handleModalClose);
+    $('#action_type_conven').on('change', handleActionTypeChange);
+    $('#FormConven').on('submit', handleFormSubmit);
+    initializeProjetList();
   });
+
+  async function handleModalOpen(event) {
+    const button = $(event.relatedTarget);
+    const dataId = button.data('id');
+    const projetId = button.data('projet');
+    const actionType = button.data('action');
+    const form = document.getElementById('FormConven');
+
+    if (actionType) form.action_type.value = actionType;
+    if (projetId) $('#projet_id_conven').val(projetId).trigger('change');
+
+    showLoadingScreen();
+
+    if (dataId) {
+      await loadConventionData(dataId, form);
+    } else {
+      resetFormConvention(form);
+    }
+  }
+
+  async function loadConventionData(dataId, form) {
+    formConvenID = dataId;
+    updateModalTitleAndButton('Modifier');
+    $('#conventionLoadingText').text("Chargement des données conventions...");
+
+    try {
+      const response = await fetch(`./apis/conventions.routes.php?id=${dataId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (result.status === 'success' && result.data) {
+        populateConventionData(form, result.data);
+      } else {
+        throw new Error(result.message || 'Données invalides');
+      }
+    } catch (error) {
+      console.error('Erreur de chargement:', error);
+      errorAction('Impossible de charger les données.');
+    } finally {
+      hideLoadingScreen();
+    }
+  }
+
+  function populateConventionData(form, data) {
+    form.code.value = data.code || '';
+    form.name.value = data.name || '';
+    form.montant.value = data.montant || '';
+    form.action_type.value = data.action_type || '';
+    form.date_accord.value = data.date_accord || '';
+
+    $('#partenaire_id_conven').val(data.partenaire_id || '').trigger('change');
+    $('#projet_id_conven').val(data.projet_id || '').trigger('change');
+  }
+
+  function resetFormConvention(form) {
+    formConvenID = null;
+    updateModalTitleAndButton('Ajouter');
+    $('#conventionLoadingText').text("Préparation du formulaire...");
+
+    setTimeout(() => {
+      hideLoadingScreen();
+    }, 200);
+  }
+
+  function handleModalClose() {
+    const form = $('#FormConven')[0];
+    if (form) form.reset();
+
+    $('#partenaire_id_conven, #projet_id_conven').val('').trigger('change');
+
+    setTimeout(() => {
+      showLoadingScreen();
+    }, 200);
+  }
+
+  function handleActionTypeChange() {
+    const selectedAction = $(this).val();
+    const $projetSelect = $('#projet_id_conven');
+
+    $projetSelect.val('').empty().append('<option value="">Sélectionner un projet / action</option>');
+
+    if (selectedAction) {
+      const filteredProjects = allProjetSelect.filter(projet =>
+        projet.action_type == selectedAction
+      );
+
+      filteredProjects.forEach(projet => {
+        $projetSelect.append($('<option>', {
+          value: projet.value,
+          text: projet.text
+        }));
+      });
+
+      $projetSelect.prop('disabled', false);
+    } else {
+      $projetSelect.prop('disabled', true);
+    }
+
+    $projetSelect.trigger('change');
+  }
+
+  async function handleFormSubmit(event) {
+    event.preventDefault();
+
+    const formData = new FormData(this);
+    const submitBtn = $('#conven_modbtn');
+    const url = formConvenID ?
+      `./apis/conventions.routes.php?id=${formConvenID}` :
+      './apis/conventions.routes.php';
+
+    setSubmitButtonState(submitBtn, true, 'Envoi en cours...');
+
+    try {
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        method: "POST",
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (result.status === 'success') {
+        successAction('Données envoyées avec succès.');
+        $('#addConvenModal').modal('hide');
+      } else {
+        throw new Error(result.message || 'Erreur lors de l\'envoi des données.');
+      }
+    } catch (error) {
+      console.error('Erreur de soumission:', error);
+      errorAction(error.message || 'Erreur lors de l\'envoi des données.');
+    } finally {
+      setSubmitButtonState(submitBtn, false, 'Enregistrer');
+    }
+  }
+
+  function initializeProjetList() {
+    allProjetSelect = [];
+
+    $('#projet_id_conven option').each(function() {
+      const $this = $(this);
+      const value = $this.val();
+
+      if (value) {
+        allProjetSelect.push({
+          value: value,
+          text: $this.text(),
+          action_type: $this.data('action-type')
+        });
+      }
+    });
+  }
+
+  function updateModalTitleAndButton(action) {
+    $('#conven_modtitle').text(`${action} la convention`);
+    $('#conven_modbtn').text(action);
+  }
+
+  function showLoadingScreen() {
+    $('#conventionLoadingScreen').show();
+    $('#conventionContentContainer').hide();
+  }
+
+  function hideLoadingScreen() {
+    $('#conventionLoadingScreen').hide();
+    $('#conventionContentContainer').show();
+  }
+
+  function setSubmitButtonState($button, disabled, text) {
+    $button.prop('disabled', disabled);
+    $button.text(text);
+  }
 </script>

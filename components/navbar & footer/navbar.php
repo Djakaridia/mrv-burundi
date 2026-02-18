@@ -111,7 +111,7 @@ $nav_resultats = count($nav_projets) + count($nav_groupes) + count($nav_rapports
                         <h6 class="dropdown-header text-body-highlight fs-9 bg-light border-bottom border-translucent py-2 lh-sm">Rapports</h6>
                         <div class="py-2">
                             <?php foreach ($nav_rapports as $rapport) { ?>
-                                <a class="dropdown-item py-2 d-flex align-items-center navbar-item" href="rperiode_view.php?id=<?php echo $rapport['id']; ?>">
+                                <a class="dropdown-item py-2 d-flex align-items-center navbar-item" href="rapport_periode_view.php?id=<?php echo $rapport['id']; ?>">
                                     <div class="file-thumbnail"> <span class="fas fa-pie-chart text-primary fs-9"></span></div>
                                     <div class="flex-1">
                                         <h6 class="mb-0 text-primary title"><?php echo $rapport['intitule']; ?></h6>

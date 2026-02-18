@@ -487,7 +487,7 @@ $array_typeLogo = ".jpg, .jpeg, .png, .gif, .webp";
         });
 
         $('[projet-wizard-next-btn]').on('click', function() {
-            const currentTab = $('.tab-pane.active');
+            const currentTab = $('#FormProjet .tab-pane.active');
             const currentForm = currentTab.find('form');
 
             if (currentForm.length && currentForm[0].checkValidity) {
@@ -497,7 +497,7 @@ $array_typeLogo = ".jpg, .jpeg, .png, .gif, .webp";
                 }
             }
 
-            const nextTab = currentTab.next('.tab-pane');
+            const nextTab = currentTab.next('#FormProjet .tab-pane');
             if (nextTab.length) {
                 const tabId = nextTab.attr('id');
                 $(`a[href="#${tabId}"]`).tab('show');
@@ -601,7 +601,7 @@ $array_typeLogo = ".jpg, .jpeg, .png, .gif, .webp";
 
         for (let form of forms) {
             if (form && !form.checkValidity()) {
-                const tabId = $(form).closest('.tab-pane').attr('id');
+                const tabId = $(form).closest('#FormProjet .tab-pane').attr('id');
                 if (tabId) $(`a[href="#${tabId}"]`).tab('show');
                 form.reportValidity();
                 return false;
@@ -637,7 +637,7 @@ $array_typeLogo = ".jpg, .jpeg, .png, .gif, .webp";
 
         $('.nav-wizard .nav-link').removeClass('active');
         $('.nav-wizard .nav-item:first-child .nav-link').addClass('active');
-        $('.tab-pane').removeClass('active show');
+        $('#FormProjet .tab-pane').removeClass('active show');
         $('#projet-wizard-tab1').addClass('active show');
         $('[projet-wizard-prev-btn]').addClass('d-none');
         $('[projet-wizard-next-btn]').removeClass('d-none');

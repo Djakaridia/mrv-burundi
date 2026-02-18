@@ -40,14 +40,12 @@
                                 <div class="mb-1">
                                     <label class="form-label">Type*</label>
                                     <select class="form-select" name="type_id" id="structure_type_id" required>
-                                        <option value="">Sélectionner le type</option>
-                                        <?php if ($type_structures ?? []) : ?>
-                                            <?php foreach ($type_structures as $type_structure) { ?>
-                                                <option value="<?php echo $type_structure['id']; ?>">
-                                                    <?php echo $type_structure['name']; ?>
-                                                </option>
-                                            <?php } ?>
-                                        <?php endif; ?>
+                                        <option value="" selected disabled>Sélectionner le type</option>
+                                        <?php foreach (listTypeActeur() as $key => $type) { ?>
+                                            <option value="<?php echo $key; ?>">
+                                                <?php echo $type; ?>
+                                            </option>
+                                        <?php } ?>
                                     </select>
                                 </div>
                             </div>

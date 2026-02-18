@@ -14,14 +14,8 @@
   <?php
   include './components/navbar & footer/head.php';
 
-  $tab = isset($_GET['tab']) ? $_GET['tab'] : 'actor';
-
-  if (!in_array($tab, ['actor', 'type'])) {
-    $tab = 'actor';
-  }
-
-  $structure = new Structure($db);
-  $structures = $structure->read();
+  $partenaire = new Partenaire($db);
+  $partenaires = $partenaire->read();
   ?>
 </head>
 
@@ -37,13 +31,13 @@
           <div class="mx-n4 mt-n5 px-0 mx-lg-n6 px-lg-0 bg-body-emphasis border border-start-0 border-start-0">
             <div class="card-body p-2 d-lg-flex flex-row justify-content-between align-items-center g-3">
               <div class="col-auto">
-                <h4 class="my-1 fw-black fs-8">Liste des acteurs</h4>
+                <h4 class="my-1 fw-black fs-8">Liste des partenaires</h4>
               </div>
 
-              <button title="Ajouter un acteur" class="btn btn-subtle-primary btn-sm" id="addBtn" data-bs-toggle="modal"
-                data-bs-target="#addStructureModal" aria-haspopup="true" aria-expanded="false"
+              <button title="Ajouter un partenaire" class="btn btn-subtle-primary btn-sm" id="addBtn" data-bs-toggle="modal"
+                data-bs-target="#addPartenaireModal" aria-haspopup="true" aria-expanded="false"
                 data-bs-reference="parent">
-                <i class="fas fa-plus"></i> Ajouter un acteur</button>
+                <i class="fas fa-plus"></i> Ajouter un partenaire</button>
             </div>
           </div>
 
@@ -54,58 +48,33 @@
                   <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
                     <thead class="bg-primary-subtle">
                       <tr>
-                        <th class="sort align-middle" scope="col">#</th>
                         <th class="sort align-middle" scope="col" data-sort="product">Code</th>
                         <th class="sort align-middle" scope="col" data-sort="rating">Sigle</th>
                         <th class="sort align-middle" scope="col" data-sort="rating">Email</th>
-                        <th class="sort align-middle" scope="col" data-sort="rating">Contact</th>
-                        <th class="sort align-middle" scope="col" data-sort="review">Type</th>
+                        <th class="sort align-middle" scope="col" data-sort="review">Périmètre</th>
                         <th class="sort align-middle" scope="col" style="min-width:100px;">Actions</th>
                       </tr>
                     </thead>
                     <tbody class="list" id="table-latest-review-body">
-                      <?php foreach ($structures as $structure) {
-                        $logoStruc = explode("../", $structure['logo'] ?? ''); ?>
+                      <?php foreach ($partenaires as $partenaire) {
+                        $logoStruc = explode("../", $partenaire['logo'] ?? ''); ?>
                         <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                          <td class="align-middle product py-1">
-                            <?php if ($structure['logo']) { ?>
-                              <img class="d-block rounded-1 w-100 object-fit-contain" src="<?php echo end($logoStruc) ?>" alt="Logo" height="35" />
-                            <?php } else { ?>
-                              <div class="d-block rounded-1 border border-translucent text-center p-1 text-primary">
-                                <i class="fas fa-users fs-8 p-1"></i>
-                              </div>
-                            <?php } ?>
-                          </td>
-                          <td class="align-middle product"><?php echo $structure['code']; ?></td>
-                          <td class="align-middle rating"><?php echo $structure['description']? $structure['description'].' ('.$structure['sigle'].')': $structure['sigle']; ?></td>
-                          <td class="align-middle rating"><?php echo $structure['email']; ?></td>
-                          <td class="align-middle rating"><?php echo $structure['phone']; ?></td>
-                          <td class="align-middle review">
-                            <?php foreach (listTypeActeur() as $key => $type) { ?>
-                              <?php if ($key == $structure['type_id']) { ?>
-                                <?php echo $type; ?>
-                              <?php } ?>
-                            <?php } ?>
-                          </td>
+                          <td class="align-middle"><?php echo $partenaire['code']; ?></td>
+                          <td class="align-middle"><?php echo $partenaire['description']? $partenaire['description'].' ('.$partenaire['sigle'].')': $partenaire['sigle']; ?></td>
+                          <td class="align-middle"><?php echo $partenaire['email']; ?></td>
+                          <td class="align-middle text-capitalize"><?php echo $partenaire['perimetre']; ?></td>
                           <td class="align-middle">
                             <div class="position-relative d-flex gap-1">
                               <?php if (checkPermis($db, 'update')) : ?>
                                 <button title="Modifier" class="btn btn-sm btn-phoenix-info fs-10 px-2 py-1" data-bs-toggle="modal"
-                                  data-bs-target="#addStructureModal" data-id="<?php echo $structure['id']; ?>">
+                                  data-bs-target="#addPartenaireModal" data-id="<?php echo $partenaire['id']; ?>">
                                   <span class="uil-pen fs-8"></span>
-                                </button>
-                              <?php endif; ?>
-
-                              <?php if (checkPermis($db, 'update', 2)) : ?>
-                                <button title="<?php echo $structure['state'] == 'actif' ? 'Désactiver' : 'Activer'; ?>" onclick="updateState(<?php echo $structure['id']; ?>, '<?php echo $structure['state'] == 'actif' ? 'inactif' : 'actif'; ?>', 'Êtes-vous sûr de vouloir <?php echo $structure['state'] == 'actif' ? 'désactiver' : 'activer'; ?> cet acteur ?', 'structures')"
-                                  type="button" class="btn btn-sm btn-phoenix-warning fs-10 px-2 py-1">
-                                  <span class="uil-<?php echo $structure['state'] == 'actif' ? 'ban text-warning' : 'check-circle text-success'; ?> fs-8"></span>
                                 </button>
                               <?php endif; ?>
 
                               <?php if (checkPermis($db, 'delete', 2)) : ?>
                                 <button title="Supprimer" class="btn btn-sm btn-phoenix-danger fs-10 px-2 py-1" type="button"
-                                  onclick="deleteData(<?php echo $structure['id']; ?>, 'Êtes-vous sûr de vouloir supprimer cet acteur ?', 'structures')">
+                                  onclick="deleteData(<?php echo $partenaire['id']; ?>, 'Êtes-vous sûr de vouloir supprimer cet partenaire ?', 'partenaires')">
                                   <span class="uil-trash-alt fs-8"></span>
                                 </button>
                               <?php endif; ?>
@@ -119,6 +88,7 @@
               </div>
             </div>
           </div>
+      </div>
     </div>
 
     <?php include './components/navbar & footer/footer.php'; ?>

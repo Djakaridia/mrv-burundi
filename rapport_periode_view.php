@@ -52,7 +52,7 @@
     $suivis_secteur_grouped = array();
     $suivis_annee_grouped = array();
     foreach ($suivis_project as $suivi) {
-        $suivis_secteur_grouped[$suivi['secteur_id']][] = $suivi;
+        $suivis_secteur_grouped[$suivi['secteur_id']??''][] = $suivi;
         $suivis_annee_grouped[$suivi['annee']][] = $suivi;
     }
 
@@ -81,7 +81,7 @@
     $cibles_secteur_grouped = array();
     $cibles_annee_grouped = array();
     foreach ($cibles_project as $cible) {
-        $cibles_secteur_grouped[$cible['secteur_id']][] = $cible;
+        $cibles_secteur_grouped[$cible['secteur_id']??''][] = $cible;
         $cibles_annee_grouped[$cible['annee']][] = $cible;
     }
 

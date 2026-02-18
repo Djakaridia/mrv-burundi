@@ -34,17 +34,17 @@
             </div>
 
             <!-- Projet -->
-            <div class="col-md-12">
-              <div class="form-floating">
-                <select class="form-select" name="projet_id" id="rapportProjet" required>
+            <div class="col-md-12 mt-1">
+              <div class="form-group">
+                <label for="indicSelectProjet" class="form-label">Projet*</label>
+                <select class="form-select" name="projet_id" id="rapportSelectProjet">
                   <option value="" selected disabled>Sélectionner un projet</option>
                   <?php if ($projets ?? []) : ?>
                     <?php foreach ($projets as $projet) : ?>
-                      <option value="<?= $projet['id'] ?>"><?= $projet['name'] ?></option>
+                      <option value="<?= $projet['id'] ?>"><?= html_entity_decode($projet['name']) ?></option>
                     <?php endforeach; ?>
                   <?php endif; ?>
                 </select>
-                <label for="rapportProjet">Projet*</label>
               </div>
             </div>
             <!-- Périodicité -->
@@ -108,6 +108,7 @@
 <script>
   let formrapportID = null;
   $(document).ready(function() {
+    initSelect2("#addRapportPeriodeModal", "rapportSelectProjet");
     $('#addRapportPeriodeModal').on('shown.bs.modal', async function(event) {
       const dataId = $(event.relatedTarget).data('id');
       const form = document.getElementById('FormRapportPeriode');
@@ -135,8 +136,8 @@
           form.annee_ref.value = result.data.annee_ref;
           form.mois_ref.value = result.data.mois_ref;
           form.periode.value = result.data.periode;
-          form.projet_id.value = result.data.projet_id;
           form.description.value = result.data.description;
+          $('#rapportSelectProjet').val(result.data.projet_id).trigger('change');
         } catch (error) {
           errorAction('Impossible de charger les données.');
         } finally {
@@ -158,7 +159,8 @@
 
     $('#addRapportPeriodeModal').on('hide.bs.modal', function() {
       $('#FormRapportPeriode')[0].reset();
-      setTimeout(()=> {
+      $('#rapportSelectProjet').val("").trigger('change');
+      setTimeout(() => {
         $('#rapportPerLoadingScreen').show();
         $('#rapportPerContentContainer').hide();
       }, 200);

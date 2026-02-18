@@ -538,7 +538,17 @@ function listTypeInstrument()
     ];
 }
 
-function listTypeCategorie(){
+function listTypeActeur()
+{
+    return [
+        '1' => 'Partenaire de mise en œuvre',
+        '2' => 'Partenaire stratégique',
+        // '3' => 'Partenaire de financement'
+    ];
+}
+
+function listTypeCategorie()
+{
     return [
         'effet' => 'Effet',
         'impact' => 'Impact',
@@ -557,7 +567,8 @@ function listStatus()
     ];
 }
 
-function listTypeScenario(){
+function listTypeScenario()
+{
     return [
         'bau' => 'Business as Usual (BAU)',   // Sans mesures - Business as Usual
         'wem' => 'Inonditionnel (WEM)',        // Avec mesures - Inconditionnel
