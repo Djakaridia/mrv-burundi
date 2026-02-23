@@ -95,15 +95,22 @@ if (!empty($projets)) {
 
                                     <div class="flex-grow-1">
                                         <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <span class="badge badge-phoenix fs-10 py-1 rounded-pill badge-phoenix-secondary">
-                                                <?php foreach ($secteurs as $secteur) {
-                                                    if ($secteur['id'] == $projet['secteur_id']) echo $secteur['name'];
-                                                } ?>
-                                            </span>
+                                            <div class="d-flex gap-1">
+                                                <span class="badge badge-phoenix fs-10 py-1 rounded-pill badge-phoenix-secondary">
+                                                    <?php foreach ($secteurs as $secteur) {
+                                                        if ($secteur['id'] == $projet['secteur_id']) echo $secteur['name'];
+                                                    } ?>
+                                                </span>
+                                                <span class="badge badge-phoenix fs-10 py-1 <?= listClassAction()[$projet['action_type']]['badge'] ?> rounded-pill">
+                                                    <?= htmlspecialchars(listTypeAction()[$projet['action_type']]) ?>
+                                                </span>
+                                            </div>
 
-                                            <span class="badge badge-phoenix fs-10 py-1 rounded-pill badge-phoenix-<?= $projet['status'] ? getBadgeClass($projet['status']) : "secondary"; ?>">
-                                                <?= listStatus()[$projet['status']] ?? 'N/A'; ?>
-                                            </span>
+                                            <div class="d-flex gap-3 align-items-center justify-content-end">
+                                                <span class="badge badge-phoenix fs-10 py-1 rounded-pill badge-phoenix-<?= $projet['state'] == "actif" ? "success" : "secondary"; ?>">
+                                                    <?= $projet['state'] ?? 'N/A'; ?>
+                                                </span>
+                                            </div>
                                         </div>
                                         <h5 title="<?= html_entity_decode($projet['name']) ?>" class="mb-0 text-primary fw-bold fs-8" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; word-break: break-word;">
                                             <?= html_entity_decode($projet['name']) ?>

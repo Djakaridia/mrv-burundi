@@ -17,6 +17,7 @@ class Indicateur
     public $responsable;
     public $latitude;
     public $longitude;
+    public $facteur_id;
     public $referentiel_id;
     public $resultat_id;
     public $projet_id;
@@ -32,11 +33,11 @@ class Indicateur
         $query = "INSERT INTO " . $this->table . " 
                  (code, intitule, description, unite, mode_calcul, responsable, annee_reference, 
                   valeur_reference, valeur_cible, latitude, longitude, 
-                  referentiel_id, resultat_id, projet_id, add_by) 
+                  facteur_id, referentiel_id, resultat_id, projet_id, add_by) 
                  VALUES 
                  (:code, :intitule, :description, :unite, :mode_calcul, :responsable, :annee_reference, 
                   :valeur_reference, :valeur_cible, :latitude, :longitude, 
-                  :referentiel_id, :resultat_id, :projet_id, :add_by)";
+                  :facteur_id, :referentiel_id, :resultat_id, :projet_id, :add_by)";
 
         $stmt = $this->conn->prepare($query);
 
@@ -52,6 +53,7 @@ class Indicateur
         $stmt->bindParam(':valeur_cible', $this->valeur_cible);
         $stmt->bindParam(':latitude', $this->latitude);
         $stmt->bindParam(':longitude', $this->longitude);
+        $stmt->bindParam(':facteur_id', $this->facteur_id);
         $stmt->bindParam(':referentiel_id', $this->referentiel_id);
         $stmt->bindParam(':resultat_id', $this->resultat_id);
         $stmt->bindParam(':projet_id', $this->projet_id);
@@ -121,6 +123,7 @@ class Indicateur
                       valeur_cible = :valeur_cible,
                       latitude = :latitude,
                       longitude = :longitude,
+                      facteur_id = :facteur_id,
                       referentiel_id = :referentiel_id,
                       resultat_id = :resultat_id,
                       projet_id = :projet_id,
@@ -142,6 +145,7 @@ class Indicateur
         $stmt->bindParam(':valeur_cible', $this->valeur_cible);
         $stmt->bindParam(':latitude', $this->latitude);
         $stmt->bindParam(':longitude', $this->longitude);
+        $stmt->bindParam(':facteur_id', $this->facteur_id);
         $stmt->bindParam(':referentiel_id', $this->referentiel_id);
         $stmt->bindParam(':resultat_id', $this->resultat_id);
         $stmt->bindParam(':projet_id', $this->projet_id);

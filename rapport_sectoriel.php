@@ -139,7 +139,7 @@
                                                 <th class="align-middle px-2" scope="col" width="10%"> Actions</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="list" id="table-latest-review-body">
+                                        <tbody class="list">
                                             <?php if (isset($projets) && count($projets) > 0) : ?>
                                                 <?php foreach ($projets as $projet) : ?>
                                                     <tr>
@@ -185,7 +185,7 @@
                                                     <?php } ?>
                                                 </tr>
                                             </thead>
-                                            <tbody class="list" id="table-latest-review-body">
+                                            <tbody class="list">
                                                 <?php foreach ($data_vw as $row) { ?>
                                                     <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                                                         <?php foreach ($row as $value) { ?>
@@ -228,7 +228,7 @@
                                                 <th class="align-middle px-2" scope="col">Type</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="list" id="table-latest-review-body">
+                                        <tbody class="list">
                                             <?php if (isset($structures) && count($structures) > 0) : ?>
                                                 <?php foreach ($structures as $structure) :
                                                     $logoStruc = explode("../", $structure['logo'] ?? ''); ?>
@@ -279,7 +279,7 @@
                                                 <th class="align-middle px-2">Date d'acord</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="list" id="table-latest-review-body">
+                                        <tbody class="list">
                                             <?php if (isset($conventions) && count($conventions) > 0) : ?>
                                                 <?php foreach ($conventions as $convention) : ?>
                                                     <tr class="hover-actions-trigger btn-reveal-trigger position-static">

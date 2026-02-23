@@ -92,7 +92,7 @@
               </div>
             </div>
 
-            <div class="col-6 mt-1">
+            <div class="col-12 mt-1">
               <div class="form-group">
                 <label for="indicSelectProjet" class="form-label">Projet*</label>
                 <select class="form-select" name="projet_id" id="indicSelectProjet">
@@ -106,7 +106,6 @@
               </div>
             </div>
 
-            <!-- Responsable -->
             <div class="col-6 mt-1">
               <div class="form-group">
                 <label for="indicateurResponsable" class="form-label">Responsable*</label>
@@ -117,6 +116,19 @@
                       <option value="<?= $structure['id'] ?>">
                         <?= $structure['description'] ? $structure['description'] . ' (' . $structure['sigle'] . ')' : $structure['sigle']; ?>
                       </option>
+                    <?php endforeach; ?>
+                  <?php endif; ?>
+                </select>
+              </div>
+            </div>
+            <div class="col-6 mt-1">
+              <div class="form-group">
+                <label for="indicSelectFacteur" class="form-label">Facteur d'émission*</label>
+                <select class="form-select" name="facteur_id" id="indicSelectFacteur" required>
+                  <option value="" selected disabled>Sélectionner un facteur d'émission</option>
+                  <?php if ($facteurs_project ?? []) : ?>
+                    <?php foreach ($facteurs_project as $facteur) : ?>
+                      <option value="<?= $facteur['id'] ?>"><?= html_entity_decode($facteur['name']) ?></option>
                     <?php endforeach; ?>
                   <?php endif; ?>
                 </select>
@@ -145,21 +157,19 @@
               </div>
             </div>
 
-            <!-- Latitude -->
-            <div class="col-md-6">
+            <!-- <div class="col-md-6">
               <div class="form-floating">
                 <input class="form-control" name="latitude" id="indicateurLatitude" type="text" placeholder="Latitude">
                 <label for="indicateurLatitude">Latitude</label>
               </div>
             </div>
 
-            <!-- Longitude -->
             <div class="col-md-6">
               <div class="form-floating">
                 <input class="form-control" name="longitude" id="indicateurLongitude" type="text" placeholder="Longitude">
                 <label for="indicateurLongitude">Longitude</label>
               </div>
-            </div>
+            </div> -->
 
             <!-- Description -->
             <div class="col-12">
@@ -186,6 +196,7 @@
   $(document).ready(function() {
     initSelect2("#addIndicateurModal", "indicateurReferentiel");
     initSelect2("#addIndicateurModal", "indicateurResponsable");
+    initSelect2("#addIndicateurModal", "indicSelectFacteur");
     initSelect2("#addIndicateurModal", "indicSelectProjet");
 
     $('#addIndicateurModal').on('shown.bs.modal', async function(event) {
@@ -194,7 +205,7 @@
       const form = document.getElementById('FormIndicateur');
 
       if (projet_id) {
-        form.projet_id.value = projet_id;
+        $('#indicSelectProjet').val(projet_id).trigger('change');
         $('#indicSelectProjet').attr('readonly', true);
         $('#indicSelectProjet').addClass('bg-light');
         $('#indicSelectProjet').css('pointerEvents', 'none');
@@ -224,14 +235,15 @@
           form.annee_reference.value = result.data.annee_reference;
           form.unite.value = result.data.unite;
           form.mode_calcul.value = result.data.mode_calcul;
-          form.latitude.value = result.data.latitude;
-          form.longitude.value = result.data.longitude;
+          // form.latitude.value = result.data.latitude;
+          // form.longitude.value = result.data.longitude;
           form.valeur_reference.value = result.data.valeur_reference;
           form.valeur_cible.value = result.data.valeur_cible;
           form.resultat_id.value = result.data.resultat_id;
 
           $('#indicateurResponsable').val(result.data.responsable).trigger('change');
           $('#indicateurReferentiel').val(result.data.referentiel_id).trigger('change');
+          $('#indicSelectFacteur').val(result.data.facteur_id).trigger('change');
           $('#indicSelectProjet').val(result.data.projet_id).trigger('change');
         } catch (error) {
           errorAction('Impossible de charger les données.');
@@ -261,6 +273,7 @@
       }, 200);
       $('#FormIndicateur')[0].reset();
       $('#indicSelectProjet').val("").trigger('change');
+      $('#indicSelectFacteur').val("").trigger('change');
       $('#indicateurResponsable').val("").trigger('change');
       $('#indicateurReferentiel').val("").trigger('change');
     });

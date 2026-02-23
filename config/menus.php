@@ -15,9 +15,9 @@ $MENU_TITLE = [
 /* Menu Definitions */
 $MENU_ITEMS = [
     2 => [
-        "users.php" => "Utilisateurs",
+        "users.php" => "Comptes utilisateurs",
         "roles.php" => "Rôles & Permissions",
-        "acteurs.php" => "Acteurs",
+        "acteurs.php" => "Institutions responsables",
     ],
     3 => [
         "localites.php" => "Localités",
@@ -30,13 +30,13 @@ $MENU_ITEMS = [
         "register_carbone.php" => "Registre carbone",
     ],
     5 => [
-        "referentiels.php" => "Dictionnaire des indicateurs",
-        "projections.php" => "Projections",
-        "mesures.php" => "Actions & Mesures",
+        "referentiels.php" => "Indicateurs référentiels",
+        "projections.php" => "Projections & scenarios",
+        "mesures.php" => "Actions & mesures",
         "programmes.php" => "Programmes",
         "projects.php" => "Projets climatiques",
         "niveau_resultat.php" => "Niveaux de résultats",
-        "cadre_resultat_cr.php" => "Cadre de résultat",
+        "cadre_resultat.php" => "Cadre de résultat",
         "fiches_dynamiques.php" => "Fiches dynamiques",
     ],
     6 => [
@@ -49,12 +49,14 @@ $MENU_ITEMS = [
         "zones_collecte.php" => "Zones de collecte",
     ],
     8 => [
+        "partenaires.php" => "Partenaires",
+        "financements.php" => "Financements",
         "analyse_budgetaire.php" => "Analyse budgétaire",
     ],
     9 => [
         "rapport_dynamique.php" => "Rapports Dynamiques",
         "rapport_periodique.php" => "Rapports Periodiques",
-        "rapport_sectoriel.php" => "Données sectorielles",
+        // "rapport_sectoriel.php" => "Données sectorielles",
     ],
     10 => [
         "documents.php" => "Documents",

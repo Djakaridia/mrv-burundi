@@ -92,13 +92,13 @@
                                 <h4 class="my-1 fw-black fs-8">Résultats des niveaux</h4>
                             </div>
 
-                            <div class="col-lg-3 mb-2 mb-lg-0 text-center">
+                            <div class="col-lg-4 mb-2 mb-lg-0 text-center">
                                 <form action="formNiveauResultat" method="post">
-                                    <select class="btn btn-phoenix-primary rounded-pill btn-sm form-select form-select-sm rounded-1 text-start" name="programme"
+                                    <select id="selectPageNiveauProg1" class="form-select text-center" name="programme"
                                         onchange="window.location.href = '<?php echo $_SERVER['PHP_SELF'] . '?tab=overview&progr='; ?>' + this.value">
                                         <option class="text-center" value="" selected disabled>---Sélectionner un programme---</option>
                                         <?php foreach ($programmes as $programme) { ?>
-                                            <option value="<?php echo $programme['id']; ?>" <?php if ($progr_curr == $programme['id']) echo 'selected'; ?>><?php echo $programme['name']; ?></option>
+                                            <option value="<?php echo $programme['id']; ?>" <?php if ($progr_curr == $programme['id']) echo 'selected'; ?>><?php echo html_entity_decode($programme['name']); ?></option>
                                         <?php } ?>
                                     </select>
                                 </form>
@@ -120,7 +120,7 @@
                                                 <th class="sort pe-0 align-middle" style="width: 100px;">Actions</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="list" id="table-latest-review-body">
+                                        <tbody class="list">
                                             <?php function renderTreeResultat($parentId, $tree, $level = 0)
                                             {
                                                 if (!isset($tree[$parentId])) return;
@@ -180,9 +180,9 @@
                                 <h4 class="my-1 fw-black fs-8">Résultats de niveaux</h4>
                             </div>
 
-                            <div class="col-lg-3 mb-2 mb-lg-0 text-center">
+                            <div class="col-lg-4 mb-2 mb-lg-0 text-center">
                                 <form action="formNiveauResultat" method="post">
-                                    <select class="btn btn-phoenix-primary rounded-pill btn-sm form-select form-select-sm rounded-1 text-start" name="programme"
+                                    <select id="selectPageNiveauProg2" class="form-select text-center" name="programme"
                                         onchange="window.location.href = '<?php echo $_SERVER['PHP_SELF'] . '?tab=resultat&progr='; ?>' + this.value">
                                         <option class="text-center" value="" selected disabled>---Sélectionner un programme---</option>
                                         <?php foreach ($programmes as $programme) { ?>
@@ -216,7 +216,7 @@
                                                 <th class="sort align-middle" scope="col" style="width: 100px;">Actions</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="list" id="table-latest-review-body">
+                                        <tbody class="list">
                                             <?php foreach ($niveau_resultats as $niveau_resultat) { ?>
                                                 <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                                                     <td class="align-middle product"><?php echo $niveau_resultat['code']; ?></td>
@@ -268,9 +268,9 @@
                                 <h4 class="my-1 fw-black fs-8">Gestion des niveaux</h4>
                             </div>
 
-                            <div class="col-lg-3 mb-2 mb-lg-0 text-center">
+                            <div class="col-lg-4 mb-2 mb-lg-0 text-center">
                                 <form action="formNiveauResultat" method="post">
-                                    <select class="btn btn-phoenix-primary rounded-pill btn-sm form-select form-select-sm rounded-1 text-start" name="programme"
+                                    <select id="selectPageNiveauProg3" class="form-select text-center" name="programme"
                                         onchange="window.location.href = '<?php echo $_SERVER['PHP_SELF'] . '?tab=niveau&progr='; ?>' + this.value">
                                         <option class="text-center" value="" selected disabled>---Sélectionner un programme---</option>
                                         <?php foreach ($programmes as $programme) { ?>
@@ -303,7 +303,7 @@
                                                 <th class="sort pe-0 align-middle" scope="col" style="width: 100px;">Actions</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="list" id="table-latest-review-body">
+                                        <tbody class="list">
                                             <?php foreach ($niveaux as $niveau) { ?>
                                                 <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                                                     <td class="align-middle product"><?php echo $niveau['level']; ?></td>

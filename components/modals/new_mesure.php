@@ -97,6 +97,20 @@
 
                                             <div class="col-md-12 mb-2 mt-0">
                                                 <div class="form-group">
+                                                    <label for="mesureReferentiel" class="form-label">Indicateur Référentiel*</label>
+                                                    <select class="form-select" name="referentiel_id" id="mesureReferentiel" required>
+                                                        <option value="" selected disabled>Sélectionner un indicateur</option>
+                                                        <?php foreach ($referentiels_mesure ?? [] as $ref): ?>
+                                                            <?php if ($ref['categorie'] == 'impact' || $ref['categorie'] == 'effet' || true) : ?>
+                                                                <option value="<?= htmlspecialchars($ref['id']) ?>"><?= htmlspecialchars($ref['intitule'] ?? $ref['name'] ?? '') ?></option>
+                                                            <?php endif; ?>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12 mb-2 mt-0">
+                                                <div class="form-group">
                                                     <label for="mesureStructure" class="form-label">Entités de mise en œuvre*</label>
                                                     <select class="form-select" name="structure_id" id="mesureStructure" required>
                                                         <option value="" selected disabled>Sélectionner un acteur</option>
@@ -107,20 +121,6 @@
                                                                 </option>
                                                             <?php endforeach; ?>
                                                         <?php endif; ?>
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-12 mb-2 mt-0">
-                                                <div class="form-group">
-                                                    <label for="mesureReferentiel" class="form-label">Indicateur Référentiel*</label>
-                                                    <select class="form-select" name="referentiel_id" id="mesureReferentiel" required>
-                                                        <option value="" selected disabled>Sélectionner un indicateur</option>
-                                                        <?php foreach ($referentiels_mesure ?? [] as $ref): ?>
-                                                            <?php if ($ref['categorie'] == 'impact' || $ref['categorie'] == 'effet') : ?>
-                                                                <option value="<?= htmlspecialchars($ref['id']) ?>"><?= htmlspecialchars($ref['intitule'] ?? $ref['name'] ?? '') ?></option>
-                                                            <?php endif; ?>
-                                                        <?php endforeach; ?>
                                                     </select>
                                                 </div>
                                             </div>
@@ -146,9 +146,11 @@
                                                 <div class="form-floating">
                                                     <select class="form-select" name="unite" id="mesureUnite" required>
                                                         <option value="" selected disabled>Sélectionner une unité</option>
-                                                        <?php foreach ($unites as $unite) : ?>
-                                                            <option value="<?= $unite['name'] ?>"><?= $unite['name'] ?></option>
-                                                        <?php endforeach; ?>
+                                                        <?php if ($unites ?? []) : ?>
+                                                            <?php foreach ($unites as $unite) : ?>
+                                                                <option value="<?= $unite['name'] ?>"><?= $unite['description'] ?></option>
+                                                            <?php endforeach; ?>
+                                                        <?php endif; ?>
                                                     </select>
                                                     <label for="mesureUnite">Unité*</label>
                                                 </div>

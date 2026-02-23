@@ -47,7 +47,6 @@
     <?php include './components/navbar & footer/navbar.php'; ?>
 
     <div class="content">
-      <?php if (!isset($_GET['id']) || $_GET['id'] == 0 || $_GET['id'] == null || $_GET['id'] == '' || !is_numeric($_GET['id'])): ?>
         <div class="mx-n4 mt-n5 px-0 mx-lg-n6 px-lg-0 bg-body-emphasis border border-start-0">
           <div class="card-body p-2 d-lg-flex flex-row justify-content-between align-items-center g-3">
             <div class="col-auto">
@@ -205,93 +204,6 @@
             </div>
           </div>
         </div>
-      <?php endif; ?>
-
-      <!-- Sous-secteurs -->
-      <?php if (isset($_GET['id']) && $_GET['id'] > 0 && is_numeric($_GET['id']) && $_GET['id'] != null && $_GET['id'] != ''):
-        $id_parent = $_GET['id'];
-        $secteur_parent = array_filter($sous_secteurs, function ($secteur) use ($id_parent) {
-          return $secteur['id'] == $id_parent;
-        });
-
-        $actions_prio_child = array_filter($data_actions_prio, function ($action) use ($id_parent) {
-          return $action['secteur_id'] == $id_parent;
-        });
-      ?>
-        <div class="mx-n4 mt-n5 px-0 mx-lg-n6 px-lg-0 bg-body-emphasis border border-start-0">
-          <div class="card-body p-2 d-lg-flex flex-row justify-content-between align-items-center g-3">
-            <div class="col-auto">
-              <h4 class="my-1 fw-black fs-8">Liste des actions prioritaires du secteur
-                <span class="badge bg-primary px-1"><?php echo array_pop($secteur_parent)['name'] ?></span>
-              </h4>
-            </div>
-            <div class="ms-lg-2 d-flex gap-2">
-              <button title="Retour" onclick="window.location.href='sectors.php'" class="btn btn-subtle-primary btn-sm">
-                <i class="fas fa-arrow-left"></i> Retour
-              </button>
-
-              <button title="Ajouter" class="btn btn-subtle-primary btn-sm" id="addBtn" data-bs-toggle="modal"
-                data-bs-target="#addActionPrioModal" data-parent="<?php echo $id_parent ?>"
-                aria-haspopup="true" aria-expanded="false" data-bs-reference="child">
-                <i class="fas fa-plus"></i> Ajouter une action</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="row mt-3">
-          <div class="col-12">
-            <div class="mx-n4 p-1 mx-lg-n6 bg-body-emphasis border-y">
-              <div class="table-responsive mx-n1 px-1 scrollbar" style="min-height: 432px;">
-                <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable2">
-                  <thead class="bg-primary-subtle">
-                    <tr>
-                      <th class="sort align-middle" scope="col"> Code</th>
-                      <th class="sort align-middle" scope="col"> Intitulé</th>
-                      <th class="sort align-middle" scope="col"> Secteur</th>
-                      <th class="sort align-middle" scope="col" style="min-width:100px;"> Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody class="list" id="table-latest-review-body">
-                    <?php foreach ($actions_prio_child as $action_prio): ?>
-                      <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                        <td class="align-middle customer"> <?php echo $action_prio['code'] ?> </td>
-                        <td class="align-middle customer"> <?php echo $action_prio['name'] ?> </td>
-                        <td class="align-middle customer">
-                          <?php foreach ($sous_secteurs as $secteur): ?>
-                            <?php if ($action_prio['secteur_id'] == $secteur['id']): ?>
-                              <?php echo $secteur['name']; ?>
-                            <?php endif; ?>
-                          <?php endforeach; ?>
-                        </td>
-                        <td class="align-middle review">
-                          <div class="position-relative">
-                            <div class="">
-                              <?php if (checkPermis($db, 'update')) : ?>
-                                <button title="Modifier" type="button" data-bs-toggle="modal" data-bs-target="#addActionPrioModal"
-                                  data-parent="<?php echo $action_prio['secteur_id'] ?>" data-id="<?php echo $action_prio['id'] ?>"
-                                  class="btn btn-sm btn-phoenix-info me-1 fs-10 px-2 py-1">
-                                  <span class="uil-pen fs-8"></span>
-                                </button>
-                              <?php endif; ?>
-
-                              <?php if (checkPermis($db, 'delete')) : ?>
-                                <button title="Supprimer" onclick="deleteData(<?php echo $action_prio['id'] ?>, 'Êtes-vous sûr de vouloir supprimer cette action ?', 'actions')"
-                                  type="button" class="btn btn-sm btn-phoenix-danger fs-10 px-2 py-1">
-                                  <span class="uil-trash-alt fs-8"></span>
-                                </button>
-                              <?php endif; ?>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    <?php endforeach; ?>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      <?php endif; ?>
     </div>
 
     <?php include './components/navbar & footer/footer.php'; ?>

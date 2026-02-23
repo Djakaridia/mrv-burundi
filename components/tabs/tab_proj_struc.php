@@ -23,7 +23,7 @@
                         <th class="sort align-middle" scope="col" style="max-width:350px;" data-sort="review">Type</th>
                     </tr>
                 </thead>
-                <tbody class="list" id="table-latest-review-body">
+                <tbody class="list">
                     <?php foreach ($structures_project as $structure) { ?>
                         <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                             <td class="align-middle product py-0">

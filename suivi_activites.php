@@ -35,13 +35,6 @@
         $taches_project = $tache->readByProjet();
     }
 
-    $tache_indicateur = new TacheIndicateur($db);
-    $tache_indicateurs = $tache_indicateur->read();
-    $grouped_tache_indicateurs = [];
-    foreach ($tache_indicateurs as $tache_indicateur) {
-        $grouped_tache_indicateurs[$tache_indicateur['tache_id']][] = $tache_indicateur;
-    }
-
     $tache_suivi_indicateur = new TacheSuiviIndicateur($db);
     $tache_suivi_indicateurs = $tache_suivi_indicateur->read();
     $grouped_tache_suivi_indicateurs = [];
@@ -73,9 +66,9 @@
                         <h4 class="my-1 fw-black fs-8">Suivi des activités</h4>
                     </div>
 
-                    <div class="col-lg-3 mb-2 mb-lg-0 text-center">
+                    <div class="col-lg-4 mb-2 mb-lg-0 text-center">
                         <form action="formNiveauResultat" method="post">
-                            <select class="btn btn-phoenix-primary rounded-pill btn-sm form-select form-select-sm rounded-1 text-start" name="result" id="resultID" onchange="window.location.href = 'suivi_activites.php?proj=' + this.value">
+                            <select id="selectPageSuiviActiv" class="form-select text-center" name="result" onchange="window.location.href = 'suivi_activites.php?proj=' + this.value">
                                 <option value="" class="text-center" selected disabled>---Sélectionner un projet---</option>
                                 <?php foreach ($all_projects as $project) { ?>
                                     <option value="<?php echo $project['id']; ?>" <?php if ($sel_id == $project['id']) echo 'selected'; ?>><?php echo html_entity_decode($project['name']); ?></option>
@@ -105,30 +98,12 @@
                                             <th class="align-middle" style="min-width:300px;">Libellé</th>
                                             <th class="align-middle">Responsable</th>
                                             <th class="align-middle text-center">Priorité</th>
-                                            <th class="align-middle text-center">Indicateur</th>
+                                            <!-- <th class="align-middle text-center">Indicateur</th> -->
                                             <th class="align-middle text-center">Statut</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($taches_project as $tache) {
-                                            $indicateurs = $grouped_tache_indicateurs[$tache['id']] ?? [];
-                                            $total_task_cible = array_sum(array_map('floatval', array_column($indicateurs, 'valeur_cible')));
-
-                                            $suivis_indic = $grouped_tache_suivi_indicateurs[$tache['id']] ?? [];
-                                            $total_task_suivi = array_sum(array_map('floatval', array_column($suivis_indic, 'valeur_suivi')));
-
-                                            unset($taux_indicateur);
-                                            $taux_indicateur = 0;
-                                            if (isset($total_task_cible) && $total_task_cible > 0) {
-                                                if ($total_task_suivi >= $total_task_cible) {
-                                                    $taux_indicateur = 100;
-                                                } else {
-                                                    $taux_indicateur = round(($total_task_suivi / $total_task_cible) * 100, 2);
-                                                }
-                                            } else {
-                                                $taux_indicateur = 0;
-                                            }
-                                        ?>
+                                        <?php foreach ($taches_project as $tache) {?>
                                             <tr>
                                                 <td>
                                                     <div data-todo-offcanvas-toogle="data-todo-offcanvas-toogle" data-todo-offcanvas-target="suiviOffcanvas<?= $tache['id'] ?>">
@@ -142,35 +117,11 @@
 
                                                 <td class="text-center">
                                                     <span class="text-body-highlight">
-                                                        <span class="badge bg-primary text-capitalize"><?= $tache['priorite'] ?></span>
+                                                        <span class="badge badge-phoenix badge-phoenix-primary rounded-pill py-1 px-2 fs-10"><?= $tache['priorite'] ?></span>
                                                     </span>
                                                 </td>
-
-                                                <td class="text-center p-0">
-                                                    <a class="btn btn-link text-decoration-none fw-bold py-1 px-0 m-0" data-bs-toggle="modal"
-                                                        data-bs-target="#SuiviTAskModal" aria-haspopup="true" aria-expanded="false" data-id="<?php echo $tache['id']; ?>">
-                                                        <?php
-                                                        if ($taux_indicateur < 39)
-                                                            $color = "danger";
-                                                        elseif ($taux_indicateur < 69)
-                                                            $color = "warning";
-                                                        elseif ($taux_indicateur >= 70)
-                                                            $color = "success"; ?>
-                                                        <span id="tauxIndic_<?php echo $tache['id']; ?>">
-                                                            <div class="progress progress-xl rounded-0 p-0 m-0" style="height: 1.5rem; width: 200px">
-                                                                <div class="progress-bar progress-bar-striped progress-bar-animated fs-14 fw-bold bg-<?php echo $color; ?> " aria-valuenow="70" style="width: 100%;">
-                                                                    <?php echo (isset($taux_indicateur) && $taux_indicateur > 0) ? $taux_indicateur . " %" : "Suivre"; ?>
-                                                                </div>
-                                                            </div>
-                                                        </span>
-                                                    </a>
-                                                </td>
+                                               
                                                 <td class="text-center">
-                                                    <!-- <span class="col text-nowrap badge badge-phoenix fs-10 
-                                                        badge-phoenix-<?php echo $taux_indicateur > 0 ? ($taux_indicateur >= 100 ? "success" : "warning") : "danger" ?>">
-                                                        <?php echo $taux_indicateur > 0 ? ($taux_indicateur >= 100 ? "Terminé" : "En cours") : "Non suivi" ?>
-                                                    </span> -->
-
                                                     <a class="btn btn-link text-decoration-none fw-bold py-1 px-0 m-0 text-capitalize" data-bs-toggle="modal"
                                                         data-bs-target="#SuiviTAskModal" aria-haspopup="true" aria-expanded="false" data-id="<?php echo $tache['id']; ?>">
                                                         <?php echo isset($tache['status']) ? $tache['status'] : "Suivre" ?>

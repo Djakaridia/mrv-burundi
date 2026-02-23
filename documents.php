@@ -158,7 +158,7 @@
                                     <th class="sort align-middle" scope="col" style="min-width:100px;">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="list" id="table-latest-review-body">
+                            <tbody class="list">
                                 <?php foreach ($documents as $document) { ?>
                                     <tr
                                         class="hover-actions-trigger btn-reveal-trigger position-static">

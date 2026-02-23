@@ -58,11 +58,14 @@ switch ($requestMethod) {
 
         if ($id) {
             $action->id = $id;
-            $action->name = sanitize_input($_POST['name']);
             $action->code = sanitize_input($_POST['code']);
-            $action->objectif = sanitize_input($_POST['objectif'] ?? "N/A");
+            $action->name = sanitize_input($_POST['name']);
             $action->description = sanitize_input($_POST['description']);
-            $action->secteur_id = sanitize_input($_POST['secteur_id']);
+            $action->objectif_wem = sanitize_input($_POST['objectif_wem'] ?? "N/A");
+            $action->objectif_wam = sanitize_input($_POST['objectif_wam'] ?? "N/A");
+            $action->action_type = sanitize_input($_POST['action_type'] ?? "N/A");
+            $action->secteur_id = (int)sanitize_input($_POST['secteur_id'] ?? 0);
+            $action->sous_secteur_id = (int)sanitize_input($_POST['sous_secteur_id'] ?? 0);
             $action->add_by = sanitize_input($payload['user_id']);
 
             if ($action->update()) {
@@ -71,11 +74,14 @@ switch ($requestMethod) {
                 echo json_encode(array('status' => 'danger', 'message' => 'Erreur lors de la modification du action.'));
             }
         } else {
-            $action->name = sanitize_input($_POST['name']);
             $action->code = sanitize_input($_POST['code']);
-            $action->objectif = sanitize_input($_POST['objectif'] ?? "N/A");
+            $action->name = sanitize_input($_POST['name']);
             $action->description = sanitize_input($_POST['description']);
-            $action->secteur_id = sanitize_input($_POST['secteur_id']);
+            $action->objectif_wem = sanitize_input($_POST['objectif_wem'] ?? "N/A");
+            $action->objectif_wam = sanitize_input($_POST['objectif_wam'] ?? "N/A");
+            $action->action_type = sanitize_input($_POST['action_type'] ?? "N/A");
+            $action->secteur_id = (int)sanitize_input($_POST['secteur_id'] ?? 0);
+            $action->sous_secteur_id = (int)sanitize_input($_POST['sous_secteur_id'] ?? 0);
             $action->add_by = sanitize_input($payload['user_id']);
 
             if (empty($action->name) || empty($action->code)) {

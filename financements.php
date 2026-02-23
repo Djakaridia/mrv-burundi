@@ -20,9 +20,17 @@
   $convention = new Convention($db);
   $conventions = $convention->read();
 
+  $secteur = new Secteur($db);
+  $secteurs = $secteur->read();
+  $secteurs = array_filter($secteurs, function ($secteur) {
+    return $secteur['parent'] == 0 && $secteur['state'] == 'actif';
+  });
+
   $projet = new Projet($db);
   $projets = $projet->read();
-  $projets = array_filter($projets, function ($projet) {return $projet['state'] == 'actif';});
+  $projets = array_filter($projets, function ($projet) {
+    return $projet['state'] == 'actif';
+  });
   ?>
 </head>
 
@@ -39,7 +47,7 @@
       <div class="mx-n4 mt-n5 px-0 mx-lg-n6 px-lg-0 bg-body-emphasis border border-start-0">
         <div class="card-body p-2 d-lg-flex flex-row justify-content-between align-items-center g-3">
           <div class="col-auto">
-            <h4 class="my-1 fw-black fs-8">Liste des conventions</h4>
+            <h4 class="my-1 fw-black fs-8">Liste des financements</h4>
           </div>
 
           <div class="ms-lg-2">
@@ -60,14 +68,16 @@
                     <th class="sort align-middle" scope="col">Code</th>
                     <th class="sort align-middle" scope="col">Convention</th>
                     <th class="sort align-middle" scope="col">Bailleur</th>
+                    <th class="sort align-middle" scope="col">Secteur</th>
                     <th class="sort align-middle" scope="col">Type d'action</th>
+                    <th class="sort align-middle" scope="col">Instrument</th>
                     <th class="sort align-middle" scope="col">Projet / Action</th>
                     <th class="sort align-middle" scope="col" style="min-width:110px;">Montant (USD)</th>
                     <th class="sort align-middle" scope="col" style="min-width:110px;">Date d'acord</th>
                     <th class="sort align-middle" scope="col" style="min-width:100px;">Actions</th>
                   </tr>
                 </thead>
-                <tbody class="list" id="table-latest-review-body">
+                <tbody class="list">
                   <?php foreach ($conventions as $convention) { ?>
                     <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                       <td class="align-middle"><?php echo $convention['code']; ?></td>
@@ -79,7 +89,15 @@
                           <?php } ?>
                         <?php } ?>
                       </td>
-                      <td class="align-middle"><?php echo listTypeAction()[$convention['action_type']]??"N/A"; ?></td>
+                      <td class="align-middle">
+                        <?php foreach ($secteurs as $secteur) { ?>
+                          <?php if ($secteur['id'] == $convention['secteur_id']) { ?>
+                            <?php echo $secteur['name']; ?>
+                          <?php } ?>
+                        <?php } ?>
+                      </td>
+                      <td class="align-middle"><?php echo listTypeAction()[$convention['action_type']] ?? "N/A"; ?></td>
+                      <td class="align-middle text-nowrap"><?php echo listTypeFinancement()[$convention['instrument']] ?? "N/A"; ?></td>
                       <td class="align-middle">
                         <?php foreach ($projets as $projet) { ?>
                           <?php if ($projet['id'] == $convention['projet_id']) { ?>
@@ -87,8 +105,8 @@
                           <?php } ?>
                         <?php } ?>
                       </td>
-                      <td class="align-middle rating" style="min-width:200px;">
-                        <span class="badge badge-phoenix badge-phoenix-primary px-2 py-1 rounded-pill fs-9"><?php echo number_format($convention['montant'], 0, 0); ?></span>
+                      <td class="align-middle rating" style="min-width:120px;">
+                        <span class="badge badge-phoenix badge-phoenix-primary px-2 py-1 fs-9"><?php echo number_format($convention['montant'], 0, 0); ?></span>
                       </td>
                       <td class="align-middle date">
                         <?php echo date('Y-m-d', strtotime($convention['date_accord'])); ?>
@@ -96,17 +114,17 @@
                       <td class="align-middle">
                         <div class="position-relative">
                           <?php if (checkPermis($db, 'update')) : ?>
-                          <button title="Modifier" class="btn btn-sm btn-phoenix-info me-1 fs-10 px-2 py-1" data-bs-toggle="modal"
-                            data-bs-target="#addConvenModal" data-id="<?php echo $convention['id']; ?>">
-                            <span class="uil-pen fs-8"></span>
-                          </button>
+                            <button title="Modifier" class="btn btn-sm btn-phoenix-info me-1 fs-10 px-2 py-1" data-bs-toggle="modal"
+                              data-bs-target="#addConvenModal" data-id="<?php echo $convention['id']; ?>">
+                              <span class="uil-pen fs-8"></span>
+                            </button>
                           <?php endif; ?>
 
                           <?php if (checkPermis($db, 'delete')) : ?>
-                          <button title="Supprimer" class="btn btn-sm btn-phoenix-danger fs-10 px-2 py-1" type="button"
-                            onclick="deleteData(<?php echo $convention['id']; ?>, 'Êtes-vous sûr de vouloir supprimer cette convention ?', 'conventions')">
-                            <span class="uil-trash-alt fs-8"></span>
-                          </button>
+                            <button title="Supprimer" class="btn btn-sm btn-phoenix-danger fs-10 px-2 py-1" type="button"
+                              onclick="deleteData(<?php echo $convention['id']; ?>, 'Êtes-vous sûr de vouloir supprimer cette convention ?', 'conventions')">
+                              <span class="uil-trash-alt fs-8"></span>
+                            </button>
                           <?php endif; ?>
                         </div>
                       </td>

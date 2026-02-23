@@ -133,7 +133,31 @@
         <?php include './components/navbar & footer/navbar.php'; ?>
 
         <div class="content">
-            <div class="row g-3 mb-3 mx-n5 mt-n5">
+            <div class="mx-n4 mt-n5 px-0 mx-lg-n6 px-lg-0 bg-body-emphasis border border-start-0">
+                <div class="card-body py-1 px-3 d-lg-flex flex-row justify-content-between align-items-center">
+                    <div class="col-lg-4">
+                        <h5 class="my-1 fw-black fs-8">
+                            <i class="fas fa-chart-pie me-2 text-primary"></i>
+                            Analyse budgétaire
+                        </h5>
+                        <p class="text-muted mb-0 fs-9">Suivi financier et analyse des décaissements</p>
+                    </div>
+                    <div class="col-lg-auto">
+                        <div class="d-flex gap-2">
+                            <span class="badge bg-primary-subtle text-primary p-2">
+                                <i class="fas fa-file-contract me-1"></i>
+                                <?php echo $nb_conventions; ?> conventions
+                            </span>
+                            <span class="badge bg-success-subtle text-success p-2">
+                                <i class="fas fa-hand-holding-usd me-1"></i>
+                                <?php echo number_format($total_conventions, 0, ',', ' '); ?> USD
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3 mx-n5 mt-1">
                 <div class="col-sm-6 col-xl-3">
                     <div class="card rounded-1 h-100">
                         <div class="card-body p-3">
@@ -143,7 +167,7 @@
                                 </div>
                                 <div class="flex-grow-1 ms-3">
                                     <h6 class="text-muted mb-1">Conventions</h6>
-                                    <h3 class="mb-1 fw-bold"><?php echo $nb_conventions; ?></h3>
+                                    <h3 class="mb-0 fw-bold"><?php echo $nb_conventions; ?></h3>
                                     <small class="text-muted"><?php echo $nb_bailleurs; ?> bailleurs</small>
                                 </div>
                             </div>
@@ -159,7 +183,7 @@
                                 </div>
                                  <div class="flex-grow-1 ms-3">
                                     <h6 class="text-muted mb-1">Budget total</h6>
-                                    <h3 class="mb-1 fw-bold"><?php echo number_format($total_conventions, 0, ',', ' '); ?></h3>
+                                    <h3 class="mb-0 fw-bold"><?php echo number_format($total_conventions, 0, ',', ' '); ?></h3>
                                     <small class="text-muted">USD</small>
                                 </div>
                             </div>
@@ -175,7 +199,7 @@
                                 </div>
                                  <div class="flex-grow-1 ms-3">
                                     <h6 class="text-muted mb-1">Décaissé</h6>
-                                    <h3 class="mb-1 fw-bold"><?php echo number_format($total_decaisse, 0, ',', ' '); ?></h3>
+                                    <h3 class="mb-0 fw-bold"><?php echo number_format($total_decaisse, 0, ',', ' '); ?></h3>
                                     <small class="text-muted">USD</small>
                                 </div>
                             </div>
@@ -191,7 +215,7 @@
                                 </div>
                                  <div class="flex-grow-1 ms-3">
                                     <h6 class="text-muted mb-1">Taux exécution</h6>
-                                    <h3 class="mb-1 fw-bold"><?php echo $taux_execution_global; ?>%</h3>
+                                    <h3 class="mb-0 fw-bold"><?php echo $taux_execution_global; ?>%</h3>
                                     <div class="progress progress-sm mt-2" style="width: 100px;">
                                         <div class="progress-bar bg-<?php echo $taux_execution_global >= 80 ? 'success' : ($taux_execution_global >= 50 ? 'warning' : 'danger'); ?>"
                                             style="width: <?php echo $taux_execution_global; ?>%"></div>
@@ -310,7 +334,7 @@
                                     </div>
                                     <div class="card-body p-0">
                                         <div class="table-responsive" style="min-height: 432px;">
-                                            <table class="table fs-9 table-hover mb-0" id="conventions-datatable">
+                                            <table class="table table-bordered fs-9 table-hover mb-0" id="conventions-datatable">
                                                 <thead class="bg-primary-subtle">
                                                     <tr>
                                                         <th class="align-middle">Code</th>
@@ -365,12 +389,12 @@
                                                                 <span class="text-success"><?php echo number_format($montant_decaisse, 0, ',', ' '); ?></span>
                                                             </td>
                                                             <td class="align-middle text-center">
-                                                                <span class="badge badge-taux bg-<?php echo $taux >= 80 ? 'success' : ($taux >= 50 ? 'warning' : 'light'); ?> text-<?php echo $taux >= 80 ? 'white' : ($taux >= 50 ? 'dark' : 'secondary'); ?>">
+                                                                <span class="badge badge-phoenix py-1 px-2 badge-phoenix-<?php echo $taux >= 80 ? 'success' : ($taux >= 50 ? 'warning' : 'light'); ?> text-<?php echo $taux >= 80 ? 'white' : ($taux >= 50 ? 'dark' : 'secondary'); ?>">
                                                                     <?php echo $taux; ?>%
                                                                 </span>
                                                             </td>
                                                             <td class="align-middle text-center">
-                                                                <span class="badge badge-phoenix badge-phoenix-<?php echo $statut_class; ?>">
+                                                                <span class="badge badge-phoenix py-1 px-2 badge-phoenix-<?php echo $statut_class; ?>">
                                                                     <?php echo $statut; ?>
                                                                 </span>
                                                             </td>
@@ -460,7 +484,7 @@
                                     </div>
                                     <div class="card-body p-0">
                                         <div class="table-responsive" style="min-height: 432px;">
-                                            <table class="table fs-9 table-hover mb-0" id="activites-datatable">
+                                            <table class="table table-bordered fs-9 table-hover mb-0" id="activites-datatable">
                                                 <thead class="bg-primary-subtle">
                                                     <tr>
                                                         <th class="align-middle">Code</th>
@@ -477,9 +501,8 @@
                                                     $total_decaisse_activites = 0;
 
                                                     foreach ($taches_actives as $tache):
-                                                        $montant_prev = isset($grouped_tache_couts[$tache['id']]) ?
-                                                            array_sum(array_column($grouped_tache_couts[$tache['id']], 'montant')) : 0;
-                                                        $montant_decaisse = $montant_prev; // À adapter selon votre logique
+                                                        $montant_prev = isset($grouped_tache_couts[$tache['id']]) ? array_sum(array_column($grouped_tache_couts[$tache['id']], 'montant')) : 0;
+                                                        $montant_decaisse = $montant_prev;
 
                                                         $total_prev_activites += $montant_prev;
                                                         $total_decaisse_activites += $montant_decaisse;
@@ -519,13 +542,7 @@
                                                             </td>
                                                             <td class="align-middle text-center">
                                                                 <?php if ($montant_prev > 0): ?>
-                                                                    <div class="d-flex align-items-center">
-                                                                        <div class="progress flex-grow-1" style="height: 6px;">
-                                                                            <div class="progress-bar bg-<?php echo $taux_activite >= 80 ? 'success' : ($taux_activite >= 50 ? 'warning' : 'danger'); ?>"
-                                                                                style="width: <?php echo $taux_activite; ?>%"></div>
-                                                                        </div>
-                                                                        <span class="ms-2 small fw-semibold"><?php echo $taux_activite; ?>%</span>
-                                                                    </div>
+                                                                        <span class="ms-2 fw-semibold"><?php echo $taux_activite; ?>%</span>
                                                                 <?php else: ?>
                                                                     <span class="text-muted">-</span>
                                                                 <?php endif; ?>
@@ -542,7 +559,7 @@
                                                             <?php
                                                             $taux_global_activites = $total_prev_activites > 0 ? round(($total_decaisse_activites / $total_prev_activites) * 100, 1) : 0;
                                                             ?>
-                                                            <span class="badge bg-<?php echo $taux_global_activites >= 80 ? 'success' : ($taux_global_activites >= 50 ? 'warning' : 'danger'); ?>">
+                                                            <span class="badge badge-phoenix py-1 px-2 badge-phoenix-<?php echo $taux_global_activites >= 80 ? 'success' : ($taux_global_activites >= 50 ? 'warning' : 'danger'); ?>">
                                                                 <?php echo $taux_global_activites; ?>%
                                                             </span>
                                                         </th>
@@ -860,15 +877,6 @@
             }
         }
     });
-
-    function formatMoney(amount) {
-        return new Intl.NumberFormat('fr-FR', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        }).format(amount).replace('USD', 'USD');
-    }
 </script>
 
 </html>

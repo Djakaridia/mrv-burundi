@@ -21,54 +21,69 @@
         <div id="actionPrioContentContainer" style="display: none;">
           <form action="" name="FormActionPrio" id="FormActionPrio" method="POST" enctype="multipart/form-data">
             <div class="row g-4">
-              <div class="row mt-1 mx-0 px-0">
-                <div class="col-lg-6 mb-1">
+              <div class="row m-0 px-0">
+                <div class="col-lg-3 mb-1">
                   <label class="form-label">Code*</label>
                   <input oninput="checkColumns('code', 'actionPrio_code', 'actionPrio_codeFeedback', 'actions')" class="form-control" type="text" name="code" id="actionPrio_code" placeholder="Entrer le code"
                     required />
                   <div id="actionPrio_codeFeedback" class="invalid-feedback"></div>
                 </div>
 
+                <div class="col-lg-9 mt-1">
+                  <div class="mb-1">
+                    <label class="form-label">Intitulé*</label>
+                    <input class="form-control" type="text" name="name" id="actionPrio_name" placeholder="Entrer le nom"
+                      required />
+                  </div>
+                </div>
+
                 <div class="col-lg-6">
-                  <label class="form-label">Sous Secteur*</label>
+                  <label class="form-label">Secteur*</label>
                   <select class="form-select" name="secteur_id" id="actionPrio_secteur_id">
-                    <option value="0" selected disabled>Selectionnez le sous secteur</option>
-                    <?php if (!empty($sous_secteurs)) : ?>
-                      <?php foreach ($sous_secteurs as $sous_secteur): ?>
-                        <option value="<?php echo $sous_secteur['id']??"" ?>"><?php echo $sous_secteur['name']??"" ?></option>
+                    <option value="0" selected disabled>Selectionnez le secteur</option>
+                    <?php if (!empty($secteurs)) : ?>
+                      <?php foreach ($secteurs as $secteur): ?>
+                        <option value="<?php echo $secteur['id'] ?? "" ?>"><?php echo $secteur['name'] ?? "" ?></option>
                       <?php endforeach; ?>
                     <?php endif; ?>
                   </select>
                 </div>
-              </div>
+                <div class="col-lg-6">
+                  <label class="form-label">Type d'action*</label>
+                  <select class="form-select" name="action_type" id="actionPrio_type">
+                    <option value="0" selected disabled>Selectionnez le type d'action</option>
+                    <?php foreach (listTypeAction() as $key => $value): ?>
+                      <option value="<?= $key ?>"><?= $value ?></option>
+                    <?php endforeach; ?>
+                  </select>
+                </div>
 
-              <div class="col-lg-12 mt-1">
-                <div class="mb-1">
-                  <label class="form-label">Intitulé*</label>
-                  <input class="form-control" type="text" name="name" id="actionPrio_name" placeholder="Entrer le nom"
-                    required />
+                <div class="col-lg-6 mt-1">
+                  <div class="mb-1">
+                    <label class="form-label">Objectif inconditionnel</label>
+                    <input class="form-control" type="text" name="objectif_wem" id="actionPrio_objWem">
+                  </div>
+                </div>
+                <div class="col-lg-6 mt-1">
+                  <div class="mb-1">
+                    <label class="form-label">Objectif conditionnel</label>
+                    <input class="form-control" type="text" name="objectif_wam" id="actionPrio_objWam">
+                  </div>
+                </div>
+
+                <div class="col-lg-12 mt-1">
+                  <div class="mb-1">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" name="description" id="actionPrio_description" placeholder="Entrer une description"></textarea>
+                  </div>
                 </div>
               </div>
 
-              <div class="col-lg-12 mt-1">
-                <div class="mb-1">
-                  <label class="form-label">Objectifs</label>
-                  <textarea class="form-control" name="objectif" id="actionPrio_objectif" placeholder="Entrer les objectifs"></textarea>
-                </div>
+              <div class="modal-footer d-flex justify-content-between border-0 py-0 px-3">
+                <button type="button" class="btn btn-secondary btn-sm px-3 my-0" data-bs-dismiss="modal"
+                  aria-label="Fermer">Annuler</button>
+                <button type="submit" id="actionPrio_modbtn" class="btn btn-primary btn-sm px-3 my-0">Ajouter</button>
               </div>
-              
-              <div class="col-lg-12 mt-1">
-                <div class="mb-1">
-                  <label class="form-label">Description</label>
-                  <textarea class="form-control" name="description" id="actionPrio_description" placeholder="Entrer une description"></textarea>
-                </div>
-              </div>
-            </div>
-
-            <div class="modal-footer d-flex justify-content-between border-0 pt-3 px-0 pb-0">
-              <button type="button" class="btn btn-secondary btn-sm px-3 my-0" data-bs-dismiss="modal"
-                aria-label="Fermer">Annuler</button>
-              <button type="submit" id="actionPrio_modbtn" class="btn btn-primary btn-sm px-3 my-0">Ajouter</button>
             </div>
           </form>
         </div>
@@ -79,96 +94,94 @@
 
 <script>
   let formActionPrioID = null;
-  $(document).ready(function() {
-    $('#addActionPrioModal').on('shown.bs.modal', async function(event) {
-      const dataId = $(event.relatedTarget).data('id');
-      const parent = $(event.relatedTarget).data('parent');
-      const form = document.getElementById('FormActionPrio');
+
+  $(function() {
+    const modal = $('#addActionPrioModal');
+    const form = $('#FormActionPrio')[0];
+    const submitBtn = $('#actionPrio_modbtn');
+
+    modal.on('shown.bs.modal', async function(event) {
+      const button = $(event.relatedTarget || []);
+      const dataId = button.data('id') || null;
+
       $('#actionPrioLoadingScreen').show();
       $('#actionPrioContentContainer').hide();
 
-      if(parent) form.secteur_id.value = parent;
+      form.reset();
+      formActionPrioID = null;
 
       if (dataId) {
         formActionPrioID = dataId;
-        $('#actionsPrio_modtitle').text('Modifier l\'action prioritaire');
-        $('#actionPrio_modbtn').text('Modifier');
-        $('#actionPrioLoadingText').text("Chargement des données action prioritaire...");
+
+        $('#actionsPrio_modtitle').text("Modifier l'action prioritaire");
+        submitBtn.text("Modifier");
 
         try {
           const response = await fetch(`./apis/actions.routes.php?id=${dataId}`, {
             headers: {
-              'Authorization': `Bearer ${token}`
-            },
-            method: 'GET',
+              Authorization: `Bearer ${token}`
+            }
           });
 
-          const data = await response.json();
-          const actionPrioData = data.data;
-          form.code.value = actionPrioData.code;
-          form.name.value = actionPrioData.name;
-          form.objectif.value = actionPrioData.objectif;
-          form.description.value = actionPrioData.description;
-          form.secteur_id.value = actionPrioData.secteur_id;
-        } catch (error) {
-          console.error(error);
-          errorAction('Impossible de charger les données.');
-        } finally {
-          $('#actionPrioLoadingScreen').hide();
-          $('#actionPrioContentContainer').show();
+          const result = await response.json();
+          if (result.status !== 'success') throw new Error();
+          form.code.value = result.data.code ?? '';
+          form.name.value = result.data.name ?? '';
+          form.description.value = result.data.description ?? '';
+          form.objectif_wem.value = result.data.objectif_wem ?? '';
+          form.objectif_wam.value = result.data.objectif_wam ?? '';
+          form.action_type.value = result.data.action_type ?? '';
+          form.secteur_id.value = result.data.secteur_id ?? '';
+
+        } catch (e) {
+          errorAction("Impossible de charger les données.");
         }
       } else {
-        formActionPrioID = null;
-        document.getElementById('actionsPrio_modtitle').innerText = 'Ajouter une action prioritaire';
-        document.getElementById('actionPrio_modbtn').innerText = 'Ajouter';
-        $('#actionPrioLoadingText').text("Préparation du formulaire...");
-
-        setTimeout(() => {
-          $('#actionPrioLoadingScreen').hide();
-          $('#actionPrioContentContainer').show();
-        }, 200);
+        $('#actionsPrio_modtitle').text("Ajouter une action prioritaire");
+        submitBtn.text("Ajouter");
       }
+
+      $('#actionPrioLoadingScreen').hide();
+      $('#actionPrioContentContainer').show();
     });
 
-    $('#addActionPrioModal').on('hide.bs.modal', function() {
-      setTimeout(() => {
-        $('#actionPrioLoadingScreen').show();
-        $('#actionPrioContentContainer').hide();
-      }, 200);
-      $('#FormActionPrio')[0].reset();
+    modal.on('hidden.bs.modal', function() {
+      form.reset();
+      formActionPrioID = null;
     });
 
-    $('#FormActionPrio').on('submit', async function(event) {
-      event.preventDefault();
-      const form = $(this);
+    $('#FormActionPrio').on('submit', async function(e) {
+      e.preventDefault();
+
       const formData = new FormData(this);
-      const url = formActionPrioID ? `./apis/actions.routes.php?id=${formActionPrioID}` : './apis/actions.routes.php';
-      const submitBtn = $('#actionPrio_modbtn');
-      submitBtn.prop('disabled', true);
-      submitBtn.text('Envoi en cours...');
+      const url = formActionPrioID ? `./apis/actions.routes.php?id=${formActionPrioID}` : `./apis/actions.routes.php`;
+      submitBtn.prop('disabled', true).text("Envoi...");
 
       try {
+
         const response = await fetch(url, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          },
           method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
           body: formData
         });
 
         const result = await response.json();
-        if (result.status === 'success') {
+
+        if (result.status === "success") {
           successAction(result.message);
-          $('#addActionPrioModal').modal('hide');
+          modal.modal('hide');
         } else {
           errorAction(result.message);
         }
-      } catch (error) {
-        errorAction('Erreur lors de la soumission du formulaire.');
-      } finally {
-        submitBtn.prop('disabled', false);
-        submitBtn.text('Enregistrer');
+
+      } catch {
+        errorAction("Erreur lors de l'envoi.");
       }
-    })
+
+      submitBtn.prop('disabled', false).text(formActionPrioID ? "Modifier" : "Ajouter");
+    });
+
   });
 </script>

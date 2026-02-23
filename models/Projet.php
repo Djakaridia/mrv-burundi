@@ -23,6 +23,7 @@ class Projet
     public $secteur_id;
     public $programme_id;
     public $groupes;
+    public $zones;
     public $add_by;
 
     public function __construct($db)
@@ -32,8 +33,8 @@ class Projet
 
     public function create()
     {
-        $query = "INSERT INTO " . $this->table . " (logo, code, name, description, objectif, status, budget, start_date, end_date, signature_date, miparcours_date, structure_id, mesure_id, secteur_id, programme_id, groupes, action_type, gaz, add_by) VALUES 
-                  (:logo, :code, :name, :description, :objectif, :status, :budget, :start_date, :end_date, :signature_date, :miparcours_date, :structure_id, :mesure_id, :secteur_id, :programme_id, :groupes, :action_type, :gaz, :add_by)";
+        $query = "INSERT INTO " . $this->table . " (logo, code, name, description, objectif, status, budget, start_date, end_date, signature_date, miparcours_date, structure_id, mesure_id, secteur_id, programme_id, groupes, zones, action_type, gaz, add_by) VALUES 
+                  (:logo, :code, :name, :description, :objectif, :status, :budget, :start_date, :end_date, :signature_date, :miparcours_date, :structure_id, :mesure_id, :secteur_id, :programme_id, :groupes, :zones, :action_type, :gaz, :add_by)";
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':logo', $this->logo);
@@ -53,6 +54,7 @@ class Projet
         $stmt->bindParam(':secteur_id', $this->secteur_id);
         $stmt->bindParam(':programme_id', $this->programme_id);
         $stmt->bindParam(':groupes', $this->groupes);
+        $stmt->bindParam(':zones', $this->zones);
         $stmt->bindParam(':gaz', $this->gaz);
         $stmt->bindParam(':add_by', $this->add_by);
 
@@ -134,7 +136,8 @@ class Projet
       logo=:logo, code=:code, name=:name, description=:description, objectif=:objectif,
       status=:status, budget=:budget, start_date=:start_date, end_date=:end_date, 
       signature_date=:signature_date, miparcours_date=:miparcours_date, 
-      structure_id=:structure_id, mesure_id=:mesure_id, secteur_id=:secteur_id, programme_id=:programme_id, groupes=:groupes, action_type=:action_type,
+      structure_id=:structure_id, mesure_id=:mesure_id, secteur_id=:secteur_id, 
+      programme_id=:programme_id, groupes=:groupes, zones=:zones, action_type=:action_type,
       gaz=:gaz, add_by=:add_by 
       WHERE id=:id";
 
@@ -157,6 +160,7 @@ class Projet
         $stmt->bindParam(':secteur_id', $this->secteur_id);
         $stmt->bindParam(':programme_id', $this->programme_id);
         $stmt->bindParam(':groupes', $this->groupes);
+        $stmt->bindParam(':zones', $this->zones);
         $stmt->bindParam(':gaz', $this->gaz);
         $stmt->bindParam(':add_by', $this->add_by);
 

@@ -56,7 +56,6 @@
     <div class="content">
       <ul class="nav nav-underline fs-9 mt-n4" id="myTab" role="tablist">
         <li class="nav-item" role="presentation"><a class="nav-link <?php echo $tab == 'group' ? 'active' : ''; ?>" id="group-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?tab=group'; ?>">Groupe de travail</a></li>
-        <!-- <li class="nav-item" role="presentation"><a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#tab-profile" role="tab" aria-controls="tab-profile" aria-selected="false" tabindex="-1">Acteur</a></li> -->
         <li class="nav-item" role="presentation"><a class="nav-link <?php echo $tab == 'meet' ? 'active' : ''; ?>" id="meet-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?tab=meet'; ?>">Calendrier des réunions</a></li>
       </ul>
 
@@ -64,9 +63,6 @@
         <div class="tab-pane fade <?php echo $tab == 'group' ? 'active show' : ''; ?>" id="tab-group" role="tabpanel" aria-labelledby="group-tab">
           <?php include './components/tabs/tab_groups.php'; ?>
         </div>
-        <!-- <div class="tab-pane fade" id="tab-profile" role="tabpanel" aria-labelledby="profile-tab">
-          <php include './components/tabs/tab_structure.php'; ?>
-        </div> -->
         <div class="tab-pane fade <?php echo $tab == 'meet' ? 'active show' : ''; ?>" id="tab-meet" role="tabpanel" aria-labelledby="meet-tab">
           <?php include './components/tabs/tab_reunion.php'; ?>
         </div>

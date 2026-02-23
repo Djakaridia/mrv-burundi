@@ -15,7 +15,7 @@
                             $referentiel->id = $section['entity_id'];
                             $referentiel_ref = $referentiel->readById();
 
-                            if ($referentiel_ref['categorie'] != 'impact') {
+                            if ($referentiel_ref['categorie'] == 'produit') {
                                 $indicateur = new Indicateur($db);
                                 $indicateur->referentiel_id = $referentiel_ref['id'] ?? null;
                                 $indicateur_cmr = array_filter($indicateur->readByReferentiel(), fn($i) => $i['state'] == 'actif');
@@ -23,8 +23,8 @@
                                 $first_indicateur = reset($indicateur_cmr);
 
                                 $cible = new Cible($db);
-                                $cible->indicateur_id = $first_indicateur['id'];
-                                $cibles_raw = $cible->readByIndicateur();
+                                $cible->cmr_id = $first_indicateur['id'];
+                                $cibles_raw = $cible->readByCMR();
                                 $cibles_map = [];
                                 foreach ($cibles_raw as $item) {
                                     $year = $item['annee'];
@@ -35,8 +35,8 @@
                                 $cibles_sum = array_sum($cibles_map);
 
                                 $suivi = new Suivi($db);
-                                $suivi->indicateur_id = $first_indicateur['id'];
-                                $suivis_raw = $suivi->readByIndicateur();
+                                $suivi->cmr_id = $first_indicateur['id'];
+                                $suivis_raw = $suivi->readByCMR();
                                 $suivis_map = [];
                                 foreach ($suivis_raw as $item) {
                                     $year = $item['annee'];

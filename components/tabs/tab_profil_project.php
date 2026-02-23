@@ -33,7 +33,6 @@ $user_projets = array_filter($projets, function ($projet) use ($user_group_ids) 
         <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable2">
             <thead class="bg-primary-subtle">
                 <tr class="text-nowrap">
-                    <th class="align-middle ps-2" scope="col" data-sort="code" style="width:10%;">CODE</th>
                     <th class="align-middle ps-2" scope="col" data-sort="name" style="width:30%;">NOM DU PROJET</th>
                     <th class="align-middle text-start ps-2" scope="col" data-sort="progression" style="width:20%;">PROGRESSION</th>
                     <th class="align-middle ps-2" scope="col" data-sort="deadline" style="width:5%;">DEADLINE</th>
@@ -59,17 +58,25 @@ $user_projets = array_filter($projets, function ($projet) use ($user_group_ids) 
                 ?>
                     <tr class="position-static">
                         <td class="align-middle ps-2">
-                            <p class="mb-0 fs-9 text-body"><?= $projet['code'] ?></p>
+                            <a class="mb-0 fs-9 fw-semibold" href="project_view.php?id=<?= $projet['id'] ?>"><?= $projet['name'] ?> (<?= $projet['code'] ?>)</a>
                         </td>
-                        <td class="align-middle ps-2">
-                            <a class="mb-0 fs-9 fw-semibold" href="project_view.php?id=<?= $projet['id'] ?>"><?= $projet['name'] ?></a>
-                        </td>
-                        <td class="align-middle text-start ps-2">
-                            <p class="text-body-secondary fs-10 mb-0"><?= $progress ?>%</p>
-                            <div class="progress bg-primary-subtle" style="height:3px;" role="progressbar">
-                                <div class="progress-bar bg-<?= $progress < 30 ? 'danger' : ($progress < 70 ? 'warning' : 'success') ?>" style="width: <?= $progress ?>%"
-                                    role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
+                        <td class="text-center p-0">
+                            <a onclick="window.location.href='suivi_activites.php?proj=<?= $projet['id'] ?>'" class="btn btn-link text-decoration-none fw-bold py-1 px-0 m-0">
+                                <?php
+                                if ($progress < 39)
+                                    $color = "danger";
+                                elseif ($progress < 69)
+                                    $color = "warning";
+                                elseif ($progress >= 70)
+                                    $color = "success"; ?>
+                                <span id="tauxProj_<?php echo $projet['id']; ?>">
+                                    <div class="progress progress-xl rounded-0 p-0 m-0" style="height: 1.5rem; width: 200px">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated fs-14 fw-bold bg-<?php echo $color; ?> " aria-valuenow="70" style="width: 100%;">
+                                            <?php echo (isset($progress) && $progress > 0) ? $progress . " %" : "Non entamé"; ?>
+                                        </div>
+                                    </div>
+                                </span>
+                            </a>
                         </td>
 
                         <td class="align-middle ps-2">

@@ -74,7 +74,7 @@
         <div class="col-auto">
             <?php if (checkPermis($db, 'create')) : ?>
                 <button title="Ajouter une convention" class="btn btn-subtle-primary btn-sm" id="addBtn"
-                    data-bs-toggle="modal" data-bs-target="#addConvenModal" data-projet="<?= $project_curr['id'] ?>" data-action="<?= $project_curr['action_type'] ?>"
+                    data-bs-toggle="modal" data-bs-target="#addConvenModal" data-projet="<?= $project_curr['id'] ?>" data-secteur="<?= $project_curr['secteur_id'] ?>" data-action="<?= $project_curr['action_type'] ?>"
                     aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
                     <i class="fas fa-plus me-1"></i> Nouvelle convention
                 </button>
@@ -89,27 +89,17 @@
                         <th class="sort align-middle">Code</th>
                         <th class="sort align-middle">Convention</th>
                         <th class="sort align-middle">Bailleur</th>
-                        <th class="sort align-middle text-end">Montant (USD)</th>
                         <th class="sort align-middle">Type de soutien</th>
+                        <th class="sort align-middle">Instrument</th>
                         <th class="sort align-middle">Date d'accord</th>
+                        <th class="sort align-middle text-end">Montant (USD)</th>
                         <th class="sort align-middle text-center">Statut</th>
                         <th class="sort align-middle text-center" style="min-width:120px;">Actions</th>
                     </tr>
                 </thead>
-                <tbody class="list" id="table-latest-review-body">
+                <tbody class="list">
                     <?php if (!empty($conventions_project)): ?>
                         <?php foreach ($conventions_project as $convention):
-                            $decaisse_convention = 0;
-                            foreach ($taches_project as $tache) {
-                                if (isset($grouped_tache_couts[$tache['id']])) {
-                                    foreach ($grouped_tache_couts[$tache['id']] as $cout) {
-                                        if (isset($cout['convention_id']) && $cout['convention_id'] == $convention['id']) {
-                                            $decaisse_convention += floatval($cout['montant']);
-                                        }
-                                    }
-                                }
-                            }
-
                             $now = time();
                             $date_fin = strtotime($convention['date_fin'] ?? '');
                             $date_debut = strtotime($convention['date_debut'] ?? '');
@@ -145,26 +135,24 @@
                                         <?php echo htmlspecialchars($partenaire_nom); ?>
                                     </div>
                                 </td>
+                                <td class="align-middle">
+                                    <?php echo listTypeAction()[$convention['action_type']] ?? "N/A" ?>
+                                </td>
+                                <td class="align-middle">
+                                    <?php echo listTypeFinancement()[$convention['instrument']] ?? "N/A" ?>
+                                </td>
+                                <td class="align-middle">
+                                    <?php echo !empty($convention['date_accord']) ? date('d/m/Y', strtotime($convention['date_accord'])) : '-'; ?>
+                                </td>
                                 <td class="align-middle text-end">
                                     <span class="badge bg-info-subtle text-info p-2 fs-9 fw-semibold">
                                         <?php echo number_format($convention['montant'] ?? 0, 0, ',', ' '); ?> USD
                                     </span>
                                 </td>
-
-                                <td class="align-middle">
-                                    <?php echo listTypeAction()[$convention['action_type']] ?? "N/A" ?>
-                                </td>
-                                <td class="align-middle">
-                                    <?php echo !empty($convention['date_accord']) ? date('d/m/Y', strtotime($convention['date_accord'])) : '-'; ?>
-                                </td>
                                 <td class="align-middle text-center">
                                     <span class="badge badge-phoenix rounded-pill px-2 py-1 badge-phoenix-<?php echo $statut_class; ?>">
                                         <?php echo $statut_label; ?>
                                     </span>
-                                    <br>
-                                    <small class="text-muted">
-                                        Décaissé: <?php echo number_format($decaisse_convention, 0, ',', ' '); ?> USD
-                                    </small>
                                 </td>
                                 <td class="align-middle text-center">
                                     <?php if (checkPermis($db, 'update')) : ?>
@@ -216,73 +204,67 @@
         <div class="col-auto">
             <h4 class="my-1 fw-black fs-8">
                 <i class="fas fa-chart-pie me-2 text-success"></i>
-                Répartition des décaissements par activité
+                Répartition des décaissements
             </h4>
         </div>
     </div>
     <div class="row g-3">
         <div class="col-md-7">
-            <div class="card rounded-1 border shadow-sm">
+            <div class="card rounded-1 border shadow-sm mb-3">
                 <div class="card-header bg-light py-2 d-flex justify-content-between align-items-center">
-                    <h6 class="mb-0"><i class="fas fa-tasks me-2 text-primary"></i>Détail des activités</h6>
-                    <span class="badge bg-primary-subtle text-primary"><?php echo count($taches_project); ?> activités</span>
+                    <h6 class="mb-0"><i class="fas fa-tasks me-2"></i>Détail des activités</h6>
+                    <span class="badge bg-info-subtle text-info"><?php echo count($taches_project); ?> activités</span>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-bordered fs-9 table-hover mb-0" id="activites-finance-table">
+                        <table class="table table-bordered fs-9 table-hover mb-0 border-translucent" id="activites-decaisse-table">
                             <thead class="bg-primary-subtle">
                                 <tr>
                                     <th class="align-middle" width="5%">Code</th>
                                     <th class="align-middle" width="40%">Activité</th>
-                                    <th class="align-middle text-end" width="20%">Montant prévu</th>
-                                    <th class="align-middle text-end" width="20%" class="text-nowrap">Montant décaissé</th>
-                                    <th class="align-middle text-center" width="20%">Taux exécution</th>
+                                    <th class="align-middle text-end">Prévu (USD)</th>
+                                    <th class="align-middle text-end">Décaissé (USD)</th>
+                                    <th class="align-middle text-center">% Exec</th>
                                 </tr>
                             </thead>
                             <tbody class="list">
                                 <?php
-                                $total_prev = 0;
+                                $total_prevu_activites = 0;
                                 $total_decaisse_activites = 0;
                                 foreach ($taches_project as $tache):
                                     $montant_prev = isset($grouped_tache_couts[$tache['id']]) ? array_sum(array_column($grouped_tache_couts[$tache['id']], 'montant')) : 0;
-                                    $total_prev += $montant_prev;
+                                    $total_prevu_activites += $montant_prev;
                                     $montant_decaisse = $montant_prev;
                                     $total_decaisse_activites += $montant_decaisse;
-                                    $taux_exec = $montant_prev > 0 ? round(($montant_decaisse / $montant_prev) * 100, 1) : 0;
+                                    $taux_exec_activites = $montant_prev > 0 ? round(($montant_decaisse / $montant_prev) * 100, 1) : 0;
                                 ?>
                                     <tr>
                                         <td class="align-middle">
                                             <span class="fw-semibold"><?php echo htmlspecialchars($tache['code'] ?? ''); ?></span>
                                         </td>
                                         <td class="align-middle">
-                                            <span class="text-truncate d-inline-block" style="max-width: 300px;"
-                                                title="<?php echo htmlspecialchars($tache['name'] ?? ''); ?>">
+                                            <span class="text-truncate d-inline-block" title="<?php echo htmlspecialchars($tache['name'] ?? ''); ?>">
+                                                <span class="fa-regular fa-clipboard me-1 text-body-tertiary"></span>
                                                 <?php echo htmlspecialchars($tache['name'] ?? ''); ?>
                                             </span>
                                         </td>
                                         <td class="align-middle text-end">
                                             <?php if ($montant_prev > 0): ?>
-                                                <span class="fw-semibold"><?php echo number_format($montant_prev, 0, ',', ' '); ?> USD</span>
+                                                <span class="text-secondary fw-semibold"><?php echo number_format($montant_prev, 0, ',', ' '); ?></span>
                                             <?php else: ?>
                                                 <span class="text-muted">-</span>
                                             <?php endif; ?>
                                         </td>
                                         <td class="align-middle text-end">
                                             <?php if ($montant_decaisse > 0): ?>
-                                                <span class="text-success fw-semibold"><?php echo number_format($montant_decaisse, 0, ',', ' '); ?> USD</span>
+                                                <span class="text-success fw-semibold"><?php echo number_format($montant_decaisse, 0, ',', ' '); ?></span>
                                             <?php else: ?>
                                                 <span class="text-muted">-</span>
                                             <?php endif; ?>
                                         </td>
                                         <td class="align-middle">
                                             <?php if ($montant_prev > 0): ?>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="progress w-100" style="height: 6px;">
-                                                        <div class="progress-bar bg-<?php echo $taux_exec >= 80 ? 'success' : ($taux_exec >= 50 ? 'warning' : 'danger'); ?>"
-                                                            style="width: <?php echo $taux_exec; ?>%"></div>
-                                                    </div>
-                                                    <span class="ms-2 small fw-semibold"><?php echo $taux_exec; ?>%</span>
-                                                </div>
+                                                <span class="ms-2 fw-semibold"><?php echo $taux_exec_activites; ?>%</span>
                                             <?php else: ?>
                                                 <span class="text-muted">-</span>
                                             <?php endif; ?>
@@ -293,18 +275,126 @@
                             <tfoot class="bg-light">
                                 <tr>
                                     <th colspan="2" class="text-end text-uppercase">Décaissement total</th>
-                                    <th class="text-end"><?php echo number_format($total_prev, 0, ',', ' '); ?> USD</th>
+                                    <th class="text-end"><?php echo number_format($total_prevu_activites, 0, ',', ' '); ?> USD</th>
                                     <th class="text-end"><?php echo number_format($total_decaisse_activites, 0, ',', ' '); ?> USD</th>
                                     <th class="text-center">
                                         <?php
-                                        $taux_global = $total_prev > 0 ? round(($total_decaisse_activites / $total_prev) * 100, 1) : 0;
+                                        $taux_global = $total_prevu_activites > 0 ? round(($total_decaisse_activites / $total_prevu_activites) * 100, 1) : 0;
                                         ?>
-                                        <span class="badge bg-<?php echo $taux_global >= 80 ? 'success' : ($taux_global >= 50 ? 'warning' : 'danger'); ?>">
+                                        <span class="badge badge-phoenix py-1 px-2 badge-phoenix-<?php echo $taux_global >= 80 ? 'success' : ($taux_global >= 50 ? 'warning' : 'danger'); ?>">
                                             <?php echo $taux_global; ?>%
                                         </span>
                                     </th>
                                 </tr>
                             </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card rounded-1 border shadow-sm mb-3">
+                <div class="card-header bg-light py-2 d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0"><i class="fas fa-tasks me-2"></i>Détail des bailleurs</h6>
+                    <span class="badge bg-info-subtle text-info"><?php echo count($conventions_project); ?> bailleurs</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered fs-9 table-hover mb-0 border-translucent" id="convention-decaisse-table">
+                            <thead class="bg-primary-subtle">
+                                <tr>
+                                    <th class="sort align-middle">Code</th>
+                                    <th class="sort align-middle">Bailleur</th>
+                                    <th class="sort align-middle text-end">Prévu (USD)</th>
+                                    <th class="sort align-middle text-end">Décaissé (USD)</th>
+                                    <th class="sort align-middle text-center">% Exec</th>
+                                </tr>
+                            </thead>
+                            <tbody class="list">
+                                <?php if (!empty($conventions_project)): ?>
+                                    <?php
+                                    $total_prevu_bailleurs = 0;
+                                    $total_decaisse_bailleurs = 0;
+                                    foreach ($conventions_project as $convention):
+                                        $decaisse_convention = 0;
+                                        foreach ($taches_project as $tache) {
+                                            if (isset($grouped_tache_couts[$tache['id']])) {
+                                                foreach ($grouped_tache_couts[$tache['id']] as $cout) {
+                                                    if (isset($cout['convention']) && $cout['convention'] == $convention['id']) {
+                                                        $decaisse_convention += floatval($cout['montant']);
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        $total_prevu_bailleurs += (float)$convention['montant'];
+                                        $total_decaisse_bailleurs += $decaisse_convention;
+                                        $taux_exec_bailleurs = (float)$convention['montant'] > 0 ? round(($decaisse_convention / (float)$convention['montant']) * 100, 1) : 0;
+                                        $partenaire_nom = array_column($partenaires, 'description', 'id')[$convention['partenaire_id']] ?? 'Non défini';
+                                    ?>
+                                        <tr class="hover-actions-trigger btn-reveal-trigger position-static">
+                                            <td class="align-middle">
+                                                <span class="fw-semibold"><?php echo htmlspecialchars($convention['code'] ?? ''); ?></span>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="d-flex align-items-center">
+                                                    <span class="fa-regular fa-building me-1 text-body-tertiary"></span>
+                                                    <?php echo htmlspecialchars($partenaire_nom); ?>
+                                                </div>
+                                            </td>
+                                            <td class="align-middle text-end">
+                                                <?php if ((float)$convention['montant'] > 0): ?>
+                                                    <span class="text-secondary fw-semibold"><?php echo number_format((float)$convention['montant'], 0, ',', ' '); ?></span>
+                                                <?php else: ?>
+                                                    <span class="text-muted">-</span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td class="align-middle text-end">
+                                                <?php if ($decaisse_convention > 0): ?>
+                                                    <span class="text-success fw-semibold"><?php echo number_format($decaisse_convention, 0, ',', ' '); ?></span>
+                                                <?php else: ?>
+                                                    <span class="text-muted">-</span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td class="align-middle">
+                                                <?php if ((float)$convention['montant'] > 0): ?>
+                                                    <span class="ms-2 fw-semibold"><?php echo $taux_exec_bailleurs; ?>%</span>
+                                                <?php else: ?>
+                                                    <span class="text-muted">-</span>
+                                                <?php endif; ?>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td colspan="9" class="text-center py-3">
+                                            <div class="d-flex flex-column align-items-center">
+                                                <span class="fa-regular fa-file-lines fa-3x text-muted mb-3"></span>
+                                                <p class="text-muted mb-2">Aucune source de financement enregistrée</p>
+                                                <?php if (checkPermis($db, 'create')) : ?>
+                                                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addConvenModal">
+                                                        <i class="fas fa-plus me-1"></i>Ajouter une convention
+                                                    </button>
+                                                <?php endif; ?>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
+                            </tbody>
+                            <?php if (!empty($conventions_project)): ?>
+                                <tfoot class="bg-light">
+                                    <tr class="fw-bold">
+                                        <th colspan="2" class="text-end text-uppercase">Décaissement total</th>
+                                        <th class="text-end"><?php echo number_format($total_prevu_bailleurs, 0, ',', ' '); ?> USD</th>
+                                        <th class="text-end"><?php echo number_format($total_decaisse_bailleurs, 0, ',', ' '); ?> USD</th>
+                                        <th class="text-center">
+                                            <?php $taux_global = $total_prevu_bailleurs > 0 ? round(($total_decaisse_bailleurs / $total_prevu_bailleurs) * 100, 1) : 0; ?>
+                                            <span class="badge badge-phoenix py-1 px-2 badge-phoenix-<?php echo $taux_global >= 80 ? 'success' : ($taux_global >= 50 ? 'warning' : 'danger'); ?>">
+                                                <?php echo $taux_global; ?>%
+                                            </span>
+                                        </th>
+                                    </tr>
+                                </tfoot>
+                            <?php endif; ?>
                         </table>
                     </div>
                 </div>

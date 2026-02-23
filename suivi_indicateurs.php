@@ -34,6 +34,14 @@
         $indicateur->projet_id = $project_curr['id'];
         $indicateurs_project = $indicateur->readByProjet();
 
+        $facteur_emission = new FacteurEmission($db);
+        $facteur_emission->projet_id = $project_curr['id'];
+        $facteur_emission_projet = $facteur_emission->readByProjet();
+        $grouped_facteurs = [];
+        foreach ($facteur_emission_projet as $facteur) {
+            $grouped_facteurs[$facteur['id']] = $facteur;
+        }
+
         $secteur = new Secteur($db);
         $secteurs = $secteur->read();
         $secteurs = array_filter($secteurs, function ($structure) {
@@ -89,12 +97,12 @@
                         <h4 class="my-1 fw-black fs-8">Suivi des indicateurs</h4>
                     </div>
 
-                    <div class="col-lg-3 mb-2 mb-lg-0 text-center">
+                    <div class="col-lg-4 mb-2 mb-lg-0 text-center">
                         <form action="formNiveauResultat" method="post">
-                            <select class="btn btn-phoenix-primary rounded-pill btn-sm form-select form-select-sm rounded-1 text-start" name="result" id="resultID" onchange="window.location.href = 'suivi_indicateurs.php?proj=' + this.value">
+                            <select id="selectPageSuiviIndic" class="form-select text-center" name="result" onchange="window.location.href = 'suivi_indicateurs.php?proj=' + this.value">
                                 <option value="" class="text-center" selected disabled>---Sélectionner un projet---</option>
                                 <?php foreach ($all_projects as $project) { ?>
-                                    <option value="<?php echo $project['id']; ?>" <?php if ($sel_id == $project['id']) echo 'selected'; ?>><?php echo $project['name']; ?></option>
+                                    <option value="<?php echo $project['id']; ?>" <?php if ($sel_id == $project['id']) echo 'selected'; ?>><?php echo html_entity_decode($project['name']); ?></option>
                                 <?php } ?>
                             </select>
                         </form>
@@ -115,21 +123,27 @@
                     <div class="mx-n4 p-1 mx-lg-n6 bg-body-emphasis border-y">
                         <?php if (!empty($all_projects) && $sel_id != '') { ?>
                             <div class="table-responsive mx-n1 px-1 scrollbar" style="min-height: 432px;">
-                                <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
+                                <table class="table small fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
                                     <thead class="bg-primary-subtle">
-                                        <tr>
-                                            <th class="sort align-middle" scope="col">Code</th>
-                                            <th class="sort align-middle" scope="col">Intitule</th>
-                                            <th class="sort align-middle" scope="col">Unité</th>
-                                            <th class="sort align-middle" scope="col">Type</th>
-                                            <th class="sort align-middle" scope="col">Calcul</th>
+                                        <tr class="text-nowrap">
+                                            <th class="align-middle" rowspan="2">Code</th>
+                                            <th class="align-middle" rowspan="2">Intitule</th>
+                                            <th class="align-middle" rowspan="2">Type</th>
+                                            <th class="align-middle" rowspan="2">Calcul</th>
+                                            <th class="align-middle" rowspan="2">Facteur d'émission</th>
                                             <?php for ($year = date('Y', strtotime($project_curr['start_date'])); $year <= date('Y', strtotime($project_curr['end_date'])); $year++) : ?>
-                                                <th class="sort align-middle bg-light dark__bg-secondary border text-center" scope="col"><?php echo $year; ?></th>
+                                                <th class="align-middle bg-light dark__bg-secondary border text-center" colspan="2">Réalisation <?php echo $year; ?></th>
                                             <?php endfor; ?>
-                                            <th class="sort align-middle" scope="col">Actions</th>
+                                            <th class="align-middle" rowspan="2">Actions</th>
+                                        </tr>
+                                        <tr>
+                                            <?php for ($year = date('Y', strtotime($project_curr['start_date'])); $year <= date('Y', strtotime($project_curr['end_date'])); $year++) : ?>
+                                                <th class="sort align-middle bg-light dark__bg-secondary border text-center">Valeur</th>
+                                                <th class="sort align-middle bg-light dark__bg-secondary border text-center">Emission</th>
+                                            <?php endfor; ?>
                                         </tr>
                                     </thead>
-                                    <tbody class="list" id="table-latest-review-body">
+                                    <tbody class="list">
                                         <?php foreach ($indicateurs_project as $indicateur) {
                                             $referentiel = new Referentiel($db);
                                             $referentiel->id = $indicateur['referentiel_id'];
@@ -137,39 +151,47 @@
 
                                             // Recupérer les données des suivis
                                             $suivi = new Suivi($db);
-                                            $suivi->indicateur_id = $indicateur['id'];
-                                            $suivis_cmr = $suivi->readByIndicateur();
+                                            $suivi->cmr_id = $indicateur['id'];
+                                            $suivis_cmr = $suivi->readByCMR();
 
                                             // Regrouper les données des suivis par année
                                             $suivis_cmr_grouped = array();
                                             foreach ($suivis_cmr as $suivi) {
                                                 $suivis_cmr_grouped[$suivi['annee']][] = $suivi;
                                             }
+
+                                            $indicateur_facteur = isset($grouped_facteurs[$indicateur['facteur_id']]) ? $grouped_facteurs[$indicateur['facteur_id']] : [];
                                         ?>
 
                                             <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                                                <td class="align-middle px-2 py-0"> <?php echo $indicateur['code']; ?> </td>
+                                                <td class="align-middle px-2 py-0" style="width: 5%;"> <?php echo $indicateur['code']; ?> </td>
                                                 <td class="align-middle px-2"> <?php echo $indicateur['intitule']; ?> </td>
-                                                <td class="align-middle px-2 py-0"><?php echo $indicateur['unite']; ?></td>
-
-                                                <td class="align-middle px-2 py-0"> <?php echo strtoupper($referentiel_curr['categorie'] ?? '-'); ?> </td>
-                                                <td class="align-middle px-2 py-0"> <?php echo listModeCalcul()[$indicateur['mode_calcul'] ?? '-']; ?> </td>
+                                                <td class="align-middle px-2 py-0" style="width: 5%;"> <?php echo strtoupper($referentiel_curr['categorie'] ?? '-'); ?> </td>
+                                                <td class="align-middle px-2 py-0" style="width: 5%;"> <?php echo listModeCalcul()[$indicateur['mode_calcul'] ?? '-']; ?> </td>
+                                                <td class="align-middle px-2 py-0" style="width: 10%;"> <?php echo $indicateur_facteur['name'] ?? ""; ?> </td>
 
                                                 <?php for ($year = date('Y', strtotime($project_curr['start_date'])); $year <= date('Y', strtotime($project_curr['end_date'])); $year++): ?>
-                                                    <td class="align-middle bg-light dark__bg-secondary px-2 py-0 border text-center">
-                                                        <?= calculSuiviData($suivis_cmr_grouped[$year] ?? [], $indicateur['mode_calcul']) ?>
+                                                    <td class="align-middle bg-warning-subtle dark__bg-secondary px-2 py-0 border text-center" style="width: 7%;">
+                                                        <?= calculSuiviData($suivis_cmr_grouped[$year] ?? [], $indicateur['mode_calcul'] ?? "") ?>
+                                                        <br>
+                                                        <small class="text-muted"><?= $indicateur['unite'] ?? '-' ?></small>
+                                                    </td>
+                                                    <td class="align-middle bg-info-subtle dark__bg-secondary px-2 py-0 border text-center" style="width: 7%;">
+                                                        <?= calculEmissionsEvitees($suivis_cmr_grouped[$year] ?? [], $indicateur_facteur['valeur'] ?? "") ?>
+                                                        <br>
+                                                        <small class="text-muted"><?= $indicateur_facteur['unite'] ?? "" ?></small>
                                                     </td>
                                                 <?php endfor; ?>
 
-                                                <td class="align-middle review d-flex gap-2">
+                                                <td class="align-middle" style="width: 5%;">
                                                     <button title="Suivre" type="button" class="btn btn-subtle-primary rounded-pill btn-sm fw-bold fs-9 px-2 py-1" data-bs-toggle="modal"
                                                         data-bs-target="#newIndicateurSuiviModal" aria-haspopup="true" aria-expanded="false"
-                                                        data-indicateur_id="<?php echo $indicateur['id']; ?>" data-projet_id="<?php echo $project_curr['id']; ?>">
+                                                        data-indicateur_id="<?php echo $indicateur['referentiel_id']; ?>" data-cmr_id="<?php echo $indicateur['id']; ?>" data-unite="<?php echo $indicateur['unite']; ?>" data-projet_id="<?php echo $project_curr['id']; ?>">
                                                         Suivre
                                                     </button>
-                                                    <button title="Voir" type="button" class="btn btn-sm fw-bold fs-9 px-2 py-1 btn-phoenix-success" onclick="window.location.href = 'indicateur_view.php?id=<?= $indicateur['referentiel_id'] ?>';">
+                                                    <!-- <button title="Voir" type="button" class="btn btn-sm fw-bold fs-9 px-2 py-1 btn-phoenix-success" onclick="window.location.href = 'indicateur_view.php?id=<?= $indicateur['referentiel_id'] ?>';">
                                                         <span class="uil-eye fs-8"></span>
-                                                    </button>
+                                                    </button> -->
                                                 </td>
                                             </tr>
                                         <?php } ?>

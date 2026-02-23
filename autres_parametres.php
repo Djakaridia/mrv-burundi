@@ -95,7 +95,7 @@
                                                         <th class="sort align-middle" scope="col" style="min-width:100px;">Actions</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody class="list" id="table-latest-review-body">
+                                                <tbody class="list">
 
                                                     <?php foreach ($unites as $unite) { ?>
                                                         <tr class="hover-actions-trigger btn-reveal-trigger position-static">
@@ -150,7 +150,7 @@
                                                         <th class="sort align-middle" scope="col" data-sort="time" style="min-width:100px;">Actions</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody class="list" id="table-latest-review-body">
+                                                <tbody class="list">
 
                                                     <?php foreach ($gazs as $gaz) { ?>
                                                         <tr class="hover-actions-trigger btn-reveal-trigger position-static">

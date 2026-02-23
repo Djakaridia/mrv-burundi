@@ -23,54 +23,6 @@ $task_total = $task_planifiee + $task_en_cours + $task_en_attente + $task_termin
 <div class="content px-0 py-0 pt-navbar">
     <div class="row g-0">
         <div class="col-12 col-xxl-12 px-0 pb-9">
-            <div class="mb-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="d-flex gap-2">
-                        <span class="badge badge-phoenix py-1 px-2 fs-10 rounded-pill badge-phoenix-<?php echo $project_curr['state'] == 'actif' ? 'success' : 'danger'; ?>">
-                            <?php echo $project_curr['state'] == 'actif' ? 'Actif' : 'Archivé'; ?>
-                            <span class="ms-1 uil <?php echo $project_curr['state'] == 'actif' ? 'uil-check-circle' : 'uil-archive-alt'; ?> fs-10"></span>
-                        </span>
-
-                        <span class="badge badge-phoenix py-1 px-2 fs-10 rounded-pill badge-phoenix-warning">
-                            <?php echo listStatus()[$project_curr['status']]; ?>
-                        </span>
-
-                        <span class="badge badge-phoenix py-1 px-2 fs-10 rounded-pill badge-phoenix-info">
-                            <?php echo $project_curr['action_type'] == 'adaptation' ? 'Adaptation' : 'Atténuation'; ?>
-                        </span>
-                    </div>
-
-                    <div class="btn-reveal-trigger gap-2">
-                        <?php if (checkPermis($db, 'update')) : ?>
-                            <button title="Modifier" class="btn btn-sm rounded-1 btn-phoenix-info me-1 px-2 py-1"
-                                data-bs-toggle="modal" data-bs-target="#addProjetModal"
-                                data-id="<?php echo $project_curr['id']; ?>">
-                                <span class="uil-pen fs-9"></span> Modifier
-                            </button>
-                        <?php endif; ?>
-
-                        <?php if (checkPermis($db, 'update', 2)) : ?>
-                            <button title="<?php echo $project_curr['state'] == 'actif' ? 'Archiver' : 'Désarchiver'; ?>"
-                                class="btn btn-sm rounded-1 btn-phoenix-warning me-1 px-2 py-1"
-                                onclick="updateState(<?php echo $project_curr['id']; ?>, '<?php echo $project_curr['state'] == 'actif' ? 'inactif' : 'actif'; ?>', 
-                                'Êtes-vous sûr de vouloir <?php echo $project_curr['state'] == 'actif' ? 'archiver' : 'désarchiver'; ?> ce projet ?', 'projets')">
-                                <span class="uil-<?php echo $project_curr['state'] == 'actif' ? 'archive' : 'archive-alt'; ?> fs-9"></span>
-                                <?php echo $project_curr['state'] == 'actif' ? 'Archiver' : 'Désarchiver'; ?>
-                            </button>
-                        <?php endif; ?>
-
-                        <?php if (checkPermis($db, 'delete', 2)) : ?>
-                            <button title="Supprimer" class="btn btn-sm rounded-1 btn-phoenix-danger me-1 px-2 py-1"
-                                onclick="deleteData(<?php echo $project_curr['id']; ?>,'Voulez-vous vraiment supprimer ce projet ?', 'projets', 'redirect', 'projects.php')">
-                                <span class="uil-trash-alt fs-9"></span> Supprimer
-                            </button>
-                        <?php endif; ?>
-                    </div>
-                </div>
-
-                <h5 class="text-body-emphasis fw-bolder my-2"><?php echo html_entity_decode($project_curr['name']); ?></h5>
-            </div>
-
             <div class="row g-3 mb-3">
                 <div class="col-md-3">
                     <div class="card h-100 rounded-1">
@@ -87,7 +39,7 @@ $task_total = $task_planifiee + $task_en_cours + $task_en_attente + $task_termin
                 <div class="col-md-9">
                     <div class="row g-3 mb-3">
                         <div class="col-sm-6 col-md-4">
-                            <div class="card card-float h-100 rounded-1 border-start border-success-subtle">
+                            <div class="card h-100 rounded-1 border-start border-success-subtle">
                                 <div class="card-body p-2">
                                     <div class="d-flex align-items-center">
                                         <div class="flex-shrink-0">
@@ -103,7 +55,7 @@ $task_total = $task_planifiee + $task_en_cours + $task_en_attente + $task_termin
                         </div>
 
                         <div class="col-sm-6 col-md-4">
-                            <div class="card card-float h-100 rounded-1 border-start border-info-subtle">
+                            <div class="card h-100 rounded-1 border-start border-info-subtle">
                                 <div class="card-body p-2">
                                     <div class="d-flex align-items-center">
                                         <div class="flex-shrink-0">
@@ -119,7 +71,7 @@ $task_total = $task_planifiee + $task_en_cours + $task_en_attente + $task_termin
                         </div>
 
                         <div class="col-sm-6 col-md-4">
-                            <div class="card card-float h-100 rounded-1 border-start border-secondary-subtle">
+                            <div class="card h-100 rounded-1 border-start border-secondary-subtle">
                                 <div class="card-body p-2">
                                     <div class="d-flex align-items-center">
                                         <div class="flex-shrink-0">
@@ -155,11 +107,11 @@ $task_total = $task_planifiee + $task_en_cours + $task_en_attente + $task_termin
                                 </li>
                             </ul>
 
-                            <div class="tab-content mt-3 p-3">
-                                <div class="tab-pane fade show active" id="tabProjectobjectif" role="tabpanel">
+                            <div class="tab-content border-top border-light p-3">
+                                <div class="tab-pane fs-9 fade show active" id="tabProjectobjectif" role="tabpanel">
                                     <p class="text-body-secondary mb-0"><?php echo nl2br($project_curr['objectif']); ?></p>
                                 </div>
-                                <div class="tab-pane fade" id="tabProjetdescription" role="tabpanel">
+                                <div class="tab-pane fs-9 fade" id="tabProjetdescription" role="tabpanel">
                                     <p class="text-body-secondary mb-0"><?php echo nl2br($project_curr['description']); ?></p>
                                 </div>
                             </div>
@@ -250,7 +202,7 @@ $task_total = $task_planifiee + $task_en_cours + $task_en_attente + $task_termin
                 </div>
             </div>
 
-            <div class="row g-3">
+            <div class="row g-3 mb-3">
                 <div class="col-md-6 col-lg-3">
                     <div class="card rounded-1 h-100">
                         <div class="card-header bg-light py-2 rounded-0 overflow-hidden">
@@ -331,7 +283,7 @@ $task_total = $task_planifiee + $task_en_cours + $task_en_attente + $task_termin
                 </div>
             </div>
 
-            <div class="card rounded-1 mt-3">
+            <div class="card rounded-1 mb-3">
                 <div class="card-header bg-light py-2 rounded-0 overflow-hidden">
                     <h6 class="mb-0"><i class="far fa-calendar-alt me-2"></i>Dates importantes</h6>
                 </div>

@@ -139,16 +139,17 @@
                                 <th class="sort align-middle px-2" scope="col">Code</th>
                                 <th class="sort align-middle px-2" scope="col">Intitulé</th>
                                 <th class="sort align-middle px-2" scope="col">Unité</th>
-                                <th class="sort align-middle px-2" scope="col">Responsables</th>
+                                <!-- <th class="sort align-middle px-2" scope="col">Catégorie</th>
+                                <th class="sort align-middle px-2" scope="col">Responsables</th> -->
                                 <th class="sort align-middle px-2 text-nowrap" scope="col">Mesures & actions</th>
                                 <th class="sort align-middle px-2 text-nowrap" scope="col">Indicateur projet</th>
-                                <th class="sort align-middle px-2" scope="col">Total prévu</th>
-                                <th class="sort align-middle px-2" scope="col">Total réalisé</th>
-                                <th class="sort align-middle px-2" scope="col">Taux réalisation</th>
+                                <th class="sort align-middle px-2 text-center" scope="col">Cible</th>
+                                <th class="sort align-middle px-2 text-center" scope="col">Réalisé</th>
+                                <th class="sort align-middle px-2 text-center" scope="col">Taux réalisation</th>
                                 <th class="sort align-middle px-2" scope="col">Suivis</th>
                             </tr>
                         </thead>
-                        <tbody class="list" id="table-latest-review-body">
+                        <tbody class="list">
                             <?php foreach ($referentiels as $referentiel):
                                 $cibles_total = 0;
                                 $suivis_total = 0;
@@ -156,50 +157,39 @@
                                 $nbre_cmr = 0;
                                 $nbre_mesure = 0;
 
-                                if ($referentiel['categorie'] != 'impact') {
+                                if ($referentiel['categorie'] == 'produit') {
                                     $indicateur = new Indicateur($db);
                                     $indicateur->referentiel_id = $referentiel['id'];
                                     $indicateurs = array_filter($indicateur->readByReferentiel(), fn($i) => $i['state'] == 'actif');
+                                    $nbre_cmr = count($indicateurs);
 
+                                    $cibles_total = $suivis_total = 0;
                                     if (!empty($indicateurs)) {
-                                        $nbre_cmr = count($indicateurs);
-                                        $indicateur_cmr = array_pop($indicateurs);
+                                        foreach ($indicateurs as $cmr) {
+                                            $cible_cmr = new Cible($db);
+                                            $cible_cmr->cmr_id = $cmr['id'];
+                                            $cibles_raw = $cible_cmr->readByCMR();
 
-                                        $projet = new Projet($db);
-                                        $projet->id = $indicateur_cmr['projet_id']??"";
-                                        $projet_ref = $projet->readById();
-                                        $annees = [];
-                                        for ($year = date('Y', strtotime($projet_ref['start_date'])); $year <= date('Y', strtotime($projet_ref['end_date'])); $year++) {
-                                            $annees[] = $year;
-                                        }
+                                            $suivi_cmr = new Suivi($db);
+                                            $suivi_cmr->cmr_id = $cmr['id'];
+                                            $suivis_raw = $suivi_cmr->readByCMR();
 
-                                        $cible = new Cible($db);
-                                        $cible->indicateur_id = $indicateur_cmr['id']??"";
-                                        $cibles_raw = $cible->readByIndicateur();
-                                        $cibles_map = [];
-                                        if (count($cibles_raw) > 0) {
-                                            foreach ($cibles_raw as $item) {
-                                                $year = $item['annee'];
-                                                $value = (float)$item['valeur'];
-                                                if (!isset($cibles_map[$year])) $cibles_map[$year] = 0;
-                                                $cibles_map[$year] += $value;
+                                            if (!empty($cibles_raw)) {
+                                                usort($cibles_raw, fn($a, $b) => $a['annee'] - $b['annee']);
+                                                foreach ($cibles_raw as $item) {
+                                                    $value = (float)$item['valeur'];
+                                                    $cibles_total += $value;
+                                                }
+                                            }
+
+                                            if (!empty($suivis_raw)) {
+                                                usort($suivis_raw, fn($a, $b) => $a['annee'] - $b['annee']);
+                                                foreach ($suivis_raw as $item) {
+                                                    $value = (float)$item['valeur'];
+                                                    $suivis_total += $value;
+                                                }
                                             }
                                         }
-                                        $cibles = array_map(fn($y) => (float)($cibles_map[$y] ?? 0), $annees);
-
-                                        $suivi = new Suivi($db);
-                                        $suivi->indicateur_id = $indicateur_cmr['id'];
-                                        $suivis_raw = $suivi->readByIndicateur();
-                                        $suivis_map = [];
-                                        if (count($suivis_raw) > 0) {
-                                            foreach ($suivis_raw as $item) {
-                                                $year = $item['annee'];
-                                                $value = (float)$item['valeur'];
-                                                if (!isset($suivis_map[$year])) $suivis_map[$year] = 0;
-                                                $suivis_map[$year] += $value;
-                                            }
-                                        }
-                                        $suivis = array_map(fn($y) => (float)($suivis_map[$y] ?? 0), $annees);
                                     }
                                 } else {
                                     $mesure = new Mesure($db);
@@ -207,118 +197,173 @@
                                     $mesures = $mesure->readByIndicateur();
                                     $nbre_mesure = count($mesures);
 
-                                    $cible_referentiel = new Cible($db);
-                                    $cible_referentiel->indicateur_id = $referentiel['id'];
-                                    $cibles_raw = $cible_referentiel->readByIndicateur();
+                                    $cible = new Cible($db);
+                                    $cible->indicateur_id = $referentiel['id'];
+                                    $cibles_raw = $cible->readByIndicateur();
 
                                     $suivi_referentiel = new Suivi($db);
                                     $suivi_referentiel->indicateur_id = $referentiel['id'];
                                     $suivis_raw = $suivi_referentiel->readByIndicateur();
 
-                                    $annees = array();
-                                    if (!empty($cibles_raw) || !empty($suivis_raw)) {
-                                        $all_years = array();
-                                        if (!empty($cibles_raw)) {
-                                            $cible_years = array_column($cibles_raw, 'annee');
-                                            $all_years = array_merge($all_years, $cible_years);
-                                        }
-
-                                        if (!empty($suivis_raw)) {
-                                            $suivi_years = array_column($suivis_raw, 'annee');
-                                            $all_years = array_merge($all_years, $suivi_years);
-                                        }
-
-                                        if (!empty($all_years)) {
-                                            $min_year = min($all_years);
-                                            $max_year = max($all_years);
-
-                                            for ($year = $min_year; $year <= $max_year; $year++) {
-                                                $annees[] = $year;
-                                            }
-                                        }
-                                    }
-
-                                    $cibles_map = array();
                                     if (!empty($cibles_raw)) {
                                         usort($cibles_raw, fn($a, $b) => $a['annee'] - $b['annee']);
                                         foreach ($cibles_raw as $item) {
-                                            $year = $item['annee'];
                                             $value = (float)$item['valeur'];
-                                            if (!isset($cibles_map[$year])) $cibles_map[$year] = 0;
-                                            $cibles_map[$year] += $value;
                                             $cibles_total += $value;
                                         }
-                                        ksort($cibles_map, SORT_NUMERIC);
                                     }
 
-                                    $suivis_map = array();
                                     if (!empty($suivis_raw)) {
                                         usort($suivis_raw, fn($a, $b) => $a['annee'] - $b['annee']);
                                         foreach ($suivis_raw as $item) {
-                                            $year = $item['annee'];
                                             $value = (float)$item['valeur'];
-                                            if (!isset($suivis_map[$year])) $suivis_map[$year] = 0;
-                                            $suivis_map[$year] += $value;
                                             $suivis_total += $value;
-                                        }
-                                        ksort($suivis_map, SORT_NUMERIC);
-                                    }
-
-                                    $cibles = array();
-                                    $suivis = array();
-                                    if (!empty($annees)) {
-                                        foreach ($annees as $year) {
-                                            $cibles[] = (float)($cibles_map[$year] ?? 0);
-                                            $suivis[] = (float)($suivis_map[$year] ?? 0);
                                         }
                                     }
                                 }
 
                                 $taux_progress = $cibles_total > 0 ? ($suivis_total / $cibles_total) * 100 : 0;
+                                $taux_progress = round($taux_progress, 2, true)
                             ?>
-                                <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                                    <td class="align-middle px-2 py-0"> <?php echo $referentiel['code']; ?> </td>
-                                    <td class="align-middle px-2"> <?php echo $referentiel['intitule']; ?> </td>
-                                    <td class="align-middle px-2 py-0 text-nowrap"><?php echo $referentiel['unite']; ?></td>
+                                <tr class="hover-actions-trigger btn-reveal-trigger position-relative">
+                                    <td class="align-middle px-3 py-2">
+                                        <span class="fw-medium badge bg-primary-subtle text-primary-emphasis">
+                                            <?= htmlspecialchars($referentiel['code']) ?>
+                                        </span>
+                                    </td>
 
-                                    <td class="align-middle px-2 py-0">
-                                        <?php foreach ($structures as $structure): ?>
-                                            <?php if ($structure['id'] == $referentiel['responsable']): ?>
-                                                <?php echo $structure['sigle']; ?>
-                                            <?php endif; ?>
-                                        <?php endforeach; ?>
+                                    <td class="align-middle px-3">
+                                        <div class="d-flex align-items-center">
+                                            <span class="text-wrap"><?= htmlspecialchars($referentiel['intitule']) ?></span>
+                                        </div>
                                     </td>
-                                    <td class="align-middle text-center px-2 py-0">
-                                        <a class="btn btn-link text-decoration-none fw-bold p-0 m-0" data-bs-toggle="modal" data-bs-target="#viewRefCMRModal" aria-haspopup="true" aria-expanded="false"
-                                            data-id="<?php echo $referentiel['id']; ?>">
-                                            <?php if ($nbre_mesure > 0): ?>
-                                                (<?php echo $nbre_mesure; ?>) mesure
+
+                                    <td class="align-middle px-3">
+                                        <?= htmlspecialchars($referentiel['unite'] ?? 'N/A') ?>
+                                    </td>
+
+                                    <!-- <td class="align-middle px-3">
+                                        <span class="badge bg-secondary-subtle text-secondary-emphasis rounded-pill">
+                                            <?php if ($referentiel['categorie'] == 'impact'): ?>
+                                                <i class="fas fa-bullseye text-secondary me-1" title="Impact"></i>
+                                            <?php elseif ($referentiel['categorie'] == 'effet'): ?>
+                                                <i class="fas fa-chart-line text-secondary me-1" title="Effet"></i>
                                             <?php else: ?>
-                                                Aucune mesure
+                                                <i class="fas fa-tag text-secondary me-1"></i>
                                             <?php endif; ?>
-                                        </a>
+                                            <?= htmlspecialchars(listTypeCategorie()[$referentiel['categorie']] ?? 'N/A') ?>
+                                        </span>
+                                    </td> -->
+
+                                    <!-- <td class="align-middle px-3">
+                                        <?php
+                                        $responsable_sigle = '';
+                                        foreach ($structures as $structure):
+                                            if ($structure['id'] == $referentiel['responsable']):
+                                                $responsable_sigle = $structure['sigle'];
+                                                break;
+                                            endif;
+                                        endforeach;
+                                        ?>
+                                        <?php if (!empty($responsable_sigle)): ?>
+                                            <span class="d-inline-flex align-items-center">
+                                                <?= htmlspecialchars($responsable_sigle) ?>
+                                            </span>
+                                        <?php else: ?>
+                                            <span class="text-body-secondary fst-italic">
+                                                <i class="fas fa-minus me-1"></i>Non assigné
+                                            </span>
+                                        <?php endif; ?>
+                                    </td> -->
+
+                                    <td class="align-middle text-center px-3">
+                                        <button type="button" class="btn btn-link text-decoration-none p-0 border-0"
+                                            data-bs-toggle="modal" data-bs-target="#viewRefMesureModal"
+                                            data-id="<?= $referentiel['id'] ?>"
+                                            title="Voir les mesures">
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <?php if ($nbre_mesure > 0): ?>
+                                                    <span class="badge bg-warning-subtle text-warning-emphasis rounded-pill">
+                                                        <?= $nbre_mesure ?> mesure<?= $nbre_mesure > 1 ? 's' : '' ?>
+                                                    </span>
+                                                <?php else: ?>
+                                                    <span class="badge bg-secondary-subtle text-secondary-emphasis">
+                                                        <i class="fas fa-times me-1"></i>Aucune
+                                                    </span>
+                                                <?php endif; ?>
+                                            </div>
+                                        </button>
                                     </td>
-                                    <td class="align-middle text-center px-2 py-0">
-                                        <a class="btn btn-link text-decoration-none fw-bold p-0 m-0" data-bs-toggle="modal" data-bs-target="#viewRefCMRModal" aria-haspopup="true" aria-expanded="false"
-                                            data-id="<?php echo $referentiel['id']; ?>">
-                                            <?php if ($nbre_cmr > 0): ?>
-                                                (<?php echo $nbre_cmr; ?>) indicateur
-                                            <?php else: ?>
-                                                Aucun indicateur
-                                            <?php endif; ?>
-                                        </a>
+
+                                    <td class="align-middle text-center px-3">
+                                        <button type="button" class="btn btn-link text-decoration-none p-0 border-0"
+                                            data-bs-toggle="modal" data-bs-target="#viewRefCMRModal"
+                                            data-id="<?= $referentiel['id'] ?>"
+                                            title="Voir les indicateurs">
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <?php if ($nbre_cmr > 0): ?>
+                                                    <span class="badge bg-success-subtle text-success-emphasis rounded-pill">
+                                                        <?= $nbre_cmr ?> indicateur<?= $nbre_cmr > 1 ? 's' : '' ?>
+                                                    </span>
+                                                <?php else: ?>
+                                                    <span class="badge bg-secondary-subtle text-secondary-emphasis">
+                                                        <i class="fas fa-times me-1"></i>Aucun
+                                                    </span>
+                                                <?php endif; ?>
+                                            </div>
+                                        </button>
                                     </td>
-                                    <td class="align-middle bg-secondary-subtle px-2 py-0"> <?php echo strtoupper($cibles_total ?? '-'); ?> </td>
-                                    <td class="align-middle bg-secondary-subtle px-2 py-0"> <?php echo strtoupper($suivis_total ?? '-'); ?> </td>
-                                    <td class="align-middle bg-secondary-subtle px-2 py-0"> <?php echo round($taux_progress, 2) . ' %' ?? '-'; ?> </td>
-                                    <td class="align-middle px-2 py-0">
-                                        <?php if ($referentiel['categorie'] == 'impact') { ?>
-                                            <button title="Suivre" type="button" class="btn btn-subtle-warning rounded-pill btn-sm fw-bold fs-9 px-2 py-1"
-                                                onclick="window.location.href = 'referentiel_view.php?id=<?php echo $referentiel['id']; ?>';">Suivre
+
+                                    <!-- Cibles (fond gris) -->
+                                    <td class="align-middle bg-secondary-subtle px-3 py-2">
+                                        <?php if (!empty($cibles_total) && $cibles_total !== '-'): ?>
+                                            <span class="fw-bold">
+                                                <?= htmlspecialchars(strtoupper($cibles_total)) ?>
+                                            </span>
+                                        <?php else: ?>
+                                            <span class="text-body-secondary">-</span>
+                                        <?php endif; ?>
+                                    </td>
+
+                                    <!-- Suivis (fond gris) -->
+                                    <td class="align-middle bg-secondary-subtle px-3 py-2">
+                                        <?php if (!empty($suivis_total) && $suivis_total !== '-'): ?>
+                                            <span class="fw-bold">
+                                                <?= htmlspecialchars(strtoupper($suivis_total)) ?>
+                                            </span>
+                                        <?php else: ?>
+                                            <span class="text-body-secondary">-</span>
+                                        <?php endif; ?>
+                                    </td>
+
+                                    <!-- Taux de progression (fond gris) -->
+                                    <td class="align-middle bg-secondary-subtle p-2">
+                                        <?php
+                                        if ($taux_progress < 39)
+                                            $color = "danger";
+                                        elseif ($taux_progress < 69)
+                                            $color = "warning";
+                                        elseif ($taux_progress >= 70)
+                                            $color = "success"; ?>
+                                        <div class="progress progress-xl fs-10 rounded-0 p-0 m-0" style="height: 1.3rem; width: 150px">
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated fs-14 fw-bold bg-<?php echo $color; ?> " aria-valuenow="70" style="width: 100%;">
+                                                <?php echo (isset($taux_progress) && $taux_progress > 0) ? $taux_progress . " %" : "Non entamé"; ?>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <!-- Action Suivre -->
+                                    <td class="align-middle px-3 py-2">
+                                        <?php if (in_array($referentiel['categorie'], ['impact', 'effet'])): ?>
+                                            <button type="button"
+                                                class="btn btn-subtle-warning fs-10 py-1 rounded-pill btn-sm fw-bold fs-9 px-2 py-1"
+                                                onclick="window.location.href = 'referentiel_view.php?id=<?= $referentiel['id'] ?>'"
+                                                title="Suivre cet indicateur">
+                                                Suivre
                                             </button>
-                                        <?php } else {
-                                            echo '-';
-                                        } ?>
+                                        <?php else: ?>
+                                            <span class="text-body-secondary">-</span>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

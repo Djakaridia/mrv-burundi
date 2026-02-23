@@ -44,8 +44,8 @@ $indicateur_cmr = array_filter($indicateurs, function ($indicateur) {
 $suivis_assoc = [];
 foreach ($indicateur_cmr as $cmr) {
     $suivi = new Suivi($db);
-    $suivi->indicateur_id = $cmr['id'];
-    $suivis_cmr = $suivi->readByIndicateur();
+    $suivi->cmr_id = $cmr['id'];
+    $suivis_cmr = $suivi->readByCMR();
     $suivis_cmr_grouped = array();
     $suivis_calcul = 0;
 
@@ -53,7 +53,8 @@ foreach ($indicateur_cmr as $cmr) {
         $suivis_cmr_grouped[$suivi['annee']][] = $suivi;
     }
     foreach ($suivis_cmr_grouped as $annee => $suivis) {
-        $suivis_calcul += calculSuiviData($suivis_cmr_grouped[$annee] ?? [], $cmr['mode_calcul']);
+        $suivi_annee = calculSuiviData($suivis_cmr_grouped[$annee] ?? [], $cmr['mode_calcul']);
+        $suivis_calcul += is_numeric($suivi_annee) ? $suivi_annee : 0;
     }
     $suivis_assoc[$cmr['id']] = $suivis_calcul;
 }
@@ -70,6 +71,9 @@ $structures_assoc = array_column($structures, 'sigle', 'id');
 //========================= Secteurs 
 $secteur = new Secteur($db);
 $secteurs = $secteur->read();
+$secteurs = array_filter($secteurs, function ($secteur) {
+    return $secteur['parent'] == 0 && $secteur['state'] == 'actif';
+});
 $secteurs_assoc = array_column($secteurs, 'name', 'id');
 
 //========================= Provinces 

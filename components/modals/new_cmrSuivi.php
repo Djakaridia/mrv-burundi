@@ -1,4 +1,4 @@
-<div class="modal fade" id="newIndicateurSuiviModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="newIndicateurSuiviModalLabel" aria-hidden="true">
+<div class="modal fade" id="newIndicateurSuiviModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="newIndicateurSuiviModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content bg-body-highlight p-4">
       <div class="modal-header justify-content-between border-0 p-0">
@@ -43,7 +43,7 @@
 
             <div class="modal-footer d-flex justify-content-between border-0 p-1">
               <button type="button" class="btn btn-subtle-secondary btn-sm px-3" data-bs-dismiss="modal">Annuler</button>
-              <button type="button" class="btn btn-subtle-primary btn-sm px-3" onclick="window.location.reload()"> Terminer</button>
+              <button type="button" class="btn btn-subtle-primary btn-sm px-3" onclick="window.location.reload()"> Actualiser</button>
             </div>
           </div>
 
@@ -51,7 +51,7 @@
             <form action="" class="row" enctype="multipart/form-data" name="FormSuiviCRM" id="FormSuiviCRM">
               <input type="hidden" name="indicateur_id" id="suivi_cmr_id">
               <input type="hidden" name="mesure_id" id="suivi_mesure_id">
-              <input type="hidden" name="projet_id" id="suivi_projet_id">
+              <input type="hidden" name="cmr_id" id="suivi_cmr_id">
 
               <div class="col-12 mt-1">
                 <div class="row">
@@ -82,7 +82,7 @@
 
               <div class="col-lg-6 mt-1">
                 <div class="mb-1">
-                  <label class="form-label">Valeur suivie*</label>
+                  <label class="form-label">Valeur suivie ( <span id="uniteIndicSuivi"></span> )*</label>
                   <input class="form-control" type="text" name="valeur" id="suivi_valeur"
                     placeholder="Entrer la valeur suivie" required />
                 </div>
@@ -120,7 +120,7 @@
   let suiviDataID = null;
   let suiviIndicID = null;
   let suiviMesureID = null;
-  let suiviProjetID = null
+  let suiviCMRID = null;
   const suiviScenarios = <?= json_encode(listTypeScenario() ?? []); ?>;
   const suiviProvinces = Object.values(<?= json_encode($provinces ?? []); ?>);
   const suiviZones = Object.values(<?= json_encode($zones ?? []); ?>);
@@ -130,14 +130,17 @@
     $('#newIndicateurSuiviModal').on('shown.bs.modal', async function(event) {
       const indicateurId = $(event.relatedTarget).data('indicateur_id');
       const mesureId = $(event.relatedTarget).data('mesure_id');
+      const cmrId = $(event.relatedTarget).data('cmr_id');
       const projetId = $(event.relatedTarget).data('projet_id');
+      const uniteIndic = $(event.relatedTarget).data('unite');
 
       suiviIndicID = indicateurId || "";
       suiviMesureID = mesureId || "";
-      suiviProjetID = projetId || "";
+      suiviCMRID = cmrId || "";
+      $('#uniteIndicSuivi').text(uniteIndic);
 
-      await loadDataSuivis(suiviIndicID, suiviMesureID, suiviProjetID);
-      suiviProjetID ? await loadProjetSuivis(suiviProjetID) : (suiviMesureID ? await loadMesureSuivis(suiviMesureID) : await loadReferentielSuivis(suiviIndicID))
+      await loadDataSuivis(suiviIndicID, suiviMesureID, suiviCMRID);
+      projetId ? await loadProjetSuivis(projetId) : (suiviMesureID ? await loadMesureSuivis(suiviMesureID) : await loadReferentielSuivis(suiviIndicID))
     })
 
     $('#newIndicateurSuiviModal').on('hidden.bs.modal', function() {
@@ -164,7 +167,7 @@
     });
   })
 
-  async function loadDataSuivis(indicateur_id, mesure_id, projet_id) {
+  async function loadDataSuivis(indicateur_id, mesure_id, cmr_id) {
     const tbody = $('#viewSuiviCMRBody');
     tbody.html('');
 
@@ -185,7 +188,7 @@
         if (result.status === 'success' && result.data.length > 0) {
           result.data
             .filter(element => mesure_id && mesure_id !==0 ? element.mesure_id == mesure_id : true)
-            .filter(element => projet_id && projet_id !==0 ? element.projet_id == projet_id : true)
+            .filter(element => cmr_id && cmr_id !==0 ? element.cmr_id == cmr_id : true)
             .sort((a, b) => b.annee - a.annee)
             .forEach(element => {
               tbody.append(`
@@ -355,7 +358,7 @@
           form.scenario.value = result.data.scenario;
           form.indicateur_id.value = result.data.indicateur_id;
           form.mesure_id.value = result.data.mesure_id;
-          form.projet_id.value = result.data.projet_id;
+          form.cmr_id.value = result.data.cmr_id;
           if (form.echelle) form.echelle.value = result.data.echelle;
           if (form.classe) form.classe.value = result.data.classe;
         }
@@ -376,7 +379,7 @@
 
     formData.append("indicateur_id", suiviIndicID)
     formData.append("mesure_id", suiviMesureID)
-    formData.append("projet_id", suiviProjetID)
+    formData.append("cmr_id", suiviCMRID)
     try {
       const response = await fetch(url, {
         headers: {
@@ -402,7 +405,7 @@
   async function deleteCMRSuivi(id) {
     deleteData(id, 'Êtes-vous sûr de vouloir supprimer ce suivi ?', 'suivis', 'none')
       .then(() => {
-        loadDataSuivis(suiviIndicID, suiviMesureID, suiviProjetID);
+        loadDataSuivis(suiviIndicID, suiviMesureID, suiviCMRID);
       })
       .catch(error => {
         errorAction('Erreur lors de la suppression');
@@ -479,7 +482,7 @@
     $('#suivi_modtitle').text('Valeurs suivies annuelles');
     $('#suivi_modbtn').text('Ajouter');
     suiviDataID = null;
-    loadDataSuivis(suiviIndicID, suiviMesureID, suiviProjetID);
+    loadDataSuivis(suiviIndicID, suiviMesureID, suiviCMRID);
   }
 
   function showSuiviForm() {

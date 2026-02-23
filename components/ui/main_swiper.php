@@ -40,47 +40,52 @@
             <?php if (!empty($referentiels_dash)): ?>
                 <?php foreach ($referentiels_dash as $referentiel):
                     $id_chart = "suiviRefEvoChart" . $referentiel['id'];
+                    $cibles = $suivis = $annees = [];
 
-                    if ($referentiel['categorie'] != 'impact') {
+                    if ($referentiel['categorie'] === 'produit') {
                         $indicateur = new Indicateur($db);
                         $indicateur->referentiel_id = $referentiel['id'];
                         $indicateurs = array_filter($indicateur->readByReferentiel(), fn($i) => $i['state'] == 'actif');
 
-                        $projet = new Projet($db);
-                        $projet->id = $indicateurs[0]['projet_id'];
-                        $projet_ref = $projet->readById();
-                        $annees = [];
-                        for ($year = date('Y', strtotime($projet_ref['start_date'])); $year <= date('Y', strtotime($projet_ref['end_date'])); $year++) {
-                            $annees[] = $year;
-                        }
+                        if ($indicateurs) {
+                            foreach ($indicateurs as $cmr) {
+                                $projet = new Projet($db);
+                                $projet->id = $cmr['projet_id'];
+                                $projet_ref = $projet->readById();
+                                $annees = [];
+                                for ($year = date('Y', strtotime($projet_ref['start_date'])); $year <= date('Y', strtotime($projet_ref['end_date'])); $year++) {
+                                    $annees[] = $year;
+                                }
 
-                        $cible = new Cible($db);
-                        $cible->indicateur_id = $indicateurs[0]['id'];
-                        $cibles_raw = $cible->readByIndicateur();
-                        $cibles_map = [];
-                        if (count($cibles_raw) > 0) {
-                            foreach ($cibles_raw as $item) {
-                                $year = $item['annee'];
-                                $value = (float)$item['valeur'];
-                                if (!isset($cibles_map[$year])) $cibles_map[$year] = 0;
-                                $cibles_map[$year] += $value;
+                                $cible = new Cible($db);
+                                $cible->cmr_id = $cmr['id'];
+                                $cibles_raw = $cible->readByCMR();
+                                $cibles_map = [];
+                                if (count($cibles_raw) > 0) {
+                                    foreach ($cibles_raw as $item) {
+                                        $year = $item['annee'];
+                                        $value = (float)$item['valeur'];
+                                        if (!isset($cibles_map[$year])) $cibles_map[$year] = 0;
+                                        $cibles_map[$year] += $value;
+                                    }
+                                }
+                                $cibles = array_map(fn($y) => (float)($cibles_map[$y] ?? 0), $annees);
+
+                                $suivi = new Suivi($db);
+                                $suivi->cmr_id = $cmr['id'];
+                                $suivis_raw = $suivi->readByCMR();
+                                $suivis_map = [];
+                                if (count($suivis_raw) > 0) {
+                                    foreach ($suivis_raw as $item) {
+                                        $year = $item['annee'];
+                                        $value = (float)$item['valeur'];
+                                        if (!isset($suivis_map[$year])) $suivis_map[$year] = 0;
+                                        $suivis_map[$year] += $value;
+                                    }
+                                }
+                                $suivis = array_map(fn($y) => (float)($suivis_map[$y] ?? 0), $annees);
                             }
                         }
-                        $cibles = array_map(fn($y) => (float)($cibles_map[$y] ?? 0), $annees);
-
-                        $suivi = new Suivi($db);
-                        $suivi->indicateur_id = $indicateurs[0]['id'];
-                        $suivis_raw = $suivi->readByIndicateur();
-                        $suivis_map = [];
-                        if (count($suivis_raw) > 0) {
-                            foreach ($suivis_raw as $item) {
-                                $year = $item['annee'];
-                                $value = (float)$item['valeur'];
-                                if (!isset($suivis_map[$year])) $suivis_map[$year] = 0;
-                                $suivis_map[$year] += $value;
-                            }
-                        }
-                        $suivis = array_map(fn($y) => (float)($suivis_map[$y] ?? 0), $annees);
                     } else {
                         $cible_referentiel = new Cible($db);
                         $cible_referentiel->indicateur_id = $referentiel['id'];

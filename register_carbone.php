@@ -693,7 +693,7 @@
                                                 <th class="sort align-middle text-uppercase" style="width: 100px;">Actions</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="list" id="table-latest-review-body">
+                                        <tbody class="list">
                                             <?php foreach ($registers_global as $row) { ?>
                                                 <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                                                     <td class="align-middle px-2"> <?php echo $row['annee']; ?> </td>
@@ -753,7 +753,7 @@
                                                 <th class="sort align-middle text-uppercase" style="width: 100px;">Actions</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="list" id="table-latest-review-body">
+                                        <tbody class="list">
                                             <?php foreach ($global_table_data as $sector) { ?>
                                                 <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                                                     <td class="align-middle px-2 fw-bold">
@@ -855,7 +855,7 @@
                                                 <th class="sort align-middle text-uppercase" style="width: 100px;">Actions</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="list" id="table-latest-review-body">
+                                        <tbody class="list">
                                             <?php foreach ($registers_secteurs[$currFilSecteur] as $row) { ?>
                                                 <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                                                     <td class="align-middle px-2"> <?php echo $row['annee']; ?> </td>

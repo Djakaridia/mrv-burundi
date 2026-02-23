@@ -19,19 +19,16 @@
                     <tr>
                         <th class="sort align-middle" scope="col">Code</th>
                         <th class="sort align-middle" scope="col" style="min-width:200px;">Libellé</th>
+                        <th class="sort align-middle text-center" scope="col">Responsable</th>
                         <th class="sort align-middle text-center" scope="col">Priorité</th>
-                        <th class="sort align-middle text-center" scope="col">Indicateur</th>
                         <th class="sort align-middle text-center" scope="col">Cout (USD)</th>
-                        <th class="sort align-middle text-center" scope="col">Etat</th>
+                        <th class="sort align-middle text-center" scope="col">Status</th>
                         <th class="sort align-middle text-center" scope="col" style="min-width:100px;">Actions</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     <?php foreach ($taches_project as $tache) {
-                        $indicateurs = $grouped_tache_indicateurs[$tache['id']] ?? [];
-                        $nbre_indicateurs = count($indicateurs);
-
                         $couts = $grouped_tache_couts[$tache['id']] ?? [];
                         $total_couts = array_sum(array_map('floatval', array_column($couts, 'montant')));
                     ?>
@@ -42,16 +39,17 @@
                                     <a class="mb-0 fw-bold line-clamp-1 flex-grow-1 flex-md-grow-0 cursor-pointer"><?= $tache['name'] ?></a>
                                 </div>
                             </td>
-                            <td class="text-center">
-                                <span class="text-body-highlight">
-                                    <span class="badge bg-primary text-capitalize"><?= $tache['priorite'] ?></span>
-                                </span>
+                            <td>
+                                <?php foreach ($users as $user) {
+                                    if ($user['id'] == $tache['assigned_id']) {
+                                        echo $user['nom'] . ' ' . $user['prenom'];
+                                    }
+                                } ?>
                             </td>
                             <td class="text-center">
-                                <a class="btn btn-link fw-bold p-0 m-0" data-bs-toggle="modal" data-bs-target="#IndicateurTaskModal" aria-haspopup="true" aria-expanded="false"
-                                    data-id="<?php echo $tache['id']; ?>">
-                                    <?= ($nbre_indicateurs > 0) ? "(" . $nbre_indicateurs . ") planifié" : "Ajouter" ?>
-                                </a>
+                                <span class="text-body-highlight">
+                                    <span class="badge badge-phoenix badge-phoenix-primary rounded-pill py-1 px-2 fs-10"><?= $tache['priorite'] ?></span>
+                                </span>
                             </td>
                             <td class="text-center">
                                 <a class="btn btn-link fw-bold p-0 m-0" data-bs-toggle="modal" data-bs-target="#coutTaskModal" aria-haspopup="true" aria-expanded="false"
@@ -60,7 +58,7 @@
                                 </a>
                             </td>
                             <td class="text-center">
-                                <span class="col text-nowrap badge badge-phoenix fs-10 badge-phoenix-<?= ($tache['state'] == 'actif') ? 'success' : 'danger' ?>"> <?= $tache['state'] ?> </span>
+                                <span class="col text-nowrap badge badge-phoenix rounded-pill py-1 px-2 fs-10 badge-phoenix-<?= ($tache['state'] == 'actif') ? 'success' : 'danger' ?>"> <?= $tache['state'] ?> </span>
                             </td>
                             <td>
                                 <div class="d-flex gap-1">

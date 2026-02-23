@@ -73,9 +73,11 @@
                                 <label for="projectionUnite" class="form-label">Unité</label>
                                 <select class="form-select" id="projectionUnite" name="unite">
                                     <option value="">Sélectionner une unité</option>
-                                    <?php foreach ($unites as $unite): ?>
-                                        <option value="<?= $unite['name'] ?>"><?= $unite['description'] ?></option>
-                                    <?php endforeach; ?>
+                                    <?php if ($unites ?? []) : ?>
+                                        <?php foreach ($unites as $unite) : ?>
+                                            <option value="<?= $unite['name'] ?>"><?= $unite['description'] ?></option>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
                                 </select>
                             </div>
 

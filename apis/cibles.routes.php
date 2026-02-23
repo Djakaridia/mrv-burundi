@@ -35,7 +35,7 @@ switch ($requestMethod) {
     case 'POST':
         try {
             // Validation des données requises
-            $requiredFields = ['indicateur_id', 'valeur_cibles'];
+            $requiredFields = ['valeur_cibles'];
             foreach ($requiredFields as $field) {
                 if (empty($_POST[$field])) {
                     echo json_encode(['status' => 'danger', 'message' => "Le champ $field est requis"]);
@@ -46,7 +46,7 @@ switch ($requestMethod) {
             // Nettoyage des données
             $indicateur_id = (int)sanitize_input($_POST['indicateur_id'] ?? 0);
             $mesure_id = (int)sanitize_input($_POST['mesure_id'] ?? 0);
-            $projet_id = (int)sanitize_input($_POST['projet_id'] ?? 0);
+            $cmr_id = (int)sanitize_input($_POST['cmr_id'] ?? 0);
             $add_by = sanitize_input($payload['user_id']);
             $ciblesData = json_decode($_POST['valeur_cibles'], true);
 
@@ -58,7 +58,7 @@ switch ($requestMethod) {
             // Suppression des anciennes cibles
             $cible->indicateur_id = $indicateur_id;
             $cible->mesure_id = $mesure_id;
-            $cible->projet_id = $projet_id;
+            $cible->cmr_id = $cmr_id;
             if (!$cible->delete()) {
                 echo json_encode(['status' => 'danger', 'message' => "Erreur lors de la suppression des anciennes cibles"]);
                 exit();
@@ -80,7 +80,7 @@ switch ($requestMethod) {
                     $cible->scenario = sanitize_input($scenario);
                     $cible->indicateur_id = $indicateur_id;
                     $cible->mesure_id = $mesure_id;
-                    $cible->projet_id = $projet_id;
+                    $cible->cmr_id = $cmr_id;
                     $cible->add_by = $add_by;
 
                     if ($cible->create()) {
@@ -102,7 +102,9 @@ switch ($requestMethod) {
         break;
 
     case 'DELETE':
-        $cible->indicateur_id = isset($_GET['id']) ? sanitize_input($_GET['id']) : die(json_encode(['error' => 'ID manquant']));
+        $cible->indicateur_id = isset($_GET['indicateur_id']) ? sanitize_input($_GET['indicateur_id']) : die(json_encode(['error' => 'ID manquant']));
+        $cible->mesure_id = isset($_GET['mesure_id']) ? sanitize_input($_GET['mesure_id']) : die(json_encode(['error' => 'ID manquant']));
+        $cible->cmr_id = isset($_GET['cmr_id']) ? sanitize_input($_GET['cmr_id']) : die(json_encode(['error' => 'ID manquant']));
 
         if ($cible->delete()) {
             echo json_encode(array('status' => 'success', 'message' => 'Cible supprimée avec succès.'));
@@ -113,10 +115,20 @@ switch ($requestMethod) {
 
     case 'GET':
         $indicateur_id = isset($_GET['indicateur_id']) ? sanitize_input($_GET['indicateur_id']) : null;
+        $cmr_id = isset($_GET['cmr_id']) ? sanitize_input($_GET['cmr_id']) : null;
 
         if ($indicateur_id) {
             $cible->indicateur_id = $indicateur_id;
             $data = $cible->readByIndicateur();
+            if ($data) {
+                echo json_encode(array('status' => 'success', 'message' => 'Détails de la valeur cible', 'data' => $data));
+            } else {
+                echo json_encode(array('status' => 'warning', 'message' => 'Cible non trouvée'));
+            }
+        }
+        elseif ($cmr_id) {
+            $cible->cmr_id = $cmr_id;
+            $data = $cible->readByCMR();
             if ($data) {
                 echo json_encode(array('status' => 'success', 'message' => 'Détails de la valeur cible', 'data' => $data));
             } else {

@@ -19,7 +19,7 @@
           <form action="" class="row-border" enctype="multipart/form-data" name="FormCibleCMR" id="FormCibleCMR">
             <input type="hidden" name="indicateur_id" id="cible_indicateur_id">
             <input type="hidden" name="mesure_id" id="cible_mesure_id">
-            <input type="hidden" name="projet_id" id="cible_projet_id">
+            <input type="hidden" name="cmr_id" id="cible_cmr_id">
 
             <div class="overflow-auto" style="min-height: 300px; max-height: 400px;">
               <table id="cibleModalTable" class="table table-sm table-hover table-striped fs-12 table-bordered border-emphasis small" align="center">
@@ -42,24 +42,26 @@
   let cibleDataID = null;
   let cibleIndicID = null;
   let cibleMesureID = null;
-  let cibleProjetID = null;
+  let cibleCMRID = null;
   const cibleScenarios = <?= json_encode(listTypeScenario() ?? []); ?>;
 
   $(document).ready(function() {
     $('#newIndicateurCibleModal').on('shown.bs.modal', async function(event) {
       const indicateurId = $(event.relatedTarget).data('indicateur_id');
       const mesureId = $(event.relatedTarget).data('mesure_id');
+      const cmrId = $(event.relatedTarget).data('cmr_id');
       const projetId = $(event.relatedTarget).data('projet_id');
       const form = document.getElementById('FormCibleCMR');
 
       form.indicateur_id = indicateurId || "";
       form.mesure_id = mesureId || "";
-      form.projet_id = projetId || "";
+      form.cmr_id = projetId || "";
+
       cibleIndicID = indicateurId || "";
       cibleMesureID = mesureId || "";
-      cibleProjetID = projetId || "";
+      cibleCMRID = cmrId || "";
 
-      cibleProjetID ? await loadProjetCible(cibleProjetID) : (cibleMesureID ? await loadMesureCible(cibleMesureID) : await loadReferentielCible(cibleIndicID))
+      projetId ? await loadProjetCible(projetId) : (cibleMesureID ? await loadMesureCible(cibleMesureID) : await loadReferentielCible(cibleIndicID))
     });
 
     $('#newIndicateurCibleModal').on('hidden.bs.modal', function() {
@@ -105,7 +107,8 @@
       const formData = new FormData();
       formData.append('valeur_cibles', JSON.stringify(cibles));
       formData.append('indicateur_id', cibleIndicID);
-      formData.append('projet_id', cibleProjetID);
+      formData.append('mesure_id', cibleMesureID);
+      formData.append('cmr_id', cibleCMRID);
       const submitBtn = $('#cible_modbtn');
       const originalText = submitBtn.text();
       submitBtn.prop('disabled', true).text('Enregistrement...');
@@ -135,16 +138,17 @@
     });
   });
 
-  async function loadDataCible(indicateurId) {
+  async function loadDataCible(indicateurId, mesureId, cmrId) {
     $('#cibleLoadingScreen').show();
     $('#cibleContentContainer').hide();
 
-    if (indicateurId) {
+    if (indicateurId || mesureId || cmrId) {
+      const paramURL = cmrId ? `cmr_id=${cmrId}` : (mesureId ? `mesure_id=${mesureId}` : `indicateur_id=${indicateurId}`);
       $('#newIndicateurCibleModalLabel').text('Modifier les valeurs cibles');
       $('#cibleLoadingText').text("Chargement des données cibles...");
 
       try {
-        const response = await fetch(`./apis/cibles.routes.php?indicateur_id=${indicateurId}`, {
+        const response = await fetch(`./apis/cibles.routes.php?${paramURL}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           },
@@ -158,7 +162,6 @@
           });
         }
       } catch (error) {
-        console.error('Erreur:', error);
         errorAction('Impossible de charger les données.');
       } finally {
         $('#cibleLoadingScreen').hide();
@@ -256,10 +259,7 @@
     }
   }
 
-
-  async function loadMesureCible(mesureId) {
-
-  }
+  async function loadMesureCible(mesureId) {} // Pending
 
   async function rebuildTable(startYear, endYear) {
     const table = document.querySelector('#cibleModalTable');
@@ -279,6 +279,6 @@
         </td>`).join('')}</tr>`).join('')}
       </tbody>`;
 
-      await loadDataCible(cibleIndicID);
+      await loadDataCible(cibleIndicID, cibleMesureID, cibleCMRID);
   }
 </script>

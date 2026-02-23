@@ -80,8 +80,8 @@
         }
 
         $cible = new Cible($db);
-        $cible->indicateur_id = $first_cmr['id'];
-        $cibles_raw = $cible->readByIndicateur();
+        $cible->cmr_id = $first_cmr['id'];
+        $cibles_raw = $cible->readByCMR();
         usort($cibles_raw, fn($a, $b) => $a['annee'] - $b['annee']);
         $cibles_map = [];
         foreach ($cibles_raw as $item) {
@@ -95,8 +95,8 @@
         $cibles_sum = array_sum($cibles_map);
 
         $suivi = new Suivi($db);
-        $suivi->indicateur_id = $first_cmr['id'];
-        $suivis_raw = $suivi->readByIndicateur();
+        $suivi->cmr_id = $first_cmr['id'];
+        $suivis_raw = $suivi->readByCMR();
         usort($suivis_raw, fn($a, $b) => $a['annee'] - $b['annee']);
         $suivis_map = [];
         foreach ($suivis_raw as $item) {
@@ -246,7 +246,7 @@
 
                                     <button title="Nouvelle valeur" type="button" class="btn btn-sm btn-phoenix-primary fs-9 p-2 rounded-1" data-bs-toggle="modal"
                                         data-bs-target="#newIndicateurSuiviModal" aria-haspopup="true" aria-expanded="false"
-                                        data-indicateur_id="<?php echo $first_cmr['id']; ?>" data-projet_id="<?php echo $project_cmr['id']; ?>" data-referentiel_id="<?php echo $ref_curr['id']; ?>">
+                                        data-indicateur_id="<?php echo $ref_curr['id']; ?>" data-cmr_id="<?php echo $first_cmr['id']; ?>" data-unite="<?php echo $first_cmr['unite']; ?>" data-projet_id="<?php echo $project_cmr['id']; ?>">
                                         <span class="uil-plus"></span> Nouvelle valeur
                                     </button>
                                 </div>
@@ -264,13 +264,15 @@
 
                                         <tbody>
                                             <?php foreach ($suivis_raw as $suivi): ?>
-                                                <tr class="align-middle">
-                                                    <td class="px-2"><?= listTypeScenario()[$suivi['scenario']] ?></td>
-                                                    <td class="px-2"><?= $suivi['annee'] ?></td>
-                                                    <td class="px-2"><?= $suivi['valeur'] ?></td>
-                                                    <td class="px-2"><?= $suivi['date_suivie'] ?></td>
-                                                    <td class="px-2"><?= $suivi['observation'] ?></td>
-                                                </tr>
+                                                <?php if (isset(listTypeScenario()[$suivi['scenario']])): ?>
+                                                    <tr class="align-middle">
+                                                        <td class="px-2"><?= listTypeScenario()[$suivi['scenario']] ?></td>
+                                                        <td class="px-2"><?= $suivi['annee'] ?></td>
+                                                        <td class="px-2"><?= $suivi['valeur'] ?></td>
+                                                        <td class="px-2"><?= $suivi['date_suivie'] ?></td>
+                                                        <td class="px-2"><?= $suivi['observation'] ?></td>
+                                                    </tr>
+                                                <?php endif ?>
                                             <?php endforeach; ?>
                                         </tbody>
                                     </table>
@@ -352,7 +354,7 @@
                                                                                 <?php if (!empty($ref_curr['modele']) && $ref_curr['modele'] !== "valeur_absolue") : ?>
                                                                                     <td class="px-2"><?= $suivi['classe'] ?></td>
                                                                                 <?php endif; ?>
-                                                                                <td class="px-2"><?= listTypeScenario()[$suivi['scenario']] ?></td>
+                                                                                <td class="px-2"><?= isset(listTypeScenario()[$suivi['scenario']]) ? listTypeScenario()[$suivi['scenario']] : 'N/A' ?></td>
                                                                                 <td class="px-2"><?= $suivi['valeur'] ?></td>
                                                                                 <td class="px-2"><?= $suivi['date_suivie'] ?></td>
                                                                             </tr>

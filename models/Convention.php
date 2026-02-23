@@ -10,7 +10,9 @@ class Convention
     public $montant;
     public $date_accord;
     public $action_type;
+    public $instrument;
     public $partenaire_id;
+    public $secteur_id;
     public $projet_id;
     public $add_by;
 
@@ -21,14 +23,16 @@ class Convention
 
     public function create()
     {
-        $query = "INSERT INTO " . $this->table . " (code, name, montant, date_accord, action_type, partenaire_id, projet_id, add_by) VALUES (:code, :name, :montant, :date_accord, :action_type, :partenaire_id, :projet_id, :add_by)";
+        $query = "INSERT INTO " . $this->table . " (code, name, montant, date_accord, action_type, instrument, partenaire_id, secteur_id, projet_id, add_by) VALUES (:code, :name, :montant, :date_accord, :action_type, :instrument, :partenaire_id, :secteur_id, :projet_id, :add_by)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':code', $this->code);
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':montant', $this->montant);
         $stmt->bindParam(':date_accord', $this->date_accord);
         $stmt->bindParam(':action_type', $this->action_type);
+        $stmt->bindParam(':instrument', $this->instrument);
         $stmt->bindParam(':partenaire_id', $this->partenaire_id);
+        $stmt->bindParam(':secteur_id', $this->secteur_id);
         $stmt->bindParam(':projet_id', $this->projet_id);
         $stmt->bindParam(':add_by', $this->add_by);
 
@@ -79,7 +83,7 @@ class Convention
 
     public function update()
     {
-        $query = "UPDATE " . $this->table . " SET code=:code, name=:name, montant=:montant, date_accord=:date_accord, action_type=:action_type, partenaire_id=:partenaire_id, projet_id=:projet_id, add_by=:add_by WHERE id=:id";
+        $query = "UPDATE " . $this->table . " SET code=:code, name=:name, montant=:montant, date_accord=:date_accord, action_type=:action_type, instrument=:instrument, partenaire_id=:partenaire_id, secteur_id=:secteur_id, projet_id=:projet_id, add_by=:add_by WHERE id=:id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $this->id);
         $stmt->bindParam(':code', $this->code);
@@ -87,7 +91,9 @@ class Convention
         $stmt->bindParam(':montant', $this->montant);
         $stmt->bindParam(':date_accord', $this->date_accord);
         $stmt->bindParam(':action_type', $this->action_type);
+        $stmt->bindParam(':instrument', $this->instrument);
         $stmt->bindParam(':partenaire_id', $this->partenaire_id);
+        $stmt->bindParam(':secteur_id', $this->secteur_id);
         $stmt->bindParam(':projet_id', $this->projet_id);
         $stmt->bindParam(':add_by', $this->add_by);
 

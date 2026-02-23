@@ -36,6 +36,9 @@
     $indicateurs_project = array_filter($indicateurs_project, function ($indicateur) {
         return $indicateur['state'] == 'actif';
     });
+    $indicateurs_ids = array_map(function ($indicateur) {
+        return $indicateur['id'];
+    }, $indicateurs_project);
 
     $secteur = new Secteur($db);
     $secteurs = $secteur->read();
@@ -45,8 +48,10 @@
 
     //##################################################
     $suivi = new Suivi($db);
-    $suivi->projet_id = $rapport_curr['projet_id'];
-    $suivis_project = $suivi->readByProjet();
+    $suivis = $suivi->read();
+    $suivis_project = array_filter($suivis, function ($suivi) use ($indicateurs_ids) {
+        return in_array($suivi['indicateur_id'], $indicateurs_ids);
+    });
 
     // Regrouper les données des suivis par secteur et annee
     $suivis_secteur_grouped = array();
@@ -74,8 +79,10 @@
 
     //##################################################
     $cible = new Cible($db);
-    $cible->projet_id = $rapport_curr['projet_id'];
-    $cibles_project = $cible->readByProjet();
+    $cibles = $cible->read();
+    $cibles_project = array_filter($cibles, function ($cible) use ($indicateurs_ids) {
+        return in_array($cible['cmr_id'], $indicateurs_ids);
+    });
 
     // Regrouper les données des cibles par secteur et annee
     $cibles_secteur_grouped = array();
@@ -286,8 +293,8 @@
 
                                         // ############################################### Valeurs cibles de l'indicateur
                                         $cible = new Cible($db);
-                                        $cible->indicateur_id = $indicateur['id'];
-                                        $cibles_cmr = $cible->readByIndicateur();
+                                        $cible->cmr_id = $indicateur['id'];
+                                        $cibles_cmr = $cible->readByCMR();
 
                                         $cibles_grouped = [];
                                         foreach ($cibles_cmr as $cible) {
@@ -301,8 +308,8 @@
 
                                         // ############################################### Valeurs réalisées de l'indicateur
                                         $suivi = new Suivi($db);
-                                        $suivi->indicateur_id = $indicateur['id'];
-                                        $suivis_cmr = $suivi->readByIndicateur();
+                                        $suivi->cmr_id = $indicateur['id'];
+                                        $suivis_cmr = $suivi->readByCMR();
 
                                         $suivis_grouped = array();
                                         foreach ($suivis_cmr as $suivi) {

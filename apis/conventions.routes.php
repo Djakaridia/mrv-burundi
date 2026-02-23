@@ -61,8 +61,10 @@ switch ($requestMethod) {
             $convention->code = sanitize_input($_POST['code']);
             $convention->name = sanitize_input($_POST['name']);
             $convention->montant = sanitize_input($_POST['montant']);
+            $convention->secteur_id = sanitize_input($_POST['secteur_id']);
             $convention->date_accord = sanitize_input($_POST['date_accord']);
             $convention->action_type = sanitize_input($_POST['action_type']);
+            $convention->instrument = sanitize_input($_POST['instrument']);
             $convention->partenaire_id = (int)sanitize_input($_POST['partenaire_id'] ?? 0);
             $convention->projet_id = (int)sanitize_input($_POST['projet_id'] ?? 0);
             $convention->add_by = sanitize_input($payload['user_id']);
@@ -76,13 +78,15 @@ switch ($requestMethod) {
             $convention->name = sanitize_input($_POST['name']);
             $convention->code = sanitize_input($_POST['code']);
             $convention->montant = sanitize_input($_POST['montant']);
+            $convention->secteur_id = sanitize_input($_POST['secteur_id']);
             $convention->date_accord = sanitize_input($_POST['date_accord']);
             $convention->action_type = sanitize_input($_POST['action_type']);
+            $convention->instrument = sanitize_input($_POST['instrument']);
             $convention->partenaire_id = (int)sanitize_input($_POST['partenaire_id'] ?? 0);
             $convention->projet_id = (int)sanitize_input($_POST['projet_id'] ?? 0);
             $convention->add_by = sanitize_input($payload['user_id']);
 
-            if (empty($convention->name) || empty($convention->montant) || empty($convention->partenaire_id)) {
+            if (empty($convention->name) || empty($convention->montant) || empty($convention->partenaire_id) || empty($convention->secteur_id)) {
                 echo json_encode(array('status' => 'warning', 'message' => 'Veuillez remplir tous les champs !!!'));
                 exit();
             }

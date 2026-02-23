@@ -15,7 +15,7 @@
   $project_id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
   $tab = isset($_GET['tab']) ? $_GET['tab'] : 'view';
 
-  if (!in_array($tab, ['view', 'task', 'indicator', 'finance', 'synthese'])) {
+  if (!in_array($tab, ['view', 'factor', 'task', 'indicator', 'finance', 'synthese'])) {
     $tab = 'view';
   }
 
@@ -64,6 +64,9 @@
   $user = new User($db);
   $users = $user->read();
 
+  $zone = new Zone($db);
+  $zones = $zone->read();
+
   $grouped_users = [];
   foreach ($users as $user) {
     $grouped_users[$user['id']] = $user;
@@ -108,16 +111,17 @@
 
   $projet_gaz = explode(',', $project_curr['gaz'] ?? "");
 
+  $facteur = new FacteurEmission($db);
+  $facteur->projet_id = $project_id;
+  $facteurs_project = $facteur->readByProjet();
+  $grouped_facteurs = [];
+  foreach ($facteurs_project as $facteur) {
+    $grouped_facteurs[$facteur['id']] = $facteur;
+  }
+
   $tache = new Tache($db);
   $tache->projet_id = $project_id;
   $taches_project = $tache->readByProjet();
-
-  $tache_indicateur = new TacheIndicateur($db);
-  $tache_indicateurs = $tache_indicateur->read();
-  $grouped_tache_indicateurs = [];
-  foreach ($tache_indicateurs as $tache_indicateur) {
-    $grouped_tache_indicateurs[$tache_indicateur['tache_id']][] = $tache_indicateur;
-  }
 
   $tache_suivi_indicateur = new TacheSuiviIndicateur($db);
   $tache_suivi_indicateurs = $tache_suivi_indicateur->read();
@@ -227,13 +231,63 @@
     <?php include './components/navbar & footer/navbar.php'; ?>
 
     <div class="content">
-      <div class="row mx-n5 mt-n5 g-3 mb-3">
+      <div class="mx-n4 mt-n5 px-0 mx-lg-n6 px-lg-0 bg-body-emphasis border border-start-0">
+        <div class="card-body py-2 px-3">
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex gap-2">
+              <span class="badge badge-phoenix py-1 px-2 fs-10 rounded-pill badge-phoenix-<?php echo $project_curr['state'] == 'actif' ? 'success' : 'danger'; ?>">
+                <?php echo $project_curr['state'] == 'actif' ? 'Actif' : 'Archivé'; ?>
+                <span class="ms-1 uil <?php echo $project_curr['state'] == 'actif' ? 'uil-check-circle' : 'uil-archive-alt'; ?> fs-10"></span>
+              </span>
+
+              <span class="badge badge-phoenix py-1 px-2 fs-10 rounded-pill badge-phoenix-secondary">
+                <?php echo reset($secteurs_project)['name']; ?>
+              </span>
+
+              <span class="badge badge-phoenix py-1 px-2 fs-10 rounded-pill badge-phoenix-info">
+                <?php echo $project_curr['action_type'] == 'adaptation' ? 'Adaptation' : 'Atténuation'; ?>
+              </span>
+            </div>
+
+            <div class="btn-reveal-trigger gap-2">
+              <?php if (checkPermis($db, 'update')) : ?>
+                <button title="Modifier" class="btn btn-sm rounded-1 btn-phoenix-info me-1 px-2 py-1"
+                  data-bs-toggle="modal" data-bs-target="#addProjetModal"
+                  data-id="<?php echo $project_curr['id']; ?>">
+                  <span class="uil-pen fs-9"></span> Modifier
+                </button>
+              <?php endif; ?>
+
+              <?php if (checkPermis($db, 'update', 2)) : ?>
+                <button title="<?php echo $project_curr['state'] == 'actif' ? 'Activer' : 'Désactiver'; ?>"
+                  class="btn btn-sm rounded-1 btn-phoenix-warning me-1 px-2 py-1"
+                  onclick="updateState(<?php echo $project_curr['id']; ?>, '<?php echo $project_curr['state'] == 'actif' ? 'inactif' : 'actif'; ?>', 
+                                'Êtes-vous sûr de vouloir <?php echo $project_curr['state'] == 'actif' ? 'désactiver' : 'activer'; ?> ce projet ?', 'projets')">
+                  <span class="uil-<?php echo $project_curr['state'] == 'actif' ? 'minus-square-full' : 'check-square'; ?> fs-9"></span>
+                  <?php echo $project_curr['state'] == 'actif' ? 'Désactiver' : 'Activer'; ?>
+                </button>
+              <?php endif; ?>
+
+              <?php if (checkPermis($db, 'delete', 2)) : ?>
+                <button title="Supprimer" class="btn btn-sm rounded-1 btn-phoenix-danger me-1 px-2 py-1"
+                  onclick="deleteData(<?php echo $project_curr['id']; ?>,'Voulez-vous vraiment supprimer ce projet ?', 'projets', 'redirect', 'projects.php')">
+                  <span class="uil-trash-alt fs-9"></span> Supprimer
+                </button>
+              <?php endif; ?>
+            </div>
+          </div>
+
+          <h5 class="text-body-emphasis fw-bolder my-2"><?php echo html_entity_decode($project_curr['name']); ?></h5>
+        </div>
+      </div>
+
+      <div class="row mx-n5 mt-1 g-3 mb-3">
         <div class="col-md-3">
-          <div class="card rounded-1 primary h-100">
+          <div class="card card-float rounded-1 success h-100">
             <div class="card-body p-3">
               <div class="d-flex align-items-center">
                 <div class="flex-shrink-0">
-                  <span class="fa-solid fa-bullseye fs-3 text-primary"></span>
+                  <span class="fa-solid fa-bullseye fs-3 text-success"></span>
                 </div>
                 <div class="flex-grow-1 ms-3">
                   <h6 class="text-muted mb-2">Exécution physique</h6>
@@ -248,11 +302,11 @@
         </div>
 
         <div class="col-md-3">
-          <div class="card rounded-1 success h-100">
+          <div class="card card-float rounded-1 warning h-100">
             <div class="card-body p-3">
               <div class="d-flex align-items-center">
                 <div class="flex-shrink-0">
-                  <span class="fa-solid fa-coins fs-3 text-success"></span>
+                  <span class="fa-solid fa-coins fs-3 text-warning"></span>
                 </div>
                 <div class="flex-grow-1 ms-3">
                   <h6 class="text-muted mb-2">Exécution financière</h6>
@@ -267,11 +321,11 @@
         </div>
 
         <div class="col-md-3">
-          <div class="card rounded-1 warning h-100">
+          <div class="card card-float rounded-1 secondary h-100">
             <div class="card-body p-3">
               <div class="d-flex align-items-center">
                 <div class="flex-shrink-0">
-                  <span class="fa-solid fa-calendar-check fs-3 text-warning"></span>
+                  <span class="fa-solid fa-calendar-check fs-3 text-secondary"></span>
                 </div>
                 <div class="flex-grow-1 ms-3">
                   <h6 class="text-muted mb-2">Période</h6>
@@ -284,7 +338,7 @@
         </div>
 
         <div class="col-md-3">
-          <div class="card rounded-1 info h-100">
+          <div class="card card-float rounded-1 info h-100">
             <div class="card-body p-3">
               <div class="d-flex align-items-center">
                 <div class="flex-shrink-0">
@@ -301,30 +355,35 @@
         </div>
       </div>
 
-      <div class="mx-n4 mx-lg-n6 px-2 px-lg-3 bg-body-emphasis border-top">
-        <ul class="nav nav-underline fs-9" id="projetTab" role="tablist">
+      <div class="mx-n4 mx-lg-n6 bg-body-emphasis border-top">
+        <ul class="nav nav-underline fs-9 px-3" id="projetTab" role="tablist">
           <li class="nav-item" role="presentation">
-            <a class="nav-link <?php echo $tab == 'view' ? 'active' : ''; ?>" id="view-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=view'; ?>">
+            <a class="nav-link rounded-0 <?php echo $tab == 'view' ? 'active' : ''; ?>" id="view-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=view'; ?>">
               <i class="uil uil-estate me-1"></i>Général
             </a>
           </li>
-          <li class="nav-item" role="task">
-            <a class="nav-link <?php echo $tab == 'task' ? 'active' : ''; ?>" id="task-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=task'; ?>">
-              <i class="uil uil-clipboard-notes me-1"></i>Activités <span class="badge bg-primary-subtle text-primary"><?php echo count($taches_actives); ?></span>
+          <li class="nav-item" role="presentation">
+            <a class="nav-link rounded-0 <?php echo $tab == 'finance' ? 'active' : ''; ?>" id="finance-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=finance'; ?>">
+              <i class="uil uil-usd-circle me-1"></i>Soutiens <span class="badge bg-primary-subtle text-primary"><?php echo count($conventions_project); ?></span>
             </a>
           </li>
-          <li class="nav-item" role="indicateur">
-            <a class="nav-link <?php echo $tab == 'indicator' ? 'active' : ''; ?>" id="indicator-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=indicator'; ?>">
+          <li class="nav-item" role="presentation">
+            <a class="nav-link rounded-0 <?php echo $tab == 'factor' ? 'active' : ''; ?>" id="factor-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=factor'; ?>">
+              <i class="uil uil-cloud me-1"></i>Facteurs <span class="badge bg-primary-subtle text-primary"><?php echo count($facteurs_project); ?></span>
+            </a>
+          </li>
+          <li class="nav-item" role="presentation">
+            <a class="nav-link rounded-0 <?php echo $tab == 'indicator' ? 'active' : ''; ?>" id="indicator-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=indicator'; ?>">
               <i class="uil uil-chart-line me-1"></i>Indicateurs <span class="badge bg-primary-subtle text-primary"><?php echo count($indicateurs_project); ?></span>
             </a>
           </li>
-          <li class="nav-item" role="finance">
-            <a class="nav-link <?php echo $tab == 'finance' ? 'active' : ''; ?>" id="finance-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=finance'; ?>">
-              <i class="uil uil-usd-circle me-1"></i>Soutiens financiers
+          <li class="nav-item" role="presentation">
+            <a class="nav-link rounded-0 <?php echo $tab == 'task' ? 'active' : ''; ?>" id="task-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=task'; ?>">
+              <i class="uil uil-clipboard-notes me-1"></i>Activités <span class="badge bg-primary-subtle text-primary"><?php echo count($taches_actives); ?></span>
             </a>
           </li>
-          <li class="nav-item" role="synthese">
-            <a class="nav-link <?php echo $tab == 'synthese' ? 'active' : ''; ?>" id="synthese-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=synthese'; ?>">
+          <li class="nav-item" role="presentation">
+            <a class="nav-link rounded-0 <?php echo $tab == 'synthese' ? 'active' : ''; ?>" id="synthese-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=synthese'; ?>">
               <i class="uil uil-file-bookmark-alt me-1"></i>Synthèse
             </a>
           </li>
@@ -337,16 +396,20 @@
             <?php include './components/tabs/tab_proj_home.php'; ?>
           </div>
 
-          <div class="tab-pane fade <?php echo $tab == 'task' ? 'active show' : ''; ?>" id="tab-task" role="tabpanel" aria-labelledby="task-tab">
-            <?php include './components/tabs/tab_proj_task.php'; ?>
+          <div class="tab-pane fade <?php echo $tab == 'finance' ? 'active show' : ''; ?>" id="tab-finance" role="tabpanel" aria-labelledby="finance-tab">
+            <?php include './components/tabs/tab_proj_finance.php'; ?>
+          </div>
+
+          <div class="tab-pane fade <?php echo $tab == 'factor' ? 'active show' : ''; ?>" id="tab-factor" role="tabpanel" aria-labelledby="factor-tab">
+            <?php include './components/tabs/tab_proj_factor.php'; ?>
           </div>
 
           <div class="tab-pane fade <?php echo $tab == 'indicator' ? 'active show' : ''; ?>" id="tab-indicator" role="tabpanel" aria-labelledby="indicator-tab">
             <?php include './components/tabs/tab_proj_indic.php'; ?>
           </div>
 
-          <div class="tab-pane fade <?php echo $tab == 'finance' ? 'active show' : ''; ?>" id="tab-finance" role="tabpanel" aria-labelledby="finance-tab">
-            <?php include './components/tabs/tab_proj_finance.php'; ?>
+          <div class="tab-pane fade <?php echo $tab == 'task' ? 'active show' : ''; ?>" id="tab-task" role="tabpanel" aria-labelledby="task-tab">
+            <?php include './components/tabs/tab_proj_task.php'; ?>
           </div>
 
           <div class="tab-pane fade <?php echo $tab == 'synthese' ? 'active show' : ''; ?>" id="tab-synthese" role="tabpanel" aria-labelledby="synthese-tab">

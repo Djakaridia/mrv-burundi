@@ -43,7 +43,7 @@ switch ($requestMethod) {
             $suivi->id = $id;
             $suivi->indicateur_id = (int)sanitize_input($_POST['indicateur_id'] ?? 0);
             $suivi->mesure_id = (int)sanitize_input($_POST['mesure_id'] ?? 0);
-            $suivi->projet_id = (int)sanitize_input($_POST['projet_id'] ?? 0);
+            $suivi->cmr_id = (int)sanitize_input($_POST['cmr_id'] ?? 0);
             $suivi->scenario = sanitize_input($_POST['scenario'] ?? '');
             $suivi->echelle = sanitize_input($_POST['echelle'] ?? '');
             $suivi->classe = sanitize_input($_POST['classe'] ?? '');
@@ -66,7 +66,7 @@ switch ($requestMethod) {
         } else {
             $suivi->indicateur_id = (int)sanitize_input($_POST['indicateur_id'] ?? 0);
             $suivi->mesure_id = (int)sanitize_input($_POST['mesure_id'] ?? 0);
-            $suivi->projet_id = (int)sanitize_input($_POST['projet_id'] ?? 0);
+            $suivi->cmr_id = (int)sanitize_input($_POST['cmr_id'] ?? 0);
             $suivi->scenario = sanitize_input($_POST['scenario'] ?? '');
             $suivi->echelle = sanitize_input($_POST['echelle'] ?? '');
             $suivi->classe = sanitize_input($_POST['classe'] ?? '');

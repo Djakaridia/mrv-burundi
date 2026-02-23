@@ -240,10 +240,11 @@
                             <tr>
                                 <th rowspan="2" style="width: 35%;">Intitulé</th>
                                 <th rowspan="2" class="text-center">Secteur</th>
+                                <th rowspan="2" class="text-center">Type</th>
                                 <th rowspan="2" class="text-center">Periode</th>
                                 <th rowspan="2" class="text-center">Statut</th>
-                                <th rowspan="2" class="text-center">Réalisations totales (Gg Eq.CO2)</th>
-                                <th class="text-center" colspan="2">Emissions totales évitées (Gg Eq.CO2)</th>
+                                <th rowspan="2" class="text-center">Réalisations (Gg Eq.CO2)</th>
+                                <th class="text-center" colspan="2">Emissions évitées (Gg Eq.CO2)</th>
                                 <th rowspan="2" class="text-center" style="width: 100px;">Actions</th>
                             </tr>
                             <tr>
@@ -260,7 +261,7 @@
                                 $suivis_total = 0;
                                 if (!empty($suivis_raw)) {
                                     foreach ($suivis_raw as $item) {
-                                        if ($item['scenario'] !== 'bau') $suivis_total += (float)$item['valeur'];
+                                        $suivis_total += (float)$item['valeur'];
                                     }
                                 }
 
@@ -289,6 +290,11 @@
                                         </span>
                                     </td>
                                     <td class="text-center">
+                                        <span class="badge badge-phoenix fs-10 py-1 <?= listClassAction()[$mesure['action_type']]['badge'] ?> rounded-pill">
+                                            <?= htmlspecialchars(listTypeAction()[$mesure['action_type']]) ?>
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
                                         <span class="badge badge-phoenix fs-10 py-1 badge-phoenix-warning rounded-pill">
                                             <?= $mesure['annee_debut'] ?> - <?= $mesure['annee_fin'] ?>
                                         </span>
@@ -298,7 +304,7 @@
                                             <?= listStatus()[$mesure['status']]; ?>
                                         </span>
                                     </td>
-                                    <td class="text-center fw-bold text-success">
+                                    <td>
                                         <?= $suivis_total ?? "-" ?>
                                     </td>
                                     <?php foreach ($emissions_evitees as $value): ?>

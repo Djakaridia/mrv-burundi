@@ -70,7 +70,7 @@
                     <th class="sort align-middle" scope="col" data-sort="time" style="min-width:100px;"> Actions</th>
                   </tr>
                 </thead>
-                <tbody class="list" id="table-latest-review-body">
+                <tbody class="list">
                   <?php foreach ($users as $user): ?>
                     <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                       <td class="align-middle customer px-2">

@@ -91,7 +91,7 @@
                     $g3_absorptions = [];
 
                     foreach ($current_inventory_data['data'] as $row) {
-                        $year = (int)$row['annee'];
+                        $year = isset($row['annee'])?(int)$row['annee']:"";
                         if (!$year) continue;
 
                         $g3_years[] = $year;
@@ -146,12 +146,12 @@
                         </h4>
                     </div>
 
-                    <div class="col-lg-3 mb-2 mb-lg-0 text-center">
+                    <div class="col-lg-4 mb-2 mb-lg-0 text-center">
                         <form action="formNiveauResultat" method="post">
-                            <select class="btn btn-phoenix-primary rounded-pill btn-sm form-select form-select-sm rounded-1" name="result" id="resultID" onchange="window.location.href = 'inventory.php?inventory=' + this.value">
+                            <select id="selectPageInventory" class="form-select text-center" name="result" onchange="window.location.href = 'inventory.php?inventory=' + this.value">
                                 <option value="" class="text-center" selected disabled>---Sélectionner un inventaire---</option>
                                 <?php foreach ($inventories as $inventory) { ?>
-                                    <option value="<?php echo $inventory['id']; ?>" <?php if ($sel_inventory == $inventory['id']) echo 'selected'; ?>><?php echo $inventory['name']; ?></option>
+                                    <option value="<?php echo $inventory['id']; ?>" <?php if ($sel_inventory == $inventory['id']) echo 'selected'; ?>><?php echo html_entity_decode($inventory['name']); ?></option>
                                 <?php } ?>
                             </select>
                         </form>
@@ -233,7 +233,7 @@
                                             </tr>
                                         </thead>
 
-                                        <tbody class="list" id="table-latest-review-body">
+                                        <tbody class="list">
                                             <?php foreach ($current_inventory_data['data'] as $row): ?>
                                                 <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                                                     <?php foreach ($row as $key => $value): ?>

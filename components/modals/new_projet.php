@@ -255,14 +255,27 @@ $array_typeLogo = ".jpg, .jpeg, .png, .gif, .webp";
                                                 </div>
                                             </div>
 
+                                            <div class="col-md-12 mt-0 mb-2">
+                                                <div class="form-group">
+                                                    <label for="MultipleProjetZone" class="form-label">Zones d'intervention</label>
+                                                    <select class="form-select" id="MultipleProjetZone" name="zones[]" multiple="multiple">
+                                                        <?php if (!empty($zones)) : ?>
+                                                            <?php foreach ($zones as $zone) : ?>
+                                                                <option value="<?= $zone['id'] ?>"><?= $zone['name'] ?></option>
+                                                            <?php endforeach; ?>
+                                                        <?php endif; ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+
                                             <div class="col-12 mb-2">
                                                 <label for="projetDescription" class="form-label">Description du projet</label>
-                                                <textarea class="form-control" name="description" id="projetDescription" rows="4"></textarea>
+                                                <textarea class="form-control" name="description" id="projetDescription" rows="2"></textarea>
                                             </div>
 
                                             <div class="col-12 mb-2">
                                                 <label for="projetObjectif" class="form-label">Objectif du projet</label>
-                                                <textarea class="form-control" name="objectif" id="projetObjectif" rows="4"></textarea>
+                                                <textarea class="form-control" name="objectif" id="projetObjectif" rows="2"></textarea>
                                             </div>
                                         </div>
                                     </form>
@@ -298,6 +311,7 @@ $array_typeLogo = ".jpg, .jpeg, .png, .gif, .webp";
         initSelect2("#addProjetModal", "projetStructure");
         initSelect2("#addProjetModal", "MultipleProjetGaz");
         initSelect2("#addProjetModal", "MultipleProjetGroupe");
+        initSelect2("#addProjetModal", "MultipleProjetZone");
 
         if (typeof flatpickr !== 'undefined') {
             $(".datetimepicker").flatpickr({
@@ -445,6 +459,11 @@ $array_typeLogo = ".jpg, .jpeg, .png, .gif, .webp";
                     formData.append('groupes', groupesValues.join(','));
                 }
 
+                const zonesValues = $('#MultipleProjetZone').val();
+                if (zonesValues && zonesValues.length > 0) {
+                    formData.append('zones', zonesValues.join(','));
+                }
+
                 const fileInput = document.getElementById('projetImage');
                 if (fileInput.files.length > 0) {
                     formData.append('file', fileInput.files[0]);
@@ -575,6 +594,11 @@ $array_typeLogo = ".jpg, .jpeg, .png, .gif, .webp";
                 $('#MultipleProjetGroupe').val(groupesArray).trigger('change');
             }
 
+            if (data.zones) {
+                const zonesArray = data.zones.split(',').map(g => g.trim());
+                $('#MultipleProjetZone').val(zonesArray).trigger('change');
+            }
+
             if (typeof tinymce !== 'undefined') {
                 if (tinymce.get('projetDescription')) {
                     tinymce.get('projetDescription').setContent(data.description || '');
@@ -625,6 +649,7 @@ $array_typeLogo = ".jpg, .jpeg, .png, .gif, .webp";
         $('#projetStructure').val('').trigger('change');
         $('#MultipleProjetGaz').val([]).trigger('change');
         $('#MultipleProjetGroupe').val([]).trigger('change');
+        $('#MultipleProjetZone').val([]).trigger('change');
 
         if (typeof tinymce !== 'undefined') {
             if (tinymce.get('projetObjectif')) {
@@ -645,13 +670,4 @@ $array_typeLogo = ".jpg, .jpeg, .png, .gif, .webp";
 
         formProjetID = null;
     }
-
-    $(document).on('focus', '.datetimepicker', function() {
-        if (typeof flatpickr !== 'undefined' && !$(this).data('flatpickr')) {
-            $(this).flatpickr({
-                dateFormat: "Y-m-d",
-                allowInput: true
-            });
-        }
-    });
 </script>

@@ -360,7 +360,7 @@
                 $end_date = !empty($projet_info['end_date']) ? date('d/m/Y', strtotime($projet_info['end_date'])) : 'Non définie';
                 $budget = !empty($projet_info['budget']) ? number_format($projet_info['budget'], 0, ',', ' ') . ' USD' : 'Non défini';
                 $sectors = $secteurs_assoc[$projet_info['secteur_id']] ?? "Non défini";
-                
+
                 // Data indicateur
                 $valeur_cible = floatval($indicateur['valeur_cible']);
                 $valeur_realisee = floatval($suivis_assoc[$indicateur['id']]);
@@ -407,10 +407,10 @@
                             },
                             projet: {
                                 id: "<?= $projet_info['id'] ?>",
-                                name: "<?= $projet_info['name'] ?>",
-                                code: "<?= $projet_info['code'] ?>",
-                                action: "<?= $projet_info['action_type'] ?>",
-                                secteurs: <?= $projet_info['secteur_id'] ?>,
+                                name: "<?= $projet_info['name'] ?? "" ?>",
+                                code: "<?= $projet_info['code'] ?? "" ?>",
+                                action: "<?= $projet_info['action_type'] ?? "" ?>",
+                                secteurs: <?= $projet_info['secteur_id'] ?? [] ?>,
                                 budget: <?= $projet_info['budget'] ?? 0 ?>
                             }
                         }).bindPopup(`<?= $popup ?>`);

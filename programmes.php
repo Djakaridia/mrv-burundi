@@ -67,7 +67,7 @@
                                     </tr>
                                 </thead>
 
-                                <tbody class="list" id="table-latest-review-body">
+                                <tbody class="list">
                                     <?php foreach ($programmes as $programme) { ?>
                                         <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                                             <td class="align-middle customer"><?= $programme['code'] ?></td>

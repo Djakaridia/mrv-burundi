@@ -50,8 +50,8 @@
                 });
 
                 $suivi = new Suivi($db);
-                $suivi->indicateur_id = $indicateurs[0]['id'];
-                $suivis_raw = $suivi->readByIndicateur();
+                $suivi->cmr_id = $indicateurs[0]['id'];
+                $suivis_raw = $suivi->readByCMR();
 
                 $series_data = [];
                 foreach ($projet_secteurs as $secteur) {
@@ -63,7 +63,8 @@
                         $valeur = 0;
                         foreach ($suivis_raw as $suivi) {
                             if ($suivi['secteur_id'] ?? '' == $secteur['id'] && $suivi['annee'] == $annee) {
-                                $valeur += (float)$suivi['valeur'];
+                                $suivi_annee = is_numeric($suivi['valeur'])?$suivi['valeur']:0;
+                                $valeur += (float)$suivi_annee;
                             }
                         }
                         $secteur_data['data'][] = $valeur;

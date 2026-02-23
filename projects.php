@@ -106,6 +106,9 @@
   $user = new User($db);
   $users = $user->read();
 
+  $zone = new Zone($db);
+  $zones = $zone->read();
+
   $conventions_par_projet = [];
   $couts_par_tache = [];
 
@@ -357,6 +360,7 @@
                   <th>Intitulé du projet</th>
                   <th>Responsable</th>
                   <th class="text-center">Secteur</th>
+                  <th class="text-center">Action</th>
                   <th class="text-center">Période</th>
                   <th class="text-center">Statut</th>
                   <th class="text-center">Progression</th>
@@ -385,13 +389,18 @@
                     <td><a href="project_view.php?id=<?= $projet['id'] ?>" class="text-muted fw-bold"><?= html_entity_decode($projet['name']) ?></a></td>
                     <td><span class="fw-semibold"><?= $projet['structure_sigle'] ?></span></td>
                     <td class="text-center">
-                      <span class="badge badge-phoenix fs-10 py-1 badge-phoenix-light rounded-pill">
+                      <span class="badge badge-phoenix fs-10 py-1 badge-phoenix-secondary rounded-pill">
                         <?php foreach ($secteurs as $secteur) {
                           if ($secteur['id'] == $projet['secteur_id']) {
                             echo $secteur['name'];
                             break;
                           }
                         } ?>
+                      </span>
+                    </td>
+                    <td class="text-center">
+                      <span class="badge badge-phoenix fs-10 py-1 <?= listClassAction()[$projet['action_type']]['badge'] ?> rounded-pill">
+                        <?= htmlspecialchars(listTypeAction()[$projet['action_type']]) ?>
                       </span>
                     </td>
                     <td class="text-center">
@@ -424,6 +433,8 @@
                     </td>
                     <td>
                       <div class="d-flex gap-2">
+                        <button title="Aperçu" class="btn btn-sm btn-phoenix-primary fs-10 px-2 py-1" data-bs-toggle="modal" data-bs-target="#projectsCardViewModal" data-id="<?= $projet['id'] ?>"><span class="uil-eye fs-8"></span></button>
+
                         <?php if (checkPermis($db, 'update')) : ?>
                           <button title="Modifier" class="btn btn-sm btn-phoenix-info fs-10 px-2 py-1" data-bs-toggle="modal" data-bs-target="#addProjetModal" data-id="<?= $projet['id']; ?>"><span class="uil-pen fs-8"></span></button>
                         <?php endif; ?>
@@ -431,8 +442,6 @@
                         <?php if (checkPermis($db, 'delete', 2)) : ?>
                           <button title="Supprimer" class="btn btn-sm btn-phoenix-danger fs-10 px-2 py-1" onclick="deleteData(<?= $projet['id']; ?>,'Voulez-vous vraiment supprimer ce projet ?', 'projets', 'redirect', 'projects.php')"><span class="uil-trash-alt fs-8"></span></button>
                         <?php endif; ?>
-
-                        <button title="Voir" class="btn btn-sm btn-phoenix-primary fs-10 px-2 py-1" data-bs-toggle="modal" data-bs-target="#projectsCardViewModal" data-id="<?= $projet['id'] ?>"><span class="uil-eye fs-8"></span></button>
                       </div>
                     </td>
                   </tr>
@@ -505,15 +514,50 @@
 
                           <div class="flex-grow-1">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                              <span class="badge badge-phoenix fs-10 py-1 rounded-pill badge-phoenix-secondary">
-                                <?php foreach ($secteurs as $secteur) {
-                                  if ($secteur['id'] == $projet['secteur_id']) echo $secteur['name'];
-                                } ?>
-                              </span>
+                              <div class="d-flex gap-1">
+                                <span class="badge badge-phoenix fs-10 py-1 rounded-pill badge-phoenix-secondary">
+                                  <?php foreach ($secteurs as $secteur) {
+                                    if ($secteur['id'] == $projet['secteur_id']) echo $secteur['name'];
+                                  } ?>
+                                </span>
+                                <span class="badge badge-phoenix fs-10 py-1 <?= listClassAction()[$projet['action_type']]['badge'] ?> rounded-pill">
+                                  <?= htmlspecialchars(listTypeAction()[$projet['action_type']]) ?>
+                                </span>
+                              </div>
 
-                              <span class="badge badge-phoenix fs-10 py-1 rounded-pill badge-phoenix-<?= $projet['status'] ? getBadgeClass($projet['status']) : "secondary"; ?>">
-                                <?= listStatus()[$projet['status']] ?? 'N/A'; ?>
-                              </span>
+                              <div class="d-flex gap-3 align-items-center justify-content-end">
+                                <span class="badge badge-phoenix fs-10 py-1 rounded-pill badge-phoenix-<?= $projet['state'] == "actif" ? "success" : "secondary"; ?>">
+                                  <?= $projet['state'] ?? 'N/A'; ?>
+                                </span>
+                                <div class="dropdown">
+                                  <button title="Actions" class="btn btn-sm dropdown-toggle dropdown-caret-none p-0" type="button"
+                                    data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true"
+                                    aria-expanded="false" data-bs-reference="parent">
+                                    <span class="fas fa-ellipsis-v fs-8 text-body"></span>
+                                  </button>
+                                  <div class="dropdown-menu p-0">
+                                    <div class="d-flex flex-column">
+                                      <div class="dropdown-item border-top border-light p-1">
+                                        <?php if (checkPermis($db, 'update')) : ?>
+                                          <a title="Modifier" data-bs-toggle="modal" data-bs-target="#addProjetModal" data-id="<?php echo $projet['id']; ?>"
+                                            class="link-info text-start d-flex align-items-center w-100 fs-9 btn p-1">
+                                            <span class="uil-pen fs-9 me-1"></span> Modifier
+                                          </a>
+                                      </div>
+                                    <?php endif; ?>
+
+                                    <?php if (checkPermis($db, 'delete')): ?>
+                                      <div class="dropdown-item border-top border-light p-1">
+                                        <button title="Supprimer" class="link-danger text-start d-flex align-items-center w-100 fs-9 btn p-1"
+                                          onclick="deleteData(<?php echo $projet['id']; ?>,'Voulez-vous vraiment supprimer ce projet ?', 'projets', 'redirect', 'projects.php')">
+                                          <span class="uil-trash-alt fs-9 me-1"></span> Supprimer
+                                        </button>
+                                      </div>
+                                    <?php endif; ?>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
                             <h5 title="<?= html_entity_decode($projet['name']) ?>" class="mb-0 text-primary fw-bold fs-8" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; word-break: break-word;">
                               <?= html_entity_decode($projet['name']) ?>

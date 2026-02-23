@@ -529,12 +529,52 @@ function listTypeAction()
     ];
 }
 
+function listClassAction()
+{
+    return [
+        'attenuation' => ['badge' => 'badge-phoenix-success'],
+        'adaptation' => ['badge' => 'badge-phoenix-warning'],
+        'transversale' => ['badge' => 'badge-phoenix-secondary']
+    ];
+}
+
+function listTypeFacteur()
+{
+    return [
+        'emission' => 'Émission',
+        'absorption' => 'Absorption',
+    ];
+}
+
 function listTypeInstrument()
 {
     return [
         'politique' => 'Politique',
         'economique' => 'Économique',
         'reglementaire' => 'Réglementaire'
+    ];
+}
+
+function listTypeFinancement()
+{
+    return [
+        'don' => 'Don / Subvention',
+        'pret_concessionnel' => 'Prêt concessionnel',
+        'pret_non_concessionnel' => 'Prêt non concessionnel',
+        'garantie' => 'Garantie',
+        'mixte' => 'Financement mixte',
+        'appui_budgetaire' => 'Appui budgétaire',
+        'assistance_technique' => 'Assistance technique',
+        'prise_participation' => 'Prise de participation',
+        'paiement_resultats' => 'Paiement basé sur résultats',
+        'fonds_fiduciaire' => 'Fonds fiduciaire',
+        'refinancement' => 'Refinancement',
+        'fonds_vert' => 'Fonds Vert Climat',
+        'fonds_adaptation' => "Fonds d'adaptation",
+        'financement_carbone' => 'Financement carbone',
+        'cofinancement' => 'Cofinancement',
+        'fonds_propre' => 'Fonds propre',
+        'avance_remboursable' => 'Avance remboursable',
     ];
 }
 
@@ -855,8 +895,9 @@ function calculSuiviData(array $suivis, string $modeCalcul)
         }
 
         $values = array_column($suivis, 'valeur');
-        $numericValues = array_filter($values, 'is_numeric');
-        $numericValues = array_map('floatval', $numericValues);
+        $values = array_filter(str_replace([' '], '', $values), 'is_numeric');
+        $values = array_filter(str_replace([','], '.', $values), 'is_numeric');
+        $numericValues = array_map('floatval', $values);
         $count = count($numericValues);
 
         if (empty($numericValues)) {
@@ -890,11 +931,32 @@ function calculSuiviData(array $suivis, string $modeCalcul)
                 return 0;
         }
 
-        return number_format($result, 2);
+        return number_format($result, 2, ',', ' ');
     } catch (Exception $e) {
         error_log("Erreur dans calculSuiviData: " . $e->getMessage());
         return '<span class="text-danger">Err</span>';
     }
+}
+
+function calculEmissionsEvitees(array $suivis, string $facteur_emission): string
+{
+    if (empty($suivis) || empty($facteur_emission)) {
+        return '<span class="text-muted">-</span>';
+    }
+
+    $total = 0;
+    $valeur_facteur = str_replace(' ', '', $facteur_emission);
+    $valeur_facteur = str_replace(',', '.', $valeur_facteur);
+    $facteur_float = floatval($valeur_facteur);
+
+    foreach ($suivis as $suivi) {
+        $valeur_suivi = str_replace(',', '.', $suivi['valeur']);
+        $valeur_suivi = str_replace(' ', '', $valeur_suivi);
+        $production = floatval($valeur_suivi);
+        $total += $production * $facteur_float;
+    }
+
+    return $total > 0 ? number_format($total, 2, ',', ' ') : '<span class="text-muted">-</span>';
 }
 
 function calculAggregationData(array $suivis, string $modeAggregation)
@@ -905,8 +967,10 @@ function calculAggregationData(array $suivis, string $modeAggregation)
         }
 
         $values = array_column($suivis, 'valeur');
-        $numericValues = array_filter($values, 'is_numeric');
-        $numericValues = array_map('floatval', $numericValues);
+        $values = array_column($suivis, 'valeur');
+        $values = array_filter(str_replace([' '], '', $values), 'is_numeric');
+        $values = array_filter(str_replace([','], '.', $values), 'is_numeric');
+        $numericValues = array_map('floatval', $values);
 
         if (empty($numericValues)) {
             return '<span class="text-warning">N/A</span>';
@@ -948,7 +1012,7 @@ function calculAggregationData(array $suivis, string $modeAggregation)
                 return '<span class="text-warning">Err</span>';
         }
 
-        return number_format($result, 2);
+        return number_format($result, 2, ',', ' ');
     } catch (Exception $e) {
         error_log("Erreur dans calculAggregationData: " . $e->getMessage());
         return '<span class="text-danger">Err</span>';

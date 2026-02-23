@@ -23,9 +23,16 @@
         exit();
     }
 
-    $mesure = new Mesure($db);
-    $emi_evitee_day = $mesure->getEmissionsEviteesAnnee($mesure_curr['id'], date("Y"));
-    $progression = $emi_evitee_day['bau'] > 0 ? (($emi_evitee_day['bau'] - $emi_evitee_day['wam']) / $emi_evitee_day['bau']) * 100 : 0;
+    $projection = new Projection($db);
+    $projections = $projection->read();
+    $projections_grouped = [];
+    foreach ($projections as $projection) {
+        $secteur = $projection['secteur_id'];
+        $annee = $projection['annee'];
+        $scenario = $projection['scenario'];
+        $valeur = str_replace(',', '.', $projection['valeur']);
+        $projections_grouped[$secteur][$annee][$scenario] = floatval($valeur);
+    }
 
     $unite = new Unite($db);
     $unites = $unite->read();
@@ -123,23 +130,23 @@
                                     <?php endforeach; ?>
                                 </span>
                                 <span class="badge badge-phoenix badge-phoenix-primary rounded-pill">
-                                    <?= $mesure_curr['status'] ?>
+                                    <?= listStatus()[$mesure_curr['status']]??"N/A" ?>
                                 </span>
                             </div>
                             <div class="d-flex align-items-end gap-1">
-                                <button type="button" onclick="window.location.href=`<?= $_SERVER['PHP_SELF'] ?>`" class="btn btn-subtle-primary btn-sm">
+                                <button type="button" onclick="window.location.href=`<?= $_SERVER['PHP_SELF'] ?>`" class="btn btn-subtle-primary btn-sm p-2">
                                     <span class="fa fa-arrow-left fs-9 me-2"></span>Retour
                                 </button>
 
                                 <?php if (checkPermis($db, 'update')) : ?>
-                                    <button title="Modifier" class="btn btn-sm btn-phoenix-info" data-bs-toggle="modal"
+                                    <button title="Modifier" class="btn btn-sm btn-phoenix-info p-2" data-bs-toggle="modal"
                                         data-bs-target="#addMesureModal" data-id="<?= $mesure_curr['id'] ?>">
                                         <span class="uil-pen fs-9"></span>
                                     </button>
                                 <?php endif; ?>
 
                                 <?php if (checkPermis($db, 'delete', 2)) : ?>
-                                    <button title="Supprimer" class="btn btn-sm btn-phoenix-danger" type="button"
+                                    <button title="Supprimer" class="btn btn-sm btn-phoenix-danger p-2" type="button"
                                         onclick="deleteData(<?= $mesure_curr['id'] ?>, 'Êtes-vous sûr de vouloir supprimer cette mesure ?', 'mesures')">
                                         <span class="uil-trash-alt fs-9"></span>
                                     </button>
@@ -147,7 +154,7 @@
                             </div>
                         </div>
 
-                        <h4 class="fw-bold mb-2"><?= $mesure_curr['name'] ?></h4>
+                        <h4 class="fw-bold my-2"><?= $mesure_curr['name'] ?></h4>
                     </div>
 
                     <div class="row g-3 mb-3">
@@ -164,7 +171,7 @@
                                                     <th class="text-center">Année</th>
                                                     <th class="text-center">Inconditionnel</th>
                                                     <th class="text-center">Conditionnel</th>
-                                                    <th class="text-center">Émission totale évitée</th>
+                                                    <th class="text-center">Émission évitée</th>
                                                     <th class="text-center">% de réduction</th>
                                                     <th class="text-center">Objectif</th>
                                                 </tr>
@@ -248,7 +255,7 @@
                                     <h5 class="mb-0">Suivis de la mesure</h5>
                                     <?php if (checkPermis($db, 'create')) : ?>
                                         <button title="Nouvelle valeur" type="button" class="btn btn-sm btn-subtle-primary fs-9 p-2 rounded-1" data-bs-toggle="modal"
-                                            data-bs-target="#newIndicateurSuiviModal" data-mesure_id="<?php echo $mesure_curr['id']; ?>" data-indicateur_id="<?php echo $mesure_curr['referentiel_id']; ?>">
+                                            data-bs-target="#newIndicateurSuiviModal" data-unite="<?php echo $mesure_curr['unite']; ?>" data-mesure_id="<?php echo $mesure_curr['id']; ?>" data-indicateur_id="<?php echo $mesure_curr['referentiel_id']; ?>">
                                             <span class="uil-plus"></span> Nouvelle valeur
                                         </button>
                                     <?php endif; ?>
@@ -269,7 +276,7 @@
                                                 <?php foreach ($suivis_raw as $suivi): ?>
                                                     <tr class="align-middle">
                                                         <td class="px-2"><?= $suivi['annee'] ?></td>
-                                                        <td class="px-2 fw-bold"><?= number_format($suivi['valeur'], 2) ?></td>
+                                                        <td class="px-2 fw-bold"><?= is_numeric($suivi['valeur']) ? number_format($suivi['valeur'], 2) : $suivi['valeur'] ?></td>
                                                         <td class="px-2">
                                                             <?= listTypeScenario()[$suivi['scenario']] ?? $suivi['scenario'] ?>
                                                         </td>
@@ -306,38 +313,110 @@
                         </div>
 
                         <div class="col-lg-4">
+                            <?php
+                            $annee_prevision = $_GET['annee'] ?? date('Y');
+                            $mesure = new Mesure($db);
+                            $emiEvitee_prevision = $projections_grouped[$mesure_curr['secteur_id']][$annee_prevision] ?? [];
+
+                            $bau_prevision = (float)($emiEvitee_prevision['bau'] ?? 0);
+                            $wem_prevision = (float)($emiEvitee_prevision['wem'] ?? 0); // inconditionnel
+                            $wam_prevision = (float)($emiEvitee_prevision['wam'] ?? 0); // conditionnel
+
+                            $total_prevision = $wem_prevision + $wam_prevision;
+                            $emiEvitee_mesure = $mesure->getEmissionsEviteesAnnee($mesure_curr['id'], $annee_prevision);
+                            $wem_realise = (float)($emiEvitee_mesure['wem'] ?? 0);
+                            $wam_realise = (float)($emiEvitee_mesure['wam'] ?? 0);
+
+                            $total_realise = $wem_realise + $wam_realise;
+                            $progression = $total_prevision > 0 ? ($total_realise / $total_prevision) * 100 : 0;
+                            $taux_inconditionnel = $wem_prevision > 0 ? ($wem_realise / $wem_prevision) * 100 : 0;
+                            $taux_conditionnel   = $wam_prevision > 0 ? ($wam_realise / $wam_prevision) * 100 : 0;
+                            ?>
+
                             <div class="card mb-3 rounded-1 overflow-hidden">
                                 <div class="card-header d-flex justify-content-between align-items-center bg-light dark__bg-dark rounded-0 p-2">
                                     <h3 class="h6 mb-0 fw-bold">Réalisations vs Prévisions</h3>
-                                    <span class="badge bg-primary rounded-pill">Objectif <?= date("Y") ?></span>
+
+                                    <form method="GET" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" class="m-0">
+                                        <input type="hidden" name="id" value="<?= $mesure_id ?>">
+                                        <select name="annee"
+                                            class="badge badge-phoenix badge-phoenix-primary rounded-1"
+                                            onchange="this.form.submit()">
+
+                                            <?php for ($i = $mesure_curr['annee_debut']; $i <= $mesure_curr['annee_fin']; $i++): ?>
+                                                <option value="<?= $i ?>" <?= ($annee_prevision == $i) ? 'selected' : '' ?>>
+                                                    Objectif <?= $i ?>
+                                                </option>
+                                            <?php endfor; ?>
+                                        </select>
+                                    </form>
                                 </div>
-                                <div class="card-body">
+
+                                <div class="card-body p-0">
                                     <div class="d-flex justify-content-center py-3">
                                         <div class="position-relative">
-                                            <div class="gauge-conic rounded-circle" style="width: 150px; height: 150px;"></div>
-                                            <div class="position-absolute top-50 start-50 translate-middle bg-primary-subtle rounded-circle d-flex flex-column align-items-center justify-content-center shadow-inner" style="width: 120px; height: 120px;">
-                                                <span class="fs-5 fw-bold text-primary"><?= $progression ?>%</span>
-                                                <span class="text-uppercase text-muted small fw-bold">Progression</span>
+                                            <div class="gauge-conic rounded-circle"
+                                                style="width:160px; height:160px; background: conic-gradient(#0d6efd 0% <?= $progression ?>%, #e9ecef <?= $progression ?>% 100%);">
+                                            </div>
+
+                                            <div class="position-absolute top-50 start-50 translate-middle bg-primary-subtle rounded-circle d-flex flex-column align-items-center justify-content-center shadow-inner"
+                                                style="width:120px;height:120px;">
+                                                <span class="fs-5 fw-bold text-primary"><?= round($progression) ?>%</span>
+                                                <span class="text-uppercase text-muted small fw-bold">Global</span>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="row mt-4 pt-3 border-top">
+                                    <div class="row mt-3 p-3 border-top">
                                         <div class="col-6">
-                                            <p class="text-uppercase text-muted small fw-bold mb-1">Emission Réalisée</p>
+                                            <p class="text-uppercase text-muted small fw-bold mb-1">Réalisé</p>
                                             <p class="h5 fw-bold text-primary mb-0">
-                                                <?= number_format(($emi_evitee_day['wem'] + $emi_evitee_day['wam']) ?? 0, 0, ',', ' ') . " " . $mesure_curr['unite'] ?>
+                                                <?= number_format($total_realise, 0, ',', ' ') . ' ' . ($mesure_curr['unite'] ?? 'tCO₂e') ?>
                                             </p>
                                         </div>
+
                                         <div class="col-6 text-end">
-                                            <p class="text-uppercase text-muted small fw-bold mb-1">Prévision <?= date("Y") ?></p>
+                                            <p class="text-uppercase text-muted small fw-bold mb-1">Prévision <?= $annee_prevision ?></p>
                                             <p class="h5 fw-bold text-primary mb-0">
-                                                <?= number_format($emi_evitee_day['bau'] ?? 0, 0, ',', ' ') . " " . $mesure_curr['unite'] ?>
+                                                <?= number_format($total_prevision, 0, ',', ' ') . ' ' . ($mesure_curr['unite'] ?? 'tCO₂e') ?>
                                             </p>
                                         </div>
                                     </div>
+
+                                    <div class="px-3 pb-3">
+                                        <small class="text-muted">Objectif inconditionnel (WEM)</small>
+
+                                        <div class="progress" style="height:8px;">
+                                            <div class="progress-bar bg-success"
+                                                style="width: <?= $taux_inconditionnel ?>%">
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex justify-content-between mt-1">
+                                            <small><?= number_format($wem_realise, 0, ',', ' ') ?></small>
+                                            <small><?= round($taux_inconditionnel) ?>%</small>
+                                            <small><?= number_format($wem_prevision, 0, ',', ' ') ?></small>
+                                        </div>
+                                    </div>
+
+                                    <div class="px-3 pb-3">
+                                        <small class="text-muted">Objectif conditionnel (WAM)</small>
+                                        <div class="progress" style="height:8px;">
+                                            <div class="progress-bar bg-warning"
+                                                style="width: <?= $taux_conditionnel ?>%">
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex justify-content-between mt-1">
+                                            <small><?= number_format($wam_realise, 0, ',', ' ') ?></small>
+                                            <small><?= round($taux_conditionnel) ?>%</small>
+                                            <small><?= number_format($wam_prevision, 0, ',', ' ') ?></small>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
+
 
                             <div class="card mb-3 rounded-1 overflow-hidden">
                                 <div class="card-header d-flex justify-content-between align-items-center bg-light dark__bg-dark rounded-0 p-2">

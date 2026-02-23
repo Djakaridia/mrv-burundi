@@ -237,8 +237,11 @@ CREATE TABLE IF NOT EXISTS t_actions_prioritaires (
     code VARCHAR(50) NOT NULL,
     name VARCHAR(200) NOT NULL,
     description TEXT,
-    objectif TEXT,
+    objectif_wem VARCHAR(20),
+    objectif_wam VARCHAR(20),
+    action_type VARCHAR(50),
     secteur_id INT,
+    sous_secteur_id INT,
     add_by INT,
     state VARCHAR(20) DEFAULT 'actif',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -352,7 +355,8 @@ CREATE TABLE IF NOT EXISTS t_projets (
     secteur_id INT,
     mesure_id INT,
     programme_id INT,
-    groupes VARCHAR(200),
+    groupes VARCHAR(100),
+    zones VARCHAR(100),
     add_by INT,
     structure_id INT,
     gaz VARCHAR(200),
@@ -370,7 +374,9 @@ CREATE TABLE IF NOT EXISTS t_conventions (
     montant DECIMAL(15,2) NOT NULL,
     date_accord DATE NOT NULL,
     action_type VARCHAR(50),
+    instrument VARCHAR(50),
     partenaire_id INT,
+    secteur_id INT,
     projet_id INT,
     add_by INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -389,21 +395,6 @@ CREATE TABLE IF NOT EXISTS t_partenaires (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- -- Table des financement
--- CREATE TABLE IF NOT EXISTS t_financements (
---     id INT AUTO_INCREMENT PRIMARY KEY,
---     structure_id INT,
---     partenaire_id INT,
---     secteur_id INT,
---     sous_secteur VARCHAR(150),
---     montant DECIMAL(15,2) NOT NULL,
---     action_type VARCHAR(50),    --Attenuation / Adaptation
---     instrument_type VARCHAR(50),    --Subvention, Prêt, Don, PPP…
---     add_by INT,
---     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
---     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
--- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Table des tâches
 CREATE TABLE IF NOT EXISTS t_taches (
@@ -628,11 +619,28 @@ CREATE TABLE IF NOT EXISTS t_indicateur_cmr (
     responsable VARCHAR(100),
     latitude VARCHAR(100),
     longitude VARCHAR(100),
+    facteur_id INT,
     referentiel_id INT,
     resultat_id INT,
     projet_id INT,
     add_by INT,
     state VARCHAR(20) DEFAULT 'actif',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Table des valeurs facteurs d'emissions
+CREATE TABLE IF NOT EXISTS t_facteur_emission (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(200) NOT NULL,
+    unite VARCHAR(50),
+    type VARCHAR(20),
+    gaz VARCHAR(20),
+    valeur VARCHAR(50),
+    referentiel_id INT,
+    projet_id INT,
+    mesure_id INT,
+    add_by INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

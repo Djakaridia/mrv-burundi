@@ -38,9 +38,8 @@ $user_tasks = array_filter($tasks, function ($task) use ($userId) {
                         <div class="row profile-task hover-actions-trigger btn-reveal-trigger p-3 gx-0 cursor-pointer shadow rounded-1 border border-light">
                             <div class="col-12 col-md-auto flex-1">
                                 <div class="mb-1 mb-md-0 d-flex align-items-center lh-1">
-                                    <button title="Suivre" type="button" class="btn btn-subtle-primary rounded-pill btn-sm fw-bold fs-9 px-2 py-1" data-bs-toggle="modal"
-                                        data-bs-target="#SuiviTAskModal" aria-haspopup="true" aria-expanded="false"
-                                        data-id="<?php echo $task['id']; ?>">Suivre
+                                    <button title="Suivre" type="button" class="btn btn-subtle-primary rounded-pill btn-sm fw-bold fs-9 px-2 py-1" 
+                                        onclick="window.location.href='suivi_activites.php?proj=<?php echo $task['projet_id']; ?>'">Suivre
                                     </button>
 
                                     <div data-todo-offcanvas-toogle="data-todo-offcanvas-toogle" data-todo-offcanvas-target="todoOffcanvas<?= $task['id'] ?>">

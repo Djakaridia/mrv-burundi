@@ -251,16 +251,37 @@
 
                                         <?php if (isset($indicateurs_project) && count($indicateurs_project) > 0) { ?>
                                             <tbody>
-                                                <?php foreach ($indicateurs_project as $indic) { ?>
+                                                <?php foreach ($indicateurs_project as $cmr) {
+                                                    $cible = new Cible($db);
+                                                    $cible->cmr_id = $cmr['id'];
+                                                    $cibles_cmr = $cible->readByCMR();
+
+                                                    $cibles_cmr_grouped = [];
+                                                    foreach ($cibles_cmr as $cible) {
+                                                        $annee = $cible['annee'];
+                                                        $scenario = $cible['scenario'];
+                                                        $cibles_cmr_grouped[$annee][$scenario][] = $cible;
+                                                    }
+
+                                                    $suivi = new Suivi($db);
+                                                    $suivi->cmr_id = $cmr['id'];
+                                                    $suivis_cmr = $suivi->readByCMR();
+
+                                                    $suivis_cmr_grouped = array();
+                                                    foreach ($suivis_cmr as $suivi) {
+                                                        $annee = $suivi['annee'];
+                                                        $scenario = $suivi['scenario'];
+                                                        $suivis_cmr_grouped[$annee][$scenario][] = $suivi;
+                                                    }
+                                                ?>
                                                     <tr>
-                                                        <td><?php echo $indic["intitule"] ?></td>
-                                                        <td class="text-center"><?php echo $indic["valeur_reference"] ?></td>
-                                                        <td class="text-center"><?php echo $indic["annee_reference"] ?></td>
-                                                        <td class="text-center"><?php echo "-" ?></td>
-                                                        <td class="text-center"><?php echo "-" ?></td>
-                                                        <td class="text-center"><?php echo "-" ?></td>
-                                                        <td class="text-center"><?php echo "-" ?></td>
-                                                        <td class="text-center"><?php echo "-" ?></td>
+                                                        <td><?php echo $cmr["intitule"] ?></td>
+                                                        <td class="text-center"><?php echo $cmr["valeur_reference"] ?></td>
+                                                        <td class="text-center"><?php echo $cmr["annee_reference"] ?></td>
+                                                        <td class="text-center"><?php echo $cibles_cmr_grouped[date('Y')]['wem'][0]['valeur'] ?? '-' ?></td>
+                                                        <td class="text-center"><?php echo $cibles_cmr_grouped[date('Y')]['wam'][0]['valeur'] ?? '-' ?></td>
+                                                        <td class="text-center"><?php echo $suivis_cmr_grouped[date('Y')]['wem'][0]['valeur'] ?? '-' ?></td>
+                                                        <td class="text-center"><?php echo $suivis_cmr_grouped[date('Y')]['wam'][0]['valeur'] ?? '-' ?></td>
                                                         <td class="text-center"><?php echo "-" ?></td>
                                                         <td class="text-center"><?php echo "-" ?></td>
                                                     </tr>
@@ -279,15 +300,12 @@
                                     Chapitre 5 : SUIVI DES ACTIVITÉS DU PROJET <?php echo date("Y") ?>
                                 </button>
                                 <div id="litem_5" class="accordion-collapse collapse show">
-                                    <table
-                                        class="table table-hover table-bordered small"
-                                        border="1" style="width:100%; table-layout: fixed;">
+                                    <table class="table table-hover table-bordered small" border="1" style="width:100%; table-layout: fixed;">
                                         <thead class="bg-primary-subtle text-nowrap">
                                             <tr class="text-center">
                                                 <th class="text-center" style="width: 5%;">Code</th>
                                                 <th class="text-center" style="width: 35%;">Activités</th>
                                                 <th class="text-center" style="width: 15%;">Responsables</th>
-                                                <th class="text-center" style="width: 15%;">Indicateur</th>
                                                 <th class="text-center" style="width: 10%;">Cout (USD)</th>
                                                 <th class="text-center" style="width: 10%;">Statut</th>
                                                 <th class="text-center" style="width: 10%;">Observation</th>
@@ -297,56 +315,16 @@
                                         <?php if (isset($taches_project) && count($taches_project) > 0) { ?>
                                             <tbody>
                                                 <?php foreach ($taches_project as $tache) {
-                                                    $indicateurs = $grouped_tache_indicateurs[$tache['id']] ?? [];
-
-                                                    $nbre_indicateurs = count($indicateurs);
                                                     $couts = $grouped_tache_couts[$tache['id']] ?? [];
                                                     $total_couts = array_sum(array_map('floatval', array_column($couts, 'montant')));
-
-                                                    $total_task_cible = array_sum(array_map('floatval', array_column($indicateurs, 'valeur_cible')));
-                                                    $suivis_indic = $grouped_tache_suivi_indicateurs[$tache['id']] ?? [];
-                                                    $total_task_suivi = array_sum(array_map('floatval', array_column($suivis_indic, 'valeur_suivi')));
-
-                                                    unset($taux_indicateur);
-                                                    $taux_indicateur = 0;
-                                                    if (isset($total_task_cible) && $total_task_cible > 0) {
-                                                        if ($total_task_suivi >= $total_task_cible) {
-                                                            $taux_indicateur = 100;
-                                                        } else {
-                                                            $taux_indicateur = round(($total_task_suivi / $total_task_cible) * 100, 2);
-                                                        }
-                                                    } else {
-                                                        $taux_indicateur = 0;
-                                                    }
                                                 ?>
                                                     <tr>
                                                         <td><?php echo $tache["code"] ?></td>
                                                         <td><?php echo html_entity_decode($tache["name"]) ?></td>
                                                         <td class="text-center"><?php echo $grouped_users[$tache['assigned_id']]['nom'] . ' ' . $grouped_users[$tache['assigned_id']]['prenom'] ?></td>
-                                                        <td class="text-center">
-                                                            <?php
-                                                            if ($taux_indicateur < 39)
-                                                                $color = "danger";
-                                                            elseif ($taux_indicateur < 69)
-                                                                $color = "warning";
-                                                            elseif ($taux_indicateur >= 70)
-                                                                $color = "success"; ?>
-                                                            <span id="tauxIndic_<?php echo $tache['id']; ?>">
-                                                                <div class="progress progress-xl rounded-0 p-0 m-0" style="height: 1.5rem; width: 150px">
-                                                                    <div class="progress-bar progress-bar-striped progress-bar-animated fs-14 fw-bold bg-<?php echo $color; ?> " aria-valuenow="70" style="width: 100%;">
-                                                                        <?php echo (isset($taux_indicateur) && $taux_indicateur > 0) ? $taux_indicateur . " %" : "Non suivie"; ?>
-                                                                    </div>
-                                                                </div>
-                                                            </span>
-                                                        </td>
                                                         <td class="text-center"><?= ($total_couts > 0) ? number_format($total_couts, 0, ',', ' ') : "Ajouter" ?></td>
-                                                        <td class="text-center">
-                                                            <span class="col text-nowrap badge badge-phoenix fs-10 
-                                                            badge-phoenix-<?php echo $taux_indicateur > 0 ? ($taux_indicateur >= 100 ? "success" : "warning") : "danger" ?>">
-                                                                <?php echo $taux_indicateur > 0 ? ($taux_indicateur >= 100 ? "Terminé" : "En cours") : "Non entamé" ?>
-                                                            </span>
-                                                        </td>
                                                         <td class="text-center text-capitalize"><?php echo isset($tache['status']) ? $tache['status'] : "Suivre" ?></td>
+                                                        <td class="text-center text-capitalize"><?php echo isset($suivi_tache['observation']) ? $suivi_tache['observation'] : "N/A" ?></td>
                                                     </tr>
                                                 <?php } ?>
                                             </tbody>

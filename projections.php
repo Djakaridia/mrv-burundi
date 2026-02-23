@@ -39,7 +39,7 @@
         $annees_cibles = array_unique(array_column($projections_data, 'annee'));
         sort($annees_cibles);
     }
-    
+
     $projections_par_secteur = [];
     $projections_id_map = [];
     $totaux = [];
@@ -240,9 +240,8 @@
                             </div>
                         </div>
 
-                        <!-- Tableau principal des projections -->
                         <div class="table-responsive mx-n1 p-1 scrollbar" style="max-height: 400px; overflow-y: auto;">
-                            <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatableNONE">
+                            <table class="table small table-bordered mb-0" id="id-datatableNONE">
                                 <thead class="bg-primary-subtle">
                                     <tr class="text-center">
                                         <th style="width: 20%; min-width: 150px;">Secteur / Scénario</th>
@@ -266,7 +265,7 @@
                                             <tr class="bg-light">
                                                 <td colspan="<?= count($annees_cibles) + 2 ?>" class="fw-bold bg-light">
                                                     <i class="fas fa-wind me-2"></i> Secteur : <?= htmlspecialchars($secteur_data['name']) ?>
-                                                    <span class="badge py-1 bg-info ms-2"><?= $scenarios_avec_donnees ?> scénario(s)</span>
+                                                    <span class="badge py-1 bg-warning ms-2"><?= $scenarios_avec_donnees ?> scénario(s)</span>
                                                 </td>
                                             </tr>
 
@@ -282,17 +281,8 @@
                                                             <?php
                                                             $valeur = $valeurs[$annee] ?? '';
                                                             $projection_id = isset($projections_id_map[$secteur_id][$scenario][$annee]) ? $projections_id_map[$secteur_id][$scenario][$annee] : null;
-                                                            $classe_valeur = '';
-                                                            if ($valeur !== '') {
-                                                                $val_num = floatval(str_replace(',', '.', $valeur));
-                                                                if ($secteur_id == $secteur_fat_id) {
-                                                                    $classe_valeur = $val_num < -1000 ? 'text-success' : ($val_num < 0 ? 'text-info' : 'text-danger');
-                                                                } else {
-                                                                    $classe_valeur = $val_num < 100 ? 'text-success' : ($val_num < 500 ? 'text-warning' : 'text-danger');
-                                                                }
-                                                            }
                                                             ?>
-                                                            <td class="text-center fw-bold <?= $classe_valeur ?>">
+                                                            <td class="text-center fw-bold text-nowrap">
                                                                 <?php if ($valeur !== ''): ?>
                                                                     <?= number_format(floatval(str_replace(',', '.', $valeur)), 1, ',', ' ') ?>
                                                                     <?php if (checkPermis($db, 'update')): ?>
@@ -305,7 +295,7 @@
                                                                                 data-secteur="<?= $secteur_id ?>"
                                                                                 data-scenario="<?= $scenario ?>"
                                                                                 data-annee="<?= $annee ?>">
-                                                                                <i class="fas fa-edit text-muted"></i>
+                                                                                <i class="fas fa-edit text-info fs-10 mb-1"></i>
                                                                             </button>
                                                                         <?php else: ?>
                                                                             <button class="btn btn-link btn-sm p-0 ms-2 text-decoration-none"
@@ -315,7 +305,7 @@
                                                                                 data-secteur="<?= $secteur_id ?>"
                                                                                 data-scenario="<?= $scenario ?>"
                                                                                 data-annee="<?= $annee ?>">
-                                                                                <i class="fas fa-plus text-success"></i>
+                                                                                <i class="fas fa-plus text-success fs-10 mb-1"></i>
                                                                             </button>
                                                                         <?php endif; ?>
                                                                     <?php endif; ?>
@@ -328,7 +318,7 @@
                                                                             data-secteur="<?= $secteur_id ?>"
                                                                             data-scenario="<?= $scenario ?>"
                                                                             data-annee="<?= $annee ?>">
-                                                                            <i class="fas fa-plus text-success"></i>
+                                                                            <i class="fas fa-plus text-success fs-10 mb-1"></i>
                                                                         </button>
                                                                     <?php endif; ?>
                                                                 <?php endif; ?>
@@ -354,7 +344,6 @@
                             </table>
                         </div>
 
-                        <!-- Section des totaux -->
                         <div class="mt-4">
                             <h5 class="mx-3 mb-3 fw-bold border-bottom pb-2">Synthèse des projections</h5>
 
@@ -368,25 +357,25 @@
                                         </div>
                                         <div class="card-body p-2">
                                             <div class="table-responsive">
-                                                <table class="table table-sm table-borderless mb-0">
-                                                    <thead>
+                                                <table class="table small table-bordered mb-0" id="id-datatable1">
+                                                    <thead class="small">
                                                         <tr class="border-bottom">
-                                                            <th class="small">Scénario</th>
+                                                            <th>Scénario</th>
                                                             <?php foreach ($annees_cibles as $annee): ?>
-                                                                <th class="text-center small"><?= $annee ?></th>
+                                                                <th class="text-center"><?= $annee ?></th>
                                                             <?php endforeach; ?>
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
+                                                    <tbody class="small">
                                                         <?php foreach (listTypeScenario() as $scenario_key => $scenario_label): ?>
                                                             <tr>
-                                                                <td class="small"><?= $scenario_label ?></td>
+                                                                <td><?= $scenario_label ?></td>
                                                                 <?php foreach ($annees_cibles as $annee): ?>
                                                                     <?php
                                                                     $valeur = $totaux_sans_fat[$scenario_key][$annee] ?? 0;
                                                                     $classe = $valeur > 5000 ? 'text-danger' : ($valeur > 2000 ? 'text-warning' : 'text-success');
                                                                     ?>
-                                                                    <td class="text-center fw-bold small <?= $classe ?>">
+                                                                    <td class="text-center fw-bold text-nowrap <?= $classe ?>">
                                                                         <?= number_format($valeur, 1, ',', ' ') ?>
                                                                     </td>
                                                                 <?php endforeach; ?>
@@ -409,19 +398,19 @@
                                         <div class="card-body p-2">
                                             <?php if ($secteur_fat_id): ?>
                                                 <div class="table-responsive">
-                                                    <table class="table table-sm table-borderless mb-0">
-                                                        <thead>
+                                                    <table class="table small table-bordered mb-0" id="id-datatable2">
+                                                        <thead class="small">
                                                             <tr class="border-bottom">
-                                                                <th class="small">Scénario</th>
+                                                                <th>Scénario</th>
                                                                 <?php foreach ($annees_cibles as $annee): ?>
-                                                                    <th class="text-center small"><?= $annee ?></th>
+                                                                    <th class="text-center"><?= $annee ?></th>
                                                                 <?php endforeach; ?>
                                                             </tr>
                                                         </thead>
-                                                        <tbody>
+                                                        <tbody class="small">
                                                             <?php foreach (listTypeScenario() as $scenario_key => $scenario_label): ?>
                                                                 <tr>
-                                                                    <td class="small"><?= $scenario_label ?></td>
+                                                                    <td><?= $scenario_label ?></td>
                                                                     <?php foreach ($annees_cibles as $annee): ?>
                                                                         <?php
                                                                         $valeur = isset($projections_par_secteur[$secteur_fat_id]['scenarios'][$scenario_key][$annee])
@@ -429,7 +418,7 @@
                                                                             : 0;
                                                                         $classe = $valeur < -2000 ? 'text-success' : ($valeur < 0 ? 'text-info' : 'text-danger');
                                                                         ?>
-                                                                        <td class="text-center fw-bold small <?= $classe ?>">
+                                                                        <td class="text-center fw-bold text-nowrap <?= $classe ?>">
                                                                             <?= number_format($valeur, 1, ',', ' ') ?>
                                                                         </td>
                                                                     <?php endforeach; ?>
@@ -457,25 +446,25 @@
                                         </div>
                                         <div class="card-body p-2">
                                             <div class="table-responsive">
-                                                <table class="table table-sm table-borderless mb-0">
-                                                    <thead>
+                                                <table class="table small table-bordered mb-0" id="id-datatable3">
+                                                    <thead class="small">
                                                         <tr class="border-bottom">
-                                                            <th class="small">Scénario</th>
+                                                            <th>Scénario</th>
                                                             <?php foreach ($annees_cibles as $annee): ?>
-                                                                <th class="text-center small"><?= $annee ?></th>
+                                                                <th class="text-center"><?= $annee ?></th>
                                                             <?php endforeach; ?>
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
+                                                    <tbody class="small">
                                                         <?php foreach (listTypeScenario() as $scenario_key => $scenario_label): ?>
                                                             <tr>
-                                                                <td class="small"><?= $scenario_label ?></td>
+                                                                <td><?= $scenario_label ?></td>
                                                                 <?php foreach ($annees_cibles as $annee): ?>
                                                                     <?php
                                                                     $valeur = $totaux[$scenario_key][$annee] ?? 0;
                                                                     $classe = $valeur > 3000 ? 'text-danger' : ($valeur > 1000 ? 'text-warning' : ($valeur < 0 ? 'text-success' : 'text-info'));
                                                                     ?>
-                                                                    <td class="text-center fw-bold small <?= $classe ?>">
+                                                                    <td class="text-center fw-bold text-nowrap <?= $classe ?>">
                                                                         <?= number_format($valeur, 1, ',', ' ') ?>
                                                                     </td>
                                                                 <?php endforeach; ?>

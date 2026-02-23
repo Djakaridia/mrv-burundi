@@ -14,7 +14,7 @@ class Suivi
     public $scenario;
     public $indicateur_id;
     public $mesure_id;
-    public $projet_id;
+    public $cmr_id;
     public $add_by; 
 
     public function __construct($db)
@@ -24,8 +24,8 @@ class Suivi
 
     public function create()
     {
-        $query = "INSERT INTO " . $this->table . " (valeur, annee, echelle, classe, date_suivie, observation, scenario, indicateur_id, mesure_id, projet_id, add_by) VALUES 
-             (:valeur, :annee, :echelle, :classe, :date_suivie, :observation, :scenario, :indicateur_id, :mesure_id, :projet_id, :add_by)";
+        $query = "INSERT INTO " . $this->table . " (valeur, annee, echelle, classe, date_suivie, observation, scenario, indicateur_id, mesure_id, cmr_id, add_by) VALUES 
+             (:valeur, :annee, :echelle, :classe, :date_suivie, :observation, :scenario, :indicateur_id, :mesure_id, :cmr_id, :add_by)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':valeur', $this->valeur);
         $stmt->bindParam(':annee', $this->annee);
@@ -36,7 +36,7 @@ class Suivi
         $stmt->bindParam(':scenario', $this->scenario);
         $stmt->bindParam(':indicateur_id', $this->indicateur_id);
         $stmt->bindParam(':mesure_id', $this->mesure_id);
-        $stmt->bindParam(':projet_id', $this->projet_id);
+        $stmt->bindParam(':cmr_id', $this->cmr_id);
         $stmt->bindParam(':add_by', $this->add_by);
 
         if ($stmt->execute()) {
@@ -47,7 +47,7 @@ class Suivi
 
     public function update()
     {
-        $query = "UPDATE " . $this->table . " SET valeur=:valeur, annee=:annee, echelle=:echelle, classe=:classe, date_suivie=:date_suivie, observation=:observation, scenario=:scenario, indicateur_id=:indicateur_id, mesure_id=:mesure_id ,projet_id=:projet_id, add_by=:add_by WHERE id=:id";
+        $query = "UPDATE " . $this->table . " SET valeur=:valeur, annee=:annee, echelle=:echelle, classe=:classe, date_suivie=:date_suivie, observation=:observation, scenario=:scenario, indicateur_id=:indicateur_id, mesure_id=:mesure_id ,cmr_id=:cmr_id, add_by=:add_by WHERE id=:id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $this->id);
         $stmt->bindParam(':valeur', $this->valeur);
@@ -59,7 +59,7 @@ class Suivi
         $stmt->bindParam(':scenario', $this->scenario);
         $stmt->bindParam(':indicateur_id', $this->indicateur_id);
         $stmt->bindParam(':mesure_id', $this->mesure_id);
-        $stmt->bindParam(':projet_id', $this->projet_id);
+        $stmt->bindParam(':cmr_id', $this->cmr_id);
         $stmt->bindParam(':add_by', $this->add_by);
 
         if ($stmt->execute()) {
@@ -107,11 +107,11 @@ class Suivi
         return $row;
     }
 
-    public function readByProjet()
+    public function readByCMR()
     {
-        $query = "SELECT * FROM " . $this->table . " WHERE projet_id=:projet_id ORDER BY id DESC";
+        $query = "SELECT * FROM " . $this->table . " WHERE cmr_id=:cmr_id ORDER BY id DESC";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':projet_id', $this->projet_id);
+        $stmt->bindParam(':cmr_id', $this->cmr_id);
         $stmt->execute();
         $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $row;

@@ -177,8 +177,17 @@
 
                   <td class="align-middle px-2 text-nowrap"><?php echo $referentiel['unite']; ?></td>
 
-                  <td class="align-middle px-2">
-                    <?php echo strtoupper($referentiel['categorie']); ?>
+                  <td class="align-middle text-center mx-auto px-2">
+                    <span class="badge bg-secondary-subtle text-secondary-emphasis rounded-pill">
+                      <?php if ($referentiel['categorie'] == 'impact'): ?>
+                        <i class="fas fa-bullseye text-secondary me-1" title="Impact"></i>
+                      <?php elseif ($referentiel['categorie'] == 'effet'): ?>
+                        <i class="fas fa-chart-line text-secondary me-1" title="Effet"></i>
+                      <?php else: ?>
+                        <i class="fas fa-tag text-secondary me-1"></i>
+                      <?php endif; ?>
+                      <?= htmlspecialchars(listTypeCategorie()[$referentiel['categorie']] ?? 'N/A') ?>
+                    </span>
                     <br>
                     <?php if (in_array($referentiel['modele'], $modeles_typologie)) : ?>
                       <button title="Typologie" type="button" class="btn btn-sm btn-link text-primary fs-10 p-0 m-0" data-bs-toggle="modal" data-bs-target="#addTypologieModal"
@@ -197,15 +206,15 @@
                   </td>
 
                   <td class="align-middle px-2">
-                    <button title="Métadonnées" type="button" class="btn btn-subtle-info rounded-pill btn-sm fw-bold fs-9 px-2 py-1" data-bs-toggle="modal" data-bs-target="#addMetadataModal"
+                    <button title="Métadonnées" type="button" class="btn btn-subtle-info fs-10 py-1 rounded-pill btn-sm fw-bold fs-9 px-2 py-1" data-bs-toggle="modal" data-bs-target="#addMetadataModal"
                       data-referentiel_id="<?php echo $referentiel['id']; ?>">
                       Métadonnées
                     </button>
                   </td>
 
                   <td class="align-middle px-2 py-0 text-center">
-                    <?php if ($referentiel['categorie'] == 'impact') { ?>
-                      <button title="Suivre" type="button" class="btn btn-subtle-warning rounded-pill btn-sm fw-bold fs-9 px-2 py-1"
+                    <?php if ($referentiel['categorie'] !== 'produit') { ?>
+                      <button title="Suivre" type="button" class="btn btn-subtle-warning fs-10 py-1 rounded-pill btn-sm fw-bold fs-9 px-2 py-1"
                         onclick="window.location.href = 'referentiel_view.php?id=<?php echo $referentiel['id']; ?>';">Suivre
                       </button>
                     <?php } else {

@@ -60,7 +60,7 @@
                     <th class="align-middle" scope="col" style="min-width:100px;">Actions</th>
                   </tr>
                 </thead>
-                <tbody class="list" id="table-latest-review-body">
+                <tbody class="list">
                   <?php foreach ($row_roles as $role): ?>
                     <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                       <td class="align-middle px-2">

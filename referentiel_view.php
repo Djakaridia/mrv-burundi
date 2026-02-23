@@ -506,7 +506,7 @@
 
                                     <?php if (checkPermis($db, 'create')) : ?>
                                         <button title="Nouvelle valeur" type="button" class="btn btn-sm btn-subtle-primary fs-9 p-2 rounded-1" data-bs-toggle="modal"
-                                            data-bs-target="#newIndicateurSuiviModal" data-indicateur_id="<?php echo $ref_curr['id']; ?>">
+                                            data-bs-target="#newIndicateurSuiviModal" data-indicateur_id="<?php echo $ref_curr['id']; ?>" data-unite="<?php echo $ref_curr['unite']; ?>">
                                             <span class="uil-plus"></span> Nouvelle valeur
                                         </button>
                                     <?php endif; ?>
@@ -533,7 +533,7 @@
                                                 <?php foreach ($suivis_raw as $suivi): ?>
                                                     <tr class="align-middle">
                                                         <td class="px-2"><?= $suivi['annee'] ?></td>
-                                                        <td class="px-2 fw-bold"><?= number_format($suivi['valeur'], 2) ?></td>
+                                                        <td class="px-2 fw-bold"><?= $suivi['valeur'] ?></td>
                                                         <td class="px-2">
                                                             <?= listTypeScenario()[$suivi['scenario']] ?? $suivi['scenario'] ?>
                                                         </td>

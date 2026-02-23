@@ -77,4 +77,12 @@ foreach (glob("$modalsDir/*.php") as $modalFile) {
   searchFilterData('searchProfilTask', '.profile-task');
   searchFilterData('searchNotification', '.notification-card');
   searchFilterData('searchRapportPeriodique', '.rapport-item');
+
+  initSelect2("", "selectPageInventory");
+  initSelect2("", "selectPageCmr");
+  initSelect2("", "selectPageNiveauProg1");
+  initSelect2("", "selectPageNiveauProg2");
+  initSelect2("", "selectPageNiveauProg3");
+  initSelect2("", "selectPageSuiviActiv");
+  initSelect2("", "selectPageSuiviIndic");
 </script>

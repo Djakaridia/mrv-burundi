@@ -33,12 +33,16 @@
   $niveau_resultat = new NiveauResultat($db);
   $niveau_resultats = $niveau_resultat->read();
 
-  $indicateur = new Indicateur($db);
   if ($sel_id && $sel_id != '') {
+    $projet = new Projet($db);
+    $projet->id = $sel_id;
+    $project_curr = $projet->readById();
+
+    $indicateur = new Indicateur($db);
     $indicateur->projet_id = $sel_id;
     $indicateurs = $indicateur->readByProjet();
   } else {
-    $indicateurs = $indicateur->read();
+    echo "<script>window.location.href='cadre_resultat.php';</script>";
   }
 
   $structure = new Structure($db);
@@ -70,20 +74,20 @@
             <h4 class="my-1 fw-black fs-8">Indicateurs du CMR</h4>
           </div>
 
-          <div class="col-lg-3 mb-2 mb-lg-0 text-center">
+          <div class="col-lg-4 mb-2 mb-lg-0 text-center">
             <form action="formNiveauResultat" method="post">
-              <select class="btn btn-phoenix-primary rounded-pill btn-sm form-select form-select-sm rounded-1 text-start" name="result" id="resultID" onchange="window.location.href = 'cadre_resultat_cr.php?proj=' + this.value">
+              <select id="selectPageCmr" class="form-select text-center" name="result" id="resultID" onchange="window.location.href = 'cadre_resultat.php?proj=' + this.value">
                 <option class="text-center" value="" selected disabled>---Sélectionner un projet---</option>
                 <?php foreach ($projets as $projet) { ?>
-                  <option value="<?php echo $projet['id']; ?>" <?php if ($sel_id == $projet['id']) echo 'selected'; ?>><?php echo $projet['name']; ?></option>
+                  <option value="<?php echo $projet['id']; ?>" <?php if ($sel_id == $projet['id']) echo 'selected'; ?>><?php echo html_entity_decode($projet['name']); ?></option>
                 <?php } ?>
               </select>
             </form>
           </div>
 
           <div class="col-lg-4 mb-2 mb-lg-0 text-lg-end">
-            <button title="Ajouter" class="btn btn-subtle-primary btn-sm" id="addBtn" data-bs-toggle="modal" data-bs-target="#addIndicateurModal" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
-              <i class="fas fa-plus"></i> Ajouter un indicateur</button>
+            <!-- <button title="Ajouter" class="btn btn-subtle-primary btn-sm" id="addBtn" data-bs-toggle="modal" data-bs-target="#addIndicateurModal" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
+              <i class="fas fa-plus"></i> Ajouter un indicateur</button> -->
           </div>
         </div>
       </div>
@@ -101,13 +105,32 @@
                     <th class="sort align-middle" scope="col"> Calcul </th>
                     <th class="sort align-middle" scope="col"> Responsable </th>
                     <th class="sort align-middle" scope="col"> Valeur référence </th>
+                    <?php for ($year = date('Y', strtotime($project_curr['start_date'])); $year <= date('Y', strtotime($project_curr['end_date'])); $year++) : ?>
+                      <th class="sort align-middle bg-light dark__bg-secondary border text-center" scope="col"><?php echo $year; ?></th>
+                    <?php endfor; ?>
                     <th class="sort align-middle" scope="col"> Valeur cible </th>
                     <th class="sort align-middle" scope="col"> Status </th>
-                    <th class="sort align-middle" scope="col" style="min-width:100px;"> Actions </th>
+                    <!-- <th class="sort align-middle" scope="col" style="min-width:100px;"> Actions </th> -->
                   </tr>
                 </thead>
-                <tbody class="list" id="table-latest-review-body">
-                  <?php foreach ($indicateurs as $indicateur) { ?>
+                <tbody class="list">
+                  <?php foreach ($indicateurs as $indicateur) {
+                    $cible = new Cible($db);
+                    $cible->cmr_id = $indicateur['id'];
+                    $cibles_cmr = $cible->readByCMR();
+
+                    $ciblesGroupedAnnee = [];
+                    $ciblesAnneeSomme = [];
+
+                    if (!empty($cibles_cmr) && is_array($cibles_cmr)) {
+                      foreach ($cibles_cmr as $cible) {
+                        $ciblesGroupedAnnee[$cible['annee']][] = $cible;
+                      }
+                      foreach ($ciblesGroupedAnnee as $annee => $cibles) {
+                        $ciblesAnneeSomme[$annee] = array_sum(array_column($cibles, 'valeur'));
+                      }
+                    }
+                  ?>
                     <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                       <td class="align-middle py-0"><?php echo $indicateur['code']; ?></td>
                       <td class="align-middle"><?php echo $indicateur['intitule']; ?></td>
@@ -120,17 +143,24 @@
                           <?php } ?>
                         <?php } ?>
                       </td>
-
                       <td class="align-middle py-0"><?php echo $indicateur['valeur_reference']; ?></td>
+                      <?php for ($year = date('Y', strtotime($project_curr['start_date'])); $year <= date('Y', strtotime($project_curr['end_date'])); $year++) : ?>
+                        <td class="align-middle bg-light dark__bg-secondary px-2 py-0 border text-center">
+                          <?php if (empty($cibles_cmr)) { ?>
+                            <span class="text-muted">-</span>
+                          <?php } else { ?>
+                            <?php echo $ciblesAnneeSomme[$year] ?? "-"; ?>
+                          <?php } ?>
+                        </td>
+                      <?php endfor; ?>
                       <td class="align-middle py-0"><?php echo $indicateur['valeur_cible']; ?></td>
-
                       <td class="align-middle customer">
                         <span class="badge rounded-pill badge-phoenix fs-10 badge-phoenix-<?php echo $indicateur['state'] == 'actif' ? 'success' : 'danger'; ?>">
                           <span class="badge-label"><?php echo $indicateur['state'] == 'actif' ? 'Actif' : 'Inactif'; ?></span>
                         </span>
                       </td>
 
-                      <td class="align-middle review">
+                      <!-- <td class="align-middle review">
                         <div class="position-relative">
                           <div class="d-flex gap-1">
                             <?php if (checkPermis($db, 'update')) : ?>
@@ -155,7 +185,7 @@
                             <?php endif; ?>
                           </div>
                         </div>
-                      </td>
+                      </td> -->
                     </tr>
                   <?php } ?>
                 </tbody>

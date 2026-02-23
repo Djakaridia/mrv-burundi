@@ -40,8 +40,8 @@
                 });
 
                 $suivi = new Suivi($db);
-                $suivi->indicateur_id = $indicateurs[0]['id'];
-                $suivis_raw = $suivi->readByIndicateur();
+                $suivi->cmr_id = $indicateurs[0]['id'];
+                $suivis_raw = $suivi->readByCMR();
                 $suivis_par_secteur = [];
                 foreach ($suivis_raw as $suivi) {
                     if (!isset($suivis_par_secteur[$suivi['secteur_id'] ?? ""])) {

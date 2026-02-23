@@ -92,6 +92,7 @@ switch ($requestMethod) {
             $projet->mesure_id = (int)sanitize_input($_POST['mesure_id'] ?? 0);
             $projet->programme_id = (int)sanitize_input($_POST['programme_id'] ?? null);
             $projet->groupes = sanitize_input($_POST['groupes'] ?? null);
+            $projet->zones = sanitize_input($_POST['zones'] ?? null);
             $projet->add_by = $payload['user_id'] ?? null;
 
             if (empty($projet->code) || empty($projet->name) || empty($projet->structure_id)) {
@@ -129,6 +130,7 @@ switch ($requestMethod) {
             $projet->mesure_id = (int)sanitize_input($_POST['mesure_id'] ?? 0);
             $projet->programme_id = (int)sanitize_input($_POST['programme_id'] ?? null);
             $projet->groupes = sanitize_input($_POST['groupes'] ?? null);
+            $projet->zones = sanitize_input($_POST['zones'] ?? null);
             $projet->add_by = $payload['user_id'] ?? null;
 
             // Get Structure Data
