@@ -532,9 +532,9 @@ function listTypeAction()
 function listClassAction()
 {
     return [
-        'attenuation' => ['badge' => 'badge-phoenix-success'],
-        'adaptation' => ['badge' => 'badge-phoenix-warning'],
-        'transversale' => ['badge' => 'badge-phoenix-secondary']
+        'attenuation' => ['badge' => 'success'],
+        'adaptation' => ['badge' => 'warning'],
+        'transversale' => ['badge' => 'secondary']
     ];
 }
 

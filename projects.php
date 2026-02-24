@@ -399,7 +399,7 @@
                       </span>
                     </td>
                     <td class="text-center">
-                      <span class="badge badge-phoenix fs-10 py-1 <?= listClassAction()[$projet['action_type']]['badge'] ?> rounded-pill">
+                      <span class="badge badge-phoenix fs-10 py-1 badge-phoenix-<?= listClassAction()[$projet['action_type']]['badge'] ?> rounded-pill">
                         <?= htmlspecialchars(listTypeAction()[$projet['action_type']]) ?>
                       </span>
                     </td>
@@ -451,6 +451,45 @@
           </div>
 
           <div id="cardView">
+            <div class="d-flex px-2 justify-content-between border-bottom pb-1 mx-n1">
+              <div class="d-flex gap-2 align-items-center">
+                <?php
+                  $nbre_actif = count(array_filter($projets, function ($projet) {
+                    return $projet['state'] == 'actif';
+                  }));
+
+                  $nbre_attenuation = count(array_filter($projets, function ($projet) {
+                    return $projet['action_type'] == 'attenuation';
+                  }));
+
+                  $nbre_adaptation = count(array_filter($projets, function ($projet) {
+                    return $projet['action_type'] == 'adaptation';
+                  }));
+
+                  $nbre_transversale = count(array_filter($projets, function ($projet) {
+                    return $projet['action_type'] == 'transversale';
+                  }));
+                ?>
+
+                <span class="badge badge-phoenix fs-10 py-1 px-2 badge-phoenix-primary rounded-pill">Total actif : <?= $nbre_actif ?></span>
+                <span class="badge badge-phoenix fs-10 py-1 px-2 badge-phoenix-<?= listClassAction()['attenuation']['badge'] ?> rounded-pill">Total atténuation : <?= $nbre_attenuation ?></span>
+                <span class="badge badge-phoenix fs-10 py-1 px-2 badge-phoenix-<?= listClassAction()['adaptation']['badge'] ?> rounded-pill">Total adaptation : <?= $nbre_adaptation ?></span>
+                <span class="badge badge-phoenix fs-10 py-1 px-2 badge-phoenix-<?= listClassAction()['transversale']['badge'] ?> rounded-pill">Total transversale : <?= $nbre_transversale ?></span>
+              </div>
+
+              <div class="search-box position-relative">
+                <form class="position-relative">
+                  <input
+                    id="searchProjets"
+                    class="form-control form-control-sm ps-5"
+                    type="search"
+                    placeholder="Rechercher un projet..."
+                    aria-label="Search" />
+                  <span class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-primary"></span>
+                </form>
+              </div>
+            </div>
+
             <div class="row g-3 m-0 bg-body-emphasis">
               <?php if (empty($projets)) { ?>
                 <div class="text-center py-5 my-5">
@@ -497,7 +536,7 @@
                   $budget_conventions_formate = $budget_conventions > 0 ? number_format($budget_conventions, 0, ',', ' ') . ' USD' : 'Aucune convention';
                   $montant_depense_formate = $montant_total_depense > 0 ? number_format($montant_total_depense, 0, ',', ' ') . ' USD' : '0 USD';
                 ?>
-                  <div class="col-12 col-lg-6 col-xl-4">
+                  <div class="col-12 col-lg-6 col-xl-4 projet-item">
                     <div class="card card-float border border-primary-subtle h-100 overflow-hidden">
                       <div class="card-body p-3">
                         <div class="d-flex align-items-start mb-2 gap-2">
@@ -520,7 +559,7 @@
                                     if ($secteur['id'] == $projet['secteur_id']) echo $secteur['name'];
                                   } ?>
                                 </span>
-                                <span class="badge badge-phoenix fs-10 py-1 <?= listClassAction()[$projet['action_type']]['badge'] ?> rounded-pill">
+                                <span class="badge badge-phoenix fs-10 py-1 badge-phoenix-<?= listClassAction()[$projet['action_type']]['badge'] ?> rounded-pill">
                                   <?= htmlspecialchars(listTypeAction()[$projet['action_type']]) ?>
                                 </span>
                               </div>

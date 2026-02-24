@@ -101,7 +101,7 @@ if (!empty($projets)) {
                                                         if ($secteur['id'] == $projet['secteur_id']) echo $secteur['name'];
                                                     } ?>
                                                 </span>
-                                                <span class="badge badge-phoenix fs-10 py-1 <?= listClassAction()[$projet['action_type']]['badge'] ?> rounded-pill">
+                                                <span class="badge badge-phoenix fs-10 py-1 badge-phoenix-<?= listClassAction()[$projet['action_type']]['badge'] ?> rounded-pill">
                                                     <?= htmlspecialchars(listTypeAction()[$projet['action_type']]) ?>
                                                 </span>
                                             </div>

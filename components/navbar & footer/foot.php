@@ -72,7 +72,7 @@ foreach (glob("$modalsDir/*.php") as $modalFile) {
 <!-- ===============================================-->
 <script>
   searchFilterData('searchInput', '.navbar-item');
-  searchFilterData('searchProjet', '.projet-item');
+  searchFilterData('searchProjets', '.projet-item');
   searchFilterData('searchDossiers', '.dossier-item');
   searchFilterData('searchProfilTask', '.profile-task');
   searchFilterData('searchNotification', '.notification-card');

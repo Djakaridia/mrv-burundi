@@ -290,7 +290,7 @@
                                         </span>
                                     </td>
                                     <td class="text-center">
-                                        <span class="badge badge-phoenix fs-10 py-1 <?= listClassAction()[$mesure['action_type']]['badge'] ?> rounded-pill">
+                                        <span class="badge badge-phoenix fs-10 py-1 badge-phoenix-<?= listClassAction()[$mesure['action_type']]['badge'] ?> rounded-pill">
                                             <?= htmlspecialchars(listTypeAction()[$mesure['action_type']]) ?>
                                         </span>
                                     </td>
