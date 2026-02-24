@@ -20,7 +20,7 @@ if (!empty($projets)) {
 
 <div class="row mx-0">
     <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex justify-content-between align-items-center mb-3 px-3">
             <h4 class="my-1 fw-black fs-8">
                 Liste des Projets du groupe
             </h4>

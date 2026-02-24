@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row mx-0">
   <div class="col-12">
     <div class="d-flex justify-content-between align-items-center mb-3 px-3">
       <h4 class="my-1 fw-black fs-8">Liste des reunions du groupe</h4>
@@ -13,14 +13,14 @@
       </div>
     </div>
 
-    <div class="row bg-body-emphasis p-3 border-top g-2">
+    <div class="row bg-body-emphasis p-3 border-top">
       <?php if (!empty($reunions)) { ?>
         <?php foreach ($reunions as $reunion) {
           $document = new Documents($db);
           $document->entity_id = $reunion['id'];
           $documents_reunion = $document->readByEntityId();
         ?>
-          <div class="card mb-1 col-lg-4 col-md-6 col-12 shadow-sm hover-actions-trigger rounded" style="border-left: 4px solid <?= $reunion['couleur'] ?>; border-radius: 5px;">
+          <div class="card mb-1 col-lg-4 col-md-6 col-12 m-2 shadow-sm hover-actions-trigger rounded-0" style="border-left: 4px solid <?= $reunion['couleur'] ?>; border-radius: 5px;">
             <div class="card-body p-2 d-flex flex-column flex-md-row justify-content-between align-items-start">
               <div class="flex-grow-1 cursor-pointer" data-bs-toggle="offcanvas" data-bs-target="#meetOffCanvas-<?= $reunion['id'] ?>" aria-controls="offcanvasRight">
                 <div class="btn-link text-decoration-none">
