@@ -221,4 +221,61 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
         border-radius: 6px !important;
         font-weight: 600 !important;
     }
-</style>
+
+    .notification-card {
+      transition: all 0.2s ease-in-out;
+      cursor: pointer;
+    }
+
+    .notification-card:hover {
+      background-color: rgba(var(--bs-primary-rgb), 0.05);
+      transform: translateX(4px);
+    }
+
+    .notification-card.unread {
+      background-color: rgba(var(--bs-primary-rgb), 0.02);
+      border-left: 3px solid var(--bs-primary);
+    }
+
+    .notification-card.read {
+      opacity: 0.9;
+    }
+
+    .notification-card.read h4 {
+      font-weight: 400;
+    }
+
+    .nav-link.active {
+      background-color: rgba(var(--bs-primary-rgb), 0.1);
+      border-right: 3px solid var(--bs-primary);
+    }
+
+    .badge-count {
+      background-color: var(--bs-primary);
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 2rem;
+      font-size: 0.75rem;
+      min-width: 1.5rem;
+      text-align: center;
+    }
+
+    .btn-icon {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .btn-icon:hover {
+      transform: scale(1.1);
+    }
+
+    .simplebar-scrollable-y {
+      max-height: calc(100vh - 200px);
+      overflow-y: auto;
+    }
+  </style>

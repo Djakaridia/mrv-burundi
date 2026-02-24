@@ -162,7 +162,8 @@ switch ($requestMethod) {
             }
 
             if ($projet->create()) {
-                $notifResult = addProjetNotif($db, $projet->name, $projet->structure_id, $payload);
+                $projet->id = $db->lastInsertId();
+                $notifResult = addProjetNotif($db, $projet->name, $projet->id, $projet->structure_id, $payload);
                 $sendmailer->sendAffectStructure($structure_data['email'], $structure_data['sigle'], $projet->name);
 
                 foreach ($users as $user) {

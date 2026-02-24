@@ -3,8 +3,23 @@ $notification = new Notification($db);
 $notification->user_id = $_SESSION['user-data']['user-id'];
 $notifications = $notification->readByUser();
 $notification_unread = array_filter($notifications, function ($notif) {
-    return $notif['is_read'] === false;
+    return $notif['is_read'] == 0;
 });
+
+$notification_unread = array_map(function ($notif) {
+    switch ($notif['entity_type']) {
+        case 'project':
+            $notif['entity_type_URL'] = ($notif['entity_id'] > 0) ? 'project_view.php?id=' . $notif['entity_id'] : 'projects.php';
+            break;
+        case 'group':
+            $notif['entity_type_URL'] = ($notif['entity_id'] > 0) ? 'group_view.php?id=' . $notif['entity_id'] : 'groups.php';
+            break;
+        default:
+            $notif['entity_type_URL'] = '';
+            break;
+    }
+    return $notif;
+}, $notification_unread);
 
 // Projets
 $nav_projet = new Projet($db);
@@ -175,12 +190,13 @@ $nav_resultats = count($nav_projets) + count($nav_groupes) + count($nav_rapports
                 <div class="dropdown-menu dropdown-menu-end notification-dropdown-menu py-0 shadow border navbar-dropdown-caret bg-primary" id="navbarDropdownNotfication" aria-labelledby="navbarDropdownNotfication">
                     <div class="card position-relative border-0">
                         <div class="card-header p-2 bg-primary">
-                            <div class="d-flex justify-content-between">
+                            <div class="d-flex justify-content-between align-items-center">
                                 <h5 class="text-white mb-0">Notifications</h5>
+                                <a class="badge badge-phoenix badge-phoenix-primary py-1 px-2 rounded-pill" href="notifications.php">Historique</a>
                             </div>
                         </div>
                         <div class="card-body p-0">
-                            <div style="height: 25rem;">
+                            <div class="overflow-hidden" style="height: 25rem;">
                                 <?php if (count($notification_unread) === 0) { ?>
                                     <div class="d-flex flex-column align-items-center text-center justify-content-center py-5">
                                         <h4 class="text-body-emphasis mt-5 mb-2">Aucune notification</h4>
@@ -190,13 +206,13 @@ $nav_resultats = count($nav_projets) + count($nav_groupes) + count($nav_rapports
                                     <?php foreach ($notification_unread as $notif) { ?>
                                         <div class="p-2 notification-card position-relative border-bottom unread">
                                             <div class="d-flex align-items-center justify-content-between pe-5">
-                                                <div class="d-flex">
+                                                <a href="<?= $notif['entity_type_URL'] ?>" onclick="markNotificationAsRead(<?php echo $notif['id'] ?>)" class="d-flex text-decoration-none">
                                                     <div class="avatar avatar-xl me-2">
                                                         <span class="<?php echo getNotifyIcon($notif['type']) ?> fs-4 rounded-1 p-2" style="width: 25px; height: 25px;"></span>
                                                     </div>
                                                     <div class="flex-1">
                                                         <h4 class="fs-9 text-body-emphasis"><?php echo $notif['titre'] ?></h4>
-                                                        <p class="text-body-secondary fs-10 mb-0">
+                                                        <p class="text-body-secondary fs-10 my-1">
                                                             <span class="fas fa-calendar"></span>
                                                             <span class="text-body-tertiary text-opacity-85"><?php echo date('d/m/Y', strtotime($notif['created_at'])) ?></span>
                                                             <span class="mx-2">|</span>
@@ -205,7 +221,7 @@ $nav_resultats = count($nav_projets) + count($nav_groupes) + count($nav_rapports
                                                         </p>
                                                         <p class="fs-9 text-body-highlight mb-0 fw-normal text-break text-truncate" style="max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; "><?php echo $notif['message'] ?></p>
                                                     </div>
-                                                </div>
+                                                </a>
 
                                                 <div class="dropdown notification-dropdown position-absolute top-0 end-0">
                                                     <button class="btn btn-sm  dropdown-toggle dropdown-caret-none transition-none" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
@@ -220,9 +236,6 @@ $nav_resultats = count($nav_projets) + count($nav_groupes) + count($nav_rapports
                                 <?php }
                                 } ?>
                             </div>
-                        </div>
-                        <div class="card-footer p-0 border-top border-translucent border-0">
-                            <div class="my-2 text-center fw-bold fs-10 text-body-tertiary text-opactity-85"><a class="fw-bolder" href="notifications.php">Historique des notifications</a></div>
                         </div>
                     </div>
                 </div>

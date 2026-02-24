@@ -58,7 +58,7 @@ function addReunionNotif($db, $name_reunion, $groupe_id, $payload)
     return $response;
 }
 
-function addProjetNotif($db, $name_projet, $structure_id, $payload)
+function addProjetNotif($db, $name_projet, $projet_id, $structure_id, $payload)
 {
     $response = ['success' => false, 'errors' => []];
 
@@ -84,7 +84,7 @@ function addProjetNotif($db, $name_projet, $structure_id, $payload)
                 $notification->message = $name_projet . " a été ajouté pour la structure " . $data_structure['sigle'];
                 $notification->type = "info";
                 $notification->entity_type = "project";
-                $notification->entity_id = null;
+                $notification->entity_id = $projet_id;
                 $notification->user_id = $user['id'];
                 $notification->add_by = $payload['user_id'];
                 $notification->create();

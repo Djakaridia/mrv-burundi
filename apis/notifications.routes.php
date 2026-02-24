@@ -56,84 +56,72 @@ switch ($requestMethod) {
     case 'POST':
         $id = isset($_GET['id']) ? sanitize_input($_GET['id']) : null;
         $action = isset($_GET['action']) ? sanitize_input($_GET['action']) : null;
+        $entity = isset($_GET['entity']) ? sanitize_input($_GET['entity']) : null;
+        $ids = isset($_GET['ids']) ? sanitize_input($_GET['ids']) : null;
 
-        if ($id) {
-            if ($action === 'read') {
-                $notification->id = $id;
-                if ($notification->markAsRead()) {
-                    echo json_encode(array('status' => 'success', 'message' => 'Notification marquée comme lue.'));
-                } else {
-                    echo json_encode(array('status' => 'danger', 'message' => 'Erreur lors de la marquage de la notification comme lue.'));
-                }
-            } elseif ($action === 'star') {
-                $notification->id = $id;
-                if ($notification->markAsStarred(1)) {
-                    echo json_encode(array('status' => 'success', 'message' => 'Notification marquée comme favori.'));
-                } else {
-                    echo json_encode(array('status' => 'danger', 'message' => 'Erreur lors de la marquage de la notification comme favori.'));
-                }
-            } elseif ($action === 'unstar') {
-                $notification->id = $id;
-                if ($notification->markAsStarred(0)) {
-                    echo json_encode(array('status' => 'success', 'message' => 'Notification marquée comme non favori.'));
-                } else {
-                    echo json_encode(array('status' => 'danger', 'message' => 'Erreur lors de la marquage de la notification comme non favori.'));
-                }
-            } elseif ($action === 'archive') {
-                $notification->id = $id;
-                if ($notification->markAsArchived(1)) {
-                    echo json_encode(array('status' => 'success', 'message' => 'Notification archivée.'));
-                } else {
-                    echo json_encode(array('status' => 'danger', 'message' => 'Erreur lors de l\'archivage de la notification.'));
-                }
-            } elseif ($action === 'unarchive') {
-                $notification->id = $id;
-                if ($notification->markAsArchived(0)) {
-                    echo json_encode(array('status' => 'success', 'message' => 'Notification déarchivée.'));
-                } else {
-                    echo json_encode(array('status' => 'danger', 'message' => 'Erreur lors de la déarchivage de la notification.'));
-                }
-            }
-
-            // $notification->id = $id;
-            // $notification->titre = sanitize_input($_POST['titre']);
-            // $notification->message = $_POST['message'];
-            // $notification->type = sanitize_input($_POST['type']);
-            // $notification->entity_type = sanitize_input($_POST['entity_type'] ?? "");
-            // $notification->entity_id = sanitize_input($_POST['entity_id'] ?? "");
-            // $notification->user_id = sanitize_input($_POST['user_id'] ?? "");
-            // $notification->add_by = sanitize_input($payload['user_id']);
-
-            // if (empty($notification->titre) || empty($notification->message)) {
-            //     echo json_encode(array('status' => 'warning', 'message' => 'Veuillez remplir tous les champs !!!'));
-            //     exit();
-            // }
-
-            // if ($notification->update()) {
-            //     echo json_encode(array('status' => 'success', 'message' => 'Notification modifiée avec succès.'));
-            // } else {
-            //     echo json_encode(array('status' => 'danger', 'message' => 'Erreur lors de la modification de la notification.'));
-            // }
+        if ($id == 'all') {
+            $notification->markAsMultiple($action, $payload['user_id'], $entity, $ids);
+            echo json_encode(array('status' => 'success', 'message' => 'Notifications marquées comme ' . $action . ' avec succès.' . ' ' . $ids . ' notifications marquées.'));
         } else {
-            $notification->titre = sanitize_input($_POST['titre']);
-            $notification->message = $_POST['message'];
-            $notification->type = sanitize_input($_POST['type']);
-            $notification->entity_type = sanitize_input($_POST['entity_type'] ?? "");
-            $notification->entity_id = sanitize_input($_POST['entity_id'] ?? "");
-            $notification->user_id = sanitize_input($_POST['user_id'] ?? "");
-            $notification->add_by = sanitize_input($payload['user_id']);
-
-            if (empty($notification->titre) || empty($notification->message)) {
-                echo json_encode(array('status' => 'warning', 'message' => 'Veuillez remplir tous les champs !!!'));
-                exit();
-            }
-
-            if ($notification->create()) {
-                echo json_encode(array('status' => 'success', 'message' => 'Notification créée avec succès.'));
+            if ($id) {
+                if ($action === 'read') {
+                    $notification->id = $id;
+                    if ($notification->markAsRead()) {
+                        echo json_encode(array('status' => 'success', 'message' => 'Notification marquée comme lue.'));
+                    } else {
+                        echo json_encode(array('status' => 'danger', 'message' => 'Erreur lors de la marquage de la notification comme lue.'));
+                    }
+                } elseif ($action === 'star') {
+                    $notification->id = $id;
+                    if ($notification->markAsStarred(1)) {
+                        echo json_encode(array('status' => 'success', 'message' => 'Notification marquée comme favori.'));
+                    } else {
+                        echo json_encode(array('status' => 'danger', 'message' => 'Erreur lors de la marquage de la notification comme favori.'));
+                    }
+                } elseif ($action === 'unstar') {
+                    $notification->id = $id;
+                    if ($notification->markAsStarred(0)) {
+                        echo json_encode(array('status' => 'success', 'message' => 'Notification marquée comme non favori.'));
+                    } else {
+                        echo json_encode(array('status' => 'danger', 'message' => 'Erreur lors de la marquage de la notification comme non favori.'));
+                    }
+                } elseif ($action === 'archive') {
+                    $notification->id = $id;
+                    if ($notification->markAsArchived(1)) {
+                        echo json_encode(array('status' => 'success', 'message' => 'Notification archivée.'));
+                    } else {
+                        echo json_encode(array('status' => 'danger', 'message' => 'Erreur lors de l\'archivage de la notification.'));
+                    }
+                } elseif ($action === 'unarchive') {
+                    $notification->id = $id;
+                    if ($notification->markAsArchived(0)) {
+                        echo json_encode(array('status' => 'success', 'message' => 'Notification déarchivée.'));
+                    } else {
+                        echo json_encode(array('status' => 'danger', 'message' => 'Erreur lors de la déarchivage de la notification.'));
+                    }
+                }
             } else {
-                echo json_encode(array('status' => 'danger', 'message' => 'Erreur lors de la création de la notification.'));
+                $notification->titre = sanitize_input($_POST['titre']);
+                $notification->message = $_POST['message'];
+                $notification->type = sanitize_input($_POST['type']);
+                $notification->entity_type = sanitize_input($_POST['entity_type'] ?? "");
+                $notification->entity_id = sanitize_input($_POST['entity_id'] ?? "");
+                $notification->user_id = sanitize_input($_POST['user_id'] ?? "");
+                $notification->add_by = sanitize_input($payload['user_id']);
+
+                if (empty($notification->titre) || empty($notification->message)) {
+                    echo json_encode(array('status' => 'warning', 'message' => 'Veuillez remplir tous les champs !!!'));
+                    exit();
+                }
+
+                if ($notification->create()) {
+                    echo json_encode(array('status' => 'success', 'message' => 'Notification créée avec succès.'));
+                } else {
+                    echo json_encode(array('status' => 'danger', 'message' => 'Erreur lors de la création de la notification.'));
+                }
             }
         }
+
         break;
 
     case 'DELETE':
