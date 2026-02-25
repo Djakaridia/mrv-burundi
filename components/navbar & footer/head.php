@@ -40,15 +40,6 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
 <link rel="manifest" href="assets/favicon/manifest.json" />
 <meta name="theme-color" content="#ffffff" />
 
-<script src="vendors/simplebar/simplebar.min.js"></script>
-<script src="assets/js/config.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/data.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
-<script src="https://code.highcharts.com/modules/export-data.js"></script>
-<script src="https://code.highcharts.com/modules/accessibility.js"></script>
-
 <!-- ===============================================-->
 <!--    Stylesheets-->
 <!-- ===============================================-->
@@ -56,6 +47,11 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
 <link href="vendors/flatpickr/flatpickr.min.css" rel="stylesheet">
 <link href="vendors/choices/choices.min.css" rel="stylesheet">
 <link href="vendors/prism/prism-okaidia.css" rel="stylesheet">
+
+<link href="vendors/leaflet/leaflet.css" rel="stylesheet" />
+<link href="vendors/leaflet.markercluster/MarkerCluster.css" rel="stylesheet" />
+<link href="vendors/leaflet.markercluster/MarkerCluster.Default.css" rel="stylesheet" />
+<link href="vendors/dropzone/dropzone.css" rel="stylesheet">
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
@@ -81,7 +77,30 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
 <link href="assets/css/user.min.css" type="text/css" rel="stylesheet" id="user-style-default" />
 <link href="assets/unicons/css/line.css" rel="stylesheet" />
 
+<script src="vendors/simplebar/simplebar.min.js"></script>
+<script src="assets/js/config.js"></script>
+
+<script src="assets/highcharts/highcharts.js"></script>
+<script src="assets/highcharts/modules/data.js"></script>
+<script src="assets/highcharts/modules/data.src.js"></script>
+<script src="assets/highcharts/modules/exporting.js"></script>
+<script src="assets/highcharts/modules/exporting.src.js"></script>
+<script src="assets/highcharts/modules/accessibility.js"></script>
+<script src="assets/highcharts/modules/accessibility.src.js"></script>
+<script src="assets/highcharts/modules/export-data.js"></script>
+<script src="assets/highcharts/modules/export-data.src.js"></script>
+<script src="assets/highcharts/modules/offline-exporting.js"></script>
+<script src="assets/highcharts/modules/offline-exporting.src.js"></script>
+
+<!-- <script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script> -->
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <script>
     var phoenixIsRTL = window.config.config.phoenixIsRTL;
     const token = localStorage.getItem('authtkmrv');
@@ -103,12 +122,6 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
         userLinkRTL.setAttribute("disabled", true);
     }
 </script>
-
-<link href="vendors/leaflet/leaflet.css" rel="stylesheet" />
-<link href="vendors/leaflet.markercluster/MarkerCluster.css" rel="stylesheet" />
-<link href="vendors/leaflet.markercluster/MarkerCluster.Default.css" rel="stylesheet" />
-<link href="vendors/dropzone/dropzone.css" rel="stylesheet">
-
 
 <style>
     :root {
@@ -212,6 +225,7 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
     #sidebarDefault .nav-item-wrapper:hover .nav-link-icon {
         color: var(--bd-green-dark) !important;
     }
+
     .select2-selection--single,
     .select2-selection--multiple {
         min-height: 37px !important;
@@ -223,59 +237,59 @@ foreach (glob("$modelsDir/*.php") as $modelFile) {
     }
 
     .notification-card {
-      transition: all 0.2s ease-in-out;
-      cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        cursor: pointer;
     }
 
     .notification-card:hover {
-      background-color: rgba(var(--bs-primary-rgb), 0.05);
-      transform: translateX(4px);
+        background-color: rgba(var(--bs-primary-rgb), 0.05);
+        transform: translateX(4px);
     }
 
     .notification-card.unread {
-      background-color: rgba(var(--bs-primary-rgb), 0.02);
-      border-left: 3px solid var(--bs-primary);
+        background-color: rgba(var(--bs-primary-rgb), 0.02);
+        border-left: 3px solid var(--bs-primary);
     }
 
     .notification-card.read {
-      opacity: 0.9;
+        opacity: 0.9;
     }
 
     .notification-card.read h4 {
-      font-weight: 400;
+        font-weight: 400;
     }
 
     .nav-link.active {
-      background-color: rgba(var(--bs-primary-rgb), 0.1);
-      border-right: 3px solid var(--bs-primary);
+        background-color: rgba(var(--bs-primary-rgb), 0.1);
+        border-right: 3px solid var(--bs-primary);
     }
 
     .badge-count {
-      background-color: var(--bs-primary);
-      color: white;
-      padding: 0.25rem 0.5rem;
-      border-radius: 2rem;
-      font-size: 0.75rem;
-      min-width: 1.5rem;
-      text-align: center;
+        background-color: var(--bs-primary);
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 2rem;
+        font-size: 0.75rem;
+        min-width: 1.5rem;
+        text-align: center;
     }
 
     .btn-icon {
-      width: 32px;
-      height: 32px;
-      padding: 0;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
     }
 
     .btn-icon:hover {
-      transform: scale(1.1);
+        transform: scale(1.1);
     }
 
     .simplebar-scrollable-y {
-      max-height: calc(100vh - 200px);
-      overflow-y: auto;
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
     }
-  </style>
+</style>

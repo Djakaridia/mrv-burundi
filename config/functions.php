@@ -669,16 +669,7 @@ function listMois()
 
 function listCouleur()
 {
-    return [
-        'Primaire' => 'primary',
-        'Secondaire' => 'secondary',
-        'Succès' => 'success',
-        'Danger' => 'danger',
-        'Avertissement' => 'warning',
-        'Information' => 'info',
-        'Clair' => 'light',
-        'Sombre' => 'dark',
-    ];
+    return ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'];
 }
 
 function listModeleTypologie()

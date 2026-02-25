@@ -59,8 +59,8 @@
                                 <label for="couleur" class="form-label">Couleur</label>
                                 <input type="hidden" id="couleur" name="couleur" required>
                                 <div class="d-flex flex-wrap gap-3 mb-2">
-                                    <?php foreach (listCouleur() as $key => $value) { ?>
-                                        <div key="<?= $key ?>" title="<?= $key ?>" class="card bg-<?= $value ?> text-white text-center cursor-pointer color-dash-card rounded-1" data-color="<?= $value ?>" style="width: 50px; height: 30px;"></div>
+                                    <?php foreach (listCouleur() as $value) { ?>
+                                        <div key="<?= $value ?>" title="<?= $value ?>" class="card bg-<?= $value ?> text-white text-center cursor-pointer color-dash-card rounded-1" data-color="<?= $value ?>" style="width: 50px; height: 30px;"></div>
                                     <?php } ?>
                                 </div>
                             </div>
