@@ -83,7 +83,7 @@
     </div>
     <div class="todo-list mx-n3 bg-body-emphasis border-top border-bottom border-translucent position-relative mb-3">
         <div class="table-responsive p-1">
-            <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="conventions-table">
+            <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable1">
                 <thead class="bg-primary-subtle">
                     <tr>
                         <th class="sort align-middle">Code</th>
@@ -215,9 +215,9 @@
                     <h6 class="mb-0"><i class="fas fa-tasks me-2"></i>Détail des activités</h6>
                     <span class="badge bg-info-subtle text-info"><?php echo count($taches_project); ?> activités</span>
                 </div>
-                <div class="card-body p-0">
+                <div class="card-body p-2">
                     <div class="table-responsive">
-                        <table class="table table-bordered fs-9 table-hover mb-0 border-translucent" id="activites-decaisse-table">
+                        <table class="table table-bordered fs-9 table-hover mb-0 border-translucent" id="id-datatable2">
                             <thead class="bg-primary-subtle">
                                 <tr>
                                     <th class="align-middle" width="5%">Code</th>
@@ -297,9 +297,9 @@
                     <h6 class="mb-0"><i class="fas fa-tasks me-2"></i>Détail des bailleurs</h6>
                     <span class="badge bg-info-subtle text-info"><?php echo count($conventions_project); ?> bailleurs</span>
                 </div>
-                <div class="card-body p-0">
+                <div class="card-body p-2">
                     <div class="table-responsive">
-                        <table class="table table-bordered fs-9 table-hover mb-0 border-translucent" id="convention-decaisse-table">
+                        <table class="table table-bordered fs-9 table-hover mb-0 border-translucent" id="id-datatable3">
                             <thead class="bg-primary-subtle">
                                 <tr>
                                     <th class="sort align-middle">Code</th>

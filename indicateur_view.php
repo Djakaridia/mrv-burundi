@@ -307,60 +307,62 @@
                                                                 <div class="card-header d-flex justify-content-between align-items-center rounded-0 py-2 px-2">
                                                                     <h5 class="mb-0">Données désagrégées</h5>
                                                                 </div>
-                                                                <table class="table table-sm table-hover table-striped fs-9 table-bordered border-emphasis">
-                                                                    <thead class="bg-primary-subtle">
-                                                                        <tr>
-                                                                            <?php if (!empty($ref_curr['echelle']) && $ref_curr['echelle'] !== 'nationale') : ?>
-                                                                                <th scope="col" class="px-2 text-capitalize">
-                                                                                    <?php if ($ref_curr['echelle'] == 'provincial') : ?>
-                                                                                        Province
-                                                                                    <?php elseif (is_numeric($ref_curr['echelle'])) : ?>
-                                                                                        <?php foreach ($zone_types as $type) : ?>
-                                                                                            <?php if ($type['id'] == $ref_curr['echelle']) : ?>
-                                                                                                <?= $type['name'] ?>
-                                                                                            <?php endif; ?>
-                                                                                        <?php endforeach; ?>
-                                                                                    <?php endif; ?>
-                                                                                </th>
-                                                                            <?php endif; ?>
-                                                                            <?php if (!empty($ref_curr['modele']) && $ref_curr['modele'] !== "valeur_absolue") : ?>
-                                                                                <th scope="col" class="px-2">Classe</th>
-                                                                            <?php endif; ?>
-                                                                            <th scope="col" class="px-2">Scénario</th>
-                                                                            <th scope="col" class="px-2">Valeur</th>
-                                                                            <th scope="col" class="px-2">Date suivie</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <?php foreach ($suivis_par_annee as $suivi): ?>
-                                                                            <tr class="align-middle">
+                                                                <div class="card-body p-2">
+                                                                    <table class="table table-sm table-hover table-striped fs-9 table-bordered border-emphasis" id="id-datatable2">
+                                                                        <thead class="bg-primary-subtle">
+                                                                            <tr>
                                                                                 <?php if (!empty($ref_curr['echelle']) && $ref_curr['echelle'] !== 'nationale') : ?>
-                                                                                    <td class="px-2 text-capitalize">
+                                                                                    <th scope="col" class="px-2 text-capitalize">
                                                                                         <?php if ($ref_curr['echelle'] == 'provincial') : ?>
-                                                                                            <?php foreach ($provinces as $province) : ?>
-                                                                                                <?php if ($province['code'] == $suivi['echelle']) : ?>
-                                                                                                    <?= $province['name'] ?>
-                                                                                                <?php endif; ?>
-                                                                                            <?php endforeach; ?>
+                                                                                            Province
                                                                                         <?php elseif (is_numeric($ref_curr['echelle'])) : ?>
-                                                                                            <?php foreach ($zones as $zone) : ?>
-                                                                                                <?php if ($zone['name'] == $suivi['echelle']) : ?>
-                                                                                                    <?= $zone['name'] ?>
+                                                                                            <?php foreach ($zone_types as $type) : ?>
+                                                                                                <?php if ($type['id'] == $ref_curr['echelle']) : ?>
+                                                                                                    <?= $type['name'] ?>
                                                                                                 <?php endif; ?>
                                                                                             <?php endforeach; ?>
                                                                                         <?php endif; ?>
-                                                                                    </td>
+                                                                                    </th>
                                                                                 <?php endif; ?>
                                                                                 <?php if (!empty($ref_curr['modele']) && $ref_curr['modele'] !== "valeur_absolue") : ?>
-                                                                                    <td class="px-2"><?= $suivi['classe'] ?></td>
+                                                                                    <th scope="col" class="px-2">Classe</th>
                                                                                 <?php endif; ?>
-                                                                                <td class="px-2"><?= isset(listTypeScenario()[$suivi['scenario']]) ? listTypeScenario()[$suivi['scenario']] : 'N/A' ?></td>
-                                                                                <td class="px-2"><?= $suivi['valeur'] ?></td>
-                                                                                <td class="px-2"><?= $suivi['date_suivie'] ?></td>
+                                                                                <th scope="col" class="px-2">Scénario</th>
+                                                                                <th scope="col" class="px-2">Valeur</th>
+                                                                                <th scope="col" class="px-2">Date suivie</th>
                                                                             </tr>
-                                                                        <?php endforeach; ?>
-                                                                    </tbody>
-                                                                </table>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <?php foreach ($suivis_par_annee as $suivi): ?>
+                                                                                <tr class="align-middle">
+                                                                                    <?php if (!empty($ref_curr['echelle']) && $ref_curr['echelle'] !== 'nationale') : ?>
+                                                                                        <td class="px-2 text-capitalize">
+                                                                                            <?php if ($ref_curr['echelle'] == 'provincial') : ?>
+                                                                                                <?php foreach ($provinces as $province) : ?>
+                                                                                                    <?php if ($province['code'] == $suivi['echelle']) : ?>
+                                                                                                        <?= $province['name'] ?>
+                                                                                                    <?php endif; ?>
+                                                                                                <?php endforeach; ?>
+                                                                                            <?php elseif (is_numeric($ref_curr['echelle'])) : ?>
+                                                                                                <?php foreach ($zones as $zone) : ?>
+                                                                                                    <?php if ($zone['name'] == $suivi['echelle']) : ?>
+                                                                                                        <?= $zone['name'] ?>
+                                                                                                    <?php endif; ?>
+                                                                                                <?php endforeach; ?>
+                                                                                            <?php endif; ?>
+                                                                                        </td>
+                                                                                    <?php endif; ?>
+                                                                                    <?php if (!empty($ref_curr['modele']) && $ref_curr['modele'] !== "valeur_absolue") : ?>
+                                                                                        <td class="px-2"><?= $suivi['classe'] ?></td>
+                                                                                    <?php endif; ?>
+                                                                                    <td class="px-2"><?= isset(listTypeScenario()[$suivi['scenario']]) ? listTypeScenario()[$suivi['scenario']] : 'N/A' ?></td>
+                                                                                    <td class="px-2"><?= $suivi['valeur'] ?></td>
+                                                                                    <td class="px-2"><?= $suivi['date_suivie'] ?></td>
+                                                                                </tr>
+                                                                            <?php endforeach; ?>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
                                                             </div>
                                                         </div>
 

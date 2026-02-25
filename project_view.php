@@ -13,12 +13,6 @@
 
   <?php
   $project_id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
-  $tab = isset($_GET['tab']) ? $_GET['tab'] : 'view';
-
-  if (!in_array($tab, ['view', 'factor', 'task', 'indicator', 'finance', 'synthese'])) {
-    $tab = 'view';
-  }
-
   if ($project_id <= 0) {
     header("Location: projects.php");
     exit();
@@ -357,33 +351,33 @@
 
       <div class="mx-n4 mx-lg-n6 bg-body-emphasis border-top">
         <ul class="nav nav-underline fs-9 px-3" id="projetTab" role="tablist">
-          <li class="nav-item" role="presentation">
-            <a class="nav-link rounded-0 <?php echo $tab == 'view' ? 'active' : ''; ?>" id="view-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=view'; ?>">
+          <li class="nav-item">
+            <a class="nav-link rounded-0 active" id="view-tab" data-bs-toggle="tab" href="#tab-view" role="tab" aria-controls="tab-view" aria-selected="true">
               <i class="uil uil-estate me-1"></i>Général
             </a>
           </li>
-          <li class="nav-item" role="presentation">
-            <a class="nav-link rounded-0 <?php echo $tab == 'finance' ? 'active' : ''; ?>" id="finance-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=finance'; ?>">
+          <li class="nav-item">
+            <a class="nav-link rounded-0" id="finance-tab" data-bs-toggle="tab" href="#tab-finance" role="tab" aria-controls="tab-finance" aria-selected="true">
               <i class="uil uil-usd-circle me-1"></i>Soutiens <span class="badge bg-primary-subtle text-primary"><?php echo count($conventions_project); ?></span>
             </a>
           </li>
-          <li class="nav-item" role="presentation">
-            <a class="nav-link rounded-0 <?php echo $tab == 'factor' ? 'active' : ''; ?>" id="factor-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=factor'; ?>">
+          <li class="nav-item">
+            <a class="nav-link rounded-0" id="factor-tab" data-bs-toggle="tab" href="#tab-factor" role="tab" aria-controls="tab-factor" aria-selected="true">
               <i class="uil uil-cloud me-1"></i>Facteurs <span class="badge bg-primary-subtle text-primary"><?php echo count($facteurs_project); ?></span>
             </a>
           </li>
-          <li class="nav-item" role="presentation">
-            <a class="nav-link rounded-0 <?php echo $tab == 'indicator' ? 'active' : ''; ?>" id="indicator-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=indicator'; ?>">
+          <li class="nav-item">
+            <a class="nav-link rounded-0" id="indicator-tab" data-bs-toggle="tab" href="#tab-indicator" role="tab" aria-controls="tab-indicator" aria-selected="true">
               <i class="uil uil-chart-line me-1"></i>Indicateurs <span class="badge bg-primary-subtle text-primary"><?php echo count($indicateurs_project); ?></span>
             </a>
           </li>
-          <li class="nav-item" role="presentation">
-            <a class="nav-link rounded-0 <?php echo $tab == 'task' ? 'active' : ''; ?>" id="task-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=task'; ?>">
+          <li class="nav-item">
+            <a class="nav-link rounded-0" id="task-tab" data-bs-toggle="tab" href="#tab-task" role="tab" aria-controls="tab-task" aria-selected="true">
               <i class="uil uil-clipboard-notes me-1"></i>Activités <span class="badge bg-primary-subtle text-primary"><?php echo count($taches_actives); ?></span>
             </a>
           </li>
-          <li class="nav-item" role="presentation">
-            <a class="nav-link rounded-0 <?php echo $tab == 'synthese' ? 'active' : ''; ?>" id="synthese-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=synthese'; ?>">
+          <li class="nav-item">
+            <a class="nav-link rounded-0" id="synthese-tab" data-bs-toggle="tab" href="#tab-synthese" role="tab" aria-controls="tab-synthese" aria-selected="true">
               <i class="uil uil-file-bookmark-alt me-1"></i>Synthèse
             </a>
           </li>
@@ -392,27 +386,27 @@
 
       <div class="mx-n4 mx-lg-n6 px-2 px-lg-3 bg-body-emphasis border">
         <div class="tab-content mt-2" id="projetTabContent">
-          <div class="tab-pane fade <?php echo $tab == 'view' ? 'active show' : ''; ?>" id="tab-view" role="tabpanel" aria-labelledby="view-tab">
+          <div class="tab-pane fade active show" id="tab-view" role="tabpanel" aria-labelledby="view-tab">
             <?php include './components/tabs/tab_proj_home.php'; ?>
           </div>
 
-          <div class="tab-pane fade <?php echo $tab == 'finance' ? 'active show' : ''; ?>" id="tab-finance" role="tabpanel" aria-labelledby="finance-tab">
+          <div class="tab-pane fade" id="tab-finance" role="tabpanel" aria-labelledby="finance-tab">
             <?php include './components/tabs/tab_proj_finance.php'; ?>
           </div>
 
-          <div class="tab-pane fade <?php echo $tab == 'factor' ? 'active show' : ''; ?>" id="tab-factor" role="tabpanel" aria-labelledby="factor-tab">
+          <div class="tab-pane fade" id="tab-factor" role="tabpanel" aria-labelledby="factor-tab">
             <?php include './components/tabs/tab_proj_factor.php'; ?>
           </div>
 
-          <div class="tab-pane fade <?php echo $tab == 'indicator' ? 'active show' : ''; ?>" id="tab-indicator" role="tabpanel" aria-labelledby="indicator-tab">
+          <div class="tab-pane fade" id="tab-indicator" role="tabpanel" aria-labelledby="indicator-tab">
             <?php include './components/tabs/tab_proj_indic.php'; ?>
           </div>
 
-          <div class="tab-pane fade <?php echo $tab == 'task' ? 'active show' : ''; ?>" id="tab-task" role="tabpanel" aria-labelledby="task-tab">
+          <div class="tab-pane fade" id="tab-task" role="tabpanel" aria-labelledby="task-tab">
             <?php include './components/tabs/tab_proj_task.php'; ?>
           </div>
 
-          <div class="tab-pane fade <?php echo $tab == 'synthese' ? 'active show' : ''; ?>" id="tab-synthese" role="tabpanel" aria-labelledby="synthese-tab">
+          <div class="tab-pane fade" id="tab-synthese" role="tabpanel" aria-labelledby="synthese-tab">
             <?php include './components/tabs/tab_proj_synthese.php'; ?>
           </div>
         </div>

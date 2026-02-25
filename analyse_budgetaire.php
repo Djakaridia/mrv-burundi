@@ -14,9 +14,6 @@
     <?php
     include './components/navbar & footer/head.php';
 
-    $tab = isset($_GET['tab']) ? $_GET['tab'] : 'decaisse';
-    if (!in_array($tab, ['decaisse', 'actor', 'activity'])) $tab = 'decaisse';
-
     // Secteurs
     $secteur = new Secteur($db);
     $secteurs = $secteur->read();
@@ -283,21 +280,21 @@
             <div class="mx-n4 px-3 mx-lg-n6 bg-body-emphasis border-top">
                 <div class="card-body d-lg-flex flex-row justify-content-between align-items-center g-3">
                     <ul class="nav nav-underline fs-9" id="myTab" role="tablist">
-                        <li class="nav-item" role="tab">
-                            <a class="nav-link <?php echo $tab == 'decaisse' ? 'active' : ''; ?>"
-                                id="decaisse-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?tab=decaisse'; ?>">
+                        <li class="nav-item">
+                            <a class="nav-link active"
+                                id="decaisse-tab" data-bs-toggle="tab" href="#tab-decaisse" role="tab" aria-controls="decaisse-tab" aria-selected="true">
                                 <i class="fas fa-chart-line me-1"></i> Évolution des décaissements
                             </a>
                         </li>
-                        <li class="nav-item" role="tab">
-                            <a class="nav-link <?php echo $tab == 'actor' ? 'active' : ''; ?>"
-                                id="actor-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?tab=actor'; ?>">
+                        <li class="nav-item">
+                            <a class="nav-link"
+                                id="actor-tab" data-bs-toggle="tab" href="#tab-actor" role="tab" aria-controls="actor-tab" aria-selected="true">
                                 <i class="fas fa-building me-1"></i> Analyse par bailleur
                             </a>
                         </li>
-                        <li class="nav-item" role="tab">
-                            <a class="nav-link <?php echo $tab == 'activity' ? 'active' : ''; ?>"
-                                id="activity-tab" href="<?php echo $_SERVER['PHP_SELF'] . '?tab=activity'; ?>">
+                        <li class="nav-item">
+                            <a class="nav-link"
+                                id="activity-tab" data-bs-toggle="tab" href="#tab-activity" role="tab" aria-controls="activity-tab" aria-selected="true">
                                 <i class="fas fa-tasks me-1"></i> Analyse par activité
                             </a>
                         </li>
@@ -306,410 +303,16 @@
             </div>
 
             <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade <?php echo $tab == 'decaisse' ? 'active show' : ''; ?>" id="tab-decaisse" role="tabpanel" aria-labelledby="decaisse-tab">
-                    <div class="mx-n4 p-3 mx-lg-n6 bg-body-emphasis border-y">
-                        <div class="row g-3">
-                            <div class="col-lg-7">
-                                <div class="card shadow-sm rounded-1 h-100">
-                                    <div class="card-header bg-light py-2">
-                                        <h5 class="mb-0">
-                                            <i class="fas fa-chart-line me-2 text-primary"></i>
-                                            Évolution mensuelle des décaissements
-                                        </h5>
-                                    </div>
-                                    <div class="card-body p-0">
-                                        <?php if (!empty($timeline_labels)): ?>
-                                            <div class="chart-container">
-                                                <div class="card-body p-2" id="timelineMultiChart" style="min-height: 350px;"></div>
-                                            </div>
-                                        <?php else: ?>
-                                            <div class="text-center py-5">
-                                                <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
-                                                <p class="text-muted">Aucune donnée de décaissement disponible</p>
-                                            </div>
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-5">
-                                <div class="card shadow-sm rounded-1 h-100">
-                                    <div class="card-header bg-light py-2">
-                                        <h5 class="mb-0">
-                                            <i class="fas fa-chart-pie me-2 text-primary"></i>
-                                            Répartition des financements par convention
-                                        </h5>
-                                    </div>
-                                    <div class="card-body p-0">
-                                        <?php if (!empty($conventions)): ?>
-                                            <div class="chart-container">
-                                                <div class="card-body p-2" id="chartFinanceConvention" style="min-height: 350px;"></div>
-                                            </div>
-                                            <div class="mt-3 border-top">
-                                                <h6 class="text-muted m-3">Détail par convention</h6>
-                                                <div class="px-3" style="max-height: 300px; overflow-y: auto;">
-                                                    <?php
-                                                    $top_conventions = array_slice($conventions, 0, 5);
-                                                    foreach ($top_conventions as $index => $conv):
-                                                        $pourcentage = $total_conventions > 0 ? round(($conv['montant'] / $total_conventions) * 100, 1) : 0;
-                                                    ?>
-                                                        <div class="d-flex align-items-center justify-content-between fs-9 mb-2">
-                                                            <span class="dot p-1 bg-<?php echo listCouleur()[$index % count(listCouleur())]; ?> me-2"></span>
-                                                            <div class="flex-grow-1">
-                                                                <div class="d-flex justify-content-between">
-                                                                    <?php echo $conv['name']; ?>
-                                                                    <span class="fw-semibold"><?php echo $pourcentage; ?>%</span>
-                                                                </div>
-                                                                <small class="text-muted"><?php echo $conv['montant']; ?> USD</small>
-                                                            </div>
-                                                        </div>
-                                                    <?php endforeach; ?>
-                                                </div>
-                                            </div>
-                                        <?php else: ?>
-                                            <div class="text-center py-4">
-                                                <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
-                                                <p class="text-muted">Aucune convention</p>
-                                            </div>
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="tab-pane fade active show" id="tab-decaisse" role="tabpanel" aria-labelledby="decaisse-tab">
+                    <?php include './components/tabs/tab_finance_decaisse.php'; ?>
                 </div>
 
-                <div class="tab-pane fade <?php echo $tab == 'actor' ? 'active show' : ''; ?>" id="tab-actor" role="tabpanel" aria-labelledby="actor-tab">
-                    <div class="mx-n4 p-1 mx-lg-n6 bg-body-emphasis border-y">
-                        <div class="row mx-0 g-3">
-                            <div class="col-lg-7">
-                                <div class="card shadow-sm rounded-1">
-                                    <div class="card-header bg-light py-2 d-flex justify-content-between align-items-center">
-                                        <h5 class="mb-0">
-                                            <i class="fas fa-table me-2 text-primary"></i>
-                                            Détail des conventions par bailleur
-                                        </h5>
-                                        <span class="badge bg-primary"><?php echo count($conventions); ?> conventions</span>
-                                    </div>
-                                    <div class="card-body p-0">
-                                        <div class="table-responsive" style="min-height: 432px;">
-                                            <table class="table small table-bordered fs-9 table-hover mb-0" id="id-datatable1">
-                                                <thead class="bg-primary-subtle">
-                                                    <tr>
-                                                        <th class="align-middle">Code</th>
-                                                        <th class="align-middle">Convention</th>
-                                                        <th class="align-middle">Bailleur</th>
-                                                        <th class="align-middle text-end text-nowrap">Prévu (USD)</th>
-                                                        <th class="align-middle text-end text-nowrap">Décaissé (USD)</th>
-                                                        <th class="align-middle text-center">Taux</th>
-                                                        <th class="align-middle text-center">Statut</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody class="list">
-                                                    <?php foreach ($conventions as $convention):
-                                                        $montant_prev = floatval($convention['montant'] ?? 0);
-                                                        $montant_decaisse = $decaisse_par_convention[$convention['id']] ?? 0;
-                                                        $taux = $montant_prev > 0 ? round(($montant_decaisse / $montant_prev) * 100, 1) : 0;
-
-                                                        $now = time();
-                                                        $date_fin = strtotime($convention['date_fin'] ?? '');
-                                                        if ($date_fin && $now > $date_fin) {
-                                                            $statut = 'Expirée';
-                                                            $statut_class = 'danger';
-                                                        } elseif ($taux >= 100) {
-                                                            $statut = 'Soldée';
-                                                            $statut_class = 'success';
-                                                        } elseif ($taux > 0) {
-                                                            $statut = 'En cours';
-                                                            $statut_class = 'warning';
-                                                        } else {
-                                                            $statut = 'Non démarrée';
-                                                            $statut_class = 'secondary';
-                                                        }
-                                                    ?>
-                                                        <tr>
-                                                            <td class="align-middle">
-                                                                <span class="fw-semibold"><?php echo htmlspecialchars($convention['code'] ?? ''); ?></span>
-                                                            </td>
-                                                            <td class="align-middle">
-                                                                <span title="<?php echo htmlspecialchars($convention['name'] ?? ''); ?>">
-                                                                    <?php echo htmlspecialchars($convention['name'] ?? ''); ?>
-                                                                </span>
-                                                            </td>
-                                                            <td class="align-middle">
-                                                                <?php echo $grouped_partenaire[$convention['partenaire_id']]['sigle'] ?? 'N/A'; ?>
-                                                            </td>
-                                                            <td class="align-middle text-end">
-                                                                <span class="fw-semibold"><?php echo number_format($montant_prev, 0, ',', ' '); ?></span>
-                                                            </td>
-                                                            <td class="align-middle text-end">
-                                                                <span class="text-success"><?php echo number_format($montant_decaisse, 0, ',', ' '); ?></span>
-                                                            </td>
-                                                            <td class="align-middle text-center">
-                                                                <span class="badge badge-phoenix py-1 px-2 badge-phoenix-<?php echo $taux >= 80 ? 'success' : ($taux >= 50 ? 'warning' : 'light'); ?> text-<?php echo $taux >= 80 ? 'white' : ($taux >= 50 ? 'dark' : 'secondary'); ?>">
-                                                                    <?php echo $taux; ?>%
-                                                                </span>
-                                                            </td>
-                                                            <td class="align-middle text-center">
-                                                                <span class="badge badge-phoenix py-1 px-2 badge-phoenix-<?php echo $statut_class; ?>">
-                                                                    <?php echo $statut; ?>
-                                                                </span>
-                                                            </td>
-                                                        </tr>
-                                                    <?php endforeach; ?>
-                                                </tbody>
-                                                <tfoot class="bg-light">
-                                                    <tr class="text-nowrap">
-                                                        <th colspan="3" class="text-end">TOTAUX</th>
-                                                        <th class="text-end"><?php echo number_format($total_conventions, 0, ',', ' '); ?></th>
-                                                        <th class="text-end"><?php echo number_format($total_decaisse, 0, ',', ' '); ?></th>
-                                                        <th class="text-center"><?php echo $taux_execution_global; ?>%</th>
-                                                        <th></th>
-                                                    </tr>
-                                                </tfoot>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-5">
-                                <div class="card shadow-sm rounded-1 h-100">
-                                    <div class="card-header bg-light py-2">
-                                        <h5 class="mb-0">
-                                            <i class="fas fa-chart-bar me-2 text-primary"></i>
-                                            Répartition des financements par bailleur
-                                        </h5>
-                                    </div>
-                                    <div class="card-body p-0">
-                                        <?php if (!empty($conventions_par_bailleur)): ?>
-                                            <div class="chart-container">
-                                                <div class="card-body p-2" id="chartFinanceBailleur" style="min-height: 350px;"></div>
-                                            </div>
-
-                                            <div class="mt-3 border-top">
-                                                <h6 class="text-muted m-3">Détail par bailleur</h6>
-                                                <div class="px-3" style="max-height: 300px; overflow-y: auto;">
-                                                    <?php
-                                                    $i = 0;
-                                                    foreach ($conventions_par_bailleur as $bailleur_id => $data):
-                                                        $pourcentage = $total_conventions > 0 ? round(($data['montant_total'] / $total_conventions) * 100, 1) : 0;
-                                                    ?>
-                                                        <div class="d-flex align-items-center fs-9 mb-2">
-                                                            <span class="dot p-1 bg-<?php echo listCouleur()[$i % count(listCouleur())]; ?> me-2"></span>
-                                                            <div class="flex-grow-1">
-                                                                <div class="d-flex justify-content-between">
-                                                                    <span class="fw-semibold"><?php echo $data['name']; ?></span>
-                                                                    <span class="text-muted"><?php echo number_format($data['montant_total'], 0, ',', ' '); ?> USD</span>
-                                                                </div>
-                                                                <div class="progress progress-sm mt-1">
-                                                                    <div class="progress-bar bg-<?php echo listCouleur()[$i % count(listCouleur())]; ?>"
-                                                                        style="width: <?php echo $pourcentage; ?>%"></div>
-                                                                </div>
-                                                                <small class="text-muted"><?php echo count($data['conventions']); ?> conventions • <?php echo $pourcentage; ?>%</small>
-                                                            </div>
-                                                        </div>
-                                                    <?php
-                                                        $i++;
-                                                    endforeach;
-                                                    ?>
-                                                </div>
-                                            </div>
-                                        <?php else: ?>
-                                            <div class="text-center py-5 my-3">
-                                                <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
-                                                <p class="text-muted">Aucune donnée disponible</p>
-                                            </div>
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="tab-pane fade" id="tab-actor" role="tabpanel" aria-labelledby="actor-tab">
+                    <?php include './components/tabs/tab_finance_actor.php'; ?>
                 </div>
 
-                <div class="tab-pane fade <?php echo $tab == 'activity' ? 'active show' : ''; ?>" id="tab-activity" role="tabpanel" aria-labelledby="activity-tab">
-                    <div class="mx-n4 p-1 mx-lg-n6 bg-body-emphasis border-y">
-                        <div class="row mx-0 g-3">
-                            <div class="col-lg-7">
-                                <div class="card shadow-sm rounded-1">
-                                    <div class="card-header bg-light py-2 d-flex justify-content-between align-items-center">
-                                        <h5 class="mb-0">
-                                            <i class="fas fa-tasks me-2 text-primary"></i>
-                                            Budget des activités
-                                        </h5>
-                                        <span class="badge bg-primary"><?php echo count($taches_actives); ?> activités</span>
-                                    </div>
-                                    <div class="card-body p-0">
-                                        <div class="table-responsive" style="min-height: 432px;">
-                                            <table class="table small table-bordered fs-9 table-hover mb-0" id="id-datatable2">
-                                                <thead class="bg-primary-subtle">
-                                                    <tr>
-                                                        <th class="align-middle">Code</th>
-                                                        <th class="align-middle">Activité</th>
-                                                        <th class="align-middle">Projet</th>
-                                                        <th class="align-middle text-end text-nowrap">Prévu (USD)</th>
-                                                        <th class="align-middle text-end text-nowrap">Décaissé (USD)</th>
-                                                        <th class="align-middle text-center">Exécution</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody class="list">
-                                                    <?php
-                                                    $total_prev_activites = 0;
-                                                    $total_decaisse_activites = 0;
-
-                                                    foreach ($taches_actives as $tache):
-                                                        $montant_prev = isset($grouped_tache_couts[$tache['id']]) ? array_sum(array_column($grouped_tache_couts[$tache['id']], 'montant')) : 0;
-                                                        $montant_decaisse = $montant_prev;
-
-                                                        $total_prev_activites += $montant_prev;
-                                                        $total_decaisse_activites += $montant_decaisse;
-                                                        $taux_activite = $montant_prev > 0 ? round(($montant_decaisse / $montant_prev) * 100, 1) : 0;
-
-                                                        $projet_associe = array_filter($projets_actifs, function ($p) use ($tache) {
-                                                            return $p['id'] == $tache['projet_id'];
-                                                        });
-                                                        $projet_nom = !empty($projet_associe) ? reset($projet_associe)['code'] : 'N/A';
-                                                    ?>
-                                                        <tr>
-                                                            <td class="align-middle">
-                                                                <span class="fw-semibold"><?php echo htmlspecialchars($tache['code'] ?? ''); ?></span>
-                                                            </td>
-                                                            <td class="align-middle">
-                                                                <span title="<?php echo htmlspecialchars($tache['name'] ?? ''); ?>">
-                                                                    <?php echo htmlspecialchars($tache['name'] ?? ''); ?>
-                                                                </span>
-                                                            </td>
-                                                            <td class="align-middle"><?php echo $projet_nom; ?></td>
-                                                            <td class="align-middle text-end">
-                                                                <?php if ($montant_prev > 0): ?>
-                                                                    <span class="fw-semibold"><?php echo number_format($montant_prev, 0, ',', ' '); ?></span>
-                                                                <?php else: ?>
-                                                                    <span class="text-muted">-</span>
-                                                                <?php endif; ?>
-                                                            </td>
-                                                            <td class="align-middle text-end">
-                                                                <?php if ($montant_decaisse > 0): ?>
-                                                                    <span class="text-success"><?php echo number_format($montant_decaisse, 0, ',', ' '); ?></span>
-                                                                <?php else: ?>
-                                                                    <span class="text-muted">-</span>
-                                                                <?php endif; ?>
-                                                            </td>
-                                                            <td class="align-middle text-center">
-                                                                <?php if ($montant_prev > 0): ?>
-                                                                    <span class="ms-2 fw-semibold"><?php echo $taux_activite; ?>%</span>
-                                                                <?php else: ?>
-                                                                    <span class="text-muted">-</span>
-                                                                <?php endif; ?>
-                                                            </td>
-                                                        </tr>
-                                                    <?php endforeach; ?>
-                                                </tbody>
-                                                <tfoot class="bg-light">
-                                                    <tr class="text-nowrap">
-                                                        <th colspan="3" class="text-end">TOTAUX</th>
-                                                        <th class="text-end"><?php echo number_format($total_prev_activites, 0, ',', ' '); ?></th>
-                                                        <th class="text-end"><?php echo number_format($total_decaisse_activites, 0, ',', ' '); ?></th>
-                                                        <th class="text-center">
-                                                            <?php
-                                                            $taux_global_activites = $total_prev_activites > 0 ? round(($total_decaisse_activites / $total_prev_activites) * 100, 1) : 0;
-                                                            ?>
-                                                            <span class="badge badge-phoenix py-1 px-2 badge-phoenix-<?php echo $taux_global_activites >= 80 ? 'success' : ($taux_global_activites >= 50 ? 'warning' : 'danger'); ?>">
-                                                                <?php echo $taux_global_activites; ?>%
-                                                            </span>
-                                                        </th>
-                                                    </tr>
-                                                </tfoot>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-5">
-                                <div class="card shadow-sm rounded-1 h-100">
-                                    <div class="card-header bg-light py-2">
-                                        <h5 class="mb-0">
-                                            <i class="fas fa-chart-pie me-2 text-primary"></i>
-                                            Répartition par projet
-                                        </h5>
-                                    </div>
-                                    <div class="card-body p-0">
-                                        <?php
-                                        $budget_par_projet = [];
-                                        $budget_chart_projet = [];
-                                        foreach ($projets_actifs as $proj) {
-                                            $budget_par_projet[$proj['id']] = [
-                                                'code' => $proj['code'],
-                                                'name' => $proj['code'] . ' - ' . $proj['name'],
-                                                'montant' => 0
-                                            ];
-                                        }
-
-                                        foreach ($taches_actives as $tache) {
-                                            $projet_id = $tache['projet_id'];
-                                            if (isset($grouped_tache_couts[$tache['id']])) {
-                                                $montant = array_sum(array_column($grouped_tache_couts[$tache['id']], 'montant'));
-                                                if (isset($budget_par_projet[$projet_id])) {
-                                                    $budget_par_projet[$projet_id]['montant'] += $montant;
-                                                }
-                                            }
-                                        }
-
-                                        $budget_par_projet = array_filter($budget_par_projet, function ($p) {
-                                            return $p['montant'] > 0;
-                                        });
-
-                                        foreach ($budget_par_projet as $projet) {
-                                            $budget_chart_projet[] = [
-                                                'name' => $projet['code'],
-                                                'y' => $projet['montant'],
-                                            ];
-                                        }
-                                        ?>
-
-                                        <?php if (!empty($budget_par_projet)): ?>
-                                            <div class="chart-container">
-                                                <div class="card-body p-2" id="chartFinanceProjet" style="min-height: 350px;"></div>
-                                            </div>
-
-                                            <div class="mt-3 border-top">
-                                                <h6 class="text-muted m-3">Budget par projet</h6>
-
-                                                <div class="px-3" style="max-height: 300px; overflow-y: auto;">
-                                                    <?php
-                                                    $total_budget_projets = array_sum(array_column($budget_par_projet, 'montant'));
-                                                    $i = 0;
-                                                    foreach ($budget_par_projet as $projet):
-                                                        $pourcentage = $total_budget_projets > 0 ? round(($projet['montant'] / $total_budget_projets) * 100, 1) : 0;
-                                                    ?>
-                                                        <div class="d-flex align-items-center fs-9 mb-2">
-                                                            <span class="dot p-1 bg-<?php echo listCouleur()[$i % count(listCouleur())]; ?> me-2"></span>
-                                                            <div class="flex-grow-1">
-                                                                <div class="d-flex justify-content-between small">
-                                                                    <span class="text-truncate" style="max-width: 300px;"><?php echo html_entity_decode($projet['name']); ?></span>
-                                                                    <span class="fw-semibold"><?php echo number_format($projet['montant'], 0, ',', ' '); ?> USD</span>
-                                                                </div>
-                                                                <div class="progress progress-sm my-1">
-                                                                    <div class="progress-bar bg-<?php echo listCouleur()[$i % count(listCouleur())]; ?>"
-                                                                        style="width: <?php echo $pourcentage; ?>%"></div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    <?php
-                                                        $i++;
-                                                    endforeach;
-                                                    ?>
-                                                </div>
-                                            </div>
-                                        <?php else: ?>
-                                            <div class="text-center py-5">
-                                                <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
-                                                <p class="text-muted">Aucune donnée budgétaire par projet</p>
-                                            </div>
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="tab-pane fade" id="tab-activity" role="tabpanel" aria-labelledby="activity-tab">
+                    <?php include './components/tabs/tab_finance_activity.php'; ?>
                 </div>
             </div>
         </div>

@@ -165,7 +165,7 @@
                                 </div>
                                 <div class="card-body p-2" style="max-height: 500px; overflow-y: auto;">
                                     <?php if (!empty($suivis_raw)) : ?>
-                                        <table class="table table-sm table-hover table-striped small table-bordered border-emphasis">
+                                        <table class="table table-sm table-hover table-striped small table-bordered border-emphasis" id="id-datatable">
                                             <thead class="bg-primary-subtle">
                                                 <tr>
                                                     <th class="text-center">Année</th>
@@ -262,7 +262,7 @@
                                 </div>
                                 <div class="card-body p-2" style="max-height: 500px; overflow-y: auto;">
                                     <?php if (!empty($suivis_raw)) : ?>
-                                        <table class="table table-sm table-hover table-striped small table-bordered border-emphasis">
+                                        <table class="table table-sm table-hover table-striped small table-bordered border-emphasis" id="id-datatable1">
                                             <thead class="bg-primary-subtle">
                                                 <tr>
                                                     <th scope="col" class="px-2">Année</th>
