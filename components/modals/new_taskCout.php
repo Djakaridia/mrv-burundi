@@ -63,7 +63,7 @@
                                     <span class="fas fa-history me-2"></span>Aucune convention disponible
                                 </h4>
                                 <?php if (isset($project_id)) { ?>
-                                    <a href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . '&tab=finance'; ?>" class="btn btn-primary btn-sm px-3 my-0">Ajouter une convention</a>
+                                    <a href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . ''; ?>" class="btn btn-primary btn-sm px-3 my-0">Ajouter une convention</a>
                                 <?php } ?>
                             </div>
                             <div class="modal-footer d-flex justify-content-between border-0 p-0">

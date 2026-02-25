@@ -200,16 +200,16 @@
         </div>
     </div>
 
-    <div class="row g-3 mb-2 d-flex flex-row justify-content-between align-items-center mt-3">
+    <div class="row g-3 mb-2 d-flex flex-row justify-content-between align-items-center">
         <div class="col-auto">
             <h4 class="my-1 fw-black fs-8">
-                <i class="fas fa-chart-pie me-2 text-success"></i>
+                <i class="fas fa-chart-pie me-2 text-primary"></i>
                 Répartition des décaissements
             </h4>
         </div>
     </div>
-    <div class="row g-3">
-        <div class="col-md-7">
+    <div class="todo-list mx-n3 bg-body-emphasis border-top border-bottom border-translucent position-relative mb-3">
+        <div class="table-responsive p-1">
             <div class="card rounded-1 border shadow-sm mb-3">
                 <div class="card-header bg-light py-2 d-flex justify-content-between align-items-center">
                     <h6 class="mb-0"><i class="fas fa-tasks me-2"></i>Détail des activités</h6>
@@ -217,7 +217,7 @@
                 </div>
                 <div class="card-body p-2">
                     <div class="table-responsive">
-                        <table class="table table-bordered fs-9 table-hover mb-0 border-translucent" id="id-datatable2">
+                        <table class="table small table-bordered table-hover mb-0 border-translucent" id="id-datatable2">
                             <thead class="bg-primary-subtle">
                                 <tr>
                                     <th class="align-middle" width="5%">Code</th>
@@ -262,7 +262,7 @@
                                                 <span class="text-muted">-</span>
                                             <?php endif; ?>
                                         </td>
-                                        <td class="align-middle">
+                                        <td class="align-middle text-center">
                                             <?php if ($montant_prev > 0): ?>
                                                 <span class="ms-2 fw-semibold"><?php echo $taux_exec_activites; ?>%</span>
                                             <?php else: ?>
@@ -299,7 +299,7 @@
                 </div>
                 <div class="card-body p-2">
                     <div class="table-responsive">
-                        <table class="table table-bordered fs-9 table-hover mb-0 border-translucent" id="id-datatable3">
+                        <table class="table small table-bordered table-hover mb-0 border-translucent" id="id-datatable3">
                             <thead class="bg-primary-subtle">
                                 <tr>
                                     <th class="sort align-middle">Code</th>
@@ -355,7 +355,7 @@
                                                     <span class="text-muted">-</span>
                                                 <?php endif; ?>
                                             </td>
-                                            <td class="align-middle">
+                                            <td class="align-middle text-center">
                                                 <?php if ((float)$convention['montant'] > 0): ?>
                                                     <span class="ms-2 fw-semibold"><?php echo $taux_exec_bailleurs; ?>%</span>
                                                 <?php else: ?>
@@ -400,97 +400,5 @@
                 </div>
             </div>
         </div>
-
-        <div class="col-md-5">
-            <div class="card rounded-1 border shadow-sm h-100">
-                <div class="card-header bg-light py-2">
-                    <h6 class="mb-0"><i class="fas fa-chart-pie me-2 text-primary"></i>Répartition des financements</h6>
-                </div>
-                <div class="card-body">
-                    <?php if (!empty($conventions_project)): ?>
-                        <canvas id="financePieChart" style="max-height: 250px;"></canvas>
-
-                        <div class="mt-3">
-                            <?php
-                            $colors = ['primary', 'success', 'info', 'warning', 'danger', 'secondary'];
-                            $i = 0;
-                            foreach ($conventions_project as $convention):
-                                $partenaire_nom = array_column($partenaires, 'description', 'id')[$convention['partenaire_id']] ?? 'Non défini';
-                                $pourcentage = $total_financements > 0 ? round(($convention['montant'] / $total_financements) * 100, 1) : 0;
-                            ?>
-                                <div class="d-flex align-items-center justify-content-between mb-2">
-                                    <div class="d-flex align-items-center">
-                                        <span class="dot bg-<?php echo $colors[$i % count($colors)]; ?> me-2"></span>
-                                        <span class="small text-truncate" style="max-width: 150px;"
-                                            title="<?php echo htmlspecialchars($convention['name'] ?? ''); ?>">
-                                            <?php echo htmlspecialchars($convention['code'] ?? ''); ?> - <?php echo $partenaire_nom; ?>
-                                        </span>
-                                    </div>
-                                    <span class="small fw-semibold"><?php echo $pourcentage; ?>%</span>
-                                </div>
-                            <?php
-                                $i++;
-                            endforeach;
-                            ?>
-                        </div>
-                    <?php else: ?>
-                        <div class="text-center py-3">
-                            <span class="fa-regular fa-chart-bar fa-3x text-muted mb-3"></span>
-                            <p class="text-muted">Ajoutez des conventions pour voir la répartition</p>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const pieCtx = document.getElementById('financePieChart');
-        if (pieCtx) {
-            const conventions = <?php echo json_encode($conventions_project ?? []); ?>;
-            const partenaires = <?php echo json_encode($partenaires ?? []); ?>;
-
-            if (conventions.length > 0) {
-                const labels = conventions.map(c => {
-                    const partenaire = partenaires.find(p => p.id == c.partenaire_id);
-                    return (c.code || 'N/A') + ' - ' + (partenaire?.description || 'N/A');
-                });
-                const data = conventions.map(c => parseFloat(c.montant) || 0);
-                const colors = ['#0d6efd', '#198754', '#0dcaf0', '#ffc107', '#dc3545', '#6c757d', '#20c997', '#6610f2'];
-
-                new Chart(pieCtx, {
-                    type: 'pie',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            data: data,
-                            backgroundColor: colors.slice(0, data.length),
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        const value = context.raw;
-                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                        const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
-                                        return context.label + ': ' + new Intl.NumberFormat('fr-FR').format(value) + ' USD (' + percentage + '%)';
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-        }
-    });
-</script>
