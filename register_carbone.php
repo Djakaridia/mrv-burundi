@@ -13,22 +13,33 @@
 
     <?php
     include './components/navbar & footer/head.php';
+    $sel_inventory = isset($_GET['inventory']) ? $_GET['inventory'] : null;
 
     $inventory = new Inventory($db);
     $inventories = $inventory->read();
-    $inventories_afficher = array_filter($inventories, function ($inventory) {
+    $active_inventory = array_filter($inventories, function ($inventory) {
         return $inventory['afficher'] == 'oui';
     });
-    $active_inventory = array_pop($inventories_afficher);
 
-    $register = new Register($db);
-    $registers = $register->read();
-    $registers = array_filter($registers, function ($register) use ($active_inventory) {
-        return $register['inventaire_id'] == $active_inventory['id'];
-    });
+    if (!empty($active_inventory) && !$sel_inventory) $sel_inventory = array_pop($active_inventory)['id'];
+
+    $registers = [];
+    if ($sel_inventory) {
+        $inventory = new Inventory($db);
+        $inventory->id = $sel_inventory;
+        $curr_inventory = $inventory->readById();
+
+        $register = new Register($db);
+        $registers = $register->read();
+        $registers = array_filter($registers, function ($register) use ($sel_inventory) {
+            return $register['inventaire_id'] == $sel_inventory;
+        });
+    }
 
     $registers_global = $registers;
-    usort($registers_global, function ($a, $b) {return (int)$a['secteur_id'] <=> (int)$b['secteur_id'];});
+    usort($registers_global, function ($a, $b) {
+        return (int)$a['secteur_id'] <=> (int)$b['secteur_id'];
+    });
 
     $registers_secteurs = [];
     foreach ($registers as $register) $registers_secteurs[$register['secteur_id']][] = $register;
@@ -585,57 +596,25 @@
                 <div class="card-body p-2 d-lg-flex flex-row justify-content-between align-items-center g-3">
                     <div class="col-lg-4 mb-2 mb-lg-0">
                         <h4 class="my-1 fw-black fs-8">
-                            Registre des émissions (<a href="./documents/Registre_Carbone.xlsx" download class="fs-8 text-decoration-none"> <span class="fa fa-file-excel"></span> Canevas </a>)
+                            Registre des émissions
                         </h4>
                     </div>
 
-                    <div class="col-lg-8">
-                        <div class="d-flex justify-content-md-end gap-3">
-                            <div class="d-flex gap-1 align-items-center">
-                                <span class="form-label">Filtrer : </span>
-                                <div class="search-box d-none d-lg-block my-lg-0" style="width: 8rem !important;">
-                                    <form class="position-relative">
-                                        <select class="form-select form-select-sm bg-warning-subtle px-2 rounded-1" id="secteurFilter"
-                                            onchange="pagesFilters([{ id: 'secteurFilter', param: 'secteur' }])">
-                                            <option value="">Tous secteurs</option>
-                                            <?php if (isset($secteurs) && !empty($secteurs)): ?>
-                                                <?php foreach ($secteurs as $secteur): ?>
-                                                    <option value="<?= $secteur['id'] ?>" <?= ($currFilSecteur == $secteur['id']) ? 'selected' : '' ?>>
-                                                        <?= $secteur['name'] ?>
-                                                    </option>
-                                                <?php endforeach; ?>
-                                            <?php endif; ?>
-                                        </select>
-                                    </form>
-                                </div>
-                                <div class="search-box d-none d-lg-block my-lg-0" style="width: 8rem !important;">
-                                    <form class="position-relative">
-                                        <select class="form-select form-select-sm bg-warning-subtle px-2 rounded-1" id="gazFilter"
-                                            onchange="pagesFilters([{ id: 'gazFilter', param: 'gaz' }])">
-                                            <option value="">Tous gaz</option>
-                                            <?php if (isset($gazs) && !empty($gazs)): ?>
-                                                <?php foreach ($gazs as $gaz): ?>
-                                                    <option value="<?= $gaz['name'] ?>" <?= ($currFilGaz == $gaz['name']) ? 'selected' : '' ?>>
-                                                        <?= $gaz['name'] ?>
-                                                    </option>
-                                                <?php endforeach; ?>
-                                            <?php endif; ?>
-                                        </select>
-                                    </form>
-                                </div>
-                            </div>
+                    <div class="col-lg-4 mb-2 mb-lg-0 text-center">
+                        <form action="formNiveauResultat" method="post">
+                            <select id="selectPageInventory" class="form-select text-center" name="result" onchange="window.location.href = 'register_carbone.php?inventory=' + this.value">
+                                <option value="" class="text-center" selected disabled>---Sélectionner un inventaire---</option>
+                                <?php foreach ($inventories as $inventory) { ?>
+                                    <option value="<?php echo $inventory['id']; ?>" <?php if ($sel_inventory == $inventory['id']) echo 'selected'; ?>><?php echo html_entity_decode($inventory['name']); ?></option>
+                                <?php } ?>
+                            </select>
+                        </form>
+                    </div>
 
-                            <?php if (empty($currFilSecteur) && empty($currFilGaz)) { ?>
-                                <button type="button" data-bs-toggle="modal" data-bs-target="#importRegisterModal" class="btn btn-subtle-primary btn-sm"
-                                    data-inventory="<?php echo $active_inventory['id']; ?>">
-                                    <span class="fa fa-database fs-9 me-2"></span>Importer données
-                                </button>
-                            <?php } else { ?>
-                                <button type="button" onclick="window.location.href=`<?= $_SERVER['PHP_SELF'] ?>`" class="btn btn-subtle-primary btn-sm">
-                                    <span class="fa fa-arrow-left fs-9 me-2"></span>Vue globale des données
-                                </button>
-                            <?php } ?>
-                        </div>
+                    <div class="col-lg-4 text-end">
+                        <a href="./documents/Registre_Carbone.xlsx" download class="btn btn-subtle-primary btn-sm text-decoration-none">
+                            <i class="fa fa-file-excel fs-9 me-2"></i>Télécharger le canevas
+                        </a>
                     </div>
                 </div>
             </div>
@@ -643,9 +622,63 @@
             <div class="row mt-3">
                 <div class="col-12">
                     <div class="mx-n4 px-1 pb-3 mx-lg-n6 bg-body-emphasis border-y">
-                        <?php if ($global_mode || (!empty($currFilSecteur) && !empty($registers_secteurs[$currFilSecteur])) || (!empty($currFilGaz) && !empty($registers_gaz[$currFilGaz]))) { ?>
-                            <h5 class="m-2 text-semibold"><i class="fas fa-chart-line me-2"></i>Visualisation des Données</h5>
+                        <div class="row mx-n1 py-1 align-items-center border-bottom mb-3">
+                            <div class="col-md-6">
+                                <h3 class="h5 mb-0 fw-bold">Registre des émissions pour l'inventaire : <span class="text-primary fs-semibold"><?= $curr_inventory['name'] ?></span></h3>
+                                <p class="text-muted small mb-0">Tableau récapitulatif des registres carbone</p>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-md-end gap-3">
+                                    <div class="d-flex gap-1 align-items-center">
+                                        <span class="form-label">Filtrer : </span>
+                                        <div class="search-box d-none d-lg-block my-lg-0" style="width: 8rem !important;">
+                                            <form class="position-relative">
+                                                <select class="form-select form-select-sm bg-warning-subtle px-2 rounded-1" id="secteurFilter"
+                                                    onchange="pagesFilters([{ id: 'secteurFilter', param: 'secteur' }])">
+                                                    <option value="">Tous secteurs</option>
+                                                    <?php if (isset($secteurs) && !empty($secteurs)): ?>
+                                                        <?php foreach ($secteurs as $secteur): ?>
+                                                            <option value="<?= $secteur['id'] ?>" <?= ($currFilSecteur == $secteur['id']) ? 'selected' : '' ?>>
+                                                                <?= $secteur['name'] ?>
+                                                            </option>
+                                                        <?php endforeach; ?>
+                                                    <?php endif; ?>
+                                                </select>
+                                            </form>
+                                        </div>
+                                        <div class="search-box d-none d-lg-block my-lg-0" style="width: 8rem !important;">
+                                            <form class="position-relative">
+                                                <select class="form-select form-select-sm bg-warning-subtle px-2 rounded-1" id="gazFilter"
+                                                    onchange="pagesFilters([{ id: 'gazFilter', param: 'gaz' }])">
+                                                    <option value="">Tous gaz</option>
+                                                    <?php if (isset($gazs) && !empty($gazs)): ?>
+                                                        <?php foreach ($gazs as $gaz): ?>
+                                                            <option value="<?= $gaz['name'] ?>" <?= ($currFilGaz == $gaz['name']) ? 'selected' : '' ?>>
+                                                                <?= $gaz['name'] ?>
+                                                            </option>
+                                                        <?php endforeach; ?>
+                                                    <?php endif; ?>
+                                                </select>
+                                            </form>
+                                        </div>
+                                    </div>
 
+                                    <?php if (empty($currFilSecteur) && empty($currFilGaz)) { ?>
+                                        <button type="button" data-bs-toggle="modal" data-bs-target="#importRegisterModal" class="btn btn-subtle-primary btn-sm"
+                                            data-inventory="<?php echo $sel_inventory; ?>">
+                                            <span class="fa fa-database fs-9 me-2"></span>Importer données
+                                        </button>
+                                    <?php } else { ?>
+                                        <button type="button" onclick="window.location.href=`<?= $_SERVER['PHP_SELF'] ?>`" class="btn btn-subtle-primary btn-sm">
+                                            <span class="fa fa-arrow-left fs-9 me-2"></span>Vue globale des données
+                                        </button>
+                                    <?php } ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <?php if ($global_mode || (!empty($currFilSecteur) && !empty($registers_secteurs[$currFilSecteur])) || (!empty($currFilGaz) && !empty($registers_gaz[$currFilGaz]))) { ?>
+                            <h5 class="m-2 text-semibold"><i class="fas fa-chart-line me-2 text-primary"></i>Visualisation des Données</h5>
                             <?php if ($global_mode) { ?>
                                 <div class="row mx-0 mb-3 g-3">
                                     <div class="col-lg-6 col-12 mb-1">
@@ -677,8 +710,8 @@
                                     </div>
                                 </div>
 
-                                <h5 class="m-2 text-semibold mt-4"><i class="fas fa-table me-2"></i>Données des émissions</h5>
-                                <div class="mx-n1 mb-3 px-1 scrollbar">
+                                <h5 class="m-2 text-semibold mt-4"><i class="fas fa-table me-2 text-primary"></i>Données des émissions</h5>
+                                <div class="mx-n1 mb-3 px-2 scrollbar">
                                     <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable2">
                                         <thead class="bg-primary-subtle">
                                             <tr>
@@ -697,7 +730,7 @@
                                             <?php foreach ($registers_global as $row) { ?>
                                                 <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                                                     <td class="align-middle px-2"> <?php echo $row['annee']; ?> </td>
-                                                    <td class="align-middle px-2"> 
+                                                    <td class="align-middle px-2">
                                                         <?php echo array_column($secteurs, 'name', 'id')[$row['secteur_id']] ?? ''; ?>
                                                     </td>
                                                     <td class="align-middle px-2"> <strong><?php echo $row['code']; ?></strong> - <?php echo $row['categorie']; ?> </td>
@@ -743,7 +776,7 @@
                                 </div>
 
                                 <h5 class="m-2 text-semibold mt-4"><i class="fas fa-table me-2"></i>Synthèse par secteur</h5>
-                                <div class="mx-n1 mb-3 px-1 scrollbar">
+                                <div class="mx-n1 mb-3 px-2 scrollbar">
                                     <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
                                         <thead class="bg-primary-subtle">
                                             <tr>
@@ -841,7 +874,7 @@
                                 </div>
 
                                 <h5 class="m-2 text-semibold mt-4"><i class="fas fa-table me-2"></i>Liste des émissions</h5>
-                                <div class="mx-n1 mb-3 px-1 scrollbar">
+                                <div class="mx-n1 mb-3 px-2 scrollbar">
                                     <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable2">
                                         <thead class="bg-primary-subtle">
                                             <tr>
@@ -951,7 +984,7 @@
                                 </div>
 
                                 <h5 class="m-2 text-semibold mt-4"><i class="fas fa-table me-2"></i>Émissions du gaz <?php echo htmlspecialchars($currFilGaz); ?></h5>
-                                <div class="mx-n1 mb-3 px-1 scrollbar">
+                                <div class="mx-n1 mb-3 px-2 scrollbar">
                                     <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable3">
                                         <thead class="bg-primary-subtle">
                                             <tr>
