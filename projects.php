@@ -451,7 +451,7 @@
           </div>
 
           <div id="cardView">
-            <div class="d-flex px-2 justify-content-between border-bottom pb-1 mx-n1">
+            <div class="d-flex px-3 justify-content-between border-bottom pb-1 mx-n1">
               <div class="d-flex gap-2 align-items-center">
                 <?php
                   $nbre_actif = count(array_filter($projets, function ($projet) {
