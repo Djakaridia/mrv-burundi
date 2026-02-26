@@ -238,7 +238,7 @@
                                         </div>
                                     </td>
 
-                                    <td class="align-middle px-3">
+                                    <td class="align-middle text-nowrap px-3">
                                         <?= htmlspecialchars($referentiel['unite'] ?? 'N/A') ?>
                                     </td>
 

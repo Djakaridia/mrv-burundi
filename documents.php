@@ -79,7 +79,7 @@
                     </div>
                 </div>
 
-                <div class="card-body p-2 " style="max-height: 420px; overflow-x: hidden; overflow-y: auto;">
+                <div class="card-body p-2 " style="max-height: 300px; overflow-x: hidden; overflow-y: auto;">
                     <div class="row g-3 mb-3">
                         <?php foreach ($dossiers as $dossier) : ?>
                             <div class="col-lg-2 col-md-3 col-sm-4 col-6 dossier-item">

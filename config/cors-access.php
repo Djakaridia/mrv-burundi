@@ -4,6 +4,7 @@ function configureCORS() {
         'allowed_origins' => [
             'https://admin.mrv-burundi.com',
             'https://fiche.mrv-mali.com',
+            'https://map.mrv-mali.com',
         ],
         'allowed_methods' => ['POST', 'GET', 'PUT', 'DELETE', 'OPTIONS'],
         'allowed_headers' => ['Content-Type', 'Authorization', 'X-Requested-With'],
