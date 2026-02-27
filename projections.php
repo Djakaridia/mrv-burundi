@@ -34,11 +34,11 @@
         return $secteur['parent'] == 0 && $secteur['state'] == 'actif';
     });
 
-    $annees_cibles = [2020, 2025, 2030, 2035];
-    if (!empty($projections_data)) {
-        $annees_cibles = array_unique(array_column($projections_data, 'annee'));
-        sort($annees_cibles);
-    }
+    $annees_cibles = [2023, 2025, 2030, 2035, 2040];
+    // if (!empty($projections_data)) {
+    //     $annees_cibles = array_unique(array_column($projections_data, 'annee'));
+    //     sort($annees_cibles);
+    // }
 
     $projections_par_secteur = [];
     $projections_id_map = [];
@@ -282,7 +282,7 @@
                                                             $valeur = $valeurs[$annee] ?? '';
                                                             $projection_id = isset($projections_id_map[$secteur_id][$scenario][$annee]) ? $projections_id_map[$secteur_id][$scenario][$annee] : null;
                                                             ?>
-                                                            <td class="text-center fw-bold text-nowrap">
+                                                            <td class="fw-bold text-nowrap text-end">
                                                                 <?php if ($valeur !== ''): ?>
                                                                     <?= number_format(floatval(str_replace(',', '.', $valeur)), 1, ',', ' ') ?>
                                                                     <?php if (checkPermis($db, 'update')): ?>
