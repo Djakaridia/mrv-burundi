@@ -173,8 +173,13 @@
             <div class="mx-n4 p-1 mx-lg-n6 bg-body-emphasis border-y">
                 <div class="row mx-n1 py-1 align-items-center border-bottom">
                     <div class="col-md-4">
-                        <h3 class="h5 mb-0 fw-bold">Mesures et Actions de contrôle des émissions GES</h3>
-                        <p class="text-muted small mb-0">Tableau récapitulatif des mesures d'atténuation et d'adaptation</p>
+                        <h3 class="h5 mb-0 fw-bold d-flex align-items-center gap-2">
+                            Mesures de contrôle des émissions GES
+                            <button title="Aide" class="btn btn-subtle-primary btn-sm rounded-circle p-1 d-flex align-items-center m-0" type="button" data-bs-toggle="offcanvas" data-bs-target=".offcanvaMethodeCalcul" aria-controls="offcanvaMesureInfo">
+                                <i class="far fa-question-circle align-bottom fs-10"></i>
+                            </button>
+                        </h3>
+                        <p class="text-muted small mb-0">Tableau récapitulatif des mesures de contrôle des émissions GES</p>
                     </div>
                     <div class="col-md-8">
                         <div class="d-flex justify-content-md-end gap-3">

@@ -283,7 +283,12 @@
       <div class="mx-n4 p-1 mx-lg-n6 bg-body-emphasis border-y">
         <div class="row mx-n1 py-1 align-items-center border-bottom">
           <div class="col-md-4">
-            <h3 class="h5 mb-0 fw-bold">Liste des Projets Climatiques</h3>
+            <h3 class="h5 mb-0 fw-bold d-flex align-items-center gap-2">
+              Liste des Projets Climatiques
+              <button title="Aide" class="btn btn-subtle-primary btn-sm rounded-circle p-1 d-flex align-items-center m-0" type="button" data-bs-toggle="offcanvas" data-bs-target=".offcanvaMethodeCalcul" aria-controls="offcanvaMesureInfo">
+                <i class="far fa-question-circle align-bottom fs-10"></i>
+              </button>
+            </h3>
             <p class="text-muted small mb-0">Tableau récapitulatif des projets</p>
           </div>
 
@@ -454,21 +459,21 @@
             <div class="d-flex px-3 justify-content-between border-bottom pb-1 mx-n1">
               <div class="d-flex gap-2 align-items-center">
                 <?php
-                  $nbre_actif = count(array_filter($projets, function ($projet) {
-                    return $projet['state'] == 'actif';
-                  }));
+                $nbre_actif = count(array_filter($projets, function ($projet) {
+                  return $projet['state'] == 'actif';
+                }));
 
-                  $nbre_attenuation = count(array_filter($projets, function ($projet) {
-                    return $projet['action_type'] == 'attenuation';
-                  }));
+                $nbre_attenuation = count(array_filter($projets, function ($projet) {
+                  return $projet['action_type'] == 'attenuation';
+                }));
 
-                  $nbre_adaptation = count(array_filter($projets, function ($projet) {
-                    return $projet['action_type'] == 'adaptation';
-                  }));
+                $nbre_adaptation = count(array_filter($projets, function ($projet) {
+                  return $projet['action_type'] == 'adaptation';
+                }));
 
-                  $nbre_transversale = count(array_filter($projets, function ($projet) {
-                    return $projet['action_type'] == 'transversale';
-                  }));
+                $nbre_transversale = count(array_filter($projets, function ($projet) {
+                  return $projet['action_type'] == 'transversale';
+                }));
                 ?>
 
                 <span class="badge badge-phoenix fs-10 py-1 px-2 badge-phoenix-primary rounded-pill">Total actif : <?= $nbre_actif ?></span>

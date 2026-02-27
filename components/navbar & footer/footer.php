@@ -29,3 +29,134 @@
         </div>
     </div>
 </footer>
+
+<div class="offcanvas offcanvas-end shadow-lg offcanvaMethodeCalcul" tabindex="-1">
+    <div class="offcanvas-header border-bottom">
+        <h5 class="fw-bold mb-0">
+            <i class="fas fa-calculator text-primary me-2"></i>
+            Méthodes de calcul MRV
+        </h5>
+        <button class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+
+    <div class="offcanvas-body p-3">
+        <div class="mb-3">
+            <div class="bg-primary-subtle px-3 py-2 rounded">
+                <h6 class="mb-0 fw-semibold"><i class="fas fa-calculator me-2"></i>Formules de calcul</h6>
+            </div>
+
+            <div class="card border-0 bg-light mt-2">
+                <div class="card-body py-2 px-3 row">
+                    <div class="col-6">
+                        <small class="text-muted fw-semibold">Émissions Activités</small>
+                        <p class="mb-1 small">
+                            <span class="font-monospace bg-white px-2 py-1 rounded d-inline-block">E = DA × FE</span>
+                        </p>
+                        <small class="text-muted fw-semibold mt-2 d-block">Absorption Activités</small>
+                        <p class="mb-0 small">
+                            <span class="font-monospace bg-white px-2 py-1 rounded d-inline-block">A = DA × FA</span>
+                        </p>
+                    </div>
+
+                    <div class="col-6 border-start d-flex flex-column justify-content-center">
+                        <small class="text-muted d-block mt-2">DA = données d'activités</small>
+                        <small class="text-muted d-block mt-2">FE = facteur d'émission</small>
+                        <small class="text-muted d-block mt-2">FA = facteur d'absorption</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <div class="bg-primary-subtle px-3 py-2 rounded">
+                <h6 class="mb-0 fw-semibold"><i class="fas fa-layer-group me-2"></i>Niveau sectoriel</h6>
+            </div>
+
+            <div class="mt-2">
+                <small class="text-muted fw-semibold">Émissions évitées par secteur</small>
+                <div class="row g-1 mt-1">
+                    <div class="col-6">
+                        <div class="bg-white border rounded p-2">
+                            <span class="font-monospace small d-block">EE_WEM = BAU − WEM</span>
+                            <small class="text-muted">Inconditionnelle</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="bg-white border rounded p-2">
+                            <span class="font-monospace small d-block">EE_WAM = BAU − WAM</span>
+                            <small class="text-muted">Conditionnelle</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-2">
+                <small class="text-muted fw-semibold">Absorptions additionnelles</small>
+                <div class="row g-1 mt-1">
+                    <div class="col-6">
+                        <div class="bg-white border rounded p-2">
+                            <span class="font-monospace small d-block">AA_WEM = WEM − BAU</span>
+                            <small class="text-muted">Inconditionnelle</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="bg-white border rounded p-2">
+                            <span class="font-monospace small d-block">AA_WAM = WAM − BAU</span>
+                            <small class="text-muted">Conditionnelle</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-2">
+                <small class="text-muted fw-semibold">Taux de réduction</small>
+                <div class="row g-1 mt-1">
+                    <div class="col-12">
+                        <div class="bg-white border rounded p-2">
+                            <span class="font-monospace small d-block">%Reduc_WEM = (BAU − WEM) / BAU × 100</span>
+                            <span class="font-monospace small d-block">%Reduc_WAM = (BAU − WAM) / BAU × 100</span>
+                            <small class="text-muted">Inconditionnelle / Conditionnelle</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <div class="bg-primary-subtle px-3 py-2 rounded">
+                <h6 class="mb-0 fw-semibold"><i class="fas fa-globe me-2"></i>Niveau national</h6>
+            </div>
+
+            <div class="mt-2">
+                <div class="bg-white border rounded p-2 mb-2">
+                    <small class="text-muted fw-semibold d-block">Émissions nationales</small>
+                    <span class="font-monospace small">EE_total = SUM(BAU − WEM) + (BAU − WAM)</span>
+                </div>
+
+                <div class="bg-white border rounded p-2 mb-2">
+                    <small class="text-muted fw-semibold d-block">Absorptions nationales</small>
+                    <span class="font-monospace small">AA_total = SUM(WEM − BAU) + (WAM − BAU)</span>
+                </div>
+
+                <div class="bg-white border rounded p-2 mb-2">
+                    <small class="text-muted fw-semibold d-block">Atténuation totale nette</small>
+                    <span class="font-monospace small d-block">AT = (BAU − WEM) + (FAT_WEM − FAT_BAU)</span>
+                    <span class="font-monospace small d-block">AT = (BAU − WAM) + (FAT_WAM − FAT_BAU)</span>
+                    <small class="text-muted">Inconditionnelle / Conditionnelle</small>
+                </div>
+
+                <div class="bg-white border rounded p-2">
+                    <small class="text-muted fw-semibold d-block">Indicateur clé CDN</small>
+                    <span class="font-monospace small">%Réduction(CDN) = total(Atténuation) / totale(BAU) × 100</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-secondary py-2 px-3 small mb-3 d-flex flex-column gap-1">
+            <span><i class="fas fa-check-circle me-1"></i><strong>BAU</strong> = Business As Usual</span>
+            <span><i class="fas fa-check-circle me-1"></i><strong>WEM</strong> = With Existing Measures</span>
+            <span><i class="fas fa-check-circle me-1"></i><strong>WAM</strong> = With Additional Measures</span>
+            <span><i class="fas fa-check-circle me-1"></i><strong>FAT</strong> = Facteur d'Absorption Totale</span>
+        </div>
+    </div>
+</div>

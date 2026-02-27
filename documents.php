@@ -222,42 +222,40 @@
                         <button title="Fermer" class="btn-close text-reset" type="button" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                     </div>
                     <div class="offcanvas-body">
-                        <div class="file-detail-content-scroll simplebar-scrollable-y" data-simplebar="init">
-                            <div style="width: 100%; margin: 0; padding: 0">
-                                <div id="dossiersChart" style="height: 330px;"></div>
-                            </div>
+                        <div style="width: 100%; margin: 0; padding: 0">
+                            <div id="dossiersChart" style="height: 330px;"></div>
+                        </div>
 
-                            <div class="mt-3">
-                                <ul class="list-unstyled gap-3 border-top border-top-light py-3">
-                                    <?php foreach ($dossiersGrouped as $type => $dossierGroup) { ?>
-                                        <li>
-                                            <div class="d-flex align-items-top mb-1">
-                                                <div class="flex-shrink-0">
-                                                    <i class="fas fa-folder text-warning opacity-75 fs-6"></i>
-                                                </div>
-                                                <div class="flex-grow-1 ms-2">
-                                                    <h6 class="mb-0 text-capitalize"><?= $type ?></h6>
-                                                    <small class="text-body-emphasis"><?= count($dossierGroup) ?> Dossiers</small>
-                                                </div>
-                                                <div class="ms-2">
-                                                    <small class="text-body-emphasis">
-                                                        <?php $totalFiles = 0;
-                                                        foreach ($dossierGroup as $dossier) {
-                                                            foreach ($documents as $document) {
-                                                                if ($document['dossier_id'] == $dossier['id']) {
-                                                                    $totalFiles++;
-                                                                }
+                        <div class="mt-3">
+                            <ul class="list-unstyled gap-3 border-top border-top-light py-3">
+                                <?php foreach ($dossiersGrouped as $type => $dossierGroup) { ?>
+                                    <li>
+                                        <div class="d-flex align-items-top mb-1">
+                                            <div class="flex-shrink-0">
+                                                <i class="fas fa-folder text-warning opacity-75 fs-6"></i>
+                                            </div>
+                                            <div class="flex-grow-1 ms-2">
+                                                <h6 class="mb-0 text-capitalize"><?= $type ?></h6>
+                                                <small class="text-body-emphasis"><?= count($dossierGroup) ?> Dossiers</small>
+                                            </div>
+                                            <div class="ms-2">
+                                                <small class="text-body-emphasis">
+                                                    <?php $totalFiles = 0;
+                                                    foreach ($dossierGroup as $dossier) {
+                                                        foreach ($documents as $document) {
+                                                            if ($document['dossier_id'] == $dossier['id']) {
+                                                                $totalFiles++;
                                                             }
                                                         }
-                                                        echo $totalFiles; ?>
-                                                        Fichiers
-                                                    </small>
-                                                </div>
+                                                    }
+                                                    echo $totalFiles; ?>
+                                                    Fichiers
+                                                </small>
                                             </div>
-                                        </li>
-                                    <?php } ?>
-                                </ul>
-                            </div>
+                                        </div>
+                                    </li>
+                                <?php } ?>
+                            </ul>
                         </div>
                     </div>
                 </div>
