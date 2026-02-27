@@ -52,7 +52,7 @@
                                 </span>
                             </td>
                             <td class="text-center">
-                                <a class="btn btn-link fw-bold p-0 m-0" data-bs-toggle="modal" data-bs-target="#coutTaskModal" aria-haspopup="true" aria-expanded="false"
+                                <a class="btn btn-subtle-primary rounded-1 btn-sm fw-bold fs-9 px-2 py-1" data-bs-toggle="modal" data-bs-target="#coutTaskModal" aria-haspopup="true" aria-expanded="false"
                                     data-id="<?php echo $tache['id']; ?>">
                                     <?= ($total_couts > 0) ? number_format($total_couts, 0, ',', ' ') : "Ajouter" ?>
                                 </a>

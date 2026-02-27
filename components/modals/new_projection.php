@@ -56,20 +56,20 @@
                             </div>
 
                             <!-- Année -->
-                            <div class="col-md-4 mb-1">
+                            <div class="col-md-6 mb-1">
                                 <label for="projectionAnnee" class="form-label">Année <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="projectionAnnee" name="annee"
                                     min="2000" max="2100" step="1"
                                     value="<?= date('Y') ?>" required>
                             </div>
                             <!-- Valeur -->
-                            <div class="col-md-4 mb-1">
-                                <label for="projectionValeur" class="form-label">Valeur <span class="text-danger">*</span></label>
+                            <div class="col-md-6 mb-1">
+                                <label for="projectionValeur" class="form-label">Valeur (Gg Eq.CO₂) <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="projectionValeur" name="valeur"
                                     placeholder="Ex: 1234.56" required>
                             </div>
                             <!-- Unité -->
-                            <div class="col-md-4 mb-1">
+                            <div class="col-md-4 mb-1 d-none">
                                 <label for="projectionUnite" class="form-label">Unité</label>
                                 <select class="form-select" id="projectionUnite" name="unite">
                                     <option value="">Sélectionner une unité</option>
