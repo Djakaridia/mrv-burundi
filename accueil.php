@@ -633,7 +633,7 @@
                       </td>
                       <td class="text-center">
                         <span class="badge badge-phoenix fs-10 py-1 rounded-pill badge-phoenix-<?= getBadgeClass($projet['status']); ?>">
-                          <?= listStatus()[$projet['status']]; ?>
+                          <?= listStatus()[$projet['status']]??"N/A"; ?>
                         </span>
                       </td>
                       <td class="text-center p-0">

@@ -130,7 +130,7 @@
                                     <?php endforeach; ?>
                                 </span>
                                 <span class="badge badge-phoenix badge-phoenix-primary rounded-pill">
-                                    <?= listStatus()[$mesure_curr['status']]??"N/A" ?>
+                                    <?= listStatus()[$mesure_curr['status']]??"N/A"; ?>
                                 </span>
                             </div>
                             <div class="d-flex align-items-end gap-1">

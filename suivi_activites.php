@@ -146,7 +146,7 @@
                                                 <td class="text-center">
                                                     <a class="btn btn-subtle-<?= getBadgeClass($tache['status']) ?> rounded-pill btn-sm fw-bold fs-9 px-2 py-1" data-bs-toggle="modal"
                                                         data-bs-target="#SuiviTAskModal" aria-haspopup="true" aria-expanded="false" data-id="<?php echo $tache['id']; ?>">
-                                                        <?php echo isset($tache['status']) ? listStatus()[$tache['status']] : "Suivre" ?>
+                                                        <?php echo isset($tache['status']) ? listStatus()[$tache['status']]??"N/A" : "Suivre" ?>
                                                     </a>
                                                 </td>
                                             </tr>

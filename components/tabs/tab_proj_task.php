@@ -59,7 +59,7 @@
                             </td>
                             <td class="text-center">
                                 <span class="col text-nowrap badge badge-phoenix rounded-pill py-1 px-2 fs-10 badge-phoenix-<?= getBadgeClass($tache['status']) ?>">
-                                    <?= listStatus()[$tache['status']] ?>
+                                    <?= listStatus()[$tache['status']]??"N/A"; ?>
                                 </span>
                             </td>
                             <td>
