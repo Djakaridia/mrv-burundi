@@ -113,8 +113,7 @@
                 <div class="row g-1 mt-1">
                     <div class="col-12">
                         <div class="bg-white border rounded p-2">
-                            <span class="font-monospace small d-block">%Reduc_WEM = (BAU − WEM) / BAU × 100</span>
-                            <span class="font-monospace small d-block">%Reduc_WAM = (BAU − WAM) / BAU × 100</span>
+                            <span class="font-monospace small d-block">%Reduction = (BAU − WEM|WAM) / BAU × 100</span>
                             <small class="text-muted">Inconditionnelle / Conditionnelle</small>
                         </div>
                     </div>
@@ -130,24 +129,23 @@
             <div class="mt-2">
                 <div class="bg-white border rounded p-2 mb-2">
                     <small class="text-muted fw-semibold d-block">Émissions nationales</small>
-                    <span class="font-monospace small">EE_total = SUM(BAU − WEM) + (BAU − WAM)</span>
+                    <span class="font-monospace small">EE = Σ(BAU − WEM|WAM)</span>
                 </div>
 
                 <div class="bg-white border rounded p-2 mb-2">
                     <small class="text-muted fw-semibold d-block">Absorptions nationales</small>
-                    <span class="font-monospace small">AA_total = SUM(WEM − BAU) + (WAM − BAU)</span>
+                    <span class="font-monospace small">AA = Σ(WEM|WAM − BAU)</span>
                 </div>
 
                 <div class="bg-white border rounded p-2 mb-2">
                     <small class="text-muted fw-semibold d-block">Atténuation totale nette</small>
-                    <span class="font-monospace small d-block">AT = (BAU − WEM) + (FAT_WEM − FAT_BAU)</span>
-                    <span class="font-monospace small d-block">AT = (BAU − WAM) + (FAT_WAM − FAT_BAU)</span>
+                    <span class="font-monospace small d-block">AT = (BAU − WEM|WAM) + (FAT_WEM|WAM − FAT_BAU)</span>
                     <small class="text-muted">Inconditionnelle / Conditionnelle</small>
                 </div>
 
                 <div class="bg-white border rounded p-2">
                     <small class="text-muted fw-semibold d-block">Indicateur clé CDN</small>
-                    <span class="font-monospace small">%Réduction(CDN) = total(Atténuation) / totale(BAU) × 100</span>
+                    <span class="font-monospace small">%Réduction(CDN) = AT / BAU × 100</span>
                 </div>
             </div>
         </div>
