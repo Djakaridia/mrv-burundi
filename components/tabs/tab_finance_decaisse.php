@@ -1,5 +1,5 @@
-<div class="mx-n4 p-3 mx-lg-n6 bg-body-emphasis border-y">
-    <div class="row g-3">
+<div class="mx-n4 p-1 mx-lg-n6 bg-body-emphasis border-y">
+    <div class="row mx-0 g-3">
         <div class="col-lg-7">
             <div class="card shadow-sm rounded-1 h-100">
                 <div class="card-header bg-light py-2">

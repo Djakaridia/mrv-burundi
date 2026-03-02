@@ -173,7 +173,7 @@
                             </div>
                             <div class="col-md-6 mb-2 mb-lg-0 d-flex gap-2 justify-content-lg-end">
                                 <?php if (!empty($curr_inventory)) { ?>
-                                    <button type="button" data-bs-toggle="modal" data-bs-target="#addDataInventoryModal" data-inventory="<?php echo $sel_inventory; ?>" class="btn btn-subtle-primary btn-sm">
+                                    <button type="button" data-bs-toggle="modal" data-bs-target="#importDataInventoryModal" data-inventory="<?php echo $sel_inventory; ?>" class="btn btn-subtle-primary btn-sm">
                                         <span class="fa fa-database fs-9 me-2"></span>Importer données
                                     </button>
                                 <?php } ?>
@@ -267,7 +267,7 @@
                                     <h4 class="text-800 mb-3">Aucune données trouvée</h4>
                                     <p class="text-600 mb-5">Veuillez ajouter des données pour afficher ses graphiques</p>
                                     <?php if (!empty($curr_inventory)) { ?>
-                                        <button type="button" data-bs-toggle="modal" data-bs-target="#addDataInventoryModal" data-inventory="<?php echo $sel_inventory; ?>" class="btn btn-subtle-primary btn-sm">
+                                        <button type="button" data-bs-toggle="modal" data-bs-target="#importDataInventoryModal" data-inventory="<?php echo $sel_inventory; ?>" class="btn btn-subtle-primary btn-sm">
                                             <span class="fa fa-database fs-9 me-2"></span>Importer des données
                                         </button>
                                     <?php } ?>

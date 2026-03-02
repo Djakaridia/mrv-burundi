@@ -664,10 +664,17 @@
                                     </div>
 
                                     <?php if (empty($currFilSecteur) && empty($currFilGaz)) { ?>
-                                        <button type="button" data-bs-toggle="modal" data-bs-target="#importRegisterModal" class="btn btn-subtle-primary btn-sm"
-                                            data-inventory="<?php echo $sel_inventory; ?>">
-                                            <span class="fa fa-database fs-9 me-2"></span>Importer données
-                                        </button>
+                                        <div class="d-flex gap-1">
+                                            <button class="btn btn-subtle-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#importRegisterModal"
+                                                data-inventory="<?php echo $sel_inventory; ?>" aria-haspopup="true" aria-expanded="false">
+                                                <span class="fa fa-database fs-9 me-2"></span>Importer
+                                            </button>
+
+                                            <button class="btn btn-subtle-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#addRegisterModal"
+                                                data-inventory="<?php echo $sel_inventory; ?>" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fas fa-plus"></i> Ajouter
+                                            </button>
+                                        </div>
                                     <?php } else { ?>
                                         <button type="button" onclick="window.location.href=`<?= $_SERVER['PHP_SELF'] ?>`" class="btn btn-subtle-primary btn-sm">
                                             <span class="fa fa-arrow-left fs-9 me-2"></span>Vue globale des données
@@ -746,14 +753,14 @@
                                                     <td class="align-middle review px-2">
                                                         <div class="position-relative">
                                                             <div class="d-flex gap-1">
-                                                                <!-- <?php if (checkPermis($db, 'update')) : ?>
-                                                                    <button title="Modifier" class="btn btn-sm btn-phoenix-info fs-10 px-2 py-1" data-bs-toggle="modal"
-                                                                        data-bs-target="#addRegisterModal" data-id="<?php echo $row['id']; ?>">
+                                                                <?php if (checkPermis($db, 'update')) : ?>
+                                                                    <button title="Modifier" class="btn btn-sm btn-phoenix-info fs-10 px-2 py-1" data-bs-toggle="modal" data-bs-target="#addRegisterModal"
+                                                                        data-id="<?php echo $row['id']; ?>" data-inventory="<?php echo $sel_inventory; ?>" >
                                                                         <span class="uil-pen fs-8"></span>
                                                                     </button>
                                                                 <?php endif; ?>
 
-                                                                <?php if (checkPermis($db, 'update', 2)) : ?>
+                                                                <!-- <?php if (checkPermis($db, 'update', 2)) : ?>
                                                                     <button title="Approuver/Désapprouver" onclick="updateState(<?php echo $row['id']; ?>, '<?php echo $row['status'] == 'approuve' ? 'non_approuve' : 'approuve'; ?>', 'Êtes-vous sûr de vouloir <?php echo $row['status'] == 'approuve' ? 'désapprouver' : 'approuver'; ?> ce register ?', 'registers')"
                                                                         type="button" class="btn btn-sm btn-phoenix-warning fs-10 px-2 py-1">
                                                                         <span class="uil-<?php echo $row['status'] == 'approuve' ? 'ban text-warning' : 'check-circle text-success'; ?> fs-8"></span>
@@ -905,14 +912,14 @@
                                                     <td class="align-middle review px-2">
                                                         <div class="position-relative">
                                                             <div class="d-flex gap-1">
-                                                                <!-- <?php if (checkPermis($db, 'update')) : ?>
-                                                                    <button title="Modifier" class="btn btn-sm btn-phoenix-info fs-10 px-2 py-1" data-bs-toggle="modal"
-                                                                        data-bs-target="#addRegisterModal" data-id="<?php echo $row['id']; ?>">
+                                                                <?php if (checkPermis($db, 'update')) : ?>
+                                                                    <button title="Modifier" class="btn btn-sm btn-phoenix-info fs-10 px-2 py-1" data-bs-toggle="modal" data-bs-target="#addRegisterModal"
+                                                                        data-id="<?php echo $row['id']; ?>" data-inventory="<?php echo $sel_inventory; ?>" >
                                                                         <span class="uil-pen fs-8"></span>
                                                                     </button>
                                                                 <?php endif; ?>
 
-                                                                <?php if (checkPermis($db, 'update', 2)) : ?>
+                                                                <!-- <?php if (checkPermis($db, 'update', 2)) : ?>
                                                                     <button title="Approuver/Désapprouver" onclick="updateState(<?php echo $row['id']; ?>, '<?php echo $row['status'] == 'approuve' ? 'non_approuve' : 'approuve'; ?>', 'Êtes-vous sûr de vouloir <?php echo $row['status'] == 'approuve' ? 'désapprouver' : 'approuver'; ?> ce register ?', 'registers')"
                                                                         type="button" class="btn btn-sm btn-phoenix-warning fs-10 px-2 py-1">
                                                                         <span class="uil-<?php echo $row['status'] == 'approuve' ? 'ban text-warning' : 'check-circle text-success'; ?> fs-8"></span>

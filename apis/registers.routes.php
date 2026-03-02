@@ -145,10 +145,47 @@ switch ($requestMethod) {
                 echo json_encode(["status"  => "danger", "message" => $e->getMessage()]);
             }
             break;
-        }
-        if ($action === 'create') {
-            // TODO: Implement create action
-            break;
+        } else {
+            $id = isset($_GET['id']) ? sanitize_input($_GET['id']) : null;
+            if ($id === null) {
+                $register->annee              = sanitize_input($_POST['annee']);
+                $register->inventaire_id      = (int)sanitize_input($_POST['inventaire_id'] ?? 0);
+                $register->secteur_id         = sanitize_input($_POST['secteur_id']);
+                $register->code               = sanitize_input($_POST['code']);
+                $register->categorie          = sanitize_input($_POST['categorie']);
+                $register->gaz                = sanitize_input($_POST['gaz']);
+                $register->file                = sanitize_input($_POST['file']??"");
+                $register->emission_annee     = sanitize_input($_POST['emission_annee']);
+                $register->emission_absolue   = sanitize_input($_POST['emission_absolue']);
+                $register->emission_niveau    = sanitize_input($_POST['emission_niveau']);
+                $register->emission_cumulee   = sanitize_input($_POST['emission_cumulee']);
+                $register->add_by             = $payload['user_id'];
+
+                if ($register->create()) {
+                    echo json_encode(array('status' => 'success', 'message' => 'Enregistrement ajouté avec succès.'));
+                } else {
+                    echo json_encode(array('status' => 'danger', 'message' => 'Erreur lors de l\'ajout de l\'enregistrement.'));
+                }
+            } else {
+                $register->id                 = $id;
+                $register->annee              = sanitize_input($_POST['annee']);
+                $register->inventaire_id      = (int)sanitize_input($_POST['inventaire_id'] ?? 0);
+                $register->secteur_id         = sanitize_input($_POST['secteur_id']);
+                $register->code               = sanitize_input($_POST['code']);
+                $register->categorie          = sanitize_input($_POST['categorie']);
+                $register->gaz                = sanitize_input($_POST['gaz']);
+                $register->emission_annee     = sanitize_input($_POST['emission_annee']);
+                $register->emission_absolue   = sanitize_input($_POST['emission_absolue']);
+                $register->emission_niveau    = sanitize_input($_POST['emission_niveau']);
+                $register->emission_cumulee   = sanitize_input($_POST['emission_cumulee']);
+                $register->add_by             = $payload['user_id'];
+
+                if ($register->update()) {
+                    echo json_encode(array('status' => 'success', 'message' => 'Enregistrement modifié avec succès.'));
+                } else {
+                    echo json_encode(array('status' => 'danger', 'message' => 'Erreur lors de la modification de l\'enregistrement.'));
+                }
+            }
         }
 
         break;

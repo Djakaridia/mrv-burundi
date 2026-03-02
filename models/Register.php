@@ -30,13 +30,9 @@ class Register
     public function create()
     {
         $query = "INSERT INTO {$this->table}
-            (secteur_id, code, categorie, annee, inventaire_id, gaz,
-             emission_annee, emission_absolue, emission_niveau, emission_cumulee,
-             file, add_by)
+            (secteur_id, code, categorie, annee, inventaire_id, gaz, emission_annee, emission_absolue, emission_niveau, emission_cumulee, file, add_by)
             VALUES
-            (:secteur_id, :code, :categorie, :annee, :inventaire_id, :gaz,
-             :emission_annee, :emission_absolue, :emission_niveau, :emission_cumulee,
-             :file, :add_by)";
+            (:secteur_id, :code, :categorie, :annee, :inventaire_id, :gaz, :emission_annee, :emission_absolue, :emission_niveau, :emission_cumulee, :file, :add_by)";
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':secteur_id', $this->secteur_id);
@@ -51,6 +47,25 @@ class Register
         $stmt->bindParam(':emission_cumulee', $this->emission_cumulee);
         $stmt->bindParam(':file', $this->file);
         $stmt->bindParam(':add_by', $this->add_by);
+
+        return $stmt->execute();
+    }
+
+    /* ===================== UPDATE ===================== */
+    public function update()
+    {
+        $query = "UPDATE {$this->table} SET secteur_id = :secteur_id, categorie = :categorie, inventaire_id = :inventaire_id, gaz = :gaz, emission_annee = :emission_annee, emission_absolue = :emission_absolue, emission_niveau = :emission_niveau, emission_cumulee = :emission_cumulee, add_by = :add_by WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':secteur_id', $this->secteur_id);
+        $stmt->bindParam(':categorie', $this->categorie);
+        $stmt->bindParam(':inventaire_id', $this->inventaire_id);
+        $stmt->bindParam(':gaz', $this->gaz);
+        $stmt->bindParam(':emission_annee', $this->emission_annee);
+        $stmt->bindParam(':emission_absolue', $this->emission_absolue);
+        $stmt->bindParam(':emission_niveau', $this->emission_niveau);
+        $stmt->bindParam(':emission_cumulee', $this->emission_cumulee);
+        $stmt->bindParam(':add_by', $this->add_by);
+        $stmt->bindParam(':id', $this->id);
 
         return $stmt->execute();
     }
@@ -150,7 +165,7 @@ class Register
         $row = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $row;
     }
-    
+
     public function readById()
     {
         $query = "SELECT * FROM {$this->table} WHERE id = :id";
@@ -167,41 +182,6 @@ class Register
         $stmt->bindParam(':annee', $this->annee);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    /* ===================== UPDATE ===================== */
-    public function update()
-    {
-        $query = "UPDATE {$this->table} SET
-            secteur_id = :secteur_id,
-            categorie = :categorie,
-            unite = :unite,
-            gaz = :gaz,
-            emission_annee = :emission_annee,
-            emission_absolue = :emission_absolue,
-            emission_niveau = :emission_niveau,
-            emission_cumulee = :emission_cumulee,
-            afficher = :afficher,
-            status = :status,
-            add_by = :add_by
-        WHERE id = :id";
-
-        $stmt = $this->conn->prepare($query);
-
-        $stmt->bindParam(':secteur_id', $this->secteur_id);
-        $stmt->bindParam(':categorie', $this->categorie);
-        $stmt->bindParam(':inventaire_id', $this->inventaire_id);
-        $stmt->bindParam(':gaz', $this->gaz);
-        $stmt->bindParam(':emission_annee', $this->emission_annee);
-        $stmt->bindParam(':emission_absolue', $this->emission_absolue);
-        $stmt->bindParam(':emission_niveau', $this->emission_niveau);
-        $stmt->bindParam(':emission_cumulee', $this->emission_cumulee);
-        $stmt->bindParam(':afficher', $this->afficher);
-        $stmt->bindParam(':status', $this->status);
-        $stmt->bindParam(':add_by', $this->add_by);
-        $stmt->bindParam(':id', $this->id);
-
-        return $stmt->execute();
     }
 
     /* ===================== UPDATE FILE ===================== */

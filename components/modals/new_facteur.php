@@ -43,7 +43,7 @@
                                 <div class="mb-1">
                                     <label class="form-label">Gaz*</label>
                                     <select class="form-select" name="gaz" required>
-                                        <option value="">Sélectionner un gaz</option>
+                                        <option value="" disabled>Sélectionner un gaz</option>
                                         <?php if ($gazs ?? []) : ?>
                                             <?php foreach ($gazs as $gaz): ?>
                                                 <option value="<?= $gaz['name'] ?>"><?= $gaz['name'] ?></option>
