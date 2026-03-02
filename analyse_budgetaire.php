@@ -380,6 +380,7 @@
                 color: '#0d6efd'
             },
         ],
+        height: 475,
         showLegend: true
     });
 </script>
