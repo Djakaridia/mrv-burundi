@@ -126,7 +126,6 @@ class Inventory
         return false;
     }
 
-    // Read data from viewtable
     public function readData($viewtable)
     {
         try {
@@ -184,37 +183,26 @@ class Inventory
             return false;
         }
     }
+
     public function AllDataParSecteur()
     {
         try {
-            $query = "SELECT viewtable FROM " . $this->table . " ORDER BY id DESC";
+            $query = "SELECT viewtable FROM t_inventaires WHERE afficher = :afficher ORDER BY annee DESC";
             $stmt = $this->conn->prepare($query);
-            $stmt->execute();
+            $stmt->execute(['afficher' => 'oui']);
             $tables = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             $result = [];
-
             foreach ($tables as $data) {
-
                 $tableName = preg_replace('/[^a-zA-Z0-9_]/', '', $data['viewtable']);
 
-                $sql = "SELECT SUM(agriculture) as agriculture,SUM(fat) as fat, SUM(energie) as energie,SUM(dechets) as dechets FROM `$tableName`  ";
-                $stmt = $this->conn->prepare($sql);
-                $stmt->execute();
+                if (empty($tableName))  continue;
 
-                $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-                $columns = [];
-                for ($i = 0; $i < $stmt->columnCount(); $i++) {
-                    $meta = $stmt->getColumnMeta($i);
-                    $columns[] = $meta['name'];
-                }
-
-                $result[] = [
-                    'table' => $tableName,
-                    'columns' => $columns,
-                    'data' => $rows
-                ];
+                $sql = "SELECT SUM(agriculture) AS agriculture, SUM(fat) AS fat, SUM(energie) AS energie, SUM(dechets) AS dechets FROM `$tableName`";
+                $stmtData = $this->conn->prepare($sql);
+                $stmtData->execute();
+                $rows = $stmtData->fetch(PDO::FETCH_ASSOC);
+                $result[] = ['table' => $tableName,'data'  => $rows];
             }
 
             return $result;
@@ -223,8 +211,6 @@ class Inventory
         }
     }
 
-
-    // Delete data from viewtable
     public function deleteData($viewtable)
     {
         try {
