@@ -416,6 +416,20 @@ CREATE TABLE IF NOT EXISTS t_taches (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Table des suivi des activités
+CREATE TABLE IF NOT EXISTS t_suivi_taches (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    observation TEXT,
+    difficulte TEXT,
+    solution TEXT,
+    status VARCHAR(50),
+    date_suivie DATE,
+    tache_id INT,
+    add_by INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
 -- Table des indicateurs des activités
 CREATE TABLE IF NOT EXISTS t_tache_indicateurs (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -448,6 +462,7 @@ CREATE TABLE IF NOT EXISTS t_tache_couts (
     montant DECIMAL(15,2) NOT NULL,
     convention INT NOT NULL,
     tache_id INT NOT NULL,
+    type VARCHAR(20), -- prévu, réalise
     add_by INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

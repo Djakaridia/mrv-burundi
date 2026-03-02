@@ -4,7 +4,10 @@
         <div class="modal-content bg-body-highlight p-4">
             <!-- Header avec bouton fermer et titre -->
             <div class="modal-header justify-content-between border-0 p-0 mb-2">
-                <h3 class="mb-0 fw-bold text-primary"> <span class="fas fa-tasks me-2"></span>Cout des tâches </h3>
+                <h3 class="mb-0 fw-bold text-primary">
+                    <span class="fas fa-tasks me-2"></span>
+                    <span id="mod_SuiviTaskTitle">Couts de la tâche</span>
+                </h3>
                 <button type="button" class="btn btn-sm btn-phoenix-secondary" data-bs-dismiss="modal"
                     aria-label="Close"><span class="fas fa-times text-danger"></span></button>
             </div>
@@ -23,6 +26,7 @@
                     <?php if (isset($conventions_project) && count($conventions_project) > 0) { ?>
                         <form id="coutTaskForm">
                             <input type="hidden" id="cout_tache_id" name="tache_id">
+                            <input type="hidden" id="cout_type" name="type">
 
                             <div class="card rounded-1 mb-3" style="min-height: 300px; max-height: 400px; overflow-y: auto;">
                                 <table class="table table-sm table-hover table-striped fs-12 table-bordered border-emphasis" align="center">
@@ -62,9 +66,6 @@
                                 <h4 class="mb-5 text-dark">
                                     <span class="fas fa-history me-2"></span>Aucune convention disponible
                                 </h4>
-                                <?php if (isset($project_id)) { ?>
-                                    <a href="<?php echo $_SERVER['PHP_SELF'] . '?id=' . $project_id . ''; ?>" class="btn btn-primary btn-sm px-3 my-0">Ajouter une convention</a>
-                                <?php } ?>
                             </div>
                             <div class="modal-footer d-flex justify-content-between border-0 p-0">
                                 <button type="button" class="btn btn-secondary btn-sm px-3 my-0" data-bs-dismiss="modal" aria-label="Close">Annuler</button>
@@ -81,7 +82,10 @@
     $(document).ready(function() {
         $('#coutTaskModal').on('shown.bs.modal', async function(event) {
             const dataId = $(event.relatedTarget).data('id');
+            const dataType = $(event.relatedTarget).data('type');
             $('#cout_tache_id').val(dataId);
+            $('#cout_type').val(dataType);
+            $('#mod_SuiviTaskTitle').text(dataType === 'prevu' ? 'Couts prévus de la tâche' : 'Couts réalisés de la tâche');
 
             $('#coutLoadingScreen').show();
             $('#coutContentContainer').hide();
@@ -99,7 +103,7 @@
                     const result = await response.json();
                     if (result.status === 'success' && result.data?.length) {
                         result.data.forEach(item => {
-                            $(`#cout_tache-${item.convention}`).val(item.montant);
+                            if (item.type == dataType) $(`#cout_tache-${item.convention}`).val(item.montant);
                         });
                     }
                 } catch (error) {
@@ -123,14 +127,12 @@
             $('#coutContentContainer').hide();
         });
 
-        // Soumission du formulaire
         $('#coutTaskForm').on('submit', async function(e) {
             e.preventDefault();
 
             const formData = new FormData(this);
             const couts = {};
 
-            // Récupération structurée des données
             $('[name^="cout_tache["]').each(function() {
                 const matches = this.name.match(/cout_tache\[(\d+)\]/);
                 if (matches) {

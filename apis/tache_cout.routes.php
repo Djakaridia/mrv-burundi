@@ -34,7 +34,6 @@ function sanitize_input($data)
 switch ($requestMethod) {
     case 'POST':
         try {
-            // Validation des données requises
             $requiredFields = ['tache_id', 'valeur_couts'];
             foreach ($requiredFields as $field) {
                 if (empty($_POST[$field])) {
@@ -43,8 +42,8 @@ switch ($requestMethod) {
                 }
             }
 
-            // Nettoyage des données
             $tache_id = sanitize_input($_POST['tache_id']);
+            $type = sanitize_input($_POST['type']);
             $add_by = sanitize_input($payload['user_id']);
             $coutsData = json_decode($_POST['valeur_couts'], true);
 
@@ -53,14 +52,13 @@ switch ($requestMethod) {
                 exit();
             }
 
-            // Suppression des anciennes couts
             $tacheCout->tache_id = $tache_id;
+            $tacheCout->type = $type;
             if (!$tacheCout->delete()) {
                 echo json_encode(['status' => 'danger', 'message' => "Erreur lors de la suppression des anciennes couts"]);
                 exit();
             }
 
-            // Insertion des nouvelles couts
             $successCount = 0;
             $errors = [];
             foreach ($coutsData as $cout) {
@@ -73,6 +71,7 @@ switch ($requestMethod) {
                 $tacheCout->montant = sanitize_input($cout['montant']);
                 $tacheCout->convention = sanitize_input($cout['convention']);
                 $tacheCout->tache_id = $tache_id;
+                $tacheCout->type = $type;
                 $tacheCout->add_by = $add_by;
 
                 if ($tacheCout->create()) {
@@ -94,6 +93,7 @@ switch ($requestMethod) {
 
     case 'DELETE':
         $tacheCout->id = isset($_GET['id']) ? sanitize_input($_GET['id']) : die(json_encode(['error' => 'ID manquant']));
+        $tacheCout->type = isset($_GET['type']) ? sanitize_input($_GET['type']) : die(json_encode(['error' => 'Type manquant']));
 
         if ($tacheCout->delete()) {
             echo json_encode(array('status' => 'success', 'message' => 'Tache cout supprimée avec succès.'));

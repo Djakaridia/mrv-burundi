@@ -69,18 +69,15 @@ switch ($requestMethod) {
 
         if ($id) {
             $suivi_tache->id = $id;
-            $suivi_tache->name = sanitize_input($_POST['name']);
-            $suivi_tache->code = sanitize_input($_POST['code']);
-            $suivi_tache->description = sanitize_input($_POST['description']);
-            $suivi_tache->etat_avancement = sanitize_input($_POST['etat_avancement']);
-            $suivi_tache->difficulte = sanitize_input($_POST['difficulte']);
-            $suivi_tache->solution = sanitize_input($_POST['solution']);
-            $suivi_tache->date_suivi = sanitize_input($_POST['date_suivi']);
-            $suivi_tache->add_by = sanitize_input($payload['user_id']);
+            $suivi_tache->observation = sanitize_input($_POST['observation'] ?? "");
+            $suivi_tache->difficulte = sanitize_input($_POST['difficulte'] ?? "");
+            $suivi_tache->solution = sanitize_input($_POST['solution'] ?? "");
+            $suivi_tache->date_suivie = sanitize_input($_POST['date_suivie']);
             $suivi_tache->tache_id = sanitize_input($_POST['tache_id']);
-            $suivi_tache->status = isset($_POST['status']) ? sanitize_input($_POST['status']) : 'En cours';
+            $suivi_tache->status = sanitize_input($_POST['status']);
+            $suivi_tache->add_by = sanitize_input($payload['user_id']);
 
-            if (empty($suivi_tache->name) || empty($suivi_tache->code) || empty($suivi_tache->tache_id)) {
+            if (empty($suivi_tache->status) || empty($suivi_tache->date_suivie) || empty($suivi_tache->tache_id)) {
                 echo json_encode(array('status' => 'warning', 'message' => 'Veuillez remplir tous les champs obligatoires !!!'));
                 exit();
             }
@@ -94,18 +91,15 @@ switch ($requestMethod) {
                 echo json_encode(array('status' => 'danger', 'message' => 'Erreur lors de la modification de la tâche.'));
             }
         } else {
-            $suivi_tache->name = sanitize_input($_POST['name']);
-            $suivi_tache->code = sanitize_input($_POST['code']);
-            $suivi_tache->description = sanitize_input($_POST['description']);
-            $suivi_tache->etat_avancement = sanitize_input($_POST['etat_avancement']);
-            $suivi_tache->difficulte = sanitize_input($_POST['difficulte']);
-            $suivi_tache->solution = sanitize_input($_POST['solution']);
-            $suivi_tache->date_suivi = sanitize_input($_POST['date_suivi']);
-            $suivi_tache->add_by = sanitize_input($payload['user_id']);
+            $suivi_tache->observation = sanitize_input($_POST['observation'] ?? "");
+            $suivi_tache->difficulte = sanitize_input($_POST['difficulte'] ?? "");
+            $suivi_tache->solution = sanitize_input($_POST['solution'] ?? "");
+            $suivi_tache->date_suivie = sanitize_input($_POST['date_suivie']);
             $suivi_tache->tache_id = sanitize_input($_POST['tache_id']);
-            $suivi_tache->status = isset($_POST['status']) ? sanitize_input($_POST['status']) : 'En cours';
+            $suivi_tache->status = sanitize_input($_POST['status']);
+            $suivi_tache->add_by = sanitize_input($payload['user_id']);
 
-            if (empty($suivi_tache->name) || empty($suivi_tache->code) || empty($suivi_tache->tache_id)) {
+            if (empty($suivi_tache->status) || empty($suivi_tache->date_suivie) || empty($suivi_tache->tache_id)) {
                 echo json_encode(array('status' => 'warning', 'message' => 'Veuillez remplir tous les champs obligatoires !!!'));
                 exit();
             }

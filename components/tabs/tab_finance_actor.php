@@ -25,9 +25,9 @@
                             </thead>
                             <tbody class="list">
                                 <?php foreach ($conventions as $convention):
-                                    $montant_prev = floatval($convention['montant'] ?? 0);
+                                    $montant_prevu = floatval($convention['montant'] ?? 0);
                                     $montant_decaisse = $decaisse_par_convention[$convention['id']] ?? 0;
-                                    $taux = $montant_prev > 0 ? round(($montant_decaisse / $montant_prev) * 100, 1) : 0;
+                                    $taux = $montant_prevu > 0 ? round(($montant_decaisse / $montant_prevu) * 100, 1) : 0;
 
                                     $now = time();
                                     $date_fin = strtotime($convention['date_fin'] ?? '');
@@ -58,7 +58,7 @@
                                             <?php echo $grouped_partenaire[$convention['partenaire_id']]['sigle'] ?? 'N/A'; ?>
                                         </td>
                                         <td class="align-middle text-end">
-                                            <span class="fw-semibold"><?php echo number_format($montant_prev, 0, ',', ' '); ?></span>
+                                            <span class="fw-semibold"><?php echo number_format($montant_prevu, 0, ',', ' '); ?></span>
                                         </td>
                                         <td class="align-middle text-end">
                                             <span class="text-success"><?php echo number_format($montant_decaisse, 0, ',', ' '); ?></span>

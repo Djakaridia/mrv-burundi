@@ -127,8 +127,8 @@
   $tache_cout = new TacheCout($db);
   $tache_couts = $tache_cout->read();
   $grouped_tache_couts = [];
-  foreach ($tache_couts as $tache_cout) {
-    $grouped_tache_couts[$tache_cout['tache_id']][] = $tache_cout;
+  foreach ($tache_couts as $cout) {
+    if($cout['type'] === 'prevu') $grouped_tache_couts[$cout['tache_id']][] = $cout;
   }
 
   $conventions_projet = $conventions_par_projet[$project_curr['id']] ?? [];

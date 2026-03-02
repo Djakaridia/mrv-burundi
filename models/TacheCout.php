@@ -8,6 +8,7 @@ class TacheCout
     public $montant;
     public $convention;
     public $tache_id;
+    public $type;
     public $add_by;
 
     public function __construct($db)
@@ -17,12 +18,13 @@ class TacheCout
 
     public function create()
     {
-        $query = "INSERT INTO " . $this->table . " (montant, convention, tache_id, add_by) VALUES 
-             (:montant, :convention, :tache_id, :add_by)";
+        $query = "INSERT INTO " . $this->table . " (montant, convention, tache_id, type, add_by) VALUES 
+             (:montant, :convention, :tache_id, :type, :add_by)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':montant', $this->montant);
         $stmt->bindParam(':convention', $this->convention);
         $stmt->bindParam(':tache_id', $this->tache_id);
+        $stmt->bindParam(':type', $this->type);
         $stmt->bindParam(':add_by', $this->add_by);
 
         if ($stmt->execute()) {
@@ -62,9 +64,10 @@ class TacheCout
 
     public function delete()
     {
-        $query = "DELETE FROM " . $this->table . " WHERE tache_id=:tache_id";
+        $query = "DELETE FROM " . $this->table . " WHERE tache_id=:tache_id AND type=:type";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':tache_id', $this->tache_id);
+        $stmt->bindParam(':type', $this->type);
 
         if ($stmt->execute()) {
             return true;

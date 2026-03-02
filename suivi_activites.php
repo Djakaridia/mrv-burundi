@@ -33,6 +33,18 @@
         $tache = new Tache($db);
         $tache->projet_id = $project_curr['id'];
         $taches_project = $tache->readByProjet();
+
+        $convention = new Convention($db);
+        $convention->projet_id = $project_curr['id'];
+        $conventions_project = $convention->readByProjet();
+        $arr_conventIds = array_column($conventions_project, 'partenaire_id');
+    }
+
+    $tache_cout = new TacheCout($db);
+    $tache_couts = $tache_cout->read();
+    $grouped_tache_decaisse = [];
+    foreach ($tache_couts as $cout) {
+        if($cout['type'] === 'realise') $grouped_tache_decaisse[$cout['tache_id']][] = $cout;
     }
 
     $tache_suivi_indicateur = new TacheSuiviIndicateur($db);
@@ -98,12 +110,15 @@
                                             <th class="align-middle" style="min-width:300px;">Libellé</th>
                                             <th class="align-middle">Responsable</th>
                                             <th class="align-middle text-center">Priorité</th>
-                                            <!-- <th class="align-middle text-center">Indicateur</th> -->
+                                            <th class="align-middle text-center text-nowrap" scope="col">Cout réalisé (USD)</th>
                                             <th class="align-middle text-center">Statut</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($taches_project as $tache) {?>
+                                        <?php foreach ($taches_project as $tache) {
+                                            $decaisse = $grouped_tache_decaisse[$tache['id']] ?? [];
+                                            $total_decaisse = array_sum(array_map('floatval', array_column($decaisse, 'montant')));
+                                        ?>
                                             <tr>
                                                 <td>
                                                     <div data-todo-offcanvas-toogle="data-todo-offcanvas-toogle" data-todo-offcanvas-target="suiviOffcanvas<?= $tache['id'] ?>">
@@ -117,18 +132,24 @@
 
                                                 <td class="text-center">
                                                     <span class="text-body-highlight">
-                                                        <span class="badge badge-phoenix badge-phoenix-primary rounded-pill py-1 px-2 fs-10"><?= $tache['priorite'] ?></span>
+                                                        <span class="badge badge-phoenix badge-phoenix-info rounded-pill py-1 px-2 fs-10"><?= $tache['priorite'] ?></span>
                                                     </span>
                                                 </td>
-                                               
+
                                                 <td class="text-center">
-                                                    <a class="btn btn-link text-decoration-none fw-bold py-1 px-0 m-0 text-capitalize" data-bs-toggle="modal"
+                                                    <a class="btn btn-subtle-primary rounded-pill btn-sm fw-bold fs-9 px-2 py-1" data-bs-toggle="modal" data-bs-target="#coutTaskModal" aria-haspopup="true" aria-expanded="false"
+                                                        data-id="<?php echo $tache['id']; ?>" data-type="realise">
+                                                        <?= ($total_decaisse > 0) ? number_format($total_decaisse, 0, ',', ' ') : "Ajouter" ?>
+                                                    </a>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <a class="btn btn-subtle-<?= getBadgeClass($tache['status']) ?> rounded-pill btn-sm fw-bold fs-9 px-2 py-1" data-bs-toggle="modal"
                                                         data-bs-target="#SuiviTAskModal" aria-haspopup="true" aria-expanded="false" data-id="<?php echo $tache['id']; ?>">
-                                                        <?php echo isset($tache['status']) ? $tache['status'] : "Suivre" ?>
+                                                        <?php echo isset($tache['status']) ? listStatus()[$tache['status']] : "Suivre" ?>
                                                     </a>
                                                 </td>
                                             </tr>
-
 
                                             <div class="offcanvas offcanvas-end content-offcanvas offcanvas-backdrop-transparent border-start shadow-none bg-body" tabindex="-1" data-todo-content-offcanvas="data-todo-content-offcanvas-<?= $tache['id'] ?>" id="suiviOffcanvas<?= $tache['id'] ?>">
                                                 <div class="offcanvas-body p-0">

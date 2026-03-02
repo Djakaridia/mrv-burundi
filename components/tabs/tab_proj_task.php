@@ -21,7 +21,7 @@
                         <th class="sort align-middle" scope="col" style="min-width:200px;">Libellé</th>
                         <th class="sort align-middle text-center" scope="col">Responsable</th>
                         <th class="sort align-middle text-center" scope="col">Priorité</th>
-                        <th class="sort align-middle text-center" scope="col">Cout (USD)</th>
+                        <th class="sort align-middle text-center text-nowrap" scope="col">Cout prévu (USD)</th>
                         <th class="sort align-middle text-center" scope="col">Status</th>
                         <th class="sort align-middle text-center" scope="col" style="min-width:100px;">Actions</th>
                     </tr>
@@ -48,17 +48,19 @@
                             </td>
                             <td class="text-center">
                                 <span class="text-body-highlight">
-                                    <span class="badge badge-phoenix badge-phoenix-primary rounded-pill py-1 px-2 fs-10"><?= $tache['priorite'] ?></span>
+                                    <span class="badge badge-phoenix badge-phoenix-info rounded-pill py-1 px-2 fs-10"><?= $tache['priorite'] ?></span>
                                 </span>
                             </td>
                             <td class="text-center">
-                                <a class="btn btn-subtle-primary rounded-1 btn-sm fw-bold fs-9 px-2 py-1" data-bs-toggle="modal" data-bs-target="#coutTaskModal" aria-haspopup="true" aria-expanded="false"
-                                    data-id="<?php echo $tache['id']; ?>">
+                                <a class="btn btn-subtle-primary rounded-pill btn-sm fw-bold fs-9 px-2 py-1" data-bs-toggle="modal" data-bs-target="#coutTaskModal" aria-haspopup="true" aria-expanded="false"
+                                    data-id="<?php echo $tache['id']; ?>" data-type="prevu">
                                     <?= ($total_couts > 0) ? number_format($total_couts, 0, ',', ' ') : "Ajouter" ?>
                                 </a>
                             </td>
                             <td class="text-center">
-                                <span class="col text-nowrap badge badge-phoenix rounded-pill py-1 px-2 fs-10 badge-phoenix-<?= ($tache['state'] == 'actif') ? 'success' : 'danger' ?>"> <?= $tache['state'] ?> </span>
+                                <span class="col text-nowrap badge badge-phoenix rounded-pill py-1 px-2 fs-10 badge-phoenix-<?= getBadgeClass($tache['status']) ?>">
+                                    <?= listStatus()[$tache['status']] ?>
+                                </span>
                             </td>
                             <td>
                                 <div class="d-flex gap-1">

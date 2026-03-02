@@ -24,16 +24,16 @@
                             </thead>
                             <tbody class="list">
                                 <?php
-                                $total_prev_activites = 0;
+                                $total_prevu_activites = 0;
                                 $total_decaisse_activites = 0;
 
                                 foreach ($taches_actives as $tache):
-                                    $montant_prev = isset($grouped_tache_couts[$tache['id']]) ? array_sum(array_column($grouped_tache_couts[$tache['id']], 'montant')) : 0;
-                                    $montant_decaisse = $montant_prev;
+                                    $montant_prevu = isset($grouped_tache_couts[$tache['id']]) ? array_sum(array_column($grouped_tache_couts[$tache['id']], 'montant')) : 0;
+                                    $montant_decaisse = isset($grouped_tache_decaisses[$tache['id']]) ? array_sum(array_column($grouped_tache_decaisses[$tache['id']], 'montant')) : 0;
 
-                                    $total_prev_activites += $montant_prev;
+                                    $total_prevu_activites += $montant_prevu;
                                     $total_decaisse_activites += $montant_decaisse;
-                                    $taux_activite = $montant_prev > 0 ? round(($montant_decaisse / $montant_prev) * 100, 1) : 0;
+                                    $taux_activite = $montant_prevu > 0 ? round(($montant_decaisse / $montant_prevu) * 100, 1) : 0;
 
                                     $projet_associe = array_filter($projets_actifs, function ($p) use ($tache) {
                                         return $p['id'] == $tache['projet_id'];
@@ -42,17 +42,17 @@
                                 ?>
                                     <tr>
                                         <td class="align-middle">
-                                            <span class="fw-semibold"><?php echo htmlspecialchars($tache['code'] ?? ''); ?></span>
+                                            <span class="fw-semibold"><?php echo html_entity_decode($tache['code'] ?? ''); ?></span>
                                         </td>
                                         <td class="align-middle">
-                                            <span title="<?php echo htmlspecialchars($tache['name'] ?? ''); ?>">
-                                                <?php echo htmlspecialchars($tache['name'] ?? ''); ?>
+                                            <span title="<?php echo html_entity_decode($tache['name'] ?? ''); ?>">
+                                                <?php echo html_entity_decode($tache['name'] ?? ''); ?>
                                             </span>
                                         </td>
                                         <td class="align-middle"><?php echo $projet_nom; ?></td>
                                         <td class="align-middle text-end">
-                                            <?php if ($montant_prev > 0): ?>
-                                                <span class="fw-semibold"><?php echo number_format($montant_prev, 0, ',', ' '); ?></span>
+                                            <?php if ($montant_prevu > 0): ?>
+                                                <span class="fw-semibold"><?php echo number_format($montant_prevu, 0, ',', ' '); ?></span>
                                             <?php else: ?>
                                                 <span class="text-muted">-</span>
                                             <?php endif; ?>
@@ -65,7 +65,7 @@
                                             <?php endif; ?>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <?php if ($montant_prev > 0): ?>
+                                            <?php if ($montant_prevu > 0): ?>
                                                 <span class="ms-2 fw-semibold"><?php echo $taux_activite; ?>%</span>
                                             <?php else: ?>
                                                 <span class="text-muted">-</span>
@@ -77,11 +77,11 @@
                             <tfoot class="bg-light">
                                 <tr class="text-nowrap">
                                     <th colspan="3" class="text-end">TOTAUX</th>
-                                    <th class="text-end"><?php echo number_format($total_prev_activites, 0, ',', ' '); ?></th>
+                                    <th class="text-end"><?php echo number_format($total_prevu_activites, 0, ',', ' '); ?></th>
                                     <th class="text-end"><?php echo number_format($total_decaisse_activites, 0, ',', ' '); ?></th>
                                     <th class="text-center">
                                         <?php
-                                        $taux_global_activites = $total_prev_activites > 0 ? round(($total_decaisse_activites / $total_prev_activites) * 100, 1) : 0;
+                                        $taux_global_activites = $total_prevu_activites > 0 ? round(($total_decaisse_activites / $total_prevu_activites) * 100, 1) : 0;
                                         ?>
                                         <span class="badge badge-phoenix py-1 px-2 badge-phoenix-<?php echo $taux_global_activites >= 80 ? 'success' : ($taux_global_activites >= 50 ? 'warning' : 'danger'); ?>">
                                             <?php echo $taux_global_activites; ?>%

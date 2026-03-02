@@ -125,41 +125,57 @@
     // Coûts des tâches (décaissements)
     $tache_cout = new TacheCout($db);
     $tache_couts = $tache_cout->read();
-    $grouped_tache_couts = [];
-    $total_decaisse = 0;
 
+    $grouped_tache_couts = [];
+    $grouped_tache_decaisses = [];
+    $total_couts = 0;
+    $total_decaisse = 0;
     foreach ($tache_couts as $cout) {
-        $grouped_tache_couts[$cout['tache_id']][] = $cout;
-        $total_decaisse += floatval($cout['montant'] ?? 0);
+        if ($cout['type'] === 'prevu') {
+            $grouped_tache_couts[$cout['tache_id']][] = $cout;
+            $total_couts += floatval($cout['montant'] ?? 0);
+        }
+
+        if ($cout['type'] === 'realise') {
+            $grouped_tache_decaisses[$cout['tache_id']][] = $cout;
+            $total_decaisse += floatval($cout['montant'] ?? 0);
+        }
     }
 
     // Calcul des décaissements par convention
     $decaisse_par_convention = [];
     foreach ($tache_couts as $cout) {
-        $conv_id = $cout['convention_id'] ?? null;
-        if ($conv_id) {
-            if (!isset($decaisse_par_convention[$conv_id])) {
-                $decaisse_par_convention[$conv_id] = 0;
-            }
+        $conv_id = $cout['convention'] ?? null;
+        if ($conv_id && $cout['type'] === 'realise') {
+            if (!isset($decaisse_par_convention[$conv_id])) $decaisse_par_convention[$conv_id] = 0;
             $decaisse_par_convention[$conv_id] += floatval($cout['montant'] ?? 0);
         }
     }
 
     // Données pour graphique timeline
-    $timeline_data = [];
+    $timeline_data_prevu = [];
+    $timeline_data_realise = [];
     $timeline_labels = [];
     foreach ($tache_couts as $cout) {
         if (!empty($cout['created_at'])) {
             $mois = date('Y-m', strtotime($cout['created_at']));
-            if (!isset($timeline_data[$mois])) {
-                $timeline_data[$mois] = 0;
+
+            if ($cout['type'] === 'prevu') {
+                if (!isset($timeline_data_prevu[$mois])) $timeline_data_prevu[$mois] = 0;
+                $timeline_data_prevu[$mois] += floatval($cout['montant'] ?? 0);
             }
-            $timeline_data[$mois] += floatval($cout['montant'] ?? 0);
+
+            if ($cout['type'] === 'realise') {
+                if (!isset($timeline_data_realise[$mois])) $timeline_data_realise[$mois] = 0;
+                $timeline_data_realise[$mois] += floatval($cout['montant'] ?? 0);
+            }
         }
     }
-    ksort($timeline_data);
-    $timeline_labels = array_keys($timeline_data);
-    $timeline_values = array_values($timeline_data);
+    ksort($timeline_data_prevu);
+    ksort($timeline_data_realise);
+    $timeline_labels = array_keys($timeline_data_prevu);
+    $timeline_values_prevu = array_values($timeline_data_prevu);
+    $timeline_values_realise = array_values($timeline_data_realise);
 
     // Statistiques globales
     $taux_execution_global = $total_conventions > 0 ? round(($total_decaisse / $total_conventions) * 100, 1) : 0;
@@ -351,24 +367,19 @@
     mrvTimelineChart({
         id: 'timelineMultiChart',
         labels: <?= json_encode($timeline_labels); ?>,
+        title: 'Comparaison réel vs prévisions',
         series: [{
-            name: 'Décaissements mensuelles',
-            data: <?php echo json_encode($timeline_values ?? []); ?>,
-            color: '#ffc107',
-        }],
-        // title: 'Comparaison réel vs prévisions',
-        // series: [{
-        //         name: 'Décaissements prévisionnels',
-        //         data: <?php echo json_encode($timeline_values ?? []); ?>,
-        //         color: '#ffc107',
-        //         dashStyle: 'dash'
-        //     },
-        //     {
-        //         name: 'Décaissements réels',
-        //         data: <?= json_encode($timeline_values_reel ?? []); ?>,
-        //         color: '#0d6efd'
-        //     },
-        // ],
+                name: 'Décaissements prévisionnels',
+                data: <?php echo json_encode($timeline_values_prevu ?? []); ?>,
+                color: '#ffc107',
+                dashStyle: 'dash'
+            },
+            {
+                name: 'Décaissements réalisés',
+                data: <?= json_encode($timeline_values_realise ?? []); ?>,
+                color: '#0d6efd'
+            },
+        ],
         showLegend: true
     });
 </script>

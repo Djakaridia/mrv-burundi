@@ -5,13 +5,10 @@ class SuiviTache
     private $table = 't_suivi_taches';
 
     public $id;
-    public $code;
-    public $name;
-    public $description;
-    public $etat_avancement;
+    public $observation;
     public $difficulte;
     public $solution;
-    public $date_suivi;
+    public $date_suivie;
     public $add_by;
     public $status;
     public $tache_id;
@@ -23,26 +20,18 @@ class SuiviTache
 
     public function create()
     {
-        $query = "INSERT INTO " . $this->table . " (code, name, description, etat_avancement, difficulte, solution, date_suivi, add_by, tache_id, status) 
-                  VALUES (:code, :name, :description, :etat_avancement, :difficulte, :solution, :date_suivi, :add_by, :tache_id, :status)";
+        $query = "INSERT INTO " . $this->table . " 
+        (observation, difficulte, solution, date_suivie, add_by, tache_id, status) VALUES 
+        (:observation, :difficulte, :solution, :date_suivie, :add_by, :tache_id, :status)";
 
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':code', $this->code);
-        $stmt->bindParam(':name', $this->name);
-        $stmt->bindParam(':description', $this->description);
-        $stmt->bindParam(':etat_avancement', $this->etat_avancement);
+        $stmt->bindParam(':observation', $this->observation);
         $stmt->bindParam(':difficulte', $this->difficulte);
         $stmt->bindParam(':solution', $this->solution);
-        $stmt->bindParam(':date_suivi', $this->date_suivi);
-        if (empty($this->date_suivi)) {
-            $this->date_suivi = date('Y-m-d H:i:s');
-        }
-        $stmt->bindParam(':date_suivi', $this->date_suivi);
+        $stmt->bindParam(':date_suivie', $this->date_suivie);
         $stmt->bindParam(':add_by', $this->add_by);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':tache_id', $this->tache_id);
-
-
 
         if ($stmt->execute()) {
             return true;
@@ -54,24 +43,14 @@ class SuiviTache
     public function update()
     {
         $query = "UPDATE " . $this->table .
-            " SET code=:code, name=:name, description=:description, 
-                  etat_avancement=:etat_avancement, difficulte=:difficulte, 
-                  solution=:solution, date_suivi=:date_suivi, add_by=:add_by,
-                  status=:status
-                  WHERE id=:id";
+            " SET observation=:observation, difficulte=:difficulte, solution=:solution, date_suivie=:date_suivie, add_by=:add_by, status=:status WHERE id=:id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $this->id);
-        $stmt->bindParam(':code', $this->code);
-        $stmt->bindParam(':name', $this->name);
-        $stmt->bindParam(':description', $this->description);
-        $stmt->bindParam(':etat_avancement', $this->etat_avancement);
+        $stmt->bindParam(':observation', $this->observation);
         $stmt->bindParam(':difficulte', $this->difficulte);
         $stmt->bindParam(':solution', $this->solution);
         $stmt->bindParam(':status', $this->status);
-        if (empty($this->date_suivi)) {
-            $this->date_suivi = date('Y-m-d H:i:s');
-        }
-        $stmt->bindParam(':date_suivi', $this->date_suivi);
+        $stmt->bindParam(':date_suivie', $this->date_suivie);
         $stmt->bindParam(':add_by', $this->add_by);
 
         if ($stmt->execute()) {
@@ -95,6 +74,7 @@ class SuiviTache
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
     public function readByTache()
     {
         $query = "SELECT * FROM " . $this->table . " WHERE tache_id = :tache_id ORDER BY id DESC";
