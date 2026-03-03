@@ -148,15 +148,13 @@ class Inventory
     public function AllData()
     {
         try {
-            $query = "SELECT viewtable FROM " . $this->table . " ORDER BY id DESC";
+            $query = "SELECT viewtable FROM t_inventaires WHERE afficher = :afficher ORDER BY annee DESC";
             $stmt = $this->conn->prepare($query);
-            $stmt->execute();
+            $stmt->execute(['afficher' => 'oui']);
             $tables = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             $result = [];
-
             foreach ($tables as $data) {
-
                 $tableName = preg_replace('/[^a-zA-Z0-9_]/', '', $data['viewtable']);
 
                 $sql = "SELECT * FROM `$tableName`";
@@ -171,11 +169,7 @@ class Inventory
                     $columns[] = $meta['name'];
                 }
 
-                $result[] = [
-                    'table' => $tableName,
-                    'columns' => $columns,
-                    'data' => $rows
-                ];
+                $result[] = ['table' => $tableName,'columns' => $columns,'data' => $rows];
             }
 
             return $result;

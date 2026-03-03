@@ -168,7 +168,7 @@
                     <div class="mx-n4 px-1 pb-3 mx-lg-n6 bg-body-emphasis border-y">
                         <div class="row mx-n1 py-1 align-items-center border-bottom mb-3">
                             <div class="col-md-6">
-                                <h3 class="h5 mb-0 fw-bold">Inventaire des émissions pour l'inventaire : <span class="text-primary fs-semibold"><?= $curr_inventory['name'] ?></span></h3>
+                                <h3 class="h5 mb-0 fw-bold">Inventaire des émissions pour l'inventaire : <span class="text-primary fs-semibold"><?= $curr_inventory['name']??"" ?></span></h3>
                                 <p class="text-muted small mb-0">Tableau récapitulatif des inventaires GES</p>
                             </div>
                             <div class="col-md-6 mb-2 mb-lg-0 d-flex gap-2 justify-content-lg-end">
