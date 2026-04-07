@@ -118,7 +118,8 @@
     $tache_couts = $tache_cout->read();
 
     foreach ($tache_couts as $cout) {
-      $couts_par_tache[$cout['tache_id']][] = $cout;
+      if ($cout['type'] === 'prevu') $couts_prevu_tache[$cout['tache_id']][] = $cout;
+      if ($cout['type'] === 'realise') $couts_decaisse_tache[$cout['tache_id']][] = $cout;
     }
 
     foreach ($projets as $projet) {
@@ -385,7 +386,7 @@
 
                   $totalTacheCount = count($taches_projet);
                   $finishedTacheCount = count(array_filter($taches_projet, function ($tache) {
-                    return strtolower($tache['status']) === 'terminée';
+                    return strtolower($tache['status']) === 'realise' || strtolower($tache['status']) === 'en_cours';
                   }));
                   $progress = $totalTacheCount > 0 ? (round(($finishedTacheCount / $totalTacheCount), 2) * 100) : 0;
                 ?>
@@ -415,7 +416,7 @@
                     </td>
                     <td class="text-center">
                       <span class="badge badge-phoenix fs-10 py-1 rounded-pill badge-phoenix-<?= getBadgeClass($projet['status']); ?>">
-                        <?= listStatus()[$projet['status']]??"N/A"; ?>
+                        <?= listStatus()[$projet['status']] ?? "N/A"; ?>
                       </span>
                     </td>
                     <td class="text-center p-0">
@@ -514,6 +515,7 @@
                   $logoParts = explode("../", $projet['logo'] ?? '');
                   $conventions_projet = $conventions_par_projet[$projet['id']] ?? [];
                   $budget_conventions = array_sum(array_column($conventions_projet, 'montant'));
+                  $budget_reference = $projet['budget'] > 0 ? $projet['budget'] : $budget_conventions;
 
                   $tache_projet = new Tache($db);
                   $tache_projet->projet_id = $projet['id'];
@@ -522,24 +524,26 @@
                     return $tache['state'] == 'actif';
                   });
 
+                  // Taux exécution physique
                   $totalTacheCount = count($taches_actives);
                   $finishedTacheCount = count(array_filter($taches_actives, function ($tache) {
-                    return strtolower($tache['status'] ?? '') === 'terminée';
+                    return strtolower($tache['status']) === 'realise' || strtolower($tache['status']) === 'en_cours';
                   }));
-
                   $taux_physique = $totalTacheCount > 0 ? round(($finishedTacheCount / $totalTacheCount) * 100, 1) : 0;
-                  $montant_total_depense = 0;
+
+                  // Taux exécution financière
+                  $montant_total_decaisse = 0;
                   foreach ($taches_actives as $tache) {
-                    if (isset($couts_par_tache[$tache['id']])) {
-                      $montant_total_depense += array_sum(array_column($couts_par_tache[$tache['id']], 'montant'));
+                    if (isset($couts_decaisse_tache[$tache['id']])) {
+                      $montant_total_decaisse += array_sum(array_column($couts_decaisse_tache[$tache['id']], 'montant'));
                     }
                   }
+                  $taux_financier = $budget_reference > 0 ? round(($montant_total_decaisse / $budget_reference) * 100, 1) : 0;
 
-                  $budget_reference = $budget_conventions > 0 ? $budget_conventions : ($projet['budget'] ?? 0);
-                  $taux_financier = $budget_reference > 0 ? round(($montant_total_depense / $budget_reference) * 100, 1) : 0;
-                  $budget_formate = ($projet['budget'] ?? 0) > 0 ? number_format($projet['budget'], 0, ',', ' ') . ' USD' : 'Non défini';
-                  $budget_conventions_formate = $budget_conventions > 0 ? number_format($budget_conventions, 0, ',', ' ') . ' USD' : 'Aucune convention';
-                  $montant_depense_formate = $montant_total_depense > 0 ? number_format($montant_total_depense, 0, ',', ' ') . ' USD' : '0 USD';
+                  // Formater les montants
+                  $budget_reference_format = ($budget_reference ?? 0) > 0 ? number_format($budget_reference, 0, ',', ' ') . ' USD' : 'Non défini';
+                  $budget_conventions_format = $budget_conventions > 0 ? number_format($budget_conventions, 0, ',', ' ') . ' USD' : 'Aucune convention';
+                  $montant_decaisse_format = $montant_total_decaisse > 0 ? number_format($montant_total_decaisse, 0, ',', ' ') . ' USD' : '0 USD';
                 ?>
                   <div class="col-12 col-lg-6 col-xl-4 projet-item">
                     <div class="card card-float border border-primary-subtle h-100 overflow-hidden">
@@ -573,34 +577,36 @@
                                 <span class="badge badge-phoenix fs-10 py-1 rounded-pill badge-phoenix-<?= $projet['state'] == "actif" ? "success" : "secondary"; ?>">
                                   <?= $projet['state'] ?? 'N/A'; ?>
                                 </span>
-                                <div class="dropdown">
-                                  <button title="Actions" class="btn btn-sm dropdown-toggle dropdown-caret-none p-0" type="button"
-                                    data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true"
-                                    aria-expanded="false" data-bs-reference="parent">
-                                    <span class="fas fa-ellipsis-v fs-8 text-body"></span>
-                                  </button>
-                                  <div class="dropdown-menu p-0">
-                                    <div class="d-flex flex-column">
-                                      <div class="dropdown-item border-top border-light p-1">
-                                        <?php if (checkPermis($db, 'update')) : ?>
+
+                                <?php if (checkPermis($db, 'update') || checkPermis($db, 'delete')) : ?>
+                                  <div class="dropdown">
+                                    <button title="Actions" class="btn btn-sm dropdown-toggle dropdown-caret-none p-0" type="button"
+                                      data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true"
+                                      aria-expanded="false" data-bs-reference="parent">
+                                      <span class="fas fa-ellipsis-v fs-8 text-body"></span>
+                                    </button>
+
+                                    <div class="dropdown-menu p-0">
+                                      <?php if (checkPermis($db, 'update')) : ?>
+                                        <div class="dropdown-item border-top border-light p-1">
                                           <a title="Modifier" data-bs-toggle="modal" data-bs-target="#addProjetModal" data-id="<?php echo $projet['id']; ?>"
                                             class="link-info text-start d-flex align-items-center w-100 fs-9 btn p-1">
                                             <span class="uil-pen fs-9 me-1"></span> Modifier
                                           </a>
-                                      </div>
-                                    <?php endif; ?>
+                                        </div>
+                                      <?php endif; ?>
 
-                                    <?php if (checkPermis($db, 'delete')): ?>
-                                      <div class="dropdown-item border-top border-light p-1">
-                                        <button title="Supprimer" class="link-danger text-start d-flex align-items-center w-100 fs-9 btn p-1"
-                                          onclick="deleteData(<?php echo $projet['id']; ?>,'Voulez-vous vraiment supprimer ce projet ?', 'projets', 'redirect', 'projects.php')">
-                                          <span class="uil-trash-alt fs-9 me-1"></span> Supprimer
-                                        </button>
-                                      </div>
-                                    <?php endif; ?>
+                                      <?php if (checkPermis($db, 'delete')): ?>
+                                        <div class="dropdown-item border-top border-light p-1">
+                                          <button title="Supprimer" class="link-danger text-start d-flex align-items-center w-100 fs-9 btn p-1"
+                                            onclick="deleteData(<?php echo $projet['id']; ?>,'Voulez-vous vraiment supprimer ce projet ?', 'projets', 'redirect', 'projects.php')">
+                                            <span class="uil-trash-alt fs-9 me-1"></span> Supprimer
+                                          </button>
+                                        </div>
+                                      <?php endif; ?>
                                     </div>
                                   </div>
-                                </div>
+                                <?php endif ?>
                               </div>
                             </div>
                             <h5 title="<?= html_entity_decode($projet['name']) ?>" class="mb-0 text-primary fw-bold fs-8" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; word-break: break-word;">
@@ -634,7 +640,7 @@
                               <i class="fas fa-coins text-success fs-10"></i>
                             </div>
                             <span class="text-muted small">Budget :</span>
-                            <span class="fw-bold ms-2 text-success small"><?= $budget_formate ?></span>
+                            <span class="fw-bold ms-2 text-success small"><?= $budget_reference_format ?></span>
                           </div>
 
                           <div class="d-flex align-items-center mb-2">
@@ -643,7 +649,7 @@
                             </div>
                             <span class="text-muted small">Conventions :</span>
                             <span class="fw-semibold ms-2 small">
-                              <?= count($conventions_projet) ?> convention(s) - <?= $budget_conventions_formate ?>
+                              <?= count($conventions_projet) ?> convention(s) - <?= $budget_conventions_format ?>
                             </span>
                           </div>
                         </div>
@@ -651,8 +657,8 @@
                         <div class="bg-light rounded-1 p-3">
                           <div class="mb-0">
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                              <span class="small text-muted">
-                                <i class="fas fa-chart-line me-1 text-primary"></i>
+                              <span class="small text-muted link-success cursor-pointer" onclick="window.location.href='suivi_activites.php?proj=<?= $projet['id'] ?>'">
+                                <i class="fas fa-link me-1 text-primary"></i>
                                 Exécution physique
                               </span>
                               <span class="fw-bold small <?= $taux_physique >= 75 ? 'text-success' : ($taux_physique >= 40 ? 'text-warning' : 'text-danger') ?>">
@@ -672,8 +678,8 @@
                           <hr>
                           <div class="mb-0">
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                              <span class="small text-muted">
-                                <i class="fas fa-percent me-1 text-info"></i>
+                              <span class="small text-muted link-info cursor-pointer" onclick="window.location.href='suivi_activites.php?proj=<?= $projet['id'] ?>'">
+                                <i class="fas fa-link me-1 text-info"></i>
                                 Exécution financière
                               </span>
                               <span class="fw-bold small <?= $taux_financier >= 75 ? 'text-success' : ($taux_financier >= 40 ? 'text-warning' : 'text-danger') ?>">
@@ -687,7 +693,7 @@
                             </div>
                             <div class="d-flex justify-content-between mt-1">
                               <span class="small text-muted" title="Dépensé / Budget total">
-                                <?= $montant_depense_formate ?> / <?= $budget_conventions_formate ?>
+                                <?= $montant_decaisse_format ?> / <?= $budget_reference_format ?>
                               </span>
                             </div>
                           </div>

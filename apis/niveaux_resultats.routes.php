@@ -38,8 +38,8 @@ switch ($requestMethod) {
             $niveauResult->code = sanitize_input($_POST['code']);
             $niveauResult->name = sanitize_input($_POST['name']);
             $niveauResult->niveau = sanitize_input($_POST['niveau']);
-            $niveauResult->parent = sanitize_input($_POST['parent'] ?? "0");
-            $niveauResult->programme = sanitize_input($_POST['programme']);
+            $niveauResult->parent = (int)sanitize_input($_POST['parent'] ?? 0);
+            $niveauResult->programme = (int)sanitize_input($_POST['programme'] ?? 0);
             $niveauResult->add_by = sanitize_input($payload['user_id']);
 
             if (empty($niveauResult->code) || empty($niveauResult->name)) {
@@ -58,8 +58,8 @@ switch ($requestMethod) {
             $niveauResult->code = sanitize_input($_POST['code']);
             $niveauResult->name = sanitize_input($_POST['name']);
             $niveauResult->niveau = sanitize_input($_POST['niveau']);
-            $niveauResult->parent = sanitize_input($_POST['parent'] ?? "0");
-            $niveauResult->programme = sanitize_input($_POST['programme']);
+            $niveauResult->parent = (int)sanitize_input($_POST['parent'] ?? 0);
+            $niveauResult->programme = (int)sanitize_input($_POST['programme'] ?? 0);
             $niveauResult->add_by = sanitize_input($payload['user_id']);
 
             if ($niveauResult->update()) {

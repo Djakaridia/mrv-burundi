@@ -158,7 +158,7 @@
                 const projetTasks = await projetTasksRes.json();
                 let progressPercentage = 0;
                 if (Array.isArray(projetTasks.data) && projetTasks.data.length > 0) {
-                    const finichedTasks = projetTasks.data.filter((task) => task.status.toLowerCase() == "terminée");
+                    const finichedTasks = projetTasks.data.filter((task) => task.status.toLowerCase() == "realise" || task.status.toLowerCase() == "en_cours");
                     const countTotalTask = projetTasks.data.length;
                     const countFinichedTasks = finichedTasks.length;
                     progressPercentage = Math.round((countFinichedTasks / countTotalTask) * 100);

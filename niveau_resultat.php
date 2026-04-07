@@ -228,7 +228,9 @@
                                                     </td>
                                                     <td class="align-middle customer">
                                                         <button title="Voir indicateur" type="button" class="btn btn-sm btn-link text-primary p-0 m-0" data-bs-toggle="modal"
-                                                            data-bs-target="#newNiveauIndicModal" data-id="<?php echo $niveau_resultat['id']; ?>">
+                                                            data-bs-target="#newNiveauIndicModal" data-id="<?php echo $niveau_resultat['id']; ?>"
+                                                            data-dateStart="<?php echo $programme_curr['annee_debut'] ?? ''; ?>"
+                                                            data-dateEnd="<?php echo $programme_curr['annee_fin'] ?? ''; ?>">
                                                             Indicateurs <span class="badge bg-success px-1">
                                                                 <?= isset($grouped_resultat_indicateurs[$niveau_resultat['id']]) ? count($grouped_resultat_indicateurs[$niveau_resultat['id']]) : 0 ?>
                                                             </span>

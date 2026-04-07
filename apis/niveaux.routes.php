@@ -37,8 +37,8 @@ switch ($requestMethod) {
             // Create
             $niveau->name = sanitize_input($_POST['name']);
             $niveau->type = sanitize_input($_POST['type']);
-            $niveau->level = sanitize_input($_POST['level']);
-            $niveau->programme = sanitize_input($_POST['programme']);
+            $niveau->level = (int)sanitize_input($_POST['level'] ?? 0);
+            $niveau->programme = (int)sanitize_input($_POST['programme'] ?? 0);
             $niveau->add_by = sanitize_input($payload['user_id']);
 
             if (empty($niveau->name) || empty($niveau->type)) {
@@ -56,8 +56,8 @@ switch ($requestMethod) {
             $niveau->id = sanitize_input($_GET['id']);
             $niveau->name = sanitize_input($_POST['name']);
             $niveau->type = sanitize_input($_POST['type']);
-            $niveau->level = sanitize_input($_POST['level']);
-            $niveau->programme = sanitize_input($_POST['programme']);
+            $niveau->level = (int)sanitize_input($_POST['level'] ?? 0);
+            $niveau->programme = (int)sanitize_input($_POST['programme'] ?? 0);
             $niveau->add_by = sanitize_input($payload['user_id']);
 
             if ($niveau->update()) {

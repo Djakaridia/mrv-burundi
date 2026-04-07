@@ -52,7 +52,7 @@ $user_projets = array_filter($projets, function ($projet) use ($user_group_ids) 
 
                     $totalTacheCount = count($taches_projet);
                     $finishedTacheCount = count(array_filter($taches_projet, function ($tache) {
-                        return strtolower($tache['status']) === 'terminée';
+                        return strtolower($tache['status']) === 'realise' || strtolower($tache['status']) === 'en_cours';
                     }));
                     $progress = $totalTacheCount > 0 ? (round(($finishedTacheCount / $totalTacheCount), 2) * 100) : 0;
                 ?>

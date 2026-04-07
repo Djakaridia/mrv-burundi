@@ -32,8 +32,10 @@
                     <th scope="col" class="text-start px-2">Intitulé</th>
                     <th scope="col" class="text-center">Unité</th>
                     <th scope="col" class="text-center">Type</th>
-                    <?php for ($i = 2020; $i < 2028; $i++) { ?>
-                      <th scope="col" class="text-center"><?= $i ?></th>
+                    <?php if (isset($programme_curr) && $programme_curr) { ?>
+                      <?php for ($i = $programme_curr['annee_debut']; $i <= $programme_curr['annee_fin']; $i++) { ?>
+                        <th scope="col" class="text-center"><?= $i ?></th>
+                      <?php } ?>
                     <?php } ?>
                     <th scope="col" class="text-center">Actions</th>
                   </tr>
@@ -45,6 +47,13 @@
 
           <div id="niveauIndicFormContent" class="d-none">
             <form action="" class="row" enctype="multipart/form-data" name="FormNiveauIndic" id="FormNiveauIndic">
+              <div class="col-md-12 mb-3">
+                <div class="form-group">
+                  <label class="form-label" for="niveau_indic_code">Code*</label>
+                  <input class="form-control" name="code" id="niveau_indic_code" type="text" placeholder="Code" required>
+                </div>
+              </div>
+
               <!-- Intitulé de l'indicateur -->
               <div class="col-md-12 mb-3">
                 <div class="form-group">
@@ -84,12 +93,14 @@
                 <div class="row g-1">
                   <label class="form-label" for="niv_periode_1">Valeurs cibles annuelles (seront combinées en JSON)</label>
                   <div class="col-12 d-flex flex-wrap gap-2">
-                    <?php for ($i = 2020; $i < 2028; $i++) { ?>
-                      <div style="flex: 0 0 auto; width: 80px;">
-                        <label class="form-label small" for="niv_cible_<?= $i ?>"><?= $i ?></label>
-                        <input type="number" name="cible_<?= $i ?>" id="niv_cible_<?= $i ?>" class="form-control form-control-sm" placeholder="0">
-                      </div>
-                    <?php } ?>
+                    <?php if (isset($programme_curr) && $programme_curr) : ?>
+                      <?php for ($i = $programme_curr['annee_debut']; $i <= $programme_curr['annee_fin']; $i++) { ?>
+                        <div style="flex: 0 0 auto; width: 80px;">
+                          <label class="form-label small" for="niv_cible_<?= $i ?>"><?= $i ?></label>
+                          <input type="number" name="cible_<?= $i ?>" id="niv_cible_<?= $i ?>" class="form-control form-control-sm" placeholder="0">
+                        </div>
+                      <?php } ?>
+                    <?php endif; ?>
                   </div>
                 </div>
               </div>
@@ -110,10 +121,14 @@
 <script>
   let currentIndicId = null;
   let isEditing = false;
+  let dateStart = null;
+  let dateEnd = null;
 
   $(document).ready(function() {
     $('#newNiveauIndicModal').on('shown.bs.modal', async function(event) {
       const niveauId = $(event.relatedTarget).data('id');
+      dateStart = parseInt($(event.relatedTarget).data('dateStart'));
+      dateEnd = parseInt($(event.relatedTarget).data('dateEnd'));
 
       if (niveauId) {
         $('#niveau_indic_niveau_id').val(niveauId);
@@ -175,10 +190,12 @@
           let ciblesText = ``;
           let cibles = [];
 
-          if (element.cibles) {
-            cibles = JSON.parse(element.cibles);
-            for (let i = 2020; i < 2028; i++) {
-              ciblesText += `<td class="text-center">${cibles[i] || '-'}</td>`;
+          cibles = JSON.parse(element.cibles ?? '{}');
+          for (let i = dateStart; i <= dateEnd; i++) {
+            if (cibles[i]) {
+              ciblesText += `<td class="text-center">${cibles[i]}</td>`;
+            } else {
+              ciblesText += `<td class="text-center">-</td>`;
             }
           }
 
@@ -205,10 +222,10 @@
             </tr>`);
         });
       } else {
-        tbody.html('<tr><td colspan="20" class="text-center py-5">Aucun indicateur trouvé.</td></tr>');
+        tbody.html('<tr><td colspan="50" class="text-center py-5">Aucun indicateur trouvé.</td></tr>');
       }
     } catch (error) {
-      tbody.html('<tr><td colspan="20" class="text-center py-5">Erreur de chargement.</td></tr>');
+      tbody.html('<tr><td colspan="50" class="text-center py-5">Erreur de chargement.</td></tr>');
     } finally {
       $('#niveauIndicLoadingScreen').hide();
       $('#niveauIndicContentContainer').show();
@@ -239,6 +256,7 @@
         const result = await response.json();
         if (result.status === 'success') {
           const data = result.data;
+          form.code.value = data.code;
           form.intitule.value = data.intitule;
           form.unite.value = data.unite;
           form.type.value = data.type;

@@ -39,6 +39,7 @@
                   <label class="form-label">Parent*</label>
                   <select class="form-select form-select-sm rounded-1" name="parent" id="obj_niveau_parent" disabled required>
                     <option value="" selected disabled>Sélectionner le parent</option>
+                    <option value="0">Aucun</option>
                     <?php if ($niveau_resultats ?? []) : ?>
                       <?php foreach ($niveau_resultats as $niveau_resultat) { ?>
                         <option value="<?= $niveau_resultat['id']; ?>" data-niveau="<?= $niveau_resultat['niveau']; ?>">
@@ -179,35 +180,25 @@
       }
     });
 
-    $('#obj_niveau_niveau').on('change', function() {
-      const selectedLevel = $(this).find(':selected').data('level');
+    // $('#obj_niveau_niveau').on('change', function() {
+    //   const selectedLevel = $(this).find(':selected').data('level');
 
-      // Level 0 → Axe stratégique → pas de parent
-      if (selectedLevel === 0) {
-        selectParent.prop('disabled', true);
-        selectParent.val('');
-        return;
-      }
+    //   if (selectedLevel === 0) {
+    //     selectParent.prop('disabled', true);
+    //     selectParent.val('');
+    //     return;
+    //   }
 
-      // Parent attendu = niveau supérieur (level - 1)
-      const expectedParentLevel = selectedLevel - 1;
+    //   const expectedParentLevel = selectedLevel - 1;
+    //   selectParent.prop('disabled', false);
+    //   selectParent.empty();
+    //   selectParent.append(parentOptions.first());
 
-      selectParent.prop('disabled', false);
-      selectParent.empty();
-      selectParent.append(parentOptions.first()); // "Sélectionner le parent"
-
-      parentOptions.each(function() {
-        const parentNiveauId = $(this).data('niveau');
-
-        // Récupérer le level du niveau du parent
-        const parentLevel = $('#obj_niveau_niveau option[value="' + parentNiveauId + '"]').data('level');
-
-        if (parentLevel === expectedParentLevel) {
-          selectParent.append($(this));
-        }
-      });
-    });
-
-
+    //   parentOptions.each(function() {
+    //     const parentNiveauId = $(this).data('niveau');
+    //     const parentLevel = $('#obj_niveau_niveau option[value="' + parentNiveauId + '"]').data('level');
+    //     if (parentLevel === expectedParentLevel) selectParent.append($(this));
+    //   });
+    // });
   });
 </script>

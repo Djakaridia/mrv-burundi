@@ -178,7 +178,7 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                     </div>
 
                     <div class="nav-item-wrapper">
-                        <?php $subModIndic = ['referentiels', 'referentiel_view', 'projections']; ?>
+                        <?php $subModIndic = ['referentiels', 'referentiel_view', 'projections', 'programmes', 'niveau_resultat']; ?>
                         <a class="nav-link dropdown-indicator label-1 rounded-0 m-0" href="#nv-indicators" role="button" data-bs-toggle="collapse" aria-expanded="<?= in_array($pageCurr, $subModIndic) ? 'true' : 'false'; ?>" aria-controls="nv-indicators">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center">
@@ -206,6 +206,22 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                                         <div class="d-flex align-items-center">
                                             <span class="fas fa-chevron-right fs-11"></span>
                                             <span class="nav-link-text ms-lg-0 ms-1">Projections & scénarios</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="nav-item overflow-hidden">
+                                    <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'programmes' ? 'active' : '' ?>" href="programmes.php">
+                                        <div class="d-flex align-items-center">
+                                            <span class="fas fa-chevron-right fs-11"></span>
+                                            <span class="nav-link-text ms-lg-0 ms-1">Programmes</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="nav-item overflow-hidden">
+                                    <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'niveau_resultat' ? 'active' : '' ?>" href="niveau_resultat.php">
+                                        <div class="d-flex align-items-center">
+                                            <span class="fas fa-chevron-right fs-11"></span>
+                                            <span class="nav-link-text ms-lg-0 ms-1">Niveaux de résultats</span>
                                         </div>
                                     </a>
                                 </li>
@@ -238,14 +254,6 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                                     </a>
                                 </li>
                                 <li class="nav-item overflow-hidden">
-                                    <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'programmes' ? 'active' : '' ?>" href="programmes.php">
-                                        <div class="d-flex align-items-center">
-                                            <span class="fas fa-chevron-right fs-11"></span>
-                                            <span class="nav-link-text ms-lg-0 ms-1">Programmes</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item overflow-hidden">
                                     <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo in_array($pageCurr, ['projects', 'project_view']) ? 'active' : '' ?>" href="projects.php">
                                         <div class="d-flex align-items-center">
                                             <span class="fas fa-chevron-right fs-11"></span>
@@ -258,42 +266,6 @@ $secteurs_nav = array_filter(array_reverse($secteurs_nav), function ($secteur) {
                                         <div class="d-flex align-items-center">
                                             <span class="fas fa-chevron-right fs-11"></span>
                                             <span class="nav-link-text ms-lg-0 ms-1">Fiches dynamiques</span>
-                                        </div>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="nav-item-wrapper">
-                        <?php $subModResult = ['niveau_resultat', 'cadre_resultat']; ?>
-                        <a class="nav-link dropdown-indicator label-1 rounded-0 m-0" href="#nv-resultats" role="button" data-bs-toggle="collapse" aria-expanded="<?= in_array($pageCurr, $subModResult) ? 'true' : 'false'; ?>" aria-controls="nv-resultats">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div class="d-flex align-items-center">
-                                    <span class="nav-link-icon ms-2 my-1"><span data-feather="airplay"></span></span>
-                                    <span class="nav-link-text">Cadre résultats</span>
-                                </div>
-                                <div class="dropdown-indicator-icon-wrapper">
-                                    <span class="fas fa-chevron-right dropdown-indicator-icon"></span>
-                                </div>
-                            </div>
-                        </a>
-                        <div class="parent-wrapper label-1">
-                            <ul class="nav collapse parent rounded-1 ms-1 <?= in_array($pageCurr, $subModResult) ? 'show' : ''; ?>" data-bs-parent="#navbarVerticalCollapse" id="nv-resultats">
-                                <li class="collapsed-nav-item-title d-none">Cadre résultats</li>
-                                <li class="nav-item overflow-hidden">
-                                    <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'niveau_resultat' ? 'active' : '' ?>" href="niveau_resultat.php">
-                                        <div class="d-flex align-items-center">
-                                            <span class="fas fa-chevron-right fs-11"></span>
-                                            <span class="nav-link-text ms-lg-0 ms-1">Niveaux de résultats</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item overflow-hidden">
-                                    <a class="nav-link rounded-0 py-1 ms-n2 me-0 <?php echo $pageCurr === 'cadre_resultat' ? 'active' : '' ?>" href="cadre_resultat.php">
-                                        <div class="d-flex align-items-center">
-                                            <span class="fas fa-chevron-right fs-11"></span>
-                                            <span class="nav-link-text ms-lg-0 ms-1">Indicateurs de performance</span>
                                         </div>
                                     </a>
                                 </li>

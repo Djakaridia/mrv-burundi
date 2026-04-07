@@ -127,8 +127,10 @@
   $tache_cout = new TacheCout($db);
   $tache_couts = $tache_cout->read();
   $grouped_tache_couts = [];
+  $grouped_tache_decaisse = [];
   foreach ($tache_couts as $cout) {
     if($cout['type'] === 'prevu') $grouped_tache_couts[$cout['tache_id']][] = $cout;
+    if ($cout['type'] === 'realise') $grouped_tache_decaisse[$cout['tache_id']][] = $cout;
   }
 
   $conventions_projet = $conventions_par_projet[$project_curr['id']] ?? [];
@@ -139,27 +141,27 @@
 
   $totalTacheCount = count($taches_actives);
   $finishedTacheCount = count(array_filter($taches_actives, function ($tache) {
-    return strtolower($tache['status'] ?? '') === 'realise' || strtolower($tache['status'] ?? '') === 'terminée';
+    return strtolower($tache['status']) === 'realise' || strtolower($tache['status']) === 'en_cours';
   }));
 
   $exe_physique = $totalTacheCount > 0 ? round(($finishedTacheCount / $totalTacheCount) * 100, 1) : 0;
-
   $montant_total_depense = 0;
   $decaisssements_par_mois = [];
 
   foreach ($taches_actives as $tache) {
     if (isset($couts_par_tache[$tache['id']])) {
       foreach ($couts_par_tache[$tache['id']] as $cout) {
-        $montant = floatval($cout['montant'] ?? 0);
-        $montant_total_depense += $montant;
+        if ($cout['type'] == "realise") {
+          $montant = floatval($cout['montant'] ?? 0);
+          $montant_total_depense += $montant;
 
-        // Agrégation par mois pour le graphique de décaissement
-        if (!empty($cout['date_decaissement'])) {
-          $mois = date('Y-m', strtotime($cout['date_decaissement']));
-          if (!isset($decaisssements_par_mois[$mois])) {
-            $decaisssements_par_mois[$mois] = 0;
+          if (!empty($cout['date_decaissement'])) {
+            $mois = date('Y-m', strtotime($cout['date_decaissement']));
+            if (!isset($decaisssements_par_mois[$mois])) {
+              $decaisssements_par_mois[$mois] = 0;
+            }
+            $decaisssements_par_mois[$mois] += $montant;
           }
-          $decaisssements_par_mois[$mois] += $montant;
         }
       }
     }
@@ -168,7 +170,7 @@
 
   $column_categories = array_keys($decaisssements_par_mois);
   $column_data = array_values($decaisssements_par_mois);
-  $budget_reference = $budget_conventions > 0 ? $budget_conventions : ($project_curr['budget'] ?? 0);
+  $budget_reference = $project_curr['budget'] > 0 ? $project_curr['budget'] : $budget_conventions;
   $exe_financiere = $budget_reference > 0 ? round(($montant_total_depense / $budget_reference) * 100, 1) : 0;
 
   $referentiel = new Referentiel($db);

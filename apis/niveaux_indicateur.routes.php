@@ -64,6 +64,7 @@ switch ($requestMethod) {
                 }
 
                 $niveauIndic->type = sanitize_input($input['type']);
+                $niveauIndic->code = sanitize_input($input['code']);
                 $niveauIndic->intitule = sanitize_input($input['intitule']);
                 $niveauIndic->unite = sanitize_input($input['unite']);
                 $niveauIndic->resultat = sanitize_input($input['resultat']);

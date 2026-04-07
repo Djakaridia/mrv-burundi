@@ -586,12 +586,13 @@
               <table class="table fs-9 table-bordered mb-0 border-top border-translucent" id="id-datatable">
                 <thead class="table-light">
                   <tr>
-                    <th>Intitulé du projet</th>
-                    <th>Responsable</th>
-                    <th class="text-center">Secteur</th>
-                    <th class="text-center">Période</th>
-                    <th class="text-center">Statut</th>
-                    <th class="text-center">Progression</th>
+                    <th style="width: 35%;">Intitulé du projet</th>
+                    <th style="width: 10%;">Responsable</th>
+                    <th class="text-center" style="width: 10%;">Secteur</th>
+                    <th class="text-center" style="width: 10%;">Période</th>
+                    <th class="text-center" style="width: 10%;">Statut</th>
+                    <th class="text-center" style="width: 5%;">Tâches</th>
+                    <th class="text-center" style="width: 15%;">Progression</th>
                     <th class="text-center" style="width: 100px;">Actions</th>
                   </tr>
                 </thead>
@@ -608,7 +609,7 @@
 
                     $totalTacheCount = count($taches_projet);
                     $finishedTacheCount = count(array_filter($taches_projet, function ($tache) {
-                      return strtolower($tache['status']) === 'terminée';
+                      return strtolower($tache['status']) === 'realise' || strtolower($tache['status']) === 'en_cours';
                     }));
                     $progress = $totalTacheCount > 0 ? (round(($finishedTacheCount / $totalTacheCount), 2) * 100) : 0;
                   ?>
@@ -618,26 +619,28 @@
                       <td><span class="fw-semibold"><?= $projet['structure_sigle'] ?></span></td>
                       <td class="text-center">
                         <span class="badge badge-phoenix fs-10 py-1 badge-phoenix-light rounded-pill">
-                          <?php foreach ($secteurs as $secteur) {
-                            if ($secteur['id'] == $projet['secteur_id']) {
-                              echo $secteur['name'];
-                              break;
-                            }
-                          } ?>
+                          <?= array_column($secteurs, 'name', 'id')[$projet['secteur_id']] ?>
                         </span>
                       </td>
                       <td class="text-center">
-                        <span class="badge badge-phoenix fs-10 py-1 badge-phoenix-warning rounded-pill">
+                        <span class="badge badge-phoenix fs-10 py-1 badge-phoenix-secondary rounded-pill">
                           <?= date('Y', strtotime($projet['start_date'])) ?> - <?= date('Y', strtotime($projet['end_date'])) ?>
                         </span>
                       </td>
                       <td class="text-center">
                         <span class="badge badge-phoenix fs-10 py-1 rounded-pill badge-phoenix-<?= getBadgeClass($projet['status']); ?>">
-                          <?= listStatus()[$projet['status']]??"N/A"; ?>
+                          <?= listStatus()[$projet['status']] ?? "N/A"; ?>
                         </span>
                       </td>
+                      <td class="text-center">
+                        <a onclick="window.location.href='suivi_activites.php?proj=<?= $projet['id'] ?>'" class="btn btn-link text-decoration-none p-0">
+                          <span class="badge badge-phoenix fs-10 py-1 rounded-pill badge-phoenix-secondary">
+                            <?= $finishedTacheCount . " / " . $totalTacheCount ?>
+                          </span>
+                        </a>
+                      </td>
                       <td class="text-center p-0">
-                        <a onclick="window.location.href='suivi_activites.php?proj=<?= $projet['id'] ?>'" class="btn btn-link text-decoration-none fw-bold py-1 px-0 m-0">
+                        <div class="fw-bold py-1 px-0 m-0">
                           <?php
                           if ($progress < 39)
                             $color = "danger";
@@ -652,7 +655,7 @@
                               </div>
                             </div>
                           </span>
-                        </a>
+                        </div>
                       </td>
                       <td>
                         <div class="d-flex gap-2">

@@ -8,7 +8,8 @@ if (!empty($projets)) {
     $tache_couts = $tache_cout->read();
 
     foreach ($tache_couts as $cout) {
-        $couts_par_tache[$cout['tache_id']][] = $cout;
+        if ($cout['type'] === 'prevu') $couts_prevu_tache[$cout['tache_id']][] = $cout;
+        if ($cout['type'] === 'realise') $couts_decaisse_tache[$cout['tache_id']][] = $cout;
     }
 
     foreach ($projets as $projet) {
@@ -51,6 +52,7 @@ if (!empty($projets)) {
                     $logoParts = explode("../", $projet['logo'] ?? '');
                     $conventions_projet = $conventions_par_projet[$projet['id']] ?? [];
                     $budget_conventions = array_sum(array_column($conventions_projet, 'montant'));
+                    $budget_reference = $projet['budget'] > 0 ? $projet['budget'] : $budget_conventions;
 
                     $tache_projet = new Tache($db);
                     $tache_projet->projet_id = $projet['id'];
@@ -59,24 +61,26 @@ if (!empty($projets)) {
                         return $tache['state'] == 'actif';
                     });
 
+                    // Taux exécution physique
                     $totalTacheCount = count($taches_actives);
                     $finishedTacheCount = count(array_filter($taches_actives, function ($tache) {
-                        return strtolower($tache['status'] ?? '') === 'terminée';
+                        return strtolower($tache['status']) === 'realise' || strtolower($tache['status']) === 'en_cours';
                     }));
-
                     $taux_physique = $totalTacheCount > 0 ? round(($finishedTacheCount / $totalTacheCount) * 100, 1) : 0;
-                    $montant_total_depense = 0;
+
+                    // Taux exécution financière
+                    $montant_total_decaisse = 0;
                     foreach ($taches_actives as $tache) {
-                        if (isset($couts_par_tache[$tache['id']])) {
-                            $montant_total_depense += array_sum(array_column($couts_par_tache[$tache['id']], 'montant'));
+                        if (isset($couts_decaisse_tache[$tache['id']])) {
+                        $montant_total_decaisse += array_sum(array_column($couts_decaisse_tache[$tache['id']], 'montant'));
                         }
                     }
+                    $taux_financier = $budget_reference > 0 ? round(($montant_total_decaisse / $budget_reference) * 100, 1) : 0;
 
-                    $budget_reference = $budget_conventions > 0 ? $budget_conventions : ($projet['budget'] ?? 0);
-                    $taux_financier = $budget_reference > 0 ? round(($montant_total_depense / $budget_reference) * 100, 1) : 0;
-                    $budget_formate = ($projet['budget'] ?? 0) > 0 ? number_format($projet['budget'], 0, ',', ' ') . ' USD' : 'Non défini';
-                    $budget_conventions_formate = $budget_conventions > 0 ? number_format($budget_conventions, 0, ',', ' ') . ' USD' : 'Aucune convention';
-                    $montant_depense_formate = $montant_total_depense > 0 ? number_format($montant_total_depense, 0, ',', ' ') . ' USD' : '0 USD';
+                    // Formater les montants
+                    $budget_reference_format = ($budget_reference ?? 0) > 0 ? number_format($budget_reference, 0, ',', ' ') . ' USD' : 'Non défini';
+                    $budget_conventions_format = $budget_conventions > 0 ? number_format($budget_conventions, 0, ',', ' ') . ' USD' : 'Aucune convention';
+                    $montant_decaisse_format = $montant_total_decaisse > 0 ? number_format($montant_total_decaisse, 0, ',', ' ') . ' USD' : '0 USD';
                 ?>
                     <div class="col-12 col-lg-6 col-xl-4">
                         <div class="card card-float border border-primary-subtle h-100 overflow-hidden">
@@ -143,7 +147,7 @@ if (!empty($projets)) {
                                             <i class="fas fa-coins text-success fs-10"></i>
                                         </div>
                                         <span class="text-muted small">Budget :</span>
-                                        <span class="fw-bold ms-2 text-success small"><?= $budget_formate ?></span>
+                                        <span class="fw-bold ms-2 text-success small"><?= $budget_reference_format ?></span>
                                     </div>
 
                                     <div class="d-flex align-items-center mb-2">
@@ -152,7 +156,7 @@ if (!empty($projets)) {
                                         </div>
                                         <span class="text-muted small">Conventions :</span>
                                         <span class="fw-semibold ms-2 small">
-                                            <?= count($conventions_projet) ?> convention(s) - <?= $budget_conventions_formate ?>
+                                            <?= count($conventions_projet) ?> convention(s) - <?= $budget_conventions_format ?>
                                         </span>
                                     </div>
                                 </div>
@@ -196,7 +200,7 @@ if (!empty($projets)) {
                                         </div>
                                         <div class="d-flex justify-content-between mt-1">
                                             <span class="small text-muted" title="Dépensé / Budget total">
-                                                <?= $montant_depense_formate ?> / <?= $budget_conventions_formate ?>
+                                                <?= $montant_decaisse_format ?> / <?= $budget_reference_format ?>
                                             </span>
                                         </div>
                                     </div>

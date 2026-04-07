@@ -6,6 +6,7 @@ class NiveauIndicateur
 
     public $id;
     public $type;
+    public $code;
     public $intitule;
     public $unite;
     public $cibles;
@@ -21,9 +22,10 @@ class NiveauIndicateur
 
     public function create()
     {
-        $query = "INSERT INTO " . $this->table_name . " (type, intitule, unite, cibles, resultat, add_by, created_at) VALUES (:type, :intitule, :unite, :cibles, :resultat, :add_by, NOW())";
+        $query = "INSERT INTO " . $this->table_name . " (type, code, intitule, unite, cibles, resultat, add_by, created_at) VALUES (:type, :code, :intitule, :unite, :cibles, :resultat, :add_by, NOW())";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":type", $this->type);
+        $stmt->bindParam(":code", $this->code);
         $stmt->bindParam(":intitule", $this->intitule);
         $stmt->bindParam(":unite", $this->unite);
         $stmt->bindParam(":resultat", $this->resultat);
@@ -65,9 +67,10 @@ class NiveauIndicateur
 
     public function update()
     {
-        $query = "UPDATE " . $this->table_name . " SET type = :type, intitule = :intitule, unite = :unite, cibles = :cibles, resultat = :resultat, updated_at = :updated_at WHERE id = :id";
+        $query = "UPDATE " . $this->table_name . " SET type = :type, code = :code, intitule = :intitule, unite = :unite, cibles = :cibles, resultat = :resultat, updated_at = :updated_at WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':type', $this->type);
+        $stmt->bindParam(':code', $this->code);
         $stmt->bindParam(':intitule', $this->intitule);
         $stmt->bindParam(':unite', $this->unite);
         $stmt->bindParam(':resultat', $this->resultat);
