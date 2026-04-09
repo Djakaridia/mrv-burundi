@@ -49,19 +49,38 @@
       -moz-box-shadow: 0 0 5px gray;
       box-shadow: 0 0 5px gray;
     }
+
     @-webkit-keyframes slideDown {
-      0%, 100% { -webkit-transform: translateY(-50px); }
-      10%, 90% { -webkit-transform: translateY(0px); }
+
+      0%,
+      100% {
+        -webkit-transform: translateY(-50px);
+      }
+
+      10%,
+      90% {
+        -webkit-transform: translateY(0px);
+      }
     }
+
     @-moz-keyframes slideDown {
-      0%, 100% { -moz-transform: translateY(-50px); }
-      10%, 90% { -moz-transform: translateY(0px); }
+
+      0%,
+      100% {
+        -moz-transform: translateY(-50px);
+      }
+
+      10%,
+      90% {
+        -moz-transform: translateY(0px);
+      }
     }
+
     .cssanimations.csstransforms .alert-message {
       -webkit-transform: translateY(-50px);
       -webkit-animation: slideDown 2.5s 1.0s 1 ease forwards;
-      -moz-transform:    translateY(-50px);
-      -moz-animation:    slideDown 2.5s 1.0s 1 ease forwards;
+      -moz-transform: translateY(-50px);
+      -moz-animation: slideDown 2.5s 1.0s 1 ease forwards;
     }
   </style>
   <?php
@@ -209,8 +228,18 @@
         </div>
 
         <!-- Footer -->
-        <div class="text-center mt-5">
-          <div class="text-center">© <?php echo date('Y'); ?> MRV - Burundi. Tous droits reservés. Powered by <a class="text-danger fw-bolder" href="https://cosit-mali.com/" target="_blank">COSIT</a></div>
+        <div class="text-center mt-5 mb-2">
+          <small class="text-body-secondary">
+            © <?php echo date('Y'); ?> <strong>MRV Burundi</strong>.
+            Tous droits réservés.
+          </small>
+          <br>
+          <small class="text-body-secondary">
+            Développé avec le soutien de :
+            <a href="https://atmost.ca/" target="_blank" class="fw-semibold text-dark text-decoration-none">ATMOST</a>,
+            <a href="javascript:void(0);" target="_blank" class="fw-semibold text-dark text-decoration-none">CIDEX</a> et
+            <a href="https://cosit-mali.com/" target="_blank" class="fw-semibold text-dark text-decoration-none">COSIT</a>
+          </small>
         </div>
       </div>
     </div>
